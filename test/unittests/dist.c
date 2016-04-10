@@ -89,6 +89,71 @@ CTEST(Distribution, Get)
     inform_dist_free(dist);
 }
 
+CTEST(Distribution, ReallocNull)
+{
+    inform_dist *dist = NULL;
+    inform_dist *resize = inform_dist_realloc(dist, 5);
+    ASSERT_FALSE(resize == dist);
+    ASSERT_NOT_NULL(resize);
+    ASSERT_EQUAL(5, inform_dist_size(resize));
+    ASSERT_EQUAL(0, inform_dist_counts(resize));
+    for (size_t i = 0; i < inform_dist_size(resize); ++i)
+    {
+        ASSERT_EQUAL(0, inform_dist_get(resize,i));
+    }
+    inform_dist_free(resize);
+}
+
+CTEST(Distribution, ReallocGrow)
+{
+    inform_dist *dist = inform_dist_alloc(3);
+    ASSERT_NOT_NULL(dist);
+    for (size_t i = 0; i < inform_dist_size(dist); ++i)
+    {
+        inform_dist_set(dist, i, i+1);
+    }
+    ASSERT_EQUAL(3, inform_dist_size(dist));
+    ASSERT_EQUAL(6, inform_dist_counts(dist));
+
+    inform_dist *resized = inform_dist_realloc(dist, 5);
+    ASSERT_NOT_NULL(resized);
+    ASSERT_TRUE(resized == dist);
+    ASSERT_EQUAL(5, inform_dist_size(resized));
+    ASSERT_EQUAL(6, inform_dist_counts(resized));
+    for (size_t i = 0; i < 3; ++i)
+    {
+        ASSERT_EQUAL(i+1, inform_dist_get(resized, i));
+    }
+    for (size_t i = 3; i < inform_dist_size(resized); ++i)
+    {
+        ASSERT_EQUAL(0, inform_dist_get(resized, i));
+    }
+    inform_dist_free(resized);
+}
+
+CTEST(Distribution, ReallocShrink)
+{
+    inform_dist *dist = inform_dist_alloc(5);
+    ASSERT_NOT_NULL(dist);
+    for (size_t i = 0; i < inform_dist_size(dist); ++i)
+    {
+        inform_dist_set(dist, i, i+1);
+    }
+    ASSERT_EQUAL(5, inform_dist_size(dist));
+    ASSERT_EQUAL(15, inform_dist_counts(dist));
+
+    inform_dist *resized = inform_dist_realloc(dist, 3);
+    ASSERT_NOT_NULL(resized);
+    ASSERT_TRUE(resized == dist);
+    ASSERT_EQUAL(3, inform_dist_size(resized));
+    ASSERT_EQUAL(6, inform_dist_counts(resized));
+    for (size_t i = 0; i < inform_dist_size(resized); ++i)
+    {
+        ASSERT_EQUAL(i+1, inform_dist_get(resized, i));
+    }
+    inform_dist_free(resized);
+}
+
 CTEST(Distribution, DupNull)
 {
     inform_dist *dist = NULL;

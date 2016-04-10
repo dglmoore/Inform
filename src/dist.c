@@ -35,6 +35,44 @@ inform_dist* inform_dist_alloc(size_t n)
     return dist;
 }
 
+inform_dist* inform_dist_realloc(inform_dist* dist, size_t n)
+{
+    if (dist != NULL && dist->size != n)
+    {
+        uint64_t *histogram = realloc(dist->histogram, n * sizeof(uint64_t));
+        if (histogram != NULL)
+        {
+            dist->histogram = histogram;
+            if (n < dist->size)
+            {
+                dist->size = n;
+                dist->counts = 0;
+                for (size_t i = 0; i < dist->size; ++i)
+                {
+                    dist->counts += dist->histogram[i];
+                }
+            }
+            else
+            {
+                for (size_t i = dist->size; i < n; ++i)
+                {
+                    dist->histogram[i] = 0;
+                }
+                dist->size = n;
+            }
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+    else if (dist == NULL)
+    {
+        dist = inform_dist_alloc(n);
+    }
+    return dist;
+}
+
 inform_dist* inform_dist_dup(inform_dist* dist)
 {
     if (dist == NULL)
