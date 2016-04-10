@@ -79,3 +79,14 @@ uint64_t inform_dist_set(inform_dist* dist, uint64_t event, uint64_t x)
     dist->counts += x;
     return (dist->histogram[event] = x);
 }
+
+uint64_t inform_dist_tick(inform_dist* dist, uint64_t event)
+{
+    if (dist == NULL || event >= dist->size)
+    {
+        return 0;
+    }
+    dist->counts += 1;
+    return (dist->histogram[event] += 1);
+}
+

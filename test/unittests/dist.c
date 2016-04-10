@@ -89,3 +89,29 @@ CTEST(Distribution, Get)
     inform_dist_free(dist);
 }
 
+CTEST(Distribution, Tick)
+{
+    inform_dist *dist = inform_dist_alloc(3);
+    ASSERT_NOT_NULL(dist);
+    ASSERT_FALSE(inform_dist_is_valid(dist));
+
+    ASSERT_EQUAL(0, inform_dist_get(dist,0));
+
+    ASSERT_EQUAL(1, inform_dist_tick(dist,0));
+    ASSERT_EQUAL(1, inform_dist_get(dist,0));
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+
+    ASSERT_EQUAL(1, inform_dist_tick(dist,1));
+    ASSERT_EQUAL(1, inform_dist_get(dist,1));
+
+    ASSERT_EQUAL(2, inform_dist_tick(dist,0));
+    ASSERT_EQUAL(2, inform_dist_get(dist,0));
+
+    ASSERT_EQUAL(1, inform_dist_tick(dist,2));
+    ASSERT_EQUAL(1, inform_dist_get(dist,2));
+
+    ASSERT_EQUAL(3, inform_dist_size(dist));
+    ASSERT_EQUAL(4, inform_dist_counts(dist));
+
+    inform_dist_free(dist);
+}
