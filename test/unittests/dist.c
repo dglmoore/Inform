@@ -115,3 +115,21 @@ CTEST(Distribution, Tick)
 
     inform_dist_free(dist);
 }
+
+CTEST(Distribution, Prob)
+{
+    inform_dist* dist = inform_dist_alloc(5);
+    ASSERT_NOT_NULL(dist);
+
+    for (size_t i = 0; i < inform_dist_size(dist); ++i)
+    {
+        inform_dist_set(dist, i, i+1);
+    }
+    ASSERT_EQUAL(15, inform_dist_counts(dist));
+    for (size_t i = 0; i < inform_dist_size(dist); ++i)
+    {
+        ASSERT_DBL_NEAR((double)(i+1)/15, inform_dist_prob(dist,i));
+    }
+
+    inform_dist_free(dist);
+}

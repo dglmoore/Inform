@@ -90,3 +90,11 @@ uint64_t inform_dist_tick(inform_dist* dist, uint64_t event)
     return (dist->histogram[event] += 1);
 }
 
+double inform_dist_prob(inform_dist* dist, uint64_t event)
+{
+    if (dist == NULL || event >= dist->size)
+    {
+        return 0;
+    }
+    return (double)(dist->histogram[event]) / dist->counts;
+}

@@ -21,3 +21,4 @@ uint64_t inform_dist_set(inform_dist* dist, uint64_t event, uint64_t x);
 
 uint64_t inform_dist_tick(inform_dist* dist, uint64_t event);
 
+double inform_dist_prob(inform_dist* dist, uint64_t event);
