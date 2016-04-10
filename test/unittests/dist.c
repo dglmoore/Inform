@@ -133,3 +133,27 @@ CTEST(Distribution, Prob)
 
     inform_dist_free(dist);
 }
+
+CTEST(Distribution, Dump)
+{
+    inform_dist* dist = NULL;
+    ASSERT_NULL(inform_dist_dump(dist));
+
+    dist = inform_dist_alloc(5);
+    ASSERT_NOT_NULL(dist);
+
+    for (size_t i = 1; i < inform_dist_size(dist); ++i)
+    {
+        inform_dist_set(dist, i, i+1);
+    }
+    ASSERT_EQUAL(14, inform_dist_counts(dist));
+    double expect[5] = {0., 2./14, 3/14., 4/14., 5/14.};
+    double* probs = inform_dist_dump(dist);
+    ASSERT_NOT_NULL(probs);
+    for (size_t i = 0; i < inform_dist_size(dist); ++i)
+    {
+        ASSERT_DBL_NEAR(expect[i], probs[i]);
+    }
+    free(probs);
+    inform_dist_free(dist);
+}

@@ -90,11 +90,33 @@ uint64_t inform_dist_tick(inform_dist* dist, uint64_t event)
     return (dist->histogram[event] += 1);
 }
 
+static double inform_dist_unsafe_prob(inform_dist* dist, uint64_t event)
+{
+    return (double)(dist->histogram[event]) / dist->counts;
+}
+
 double inform_dist_prob(inform_dist* dist, uint64_t event)
 {
     if (dist == NULL || event >= dist->size)
     {
         return 0;
     }
-    return (double)(dist->histogram[event]) / dist->counts;
+    return inform_dist_unsafe_prob(dist, event);
+}
+
+double* inform_dist_dump(inform_dist* dist)
+{
+    if (dist == NULL || dist->size == 0)
+    {
+        return NULL;
+    }
+    double* probabilities = calloc(dist->size, sizeof(double));
+    if (probabilities != NULL)
+    {
+        for (size_t i = 0; i < inform_dist_size(dist); ++i)
+        {
+            probabilities[i] = inform_dist_unsafe_prob(dist,i);
+        }
+    }
+    return probabilities;
 }
