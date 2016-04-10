@@ -3,6 +3,8 @@
 // license that can be found in the LICENSE file.
 #include <inform/dist.h>
 
+#include <string.h>
+
 struct inform_distribution
 {
     size_t size;
@@ -31,6 +33,21 @@ inform_dist* inform_dist_alloc(size_t n)
         }
     }
     return dist;
+}
+
+inform_dist* inform_dist_dup(inform_dist* dist)
+{
+    if (dist == NULL)
+    {
+        return NULL;
+    }
+    inform_dist *dup = inform_dist_alloc(dist->size);
+    if (dup != NULL)
+    {
+        memcpy(dist->histogram, dup->histogram, dist->size * sizeof(uint64_t));
+        dup->counts = dist->counts;
+    }
+    return dup;
 }
 
 void inform_dist_free(inform_dist* dist)

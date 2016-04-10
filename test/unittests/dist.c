@@ -89,6 +89,33 @@ CTEST(Distribution, Get)
     inform_dist_free(dist);
 }
 
+CTEST(Distribution, DupNull)
+{
+    inform_dist *dist = NULL;
+    inform_dist *dist2 = inform_dist_dup(dist);
+    ASSERT_NULL(dist2);
+}
+
+CTEST(Distribution, Dup)
+{
+    inform_dist *dist = inform_dist_alloc(5);
+    ASSERT_NOT_NULL(dist);
+    for (size_t i = 0; i < inform_dist_size(dist); ++i)
+    {
+        inform_dist_set(dist, i, i*i);
+    }
+    inform_dist *dup = inform_dist_dup(dist);
+    ASSERT_NOT_NULL(dup);
+    ASSERT_EQUAL(inform_dist_size(dist), inform_dist_size(dup));
+    ASSERT_EQUAL(inform_dist_counts(dist), inform_dist_counts(dup));
+    for (size_t i = 0; i < inform_dist_size(dist); ++i)
+    {
+        ASSERT_EQUAL(inform_dist_get(dist,i), inform_dist_get(dup,i));
+    }
+    inform_dist_free(dup);
+    inform_dist_free(dist);
+}
+
 CTEST(Distribution, Tick)
 {
     inform_dist *dist = inform_dist_alloc(3);
