@@ -29,3 +29,63 @@ CTEST(Distribution, AllocTwo)
     ASSERT_FALSE(inform_dist_is_valid(dist));
     inform_dist_free(dist);
 }
+
+CTEST(Distribution, GetNull)
+{
+    inform_dist *dist = NULL;
+    ASSERT_EQUAL(0, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(0, inform_dist_get(dist, 1));
+    ASSERT_EQUAL(0, inform_dist_get(dist, 2));
+}
+
+CTEST(Distribution, SetNull)
+{
+    inform_dist *dist = NULL;
+    ASSERT_EQUAL(0, inform_dist_set(dist, 0, 1));
+    ASSERT_EQUAL(0, inform_dist_set(dist, 1, 1));
+    ASSERT_EQUAL(0, inform_dist_set(dist, 2, 1));
+}
+
+CTEST(Distribution, Set)
+{
+    inform_dist *dist = inform_dist_alloc(3);
+    ASSERT_NOT_NULL(dist);
+    ASSERT_FALSE(inform_dist_is_valid(dist));
+
+    ASSERT_EQUAL(1, inform_dist_set(dist, 0, 1));
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL(2, inform_dist_set(dist, 1, 2));
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL(3, inform_dist_set(dist, 2, 3));
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+
+    ASSERT_EQUAL(3, inform_dist_size(dist));
+    ASSERT_EQUAL(6, inform_dist_counts(dist));
+
+    for (uint64_t i = 0; i < inform_dist_size(dist); ++i)
+    {
+        inform_dist_set(dist, i, 0); 
+    }
+    ASSERT_FALSE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL(3, inform_dist_size(dist));
+    ASSERT_EQUAL(0, inform_dist_counts(dist));
+    inform_dist_free(dist);
+}
+
+CTEST(Distribution, Get)
+{
+    inform_dist *dist = inform_dist_alloc(3);
+    ASSERT_NOT_NULL(dist);
+    ASSERT_FALSE(inform_dist_is_valid(dist));
+
+    ASSERT_EQUAL(1, inform_dist_set(dist, 0, 1));
+    ASSERT_EQUAL(2, inform_dist_set(dist, 1, 2));
+    ASSERT_EQUAL(3, inform_dist_set(dist, 2, 3));
+
+    for (size_t i = 0; i < inform_dist_size(dist); ++i)
+    {
+        ASSERT_EQUAL(i+1, inform_dist_get(dist, i));
+    }
+    inform_dist_free(dist);
+}
+

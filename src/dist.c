@@ -60,3 +60,22 @@ bool inform_dist_is_valid(inform_dist* dist)
     return dist != NULL && dist->size != 0 && dist->counts != 0;
 }
 
+uint64_t inform_dist_get(inform_dist* dist, uint64_t event)
+{
+    if (dist == NULL || event >= dist->size)
+    {
+        return 0;
+    }
+    return dist->histogram[event];
+}
+
+uint64_t inform_dist_set(inform_dist* dist, uint64_t event, uint64_t x)
+{
+    if (dist == NULL || event >= dist->size)
+    {
+        return 0;
+    }
+    dist->counts -= dist->histogram[event];
+    dist->counts += x;
+    return (dist->histogram[event] = x);
+}

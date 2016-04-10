@@ -16,3 +16,6 @@ size_t inform_dist_size(inform_dist* dist);
 uint64_t inform_dist_counts(inform_dist* dist);
 bool inform_dist_is_valid(inform_dist* dist);
 
+uint64_t inform_dist_get(inform_dist* dist, uint64_t event);
+uint64_t inform_dist_set(inform_dist* dist, uint64_t event, uint64_t x);
+
