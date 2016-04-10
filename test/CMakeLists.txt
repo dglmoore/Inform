@@ -1,0 +1,12 @@
+include_directories(ctest/include)
+add_subdirectory(unittests)
+add_executable(${PROJECT_NAME}_unittest ${${PROJECT_NAME}_UNITTEST_SOURCES})
+
+foreach(UNITTEST_SOURCE ${${PROJECT_NAME}_UNITTEST_SOURCES})
+    file(STRINGS ${UNITTEST_SOURCE} TEST_NAMES REGEX ^CTEST)
+    foreach(TEST_NAME ${TEST_NAMES})
+        string(REGEX REPLACE ["\) \(,"] ";" TEST_NAME ${TEST_NAME})
+        list(GET TEST_NAME 1 TEST_SUITE_NAME)
+        add_test(${PROJECT_NAME}.${TEST_SUITE_NAME}. ${PROJECT_NAME}_unittest ${TEST_SUITE_NAME})
+    endforeach()
+endforeach()
