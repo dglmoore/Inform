@@ -5,5 +5,9 @@ if (UNIX)
     add_definitions("-Wall -Wextra -Werror -Wno-unused-parameter -std=gnu11")
 endif()
 
+include_directories(include)
+add_subdirectory(src)
+add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES})
+
 enable_testing()
 add_subdirectory(test)

@@ -1,6 +1,7 @@
 include_directories(ctest/include)
 add_subdirectory(unittests)
 add_executable(${PROJECT_NAME}_unittest ${${PROJECT_NAME}_UNITTEST_SOURCES})
+target_link_libraries(${PROJECT_NAME}_unittest ${PROJECT_NAME})
 
 foreach(UNITTEST_SOURCE ${${PROJECT_NAME}_UNITTEST_SOURCES})
     file(STRINGS ${UNITTEST_SOURCE} TEST_NAMES REGEX ^CTEST)
