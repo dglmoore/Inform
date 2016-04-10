@@ -154,6 +154,90 @@ CTEST(Distribution, ReallocShrink)
     inform_dist_free(resized);
 }
 
+CTEST(Distribution, CopyNull)
+{
+    inform_dist *dest = inform_dist_alloc(5);
+    ASSERT_NOT_NULL(dest);
+    ASSERT_NULL(inform_dist_copy(NULL, dest));
+    inform_dist_free(dest);
+}
+
+CTEST(Distribution, CopyToNULL)
+{
+    inform_dist *source = inform_dist_alloc(5);
+    ASSERT_NOT_NULL(source);
+    for (size_t i = 0; i < inform_dist_size(source); ++i)
+    {
+        inform_dist_set(source, i, i+1);
+    }
+    inform_dist *dest = NULL;
+    ASSERT_NULL(dest);
+    dest = inform_dist_copy(source, dest);
+    ASSERT_NOT_NULL(dest);
+    ASSERT_EQUAL(inform_dist_size(source), inform_dist_size(dest));
+    ASSERT_EQUAL(inform_dist_counts(source), inform_dist_counts(dest));
+    for (size_t i = 0; i < inform_dist_size(source); ++i)
+    {
+        ASSERT_EQUAL(inform_dist_get(source,i), inform_dist_get(dest,i));
+    }
+    inform_dist_free(dest);
+    inform_dist_free(source);
+}
+
+CTEST(Distribution, CopySamePlace)
+{
+    inform_dist *source = inform_dist_alloc(5);
+    inform_dist *dest = source;
+    ASSERT_TRUE(source == inform_dist_copy(source, dest));
+    inform_dist_free(source);
+}
+
+CTEST(Distribution, CopySameSize)
+{
+    inform_dist *source = inform_dist_alloc(3);
+    for (size_t i = 0; i < inform_dist_size(source); ++i)
+    {
+        inform_dist_set(source, i, i+1);
+    }
+    inform_dist *dest = inform_dist_alloc(3);
+
+    inform_dist *redest;
+    redest = inform_dist_copy(source, dest);
+    ASSERT_NOT_NULL(redest);
+    ASSERT_TRUE(redest == dest);
+    ASSERT_EQUAL(inform_dist_size(source), inform_dist_size(dest));
+    ASSERT_EQUAL(inform_dist_counts(source), inform_dist_counts(dest));
+    for (size_t i = 0; i < inform_dist_size(source); ++i)
+    {
+        ASSERT_EQUAL(inform_dist_get(source,i), inform_dist_get(dest,i));
+    }
+    inform_dist_free(dest);
+    inform_dist_free(source);
+}
+
+CTEST(Distribution, CopyResize)
+{
+    inform_dist *source = inform_dist_alloc(3);
+    for (size_t i = 0; i < inform_dist_size(source); ++i)
+    {
+        inform_dist_set(source, i, i+1);
+    }
+    inform_dist *dest = inform_dist_alloc(5);
+
+    inform_dist *redest;
+    redest = inform_dist_copy(source, dest);
+    ASSERT_NOT_NULL(redest);
+    ASSERT_TRUE(redest == dest);
+    ASSERT_EQUAL(inform_dist_size(source), inform_dist_size(dest));
+    ASSERT_EQUAL(inform_dist_counts(source), inform_dist_counts(dest));
+    for (size_t i = 0; i < inform_dist_size(source); ++i)
+    {
+        ASSERT_EQUAL(inform_dist_get(source,i), inform_dist_get(dest,i));
+    }
+    inform_dist_free(dest);
+    inform_dist_free(source);
+}
+
 CTEST(Distribution, DupNull)
 {
     inform_dist *dist = NULL;
