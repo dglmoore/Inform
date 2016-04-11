@@ -8,6 +8,7 @@ endif()
 include_directories(include)
 add_subdirectory(src)
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES})
+target_link_libraries(${PROJECT_NAME} m)
 
 enable_testing()
 add_subdirectory(test)
