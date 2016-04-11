@@ -20,3 +20,10 @@ entropy inform_shannon(inform_dist const *dist)
     }
     return nan("1");
 }
+
+entropy inform_mutual_info(inform_dist const *joint,
+        inform_dist const *marginal_x, inform_dist const *marginal_y)
+{
+    return inform_shannon(marginal_x) + inform_shannon(marginal_y)
+        - inform_shannon(joint);
+}

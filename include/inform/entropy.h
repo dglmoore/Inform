@@ -9,3 +9,7 @@
 typedef double entropy;
 
 entropy inform_shannon(inform_dist const *dist);
+
+entropy inform_mutual_info(inform_dist const *joint,
+        inform_dist const *marginal_x,
+        inform_dist const *marginal_y);
