@@ -23,44 +23,44 @@ CTEST(TimeSeries, ActiveInfoHistoryTooLong)
 CTEST(TimeSeries, ActiveInfoSingleSeries)
 {
     ASSERT_DBL_NEAR_TOL(0.918296,
-                        inform_active_info((int[]){1,1,0,0,1,0,0,1}, 8, 2),
-                        1e-6);
+            inform_active_info((int[]){1,1,0,0,1,0,0,1}, 8, 2),
+            1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.000000,
-                        inform_active_info((int[]){1,0,0,0,0,0,0,0,0}, 9, 2),
-                        1e-6);
+            inform_active_info((int[]){1,0,0,0,0,0,0,0,0}, 9, 2),
+            1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.305958,
-                        inform_active_info((int[]){0,0,1,1,1,1,0,0,0}, 9, 2),
-                        1e-6);
+            inform_active_info((int[]){0,0,1,1,1,1,0,0,0}, 9, 2),
+            1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.347458,
-                        inform_active_info((int[]){1,0,0,0,0,0,0,1,1}, 9, 2),
-                        1e-6);
+            inform_active_info((int[]){1,0,0,0,0,0,0,1,1}, 9, 2),
+            1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.347458,
-                        inform_active_info((int[]){1,0,0,0,0,0,0,1,1}, 9, 2),
-                        1e-6);
+            inform_active_info((int[]){1,0,0,0,0,0,0,1,1}, 9, 2),
+            1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.399533,
-                        inform_active_info((int[]){0,0,0,0,0,1,1,0,0}, 9, 2),
-                        1e-6);
+            inform_active_info((int[]){0,0,0,0,0,1,1,0,0}, 9, 2),
+            1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.399533,
-                        inform_active_info((int[]){0,0,0,0,1,1,0,0,0}, 9, 2),
-                        1e-6);
+            inform_active_info((int[]){0,0,0,0,1,1,0,0,0}, 9, 2),
+            1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.305958,
-                        inform_active_info((int[]){1,1,1,0,0,0,0,1,1}, 9, 2),
-                        1e-6);
+            inform_active_info((int[]){1,1,1,0,0,0,0,1,1}, 9, 2),
+            1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.305958,
-                        inform_active_info((int[]){0,0,0,1,1,1,1,0,0}, 9, 2),
-                        1e-6);
+            inform_active_info((int[]){0,0,0,1,1,1,1,0,0}, 9, 2),
+            1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.347458,
-                        inform_active_info((int[]){0,0,0,0,0,0,1,1,0}, 9, 2),
-                        1e-6);
+            inform_active_info((int[]){0,0,0,0,0,0,1,1,0}, 9, 2),
+            1e-6);
 }
 
 CTEST(TimeSeries, ActiveInfoEnsemble)
