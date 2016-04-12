@@ -3,6 +3,8 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
-double inform_active_info(int const *series, size_t n, uint64_t k);
-double inform_active_info_ensemble(int const *series, size_t n,
+#include <inform/entropy.h>
+
+entropy inform_active_info(int const *series, size_t n, uint64_t k);
+entropy inform_active_info_ensemble(int const *series, size_t n,
         size_t m, uint64_t k);

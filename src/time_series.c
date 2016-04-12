@@ -1,7 +1,6 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <inform/entropy.h>
 #include <inform/state_encoding.h>
 #include <inform/time_series.h>
 
@@ -26,7 +25,7 @@ static void inform_active_info_dist(int const* series, size_t n,
     }
 }
 
-double inform_active_info(int const *series, size_t n, uint64_t k)
+entropy inform_active_info(int const *series, size_t n, uint64_t k)
 {
     if (n <= 1)
     {
@@ -42,7 +41,7 @@ double inform_active_info(int const *series, size_t n, uint64_t k)
     inform_dist *futures   = inform_dist_alloc(2);
 
     inform_active_info_dist(series, n, k, states, histories, futures);
-    double ai = inform_mutual_info(states, histories, futures);
+    entropy ai = inform_mutual_info(states, histories, futures);
 
     inform_dist_free(futures);
     inform_dist_free(histories);
@@ -51,7 +50,7 @@ double inform_active_info(int const *series, size_t n, uint64_t k)
     return ai;
 }
 
-double inform_active_info_ensemble(int const *series, size_t n, size_t m,
+entropy inform_active_info_ensemble(int const *series, size_t n, size_t m,
         uint64_t k)
 {
     if (n <= 1)
@@ -77,7 +76,7 @@ double inform_active_info_ensemble(int const *series, size_t n, size_t m,
         inform_active_info_dist(series, m, k, states, histories, futures);
         series += m;
     }
-    double ai = inform_mutual_info(states, histories, futures);
+    entropy ai = inform_mutual_info(states, histories, futures);
 
     inform_dist_free(futures);
     inform_dist_free(histories);
