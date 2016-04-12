@@ -73,27 +73,27 @@ inform_dist* inform_dist_realloc(inform_dist *dist, size_t n)
     return dist;
 }
 
-inform_dist* inform_dist_copy(inform_dist const *source, inform_dist *dest)
+inform_dist* inform_dist_copy(inform_dist const *src, inform_dist *dest)
 {
-    if (source == NULL)
+    if (src == NULL)
     {
         return NULL;
     }
-    else if (dest == NULL || source->size != dest->size)
+    else if (dest == NULL || src->size != dest->size)
     {
         inform_dist *redest = NULL;
-        if ((redest = inform_dist_realloc(dest, source->size)) == NULL)
+        if ((redest = inform_dist_realloc(dest, src->size)) == NULL)
         {
             return NULL;
         }
         dest = redest;
     }
-    else if (source == dest)
+    else if (src == dest)
     {
         return dest;
     }
-    memcpy(source->histogram, dest->histogram, source->size * sizeof(uint64_t));
-    dest->counts = source->counts;
+    memcpy(src->histogram, dest->histogram, src->size * sizeof(uint64_t));
+    dest->counts = src->counts;
     return dest;
 }
 

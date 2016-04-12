@@ -11,7 +11,7 @@ typedef struct inform_distribution inform_dist;
 
 inform_dist* inform_dist_alloc(size_t n);
 inform_dist* inform_dist_realloc(inform_dist *dist, size_t n);
-inform_dist* inform_dist_copy(inform_dist const *source, inform_dist *dest);
+inform_dist* inform_dist_copy(inform_dist const *src, inform_dist *dest);
 inform_dist* inform_dist_dup(inform_dist const *dist);
 void inform_dist_free(inform_dist *dist);
 
