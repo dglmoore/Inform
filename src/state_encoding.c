@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 
-uint64_t inform_encode(int *state, size_t n)
+uint64_t inform_encode(int const *state, size_t n)
 {
     if (state == NULL)
     {
