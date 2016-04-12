@@ -1,4 +1,5 @@
 set(${PROJECT_NAME}_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/dist.c
     ${CMAKE_CURRENT_SOURCE_DIR}/entropy.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/state_encoding.c
     PARENT_SCOPE)
