@@ -18,7 +18,7 @@ inform_dist* inform_dist_alloc(size_t n)
     {
         return NULL;
     }
-    inform_dist* dist = malloc(sizeof(inform_dist));
+    inform_dist *dist = malloc(sizeof(inform_dist));
     if (dist != NULL)
     {
         dist->histogram = calloc(n, sizeof(uint64_t));
@@ -35,7 +35,7 @@ inform_dist* inform_dist_alloc(size_t n)
     return dist;
 }
 
-inform_dist* inform_dist_realloc(inform_dist* dist, size_t n)
+inform_dist* inform_dist_realloc(inform_dist *dist, size_t n)
 {
     if (dist != NULL && dist->size != n)
     {
@@ -73,7 +73,7 @@ inform_dist* inform_dist_realloc(inform_dist* dist, size_t n)
     return dist;
 }
 
-inform_dist* inform_dist_copy(inform_dist const* source, inform_dist* dest)
+inform_dist* inform_dist_copy(inform_dist const *source, inform_dist *dest)
 {
     if (source == NULL)
     {
@@ -97,7 +97,7 @@ inform_dist* inform_dist_copy(inform_dist const* source, inform_dist* dest)
     return dest;
 }
 
-inform_dist* inform_dist_dup(inform_dist const* dist)
+inform_dist* inform_dist_dup(inform_dist const *dist)
 {
     if (dist == NULL)
     {
@@ -111,7 +111,7 @@ inform_dist* inform_dist_dup(inform_dist const* dist)
     return dup;
 }
 
-void inform_dist_free(inform_dist* dist)
+void inform_dist_free(inform_dist *dist)
 {
     if (dist != NULL)
     {
@@ -123,22 +123,22 @@ void inform_dist_free(inform_dist* dist)
     }
 }
 
-size_t inform_dist_size(inform_dist const* dist)
+size_t inform_dist_size(inform_dist const *dist)
 {
     return (dist == NULL) ? 0 : dist->size;
 }
 
-uint64_t inform_dist_counts(inform_dist const* dist)
+uint64_t inform_dist_counts(inform_dist const *dist)
 {
     return (dist == NULL) ? 0 : dist->counts;
 }
 
-bool inform_dist_is_valid(inform_dist const* dist)
+bool inform_dist_is_valid(inform_dist const *dist)
 {
     return dist != NULL && dist->size != 0 && dist->counts != 0;
 }
 
-uint64_t inform_dist_get(inform_dist const* dist, uint64_t event)
+uint64_t inform_dist_get(inform_dist const *dist, uint64_t event)
 {
     if (dist == NULL || event >= dist->size)
     {
@@ -147,7 +147,7 @@ uint64_t inform_dist_get(inform_dist const* dist, uint64_t event)
     return dist->histogram[event];
 }
 
-uint64_t inform_dist_set(inform_dist* dist, uint64_t event, uint64_t x)
+uint64_t inform_dist_set(inform_dist *dist, uint64_t event, uint64_t x)
 {
     if (dist == NULL || event >= dist->size)
     {
@@ -158,7 +158,7 @@ uint64_t inform_dist_set(inform_dist* dist, uint64_t event, uint64_t x)
     return (dist->histogram[event] = x);
 }
 
-uint64_t inform_dist_tick(inform_dist* dist, uint64_t event)
+uint64_t inform_dist_tick(inform_dist *dist, uint64_t event)
 {
     if (dist == NULL || event >= dist->size)
     {
@@ -168,12 +168,12 @@ uint64_t inform_dist_tick(inform_dist* dist, uint64_t event)
     return (dist->histogram[event] += 1);
 }
 
-static double inform_dist_unsafe_prob(inform_dist const* dist, uint64_t event)
+static double inform_dist_unsafe_prob(inform_dist const *dist, uint64_t event)
 {
     return (double)(dist->histogram[event]) / dist->counts;
 }
 
-double inform_dist_prob(inform_dist const* dist, uint64_t event)
+double inform_dist_prob(inform_dist const *dist, uint64_t event)
 {
     if (dist == NULL || event >= dist->size)
     {
@@ -182,13 +182,13 @@ double inform_dist_prob(inform_dist const* dist, uint64_t event)
     return inform_dist_unsafe_prob(dist, event);
 }
 
-double* inform_dist_dump(inform_dist const* dist)
+double* inform_dist_dump(inform_dist const *dist)
 {
     if (dist == NULL || dist->size == 0)
     {
         return NULL;
     }
-    double* probabilities = calloc(dist->size, sizeof(double));
+    double *probabilities = calloc(dist->size, sizeof(double));
     if (probabilities != NULL)
     {
         for (size_t i = 0; i < inform_dist_size(dist); ++i)
