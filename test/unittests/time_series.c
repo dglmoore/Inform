@@ -71,7 +71,7 @@ CTEST(TimeSeries, ActiveInfoEnsemble)
             0,0,0,1,0,0,0,1,
         };
         ASSERT_DBL_NEAR_TOL(0.459148,
-                inform_active_info_ensemble(series, 16, 8, 2), 1e-6);
+                inform_active_info_ensemble(series, 2, 8, 2), 1e-6);
     }
 
     {
@@ -87,6 +87,6 @@ CTEST(TimeSeries, ActiveInfoEnsemble)
             0,0,0,0,0,0,1,1,0,
         };
         ASSERT_DBL_NEAR_TOL(0.3080467,
-                inform_active_info_ensemble(series, 81, 9, 2), 1e-6);
+                inform_active_info_ensemble(series, 9, 9, 2), 1e-6);
     }
 }
