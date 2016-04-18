@@ -4,8 +4,20 @@
 #include <inform/state_encoding.h>
 #include <inform/time_series.h>
 
+static int inform_active_info_base(int const* series, size_t n)
+{
+
+	int base = 0;    
+    for (size_t i = 0; i < n; ++i)
+    {
+    	base = (base < series[i]) ? series[i] : base;
+    }
+    base += 1;
+    return (base < 2) ? 2 : base;
+}
+
 static void inform_active_info_dist(int const* series, size_t n,
-                                    uint64_t k, inform_dist *states,
+                                    uint64_t k, int base, inform_dist *states,
                                     inform_dist *histories,
                                     inform_dist *futures)
 {
@@ -13,10 +25,10 @@ static void inform_active_info_dist(int const* series, size_t n,
     int const *future = series + k;
     while (future != last)
     {
-        uint64_t const history = inform_encode(series, k);
-        uint64_t const state   = history ^ (*future << k);
+        uint64_t const history = inform_encode_base(series, k, base);
+        uint64_t const state   = history + (*future * pow(base,k));
 
-        inform_dist_tick(states, state);
+		inform_dist_tick(states, state);
         inform_dist_tick(histories, history);
         inform_dist_tick(futures, *future);
 
@@ -40,14 +52,16 @@ entropy inform_active_info_ensemble(int const *series, size_t n, size_t m, uint6
     {
         return nan("2");
     }
+ 
+ 	int const base = inform_active_info_base(series, n*m);
 
-    inform_dist *states    = inform_dist_alloc(2 << k);
-    inform_dist *histories = inform_dist_alloc(1 << k);
-    inform_dist *futures   = inform_dist_alloc(2);
+    inform_dist *states    = inform_dist_alloc(pow(base,k+1));
+    inform_dist *histories = inform_dist_alloc(pow(base,k));
+    inform_dist *futures   = inform_dist_alloc(base);
 
     for (size_t i = 0; i < n; ++i, series += m)
     {
-        inform_active_info_dist(series, m, k, states, histories, futures);
+        inform_active_info_dist(series, m, k, base, states, histories, futures);
     }
     entropy ai = inform_mutual_info(states, histories, futures);
 
