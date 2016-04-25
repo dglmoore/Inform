@@ -4,17 +4,6 @@
 #include <inform/state_encoding.h>
 #include <inform/time_series.h>
 
-static int inform_active_info_base(int const* series, size_t n)
-{
-    int base = 0;
-    for (size_t i = 0; i < n; ++i)
-    {
-        base = (base < series[i]) ? series[i] : base;
-    }
-    base += 1;
-    return (base < 2) ? 2 : base;
-}
-
 static void inform_active_info_dist(int const* series, size_t n,
                                     uint64_t k, int base, inform_dist *states,
                                     inform_dist *histories,
@@ -36,12 +25,12 @@ static void inform_active_info_dist(int const* series, size_t n,
     }
 }
 
-entropy inform_active_info(int const *series, size_t n, uint64_t k)
+entropy inform_active_info(int const *series, size_t n, int base, uint64_t k)
 {
-    return inform_active_info_ensemble(series, 1, n, k);
+    return inform_active_info_ensemble(series, 1, n, base, k);
 }
 
-entropy inform_active_info_ensemble(int const *series, size_t n, size_t m, uint64_t k)
+entropy inform_active_info_ensemble(int const *series, size_t n, size_t m, int base, uint64_t k)
 {
     if (m <= 1 || n < 1)
     {
@@ -51,8 +40,6 @@ entropy inform_active_info_ensemble(int const *series, size_t n, size_t m, uint6
     {
         return nan("2");
     }
-
-    int const base = inform_active_info_base(series, n*m);
 
     inform_dist *states    = inform_dist_alloc(pow(base,k+1));
     inform_dist *histories = inform_dist_alloc(pow(base,k));
