@@ -5,25 +5,35 @@
 
 entropy inform_shannon(inform_dist const *dist)
 {
+    // ensure that the distribution is valid
     if (inform_dist_is_valid(dist))
     {
         entropy h = 0.;
+        // for each element of the distribution's support
         for (size_t i = 0; i < inform_dist_size(dist); ++i)
         {
+            // get the probability
             double const p = inform_dist_prob(dist, i);
+            // the the probability is non-zero
             if (p != 0)
             {
+                // accumulate the weighted self-information of the event
                 h -= p * log2(p);
             }
         }
+        // return the entropy
         return h;
     }
+    // return NaN if the distribution is invalid
     return nan("1");
 }
 
 entropy inform_mutual_info(inform_dist const *joint,
         inform_dist const *marginal_x, inform_dist const *marginal_y)
 {
+    // Simply farm out the computation to the inform_shannon function.
+    // This sidesteps the possibility that the joint and the marginals
+    // may all have different support.
     return inform_shannon(marginal_x) + inform_shannon(marginal_y)
         - inform_shannon(joint);
 }
