@@ -13,7 +13,7 @@ static void inform_active_info_dist(int const* series, size_t n,
     int const *future = series + k;
     while (future != last)
     {
-        uint64_t const history = inform_encode_base(series, (size_t)k, base);
+        uint64_t const history = inform_encode(series, (size_t)k, base);
         uint64_t const state   = history + (*future * (uint64_t)pow(base,(double)k));
 
         inform_dist_tick(states, state);

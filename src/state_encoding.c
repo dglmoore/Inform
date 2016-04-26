@@ -6,7 +6,7 @@
 #include <math.h>
 #include <stdio.h>
 
-uint64_t inform_encode_base(int const *state, size_t n, int base)
+uint64_t inform_encode(int const *state, size_t n, int base)
 {
     if (state == NULL)
     {
@@ -32,7 +32,7 @@ uint64_t inform_encode_base(int const *state, size_t n, int base)
     return encoding;
 }
 
-int* inform_decode_base(uint64_t encoding, size_t n, int base)
+int* inform_decode(uint64_t encoding, size_t n, int base)
 {
     if (encoding >= inform_encoding_error || base < 2 || n >= 64 / log2l(base))
     {
