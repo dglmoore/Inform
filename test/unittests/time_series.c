@@ -21,6 +21,13 @@ CTEST(TimeSeries, ActiveInfoHistoryTooLong)
     ASSERT_FALSE(isnan(inform_active_info(series, 3, 2, 2)));
 }
 
+CTEST(TimeSeries, ActiveInfoEncodingError)
+{
+    uint64_t const series[] = {2,1,0,0,1,0,0,1};
+    ASSERT_FALSE(isnan(inform_active_info(series, 8, 3, 2)));
+    ASSERT_TRUE(isnan(inform_active_info(series, 8, 2, 2)));
+}
+
 CTEST(TimeSeries, ActiveInfoSingleSeries_Base2)
 {
     ASSERT_DBL_NEAR_TOL(0.918296,

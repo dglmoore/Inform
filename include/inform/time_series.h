@@ -8,10 +8,11 @@
 /**
  * @brief Compute the active information of a time series.
  *
- * @c NaN is returned in the following erroneous situtations
+ * `NaN` is returned in at least the following erroneous situtations
  *   - `series == NULL`
  *   - `n == 0`
  *   - `n <= k`
+ *   - `series[i] >= b` for some `0 <= i && i < n`
  *
  * @param[in] series the time series of values
  * @param[in] n      the number of time steps in the time series
@@ -26,11 +27,12 @@ entropy inform_active_info(uint64_t const *series, size_t n, int base, uint64_t 
 /**
  * Compute the active information of an ensemble of time series.
  *
- * `NaN` is returned in the following erroneous situtations
+ * `NaN` is returned in at least the following erroneous situtations
  *   - `series == NULL`
  *   - `n == 0`
  *   - `m <= 1`
  *   - `m <= k`
+ *   - `series[i] >= b` for some `0 <= i && i < n*m`
  *
  * @param[in] series the ensemble of time series
  * @param[in] n      the number of initial conditions

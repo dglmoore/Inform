@@ -4,7 +4,7 @@
 #include <inform/state_encoding.h>
 #include <inform/time_series.h>
 
-static void inform_active_info_dist(uint64_t const* series, size_t n,
+static int inform_active_info_dist(uint64_t const* series, size_t n,
                                     uint64_t k, int base, inform_dist *states,
                                     inform_dist *histories,
                                     inform_dist *futures)
@@ -18,6 +18,11 @@ static void inform_active_info_dist(uint64_t const* series, size_t n,
     {
         // encode the k-length history as an integer
         uint64_t const history = inform_encode(series, (size_t)k, base);
+        // if the encoding failed, return an error code
+        if (history >= INFORM_ENCODING_ERROR(0))
+        {
+            return 1;
+        }
         // construct an encoding of the state (history + future) as an integer
         uint64_t const state   = history + (*future * (uint64_t)pow(base,(double)k));
 
@@ -30,6 +35,7 @@ static void inform_active_info_dist(uint64_t const* series, size_t n,
         ++series;
         ++future;
     }
+    return 0;
 }
 
 entropy inform_active_info(uint64_t const *series, size_t n, int base, uint64_t k)
@@ -64,7 +70,13 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
     for (size_t i = 0; i < n; ++i, series += m)
     {
         // accumulate observations
-        inform_active_info_dist(series, m, k, base, states, histories, futures);
+        if (inform_active_info_dist(series, m, k, base, states, histories, futures) != 0)
+        {
+            inform_dist_free(futures);
+            inform_dist_free(histories);
+            inform_dist_free(states);
+            return nan("4");
+        }
     }
     // compute the mututal information between the states, histories and futures, 
     // i.e. the active information
