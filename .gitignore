@@ -30,3 +30,5 @@
 # CMake build directory
 build
 
+# Visual Studio Code
+.vscode
