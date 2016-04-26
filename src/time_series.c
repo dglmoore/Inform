@@ -4,13 +4,13 @@
 #include <inform/state_encoding.h>
 #include <inform/time_series.h>
 
-static void inform_active_info_dist(int const* series, size_t n,
+static void inform_active_info_dist(uint64_t const* series, size_t n,
                                     uint64_t k, int base, inform_dist *states,
                                     inform_dist *histories,
                                     inform_dist *futures)
 {
-    int const *last   = series + n;
-    int const *future = series + k;
+    uint64_t const *last   = series + n;
+    uint64_t const *future = series + k;
     while (future != last)
     {
         uint64_t const history = inform_encode(series, (size_t)k, base);
@@ -25,12 +25,12 @@ static void inform_active_info_dist(int const* series, size_t n,
     }
 }
 
-entropy inform_active_info(int const *series, size_t n, int base, uint64_t k)
+entropy inform_active_info(uint64_t const *series, size_t n, int base, uint64_t k)
 {
     return inform_active_info_ensemble(series, 1, n, base, k);
 }
 
-entropy inform_active_info_ensemble(int const *series, size_t n, size_t m, int base, uint64_t k)
+entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, int base, uint64_t k)
 {
     if (m <= 1 || n < 1)
     {
