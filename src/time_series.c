@@ -32,13 +32,17 @@ entropy inform_active_info(uint64_t const *series, size_t n, int base, uint64_t 
 
 entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, int base, uint64_t k)
 {
-    if (m <= 1 || n < 1)
+    if (series == NULL)
     {
         return nan("1");
     }
-    else if (m <= k)
+    else if (m <= 1 || n < 1)
     {
         return nan("2");
+    }
+    else if (m <= k)
+    {
+        return nan("3");
     }
 
     inform_dist *states    = inform_dist_alloc((size_t)powl(base,(double)k+1));
