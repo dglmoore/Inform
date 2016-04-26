@@ -13,8 +13,8 @@ static void inform_active_info_dist(int const* series, size_t n,
     int const *future = series + k;
     while (future != last)
     {
-        uint64_t const history = inform_encode_base(series, k, base);
-        uint64_t const state   = history + (*future * pow(base,k));
+        uint64_t const history = inform_encode_base(series, (size_t)k, base);
+        uint64_t const state   = history + (*future * (uint64_t)pow(base,(double)k));
 
         inform_dist_tick(states, state);
         inform_dist_tick(histories, history);
@@ -41,8 +41,8 @@ entropy inform_active_info_ensemble(int const *series, size_t n, size_t m, int b
         return nan("2");
     }
 
-    inform_dist *states    = inform_dist_alloc(pow(base,k+1));
-    inform_dist *histories = inform_dist_alloc(pow(base,k));
+    inform_dist *states    = inform_dist_alloc((size_t)powl(base,(double)k+1));
+    inform_dist *histories = inform_dist_alloc((size_t)powl(base,(double)k));
     inform_dist *futures   = inform_dist_alloc(base);
 
     for (size_t i = 0; i < n; ++i, series += m)
