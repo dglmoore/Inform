@@ -5,7 +5,7 @@
 #include <inform/time_series.h>
 
 static int inform_active_info_dist(uint64_t const* series, size_t n,
-                                    uint64_t k, int base, inform_dist *states,
+                                    uint64_t k, uint64_t base, inform_dist *states,
                                     inform_dist *histories,
                                     inform_dist *futures)
 {
@@ -17,14 +17,14 @@ static int inform_active_info_dist(uint64_t const* series, size_t n,
     while (future != last)
     {
         // encode the k-length history as an integer
-        uint64_t const history = inform_encode(series, (size_t)k, base);
+        uint64_t const history = inform_encode(series, k, base);
         // if the encoding failed, return an error code
         if (history >= INFORM_ENCODING_ERROR(0))
         {
             return 1;
         }
         // construct an encoding of the state (history + future) as an integer
-        uint64_t const state   = history + (*future * (uint64_t)pow(base,(double)k));
+        uint64_t const state   = history + (*future * powl(base, k));
 
         // log observations of the state, history and future
         inform_dist_tick(states, state);
@@ -38,12 +38,12 @@ static int inform_active_info_dist(uint64_t const* series, size_t n,
     return 0;
 }
 
-entropy inform_active_info(uint64_t const *series, size_t n, int base, uint64_t k)
+entropy inform_active_info(uint64_t const *series, size_t n, uint64_t base, uint64_t k)
 {
     return inform_active_info_ensemble(series, 1, n, base, k);
 }
 
-entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, int base, uint64_t k)
+entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t base, uint64_t k)
 {
     // ensure that the time series is not NULL
     if (series == NULL)
@@ -62,12 +62,12 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
     }
     
     // allocate a distribution for the observed states, histories and futures
-    inform_dist *states    = inform_dist_alloc((size_t)powl(base,(double)k+1));
-    inform_dist *histories = inform_dist_alloc((size_t)powl(base,(double)k));
+    inform_dist *states    = inform_dist_alloc(powl(base,k+1));
+    inform_dist *histories = inform_dist_alloc(powl(base,k));
     inform_dist *futures   = inform_dist_alloc(base);
 
     // for each initial condition
-    for (size_t i = 0; i < n; ++i, series += m)
+    for (uint64_t i = 0; i < n; ++i, series += m)
     {
         // accumulate observations
         if (inform_active_info_dist(series, m, k, base, states, histories, futures) != 0)
