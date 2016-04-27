@@ -11,6 +11,8 @@ add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES})
 
 if (UNIX)
     target_link_libraries(${PROJECT_NAME} m)
+    install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME} DESTINATION lib)
+    install(DIRECTORY include/ DESTINATION include)
 endif()
 
 if (NOT MSVC)
