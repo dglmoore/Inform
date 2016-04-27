@@ -8,43 +8,57 @@
 
 uint64_t inform_encode(uint64_t const *state, size_t n, int base)
 {
+    // if the state is NULL, return an error
     if (state == NULL)
     {
         return INFORM_ENCODING_ERROR(0);
     }
+    // if the base is less than two, return an error
     else if (base < 2)
     {
         return INFORM_ENCODING_ERROR(1);
     }
+    // if the encoding will exceed 63 bits, return an error
     else if (n >= 64 / log2l(base))
     {
         return INFORM_ENCODING_ERROR(2);
     }
+    
     uint64_t encoding = 0;
+    // for each digit
     for (size_t i = 0; i < n; ++i)
     {
+        // if the digit is too large, return an error
         if ((unsigned)base <= state[i])
         {
             return INFORM_ENCODING_ERROR(3+i);
         }
+        // otherwise, encode that value
         encoding += state[i] * (uint64_t)powl(base,i);
     }
+    // return the encoding
     return encoding;
 }
 
 uint64_t* inform_decode(uint64_t encoding, size_t n, int base)
 {
+    // If the encoding is invalid, the base is too small, or the requested
+    // decoded length is too large, then return NULL.
     if (encoding >= inform_encoding_error || base < 2 || n >= 64 / log2l(base))
     {
         return NULL;
     }
+    // allocate the memory for the decoded state
     uint64_t *state = calloc(n, sizeof(uint64_t));
+    // if the allocation succeeds
     if (state != NULL)
     {
+        // loop over the digits and extract the decoded value
         for (size_t i = 0; i < n; ++i, encoding /= base)
         {
             state[i] = encoding % base;
         }
     }
+    // return the (possibly NULL) state
     return state;
 }
