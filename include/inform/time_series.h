@@ -22,7 +22,7 @@
  *
  * @see inform_active_info_ensemble
  */
-entropy inform_active_info(uint64_t const *series, size_t n, uint64_t base, uint64_t k);
+entropy inform_active_info(uint64_t const *series, size_t n, uint64_t b, uint64_t k);
 
 /**
  * Compute the active information of an ensemble of time series.
@@ -43,7 +43,7 @@ entropy inform_active_info(uint64_t const *series, size_t n, uint64_t base, uint
  *
  * @see inform_active_info
  */
-entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t base, uint64_t k);
+entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k);
 
 /**
  * Compute the transfer entropy from one time series to another.
