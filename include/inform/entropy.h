@@ -16,9 +16,10 @@ typedef double entropy;
  * i.e. `!inform_dist_is_valid(dist)`.
  *
  * @param[in] dist the probability distribution
- * @return the base-2 shannon entropy
+ * @param[in] base the logarithmic base
+ * @return the shannon entropy
  */
-entropy inform_shannon(inform_dist const *dist);
+entropy inform_shannon(inform_dist const *dist, double base);
 
 /**
  * Compute the Shannon-based mutual information of a distribution and
@@ -30,10 +31,12 @@ entropy inform_shannon(inform_dist const *dist);
  * @param[in] joint      the joint probability distribution
  * @param[in] marginal_x a marginal distribution
  * @param[in] marginal_y a marginal distribution
+ * @param[in] base       the logarithmic base
  * @return the mutual information
  *
  * @see inform_shannon
  */
 entropy inform_mutual_info(inform_dist const *joint,
         inform_dist const *marginal_x,
-        inform_dist const *marginal_y);
+        inform_dist const *marginal_yP,
+        double base);

@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 #include <inform/entropy.h>
 
-entropy inform_shannon(inform_dist const *dist)
+entropy inform_shannon(inform_dist const *dist, double base)
 {
     // ensure that the distribution is valid
     if (inform_dist_is_valid(dist))
@@ -18,7 +18,7 @@ entropy inform_shannon(inform_dist const *dist)
             if (p != 0)
             {
                 // accumulate the weighted self-information of the event
-                h -= p * log2(p);
+                h -= p * log2(p)/log2(base);
             }
         }
         // return the entropy
@@ -29,11 +29,13 @@ entropy inform_shannon(inform_dist const *dist)
 }
 
 entropy inform_mutual_info(inform_dist const *joint,
-        inform_dist const *marginal_x, inform_dist const *marginal_y)
+        inform_dist const *marginal_x,
+        inform_dist const *marginal_y,
+        double base)
 {
     // Simply farm out the computation to the inform_shannon function.
     // This sidesteps the possibility that the joint and the marginals
     // may all have different support.
-    return inform_shannon(marginal_x) + inform_shannon(marginal_y)
-        - inform_shannon(joint);
+    return inform_shannon(marginal_x,base) + inform_shannon(marginal_y,base)
+        - inform_shannon(joint,base);
 }

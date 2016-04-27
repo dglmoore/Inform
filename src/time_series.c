@@ -80,7 +80,7 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
     }
     // compute the mututal information between the states, histories and futures, 
     // i.e. the active information
-    entropy ai = inform_mutual_info(states, histories, futures);
+    entropy ai = inform_mutual_info(states, histories, futures, base);
 
     // free up the distributions (otherwise there would be memory leaks)
     inform_dist_free(futures);

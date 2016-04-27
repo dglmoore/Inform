@@ -32,38 +32,78 @@ CTEST_TEARDOWN(Entropy)
 
 CTEST2(Entropy, ShannonInvalidDistribution)
 {
-    ASSERT_TRUE(isnan(inform_shannon(data->dist)));
+    ASSERT_TRUE(isnan(inform_shannon(data->dist, 2)));
 
     data->dist = inform_dist_alloc(5);
-    ASSERT_TRUE(isnan(inform_shannon(data->dist)));
+    ASSERT_TRUE(isnan(inform_shannon(data->dist, 2)));
 }
 
 CTEST2(Entropy, ShannonDeltaFunction)
 {
     data->dist = inform_dist_alloc(5);
     inform_dist_fill(data->dist, 0, 1, 0, 0, 0);
-    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist), 1e-6);
+    ASSERT_TRUE(isnan(inform_shannon(data->dist, -1.0)));
+    ASSERT_TRUE(isnan(inform_shannon(data->dist, -0.5)));
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 0.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 0.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 1.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 4), 1e-6);
 }
 
 CTEST2(Entropy, ShannonUniform)
 {
     data->dist = inform_dist_alloc(5);
     inform_dist_fill(data->dist, 1, 1, 1, 1, 1);
-    ASSERT_DBL_NEAR_TOL(2.321928, inform_shannon(data->dist), 1e-6);
+    
+    ASSERT_TRUE(isnan(inform_shannon(data->dist, -1.0)));
+    ASSERT_TRUE(isnan(inform_shannon(data->dist, -0.5)));
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 0.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(-2.321928, inform_shannon(data->dist, 0.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(3.969362, inform_shannon(data->dist, 1.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(2.321928, inform_shannon(data->dist, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.464973, inform_shannon(data->dist, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.160964, inform_shannon(data->dist, 4), 1e-6);
 }
 
 CTEST2(Entropy, ShannonNonUniform)
 {
     data->dist = inform_dist_alloc(2);
     inform_dist_fill(data->dist, 2, 1);
-    ASSERT_DBL_NEAR_TOL(0.918295, inform_shannon(data->dist), 1e-6);
+    
+    ASSERT_TRUE(isnan(inform_shannon(data->dist, -1.0)));
+    ASSERT_TRUE(isnan(inform_shannon(data->dist, -0.5)));
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 0.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(-0.918295, inform_shannon(data->dist, 0.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.569837, inform_shannon(data->dist, 1.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.918295, inform_shannon(data->dist, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.579380, inform_shannon(data->dist, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.459148, inform_shannon(data->dist, 4), 1e-6);
 
     data->dist = inform_dist_realloc(data->dist, 3);
     inform_dist_fill(data->dist, 1, 1, 0);
-    ASSERT_DBL_NEAR_TOL(1.000000, inform_shannon(data->dist), 1e-6);
+    
+    ASSERT_TRUE(isnan(inform_shannon(data->dist, -1.0)));
+    ASSERT_TRUE(isnan(inform_shannon(data->dist, -0.5)));
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 0.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(-1.000000, inform_shannon(data->dist, 0.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.709511, inform_shannon(data->dist, 1.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.000000, inform_shannon(data->dist, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.630930, inform_shannon(data->dist, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.500000, inform_shannon(data->dist, 4), 1e-6);
 
     inform_dist_fill(data->dist, 2, 2, 1);
-    ASSERT_DBL_NEAR_TOL(1.521928, inform_shannon(data->dist), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.521928, inform_shannon(data->dist, 2), 1e-6);
+    
+    ASSERT_TRUE(isnan(inform_shannon(data->dist, -1.0)));
+    ASSERT_TRUE(isnan(inform_shannon(data->dist, -0.5)));
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 0.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(-1.521928, inform_shannon(data->dist, 0.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(2.601753, inform_shannon(data->dist, 1.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.521928, inform_shannon(data->dist, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.960230, inform_shannon(data->dist, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.760964, inform_shannon(data->dist, 4), 1e-6);
 }
 
 CTEST2(Entropy, MutualInformationIndependent)
@@ -84,7 +124,14 @@ CTEST2(Entropy, MutualInformationIndependent)
                     inform_dist_get(xs, i) * inform_dist_get(ys, j));
         }
     }
-    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(data->dist, xs, ys), 1e-6);
+    ASSERT_TRUE(isnan(inform_mutual_info(data->dist, xs, ys, -1.0)));
+    ASSERT_TRUE(isnan(inform_mutual_info(data->dist, xs, ys, -0.5)));
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(data->dist, xs, ys, 0.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(data->dist, xs, ys, 0.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(data->dist, xs, ys, 1.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(data->dist, xs, ys, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(data->dist, xs, ys, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(data->dist, xs, ys, 4), 1e-6);
     inform_dist_free(ys);
     inform_dist_free(xs);
 }
@@ -100,7 +147,14 @@ CTEST2(Entropy, MutualInformationDependent)
     inform_dist *ys = inform_dist_alloc(2);
     inform_dist_fill(ys, 25, 75);
 
-    ASSERT_DBL_NEAR_TOL(0.214171, inform_mutual_info(data->dist, xs, ys), 1e-6);
+    ASSERT_TRUE(isnan(inform_mutual_info(data->dist, xs, ys, -1.0)));
+    ASSERT_TRUE(isnan(inform_mutual_info(data->dist, xs, ys, -0.5)));
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(data->dist, xs, ys, 0.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(-0.214171, inform_mutual_info(data->dist, xs, ys, 0.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.366128, inform_mutual_info(data->dist, xs, ys, 1.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.214171, inform_mutual_info(data->dist, xs, ys, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.135127, inform_mutual_info(data->dist, xs, ys, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.107086, inform_mutual_info(data->dist, xs, ys, 4), 1e-6);
     inform_dist_free(ys);
     inform_dist_free(xs);
 }
