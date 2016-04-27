@@ -14,9 +14,8 @@ CTEST(StateEncoding, EncodeNULL)
 
 CTEST(StateEncoding, EncodeInvalidBase)
 {
-    ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(1), inform_encode((uint64_t[]){0},1,-1));
-    ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(1), inform_encode((uint64_t[]){0},1,0));
-    ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(1), inform_encode((uint64_t[]){0},1,1));
+    ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(1), inform_encode((uint64_t[]){0},1, 0));
+    ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(1), inform_encode((uint64_t[]){0},1, 1));
 }
 
 CTEST(StateEncoding, EncodeTooLong_Base2)

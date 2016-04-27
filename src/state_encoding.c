@@ -6,7 +6,7 @@
 #include <math.h>
 #include <stdio.h>
 
-uint64_t inform_encode(uint64_t const *state, size_t n, int base)
+uint64_t inform_encode(uint64_t const *state, uint64_t n, uint64_t base)
 {
     // if the state is NULL, return an error
     if (state == NULL)
@@ -26,10 +26,10 @@ uint64_t inform_encode(uint64_t const *state, size_t n, int base)
     
     uint64_t encoding = 0;
     // for each digit
-    for (size_t i = 0; i < n; ++i)
+    for (uint64_t i = 0; i < n; ++i)
     {
         // if the digit is too large, return an error
-        if ((unsigned)base <= state[i])
+        if (base <= state[i])
         {
             return INFORM_ENCODING_ERROR(3+i);
         }
@@ -40,7 +40,7 @@ uint64_t inform_encode(uint64_t const *state, size_t n, int base)
     return encoding;
 }
 
-uint64_t* inform_decode(uint64_t encoding, size_t n, int base)
+uint64_t* inform_decode(uint64_t encoding, uint64_t n, uint64_t base)
 {
     // If the encoding is invalid, the base is too small, or the requested
     // decoded length is too large, then return NULL.
@@ -54,7 +54,7 @@ uint64_t* inform_decode(uint64_t encoding, size_t n, int base)
     if (state != NULL)
     {
         // loop over the digits and extract the decoded value
-        for (size_t i = 0; i < n; ++i, encoding /= base)
+        for (uint64_t i = 0; i < n; ++i, encoding /= base)
         {
             state[i] = encoding % base;
         }
