@@ -5,7 +5,7 @@
 #include <inform/time_series.h>
 
 static int inform_active_info_dist(uint64_t const* series, size_t n,
-                                    uint64_t k, uint64_t base, inform_dist *states,
+                                    uint64_t b, uint64_t k, inform_dist *states,
                                     inform_dist *histories,
                                     inform_dist *futures)
 {
@@ -17,14 +17,14 @@ static int inform_active_info_dist(uint64_t const* series, size_t n,
     while (future != last)
     {
         // encode the k-length history as an integer
-        uint64_t const history = inform_encode(series, k, base);
+        uint64_t const history = inform_encode(series, k, b);
         // if the encoding failed, return an error code
         if (history >= INFORM_ENCODING_ERROR(0))
         {
             return 1;
         }
         // construct an encoding of the state (history + future) as an integer
-        uint64_t const state   = history + (*future * powl(base, k));
+        uint64_t const state   = history + (*future * powl(b, k));
 
         // log observations of the state, history and future
         inform_dist_tick(states, state);
@@ -38,12 +38,12 @@ static int inform_active_info_dist(uint64_t const* series, size_t n,
     return 0;
 }
 
-entropy inform_active_info(uint64_t const *series, size_t n, uint64_t base, uint64_t k)
+entropy inform_active_info(uint64_t const *series, size_t n, uint64_t b, uint64_t k)
 {
-    return inform_active_info_ensemble(series, 1, n, base, k);
+    return inform_active_info_ensemble(series, 1, n, b, k);
 }
 
-entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t base, uint64_t k)
+entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k)
 {
     // ensure that the time series is not NULL
     if (series == NULL)
@@ -62,15 +62,15 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
     }
     
     // allocate a distribution for the observed states, histories and futures
-    inform_dist *states    = inform_dist_alloc(powl(base,k+1));
-    inform_dist *histories = inform_dist_alloc(powl(base,k));
-    inform_dist *futures   = inform_dist_alloc(base);
+    inform_dist *states    = inform_dist_alloc(powl(b,k+1));
+    inform_dist *histories = inform_dist_alloc(powl(b,k));
+    inform_dist *futures   = inform_dist_alloc(b);
 
     // for each initial condition
     for (uint64_t i = 0; i < n; ++i, series += m)
     {
         // accumulate observations
-        if (inform_active_info_dist(series, m, k, base, states, histories, futures) != 0)
+        if (inform_active_info_dist(series, m, b, k, states, histories, futures) != 0)
         {
             inform_dist_free(futures);
             inform_dist_free(histories);
@@ -80,7 +80,7 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
     }
     // compute the mututal information between the states, histories and futures, 
     // i.e. the active information
-    entropy ai = inform_mutual_info(states, histories, futures, base);
+    entropy ai = inform_mutual_info(states, histories, futures, b);
 
     // free up the distributions (otherwise there would be memory leaks)
     inform_dist_free(futures);
@@ -93,7 +93,7 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
 
 static int inform_transfer_entropy_dist(uint64_t const *series_y,
                                         uint64_t const *series_x, size_t n,
-                                        uint64_t k, uint64_t base,
+                                        uint64_t b, uint64_t k,
                                         inform_dist *states,
                                         inform_dist *histories,
                                         inform_dist *sources,
@@ -109,19 +109,19 @@ static int inform_transfer_entropy_dist(uint64_t const *series_y,
     while (future != last)
     {
         // encode the k-length history as an integer
-        uint64_t const history = inform_encode(series_x, k, base);
+        uint64_t const history = inform_encode(series_x, k, b);
         // if the encoding failed or either of the future state and y-state are
         // not valid given the base, return an error code
-        if (history >= INFORM_ENCODING_ERROR(0) || *future >= base || *y_state >= base)
+        if (history >= INFORM_ENCODING_ERROR(0) || *future >= b || *y_state >= b)
         {
             return 1;
         }
         // construct an encoding of the state (history + future + y-state)
-        uint64_t const state     = history + (*future * powl(base, k)) + (*y_state * powl(base, k+1));
+        uint64_t const state     = history + (*future * powl(b, k)) + (*y_state * powl(b, k+1));
         // construct an encoding of the sources (history + ystate)
-        uint64_t const source    = history + (*y_state * powl(base, k));
+        uint64_t const source    = history + (*y_state * powl(b, k));
         // construct an encoding of the predicates (history + future)
-        uint64_t const predicate = history + (*future * powl(base, k));
+        uint64_t const predicate = history + (*future * powl(b, k));
 
         // log observations of the state, history, source and predicate
         inform_dist_tick(states, state);
@@ -137,12 +137,12 @@ static int inform_transfer_entropy_dist(uint64_t const *series_y,
     return 0;
 }
 
-entropy inform_transfer_entropy(uint64_t const *node_y, uint64_t const *node_x, size_t n, uint64_t base, uint64_t k)
+entropy inform_transfer_entropy(uint64_t const *node_y, uint64_t const *node_x, size_t n, uint64_t b, uint64_t k)
 {
-    return inform_transfer_entropy_ensemble(node_y, node_x, 1, n, base, k);
+    return inform_transfer_entropy_ensemble(node_y, node_x, 1, n, b, k);
 }
 
-entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const *node_x, size_t n, size_t m, uint64_t base, uint64_t k)
+entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const *node_x, size_t n, size_t m, uint64_t b, uint64_t k)
 {
     // ensure that neither of the time series are NULL
     if (node_x == NULL || node_y == NULL)
@@ -162,16 +162,16 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
     
     // allocate a distribution for the observed states, histories,
     // sources and predicates
-    inform_dist *states     = inform_dist_alloc(powl(base,k+2));
-    inform_dist *histories  = inform_dist_alloc(powl(base,k));
-    inform_dist *sources    = inform_dist_alloc(powl(base,k+1));
-    inform_dist *predicates = inform_dist_alloc(powl(base,k+1));
+    inform_dist *states     = inform_dist_alloc(powl(b,k+2));
+    inform_dist *histories  = inform_dist_alloc(powl(b,k));
+    inform_dist *sources    = inform_dist_alloc(powl(b,k+1));
+    inform_dist *predicates = inform_dist_alloc(powl(b,k+1));
     
     // for each initial condition 
     for (uint64_t i = 0; i < n; ++i, node_x += m, node_y += m)
     {
         // accumulate observations and return NaN if there is an encoding error
-        if (inform_transfer_entropy_dist(node_y, node_x, m, k, base, states, histories, sources, predicates) != 0)
+        if (inform_transfer_entropy_dist(node_y, node_x, m, b, k, states, histories, sources, predicates) != 0)
         {
             inform_dist_free(predicates);
             inform_dist_free(sources);
@@ -181,8 +181,8 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
         }
     }
     // compute the transfer entropy from the distributions
-    entropy te = inform_shannon(sources, base) + inform_shannon(predicates, base) -
-        inform_shannon(states, base) - inform_shannon(histories, base);
+    entropy te = inform_shannon(sources, b) + inform_shannon(predicates, b) -
+        inform_shannon(states, b) - inform_shannon(histories, b);
 
     // free up the distributions (otherwise there would be memory leaks)
     inform_dist_free(predicates);
