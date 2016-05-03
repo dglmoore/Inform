@@ -4,10 +4,10 @@
 #include <inform/state_encoding.h>
 #include <inform/time_series.h>
 
-static int inform_active_info_dist(uint64_t const* series, size_t n,
-                                    uint64_t b, uint64_t k, inform_dist *states,
-                                    inform_dist *histories,
-                                    inform_dist *futures)
+int inform_active_info_dist(uint64_t const* series, size_t n,
+                            uint64_t b, uint64_t k, inform_dist *states,
+                            inform_dist *histories,
+                            inform_dist *futures)
 {
     // store a pointer to the end of the time series
     uint64_t const *last   = series + n;
@@ -60,7 +60,7 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
     {
         return nan("3");
     }
-    
+
     // allocate a distribution for the observed states, histories and futures
     inform_dist *states    = inform_dist_alloc(powl(b,k+1));
     inform_dist *histories = inform_dist_alloc(powl(b,k));
@@ -78,7 +78,7 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
             return nan("4");
         }
     }
-    // compute the mututal information between the states, histories and futures, 
+    // compute the mututal information between the states, histories and futures,
     // i.e. the active information
     entropy ai = inform_mutual_info(states, histories, futures, b);
 
@@ -91,13 +91,13 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
     return ai;
 }
 
-static int inform_transfer_entropy_dist(uint64_t const *series_y,
-                                        uint64_t const *series_x, size_t n,
-                                        uint64_t b, uint64_t k,
-                                        inform_dist *states,
-                                        inform_dist *histories,
-                                        inform_dist *sources,
-                                        inform_dist *predicates)
+int inform_transfer_entropy_dist(uint64_t const *series_y,
+                                 uint64_t const *series_x, size_t n,
+                                 uint64_t b, uint64_t k,
+                                 inform_dist *states,
+                                 inform_dist *histories,
+                                 inform_dist *sources,
+                                 inform_dist *predicates)
 {
     // store a pointer to the end of the target series
     uint64_t const *last    = series_x + n;
@@ -159,15 +159,15 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
     {
         return nan("3");
     }
-    
+
     // allocate a distribution for the observed states, histories,
     // sources and predicates
     inform_dist *states     = inform_dist_alloc(powl(b,k+2));
     inform_dist *histories  = inform_dist_alloc(powl(b,k));
     inform_dist *sources    = inform_dist_alloc(powl(b,k+1));
     inform_dist *predicates = inform_dist_alloc(powl(b,k+1));
-    
-    // for each initial condition 
+
+    // for each initial condition
     for (uint64_t i = 0; i < n; ++i, node_x += m, node_y += m)
     {
         // accumulate observations and return NaN if there is an encoding error
@@ -189,7 +189,7 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
     inform_dist_free(sources);
     inform_dist_free(histories);
     inform_dist_free(states);
-    
+
     // return the transfer entropy
     return te;
 }
