@@ -60,11 +60,32 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
     {
         return nan("3");
     }
+    // ensure that the history length is reasonable given memory constraints
+    else if (k > 25/ log2l(b))
+    {
+        return nan("4");
+    }
 
     // allocate a distribution for the observed states, histories and futures
-    inform_dist *states    = inform_dist_alloc(powl(b,k+1));
+    // clear memory and return NaN if any of the allocations fail
+    inform_dist *states = inform_dist_alloc(powl(b,k+1));
+    if (states == NULL)
+    {
+        return nan("5");
+    }
     inform_dist *histories = inform_dist_alloc(powl(b,k));
-    inform_dist *futures   = inform_dist_alloc(b);
+    if (histories == NULL)
+    {
+        inform_dist_free(states);
+        return nan("5");
+    }
+    inform_dist *futures = inform_dist_alloc(b);
+    if (futures == NULL)
+    {
+        inform_dist_free(states);
+        inform_dist_free(histories);
+        return nan("5");
+    }
 
     // for each initial condition
     for (uint64_t i = 0; i < n; ++i, series += m)
@@ -75,7 +96,7 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
             inform_dist_free(futures);
             inform_dist_free(histories);
             inform_dist_free(states);
-            return nan("4");
+            return nan("6");
         }
     }
     // compute the mututal information between the states, histories and futures,
@@ -159,13 +180,41 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
     {
         return nan("3");
     }
+    // ensure that the history is reasonable given the history length
+    else if (k > 25 / log2l(b))
+    {
+        return nan("4");
+    }
 
     // allocate a distribution for the observed states, histories,
     // sources and predicates
-    inform_dist *states     = inform_dist_alloc(powl(b,k+2));
+    // clear memory and return NaN if any of the allocations fail
+    inform_dist *states = inform_dist_alloc(powl(b,k+2));
+    if (states == NULL)
+    {
+        return nan("5");
+    }
     inform_dist *histories  = inform_dist_alloc(powl(b,k));
-    inform_dist *sources    = inform_dist_alloc(powl(b,k+1));
+    if (histories == NULL)
+    {
+        inform_dist_free(states);
+        return nan("5");
+    }
+    inform_dist *sources = inform_dist_alloc(powl(b,k+1));
+    if (sources == NULL)
+    {
+        inform_dist_free(states);
+        inform_dist_free(histories);
+        return nan("5");
+    }
     inform_dist *predicates = inform_dist_alloc(powl(b,k+1));
+    if (predicates == NULL)
+    {
+        inform_dist_free(states);
+        inform_dist_free(histories);
+        inform_dist_free(sources);
+        return nan("5");
+    }
 
     // for each initial condition
     for (uint64_t i = 0; i < n; ++i, node_x += m, node_y += m)
@@ -177,7 +226,7 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
             inform_dist_free(sources);
             inform_dist_free(histories);
             inform_dist_free(states);
-            return nan("4");
+            return nan("6");
         }
     }
     // compute the transfer entropy from the distributions

@@ -6,6 +6,19 @@
 #include <inform/time_series.h>
 #include <math.h>
 
+static uint64_t* random_series(size_t size, uint64_t base)
+{
+    uint64_t *series = calloc(size, sizeof(uint64_t));
+    if (series != NULL)
+    {
+        for (size_t i = 0; i < size; ++i)
+        {
+            series[i] = rand() % base;
+        }
+    }
+    return series;
+}
+
 CTEST(TimeSeries, ActiveInfoSeriesTooShort)
 {
     uint64_t const series[] = {1,1,0,0,1,0,0,1};
@@ -15,10 +28,31 @@ CTEST(TimeSeries, ActiveInfoSeriesTooShort)
 
 CTEST(TimeSeries, ActiveInfoHistoryTooLong)
 {
-    uint64_t const series[] = {1,1,0,0,1,0,0,1};
+    {
+        uint64_t const series[] = {1,1,0,0,1,0,0,1};
 
-    ASSERT_TRUE(isnan(inform_active_info(series, 2, 2, 2)));
-    ASSERT_FALSE(isnan(inform_active_info(series, 3, 2, 2)));
+        ASSERT_TRUE(isnan(inform_active_info(series, 2, 2, 2)));
+        ASSERT_FALSE(isnan(inform_active_info(series, 3, 2, 2)));
+    }
+
+    {
+        size_t const size = 30;
+
+        uint64_t *series = random_series(size, 2);
+        /*ASSERT_FALSE(isnan(inform_active_info(series, size, 2, 25)));*/
+        ASSERT_TRUE(isnan(inform_active_info(series, size, 2, 26)));
+        free(series);
+
+        series = random_series(size, 3);
+        /*ASSERT_FALSE(isnan(inform_active_info(series, size, 3, 15)));*/
+        ASSERT_TRUE(isnan(inform_active_info(series, size, 3, 16)));
+        free(series);
+
+        series = random_series(size, 4);
+        /*ASSERT_FALSE(isnan(inform_active_info(series, size, 4, 12)));*/
+        ASSERT_TRUE(isnan(inform_active_info(series, size, 4, 13)));
+        free(series);
+    }
 }
 
 CTEST(TimeSeries, ActiveInfoEncodingError)
@@ -137,9 +171,36 @@ CTEST(TimeSeries, TransferEntropyTooShort)
 
 CTEST(TimeSeries, TransferEntropyHistoryTooLong)
 {
-    uint64_t const series[] = {1,1,1,0,0,1,1,0,0,1};
-    ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 2, 2, 2)));
-    ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 3, 2, 2)));
+    {
+        uint64_t const series[] = {1,1,1,0,0,1,1,0,0,1};
+        ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 2, 2, 2)));
+        ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 3, 2, 2)));
+    }
+
+    {
+        size_t const size = 30;
+
+        uint64_t *xseries = random_series(size, 2);
+        uint64_t *yseries = random_series(size, 2);
+        /*ASSERT_FALSE(isnan(inform_transfer_entropy(xseries, yseries, size, 2, 25)));*/
+        ASSERT_TRUE(isnan(inform_transfer_entropy(xseries, yseries, size, 2, 26)));
+        free(xseries);
+        free(yseries);
+
+        xseries = random_series(size, 3);
+        yseries = random_series(size, 3);
+        /*ASSERT_FALSE(isnan(inform_transfer_entropy(xseries, yseries, size, 3, 15)));*/
+        ASSERT_TRUE(isnan(inform_transfer_entropy(xseries, yseries, size, 3, 16)));
+        free(xseries);
+        free(yseries);
+
+        xseries = random_series(size, 4);
+        yseries = random_series(size, 4);
+        /*ASSERT_FALSE(isnan(inform_transfer_entropy(xseries, yseries, size, 4, 12)));*/
+        ASSERT_TRUE(isnan(inform_transfer_entropy(xseries, yseries, size, 4, 13)));
+        free(xseries);
+        free(yseries);
+    }
 }
 
 CTEST(TimeSeries, TransferEntropyEncodingError)
@@ -148,7 +209,7 @@ CTEST(TimeSeries, TransferEntropyEncodingError)
          uint64_t const series[10] = {2,1,1,0,1,0,0,1,0,1};
          ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 5, 3, 2)));
          ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 5, 2, 2)));
-         
+
          ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 5, 3, 2)));
          ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 5, 2, 2)));
      }
@@ -157,7 +218,7 @@ CTEST(TimeSeries, TransferEntropyEncodingError)
          uint64_t const series[] = {1,1,1,0,2,0,0,1,0,1};
          ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 5, 3, 2)));
          ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 5, 2, 2)));
-         
+
          ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 5, 3, 2)));
          ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 5, 2, 2)));
      }
@@ -166,7 +227,7 @@ CTEST(TimeSeries, TransferEntropyEncodingError)
          uint64_t const series[] = {1,1,1,2,1,0,0,1,0,1};
          ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 5, 3, 2)));
          ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 5, 2, 2)));
-         
+
          ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 5, 3, 2)));
          ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 5, 2, 2)));
      }
@@ -179,7 +240,7 @@ CTEST(TimeSeries, TransferEntropySingleSeries_Base2)
                 1,1,1,0,0,
                 1,1,0,0,1
         };
-        ASSERT_DBL_NEAR_TOL(0.000000, 
+        ASSERT_DBL_NEAR_TOL(0.000000,
                 inform_transfer_entropy(series,   series,   5, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.666666,
                 inform_transfer_entropy(series+5, series,   5, 2, 2), 1e-6);
@@ -188,13 +249,13 @@ CTEST(TimeSeries, TransferEntropySingleSeries_Base2)
         ASSERT_DBL_NEAR_TOL(0.000000,
                 inform_transfer_entropy(series+5, series+5, 5, 2, 2), 1e-6);
     }
-    
+
     {
         uint64_t series[20] = {
                 0,0,1,1,1,0,0,0,0,1,
                 1,1,0,0,0,0,0,0,1,1
         };
-        ASSERT_DBL_NEAR_TOL(0.000000, 
+        ASSERT_DBL_NEAR_TOL(0.000000,
                 inform_transfer_entropy(series,    series,    10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.500000,
                 inform_transfer_entropy(series+10, series,    10, 2, 2), 1e-6);
@@ -209,7 +270,7 @@ CTEST(TimeSeries, TransferEntropySingleSeries_Base2)
                 0,1,0,1,0,0,1,1,0,0,
                 0,0,1,0,1,1,1,0,1,1
         };
-        ASSERT_DBL_NEAR_TOL(0.000000, 
+        ASSERT_DBL_NEAR_TOL(0.000000,
                 inform_transfer_entropy(series,    series,    10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.344361,
                 inform_transfer_entropy(series+10, series,    10, 2, 2), 1e-6);
@@ -237,14 +298,14 @@ CTEST(TimeSeries, TransferEntropyEnsemble_Base2)
             0, 1, 1, 0, 1, 1, 1, 1, 1, 1,
             0, 0, 1, 1, 0, 0, 0, 0, 0, 1,
         };
-        
+
         ASSERT_DBL_NEAR_TOL(0.000000,
                 inform_transfer_entropy_ensemble(xseries, xseries, 5, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.091141,
                 inform_transfer_entropy_ensemble(yseries, xseries, 5, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.107630,
                 inform_transfer_entropy_ensemble(xseries, yseries, 5, 10, 2, 2), 1e-6);
-        ASSERT_DBL_NEAR_TOL(0.000000, 
+        ASSERT_DBL_NEAR_TOL(0.000000,
                 inform_transfer_entropy_ensemble(yseries, yseries, 5, 10, 2, 2), 1e-6);
 
         ASSERT_DBL_NEAR_TOL(0.000000,
@@ -253,7 +314,7 @@ CTEST(TimeSeries, TransferEntropyEnsemble_Base2)
                 inform_transfer_entropy_ensemble(yseries, xseries, 4, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.089517,
                 inform_transfer_entropy_ensemble(xseries, yseries, 4, 10, 2, 2), 1e-6);
-        ASSERT_DBL_NEAR_TOL(0.000000, 
+        ASSERT_DBL_NEAR_TOL(0.000000,
                 inform_transfer_entropy_ensemble(yseries, yseries, 4, 10, 2, 2), 1e-6);
     }
     {
@@ -278,7 +339,7 @@ CTEST(TimeSeries, TransferEntropyEnsemble_Base2)
                 inform_transfer_entropy_ensemble(yseries, xseries, 5, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.152561,
                 inform_transfer_entropy_ensemble(xseries, yseries, 5, 10, 2, 2), 1e-6);
-        ASSERT_DBL_NEAR_TOL(0.000000, 
+        ASSERT_DBL_NEAR_TOL(0.000000,
                 inform_transfer_entropy_ensemble(yseries, yseries, 5, 10, 2, 2), 1e-6);
 
         ASSERT_DBL_NEAR_TOL(0.000000,
@@ -287,7 +348,7 @@ CTEST(TimeSeries, TransferEntropyEnsemble_Base2)
                 inform_transfer_entropy_ensemble(yseries, xseries, 4, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.206156,
                 inform_transfer_entropy_ensemble(xseries, yseries, 4, 10, 2, 2), 1e-6);
-        ASSERT_DBL_NEAR_TOL(0.000000, 
+        ASSERT_DBL_NEAR_TOL(0.000000,
                 inform_transfer_entropy_ensemble(yseries, yseries, 4, 10, 2, 2), 1e-6);
     }
 }
