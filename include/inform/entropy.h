@@ -38,5 +38,23 @@ entropy inform_shannon(inform_dist const *dist, double base);
  */
 entropy inform_mutual_info(inform_dist const *joint,
         inform_dist const *marginal_x,
-        inform_dist const *marginal_yP,
+        inform_dist const *marginal_y,
+        double base);
+
+/**
+ * Compute the Shannon-based conditional entropy of a joint distribution and
+ * a marginal.
+ *
+ * This function will return `NaN` if `inform_shannon` returns `NaN`
+ * when applied to any of the distribution arguments.
+ *
+ * @param[in] joint    the joint probability distribution
+ * @param[in] marginal a marginal distribution
+ * @param[in] base     the logarithmic base
+ * @return the conditional entropy
+ *
+ * @see inform_shannon
+ */
+entropy inform_conditional_entropy(inform_dist const* joint,
+        inform_dist const *marginal,
         double base);

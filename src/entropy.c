@@ -40,3 +40,10 @@ entropy inform_mutual_info(inform_dist const *joint,
     return inform_shannon(marginal_x,base) + inform_shannon(marginal_y,base)
         - inform_shannon(joint,base);
 }
+
+entropy inform_conditional_entropy(inform_dist const *joint,
+        inform_dist const *marginal,
+        double base)
+{
+    return inform_shannon(joint, base) - inform_shannon(marginal, base);
+}
