@@ -1,6 +1,7 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
+#include <inform/error.h>
 #include <inform/state_encoding.h>
 #include <inform/time_series.h>
 
@@ -48,22 +49,22 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
     // ensure that the time series is not NULL
     if (series == NULL)
     {
-        return nan("1");
+        return inform_nan(1);
     }
     // ensure that the dimensions of the time series make sense
     else if (m <= 1 || n < 1)
     {
-        return nan("2");
+        return inform_nan(2);
     }
     // ensure that the number of time steps greater than the history length
     else if (m <= k)
     {
-        return nan("3");
+        return inform_nan(3);
     }
     // ensure that the history length is reasonable given memory constraints
     else if (k > 25/ log2l(b))
     {
-        return nan("4");
+        return inform_nan(4);
     }
 
     // allocate a distribution for the observed states, histories and futures
@@ -71,20 +72,20 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
     inform_dist *states = inform_dist_alloc(powl(b,k+1));
     if (states == NULL)
     {
-        return nan("5");
+        return inform_nan(5);
     }
     inform_dist *histories = inform_dist_alloc(powl(b,k));
     if (histories == NULL)
     {
         inform_dist_free(states);
-        return nan("5");
+        return inform_nan(5);
     }
     inform_dist *futures = inform_dist_alloc(b);
     if (futures == NULL)
     {
         inform_dist_free(states);
         inform_dist_free(histories);
-        return nan("5");
+        return inform_nan(5);
     }
 
     // for each initial condition
@@ -96,7 +97,7 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
             inform_dist_free(futures);
             inform_dist_free(histories);
             inform_dist_free(states);
-            return nan("6");
+            return inform_nan(6);
         }
     }
     // compute the mututal information between the states, histories and futures,
@@ -168,22 +169,22 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
     // ensure that neither of the time series are NULL
     if (node_x == NULL || node_y == NULL)
     {
-        return nan("1");
+        return inform_nan(1);
     }
     // ensure that the dimensions of the time series make sense
     else if (m <= 1 || n < 1)
     {
-        return nan("2");
+        return inform_nan(2);
     }
     // ensure that the number of time steps greater than the history length
     else if (m <= k)
     {
-        return nan("3");
+        return inform_nan(3);
     }
     // ensure that the history is reasonable given the history length
     else if (k > 25 / log2l(b))
     {
-        return nan("4");
+        return inform_nan(4);
     }
 
     // allocate a distribution for the observed states, histories,
@@ -192,20 +193,20 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
     inform_dist *states = inform_dist_alloc(powl(b,k+2));
     if (states == NULL)
     {
-        return nan("5");
+        return inform_nan(5);
     }
     inform_dist *histories  = inform_dist_alloc(powl(b,k));
     if (histories == NULL)
     {
         inform_dist_free(states);
-        return nan("5");
+        return inform_nan(5);
     }
     inform_dist *sources = inform_dist_alloc(powl(b,k+1));
     if (sources == NULL)
     {
         inform_dist_free(states);
         inform_dist_free(histories);
-        return nan("5");
+        return inform_nan(5);
     }
     inform_dist *predicates = inform_dist_alloc(powl(b,k+1));
     if (predicates == NULL)
@@ -213,7 +214,7 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
         inform_dist_free(states);
         inform_dist_free(histories);
         inform_dist_free(sources);
-        return nan("5");
+        return inform_nan(5);
     }
 
     // for each initial condition
@@ -226,7 +227,7 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
             inform_dist_free(sources);
             inform_dist_free(histories);
             inform_dist_free(states);
-            return nan("6");
+            return inform_nan(6);
         }
     }
     // compute the transfer entropy from the distributions

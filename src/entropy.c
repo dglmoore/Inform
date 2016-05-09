@@ -2,6 +2,7 @@
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 #include <inform/entropy.h>
+#include <inform/error.h>
 
 entropy inform_shannon(inform_dist const *dist, double base)
 {
@@ -25,7 +26,7 @@ entropy inform_shannon(inform_dist const *dist, double base)
         return h;
     }
     // return NaN if the distribution is invalid
-    return nan("1");
+    return inform_nan(1);
 }
 
 entropy inform_mutual_info(inform_dist const *joint,
