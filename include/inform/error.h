@@ -15,7 +15,7 @@
  * @param[in] tag the desired tag
  * @return a true if the tag is below `0x0007ffffffffffff`
  */
-bool inform_nantag_is_valid(uint64_t tag);
+bool inform_tag_is_valid(uint64_t tag);
 
 /**
  * Construct a tagged NaN with a given `tag`
@@ -30,9 +30,9 @@ bool inform_nantag_is_valid(uint64_t tag);
  * @param[in] tag the tag to embed
  * @return the tagged NaN will be returned.
  * 
- * @see inform_nantag
+ * @see inform_nan_tag
  */
-double inform_tagnan(uint64_t tag);
+double inform_nan(uint64_t tag);
 
 /**
  * Extract the tag from a NaN value
@@ -43,6 +43,6 @@ double inform_tagnan(uint64_t tag);
  * @param[in] the NaN value
  * @return the NaN tag
  * 
- * @see inform_tagnan
+ * @see inform_nan
  */
-uint64_t inform_nantag(double x);
+uint64_t inform_nan_tag(double x);
