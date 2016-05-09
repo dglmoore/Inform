@@ -2,6 +2,7 @@ set(${PROJECT_NAME}_UNITTEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/canary.c
     ${CMAKE_CURRENT_SOURCE_DIR}/dist.c
     ${CMAKE_CURRENT_SOURCE_DIR}/entropy.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/error.c
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/state_encoding.c
     ${CMAKE_CURRENT_SOURCE_DIR}/time_series.c
