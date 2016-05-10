@@ -179,6 +179,7 @@ CTEST(Distribution, CopyToNULL)
     for (size_t i = 0; i < inform_dist_size(source); ++i)
     {
         ASSERT_EQUAL(inform_dist_get(source,i), inform_dist_get(dest,i));
+    	ASSERT_EQUAL(i+1, inform_dist_get(dest,i));
     }
     inform_dist_free(dest);
     inform_dist_free(source);
@@ -210,6 +211,7 @@ CTEST(Distribution, CopySameSize)
     for (size_t i = 0; i < inform_dist_size(source); ++i)
     {
         ASSERT_EQUAL(inform_dist_get(source,i), inform_dist_get(dest,i));
+        ASSERT_EQUAL(i+1, inform_dist_get(dest,i));
     }
     inform_dist_free(dest);
     inform_dist_free(source);
@@ -233,6 +235,7 @@ CTEST(Distribution, CopyResize)
     for (size_t i = 0; i < inform_dist_size(source); ++i)
     {
         ASSERT_EQUAL(inform_dist_get(source,i), inform_dist_get(dest,i));
+        ASSERT_EQUAL(i+1, inform_dist_get(dest,i));
     }
     inform_dist_free(dest);
     inform_dist_free(source);
