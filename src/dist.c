@@ -133,7 +133,7 @@ inform_dist* inform_dist_copy(inform_dist const *src, inform_dist *dest)
         return dest;
     }
     // copy the contents of the histogram from the source to the destination
-    memcpy(src->histogram, dest->histogram, src->size * sizeof(uint64_t));
+    memcpy(dest->histogram, src->histogram, src->size * sizeof(uint64_t));
     // set the counts appropriately
     dest->counts = src->counts;
     // return the modified destination
