@@ -7,6 +7,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /**
  * A distribution of observed event frequencies
  *
@@ -225,3 +230,7 @@ double inform_dist_prob(inform_dist const *dist, uint64_t event);
  * @return a dynamically allocated array of the probabilities
  */
 double* inform_dist_dump(inform_dist const *dist);
+
+#ifdef __cplusplus
+}
+#endif
