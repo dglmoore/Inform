@@ -6,6 +6,11 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /**
  * Determine whether or not a potential NaN tag is valid.
  *
@@ -46,3 +51,7 @@ double inform_nan(uint64_t tag);
  * @see inform_nan
  */
 uint64_t inform_nan_tag(double x);
+
+#ifdef __cplusplus
+}
+#endif

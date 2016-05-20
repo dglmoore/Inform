@@ -5,6 +5,11 @@
 
 #include <inform/entropy.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /**
  * @brief Populate the active information distributions
  *
@@ -186,3 +191,7 @@ entropy inform_transfer_entropy(uint64_t const *series_y, uint64_t const *series
  * @return the transfer entropy of the ensemble
  */
 entropy inform_transfer_entropy_ensemble(uint64_t const *series_y, uint64_t const *series_x, size_t n, size_t m, uint64_t b, uint64_t k);
+
+#ifdef __cplusplus
+}
+#endif

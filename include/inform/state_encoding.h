@@ -6,6 +6,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #define INFORM_ENCODING_ERROR(n) (inform_encoding_error + n)
 static uint64_t const inform_encoding_error = 0x8000000000000000;
 
@@ -55,3 +60,8 @@ uint64_t inform_encode(uint64_t const *state, uint64_t n, uint64_t base);
  * @see inform_encode
  */
 uint64_t* inform_decode(uint64_t encoding, uint64_t n, uint64_t base);
+
+#ifdef __cplusplus
+}
+#endif
+

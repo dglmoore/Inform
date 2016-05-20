@@ -6,6 +6,11 @@
 #include <inform/dist.h>
 #include <math.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /// an entropy is just a double
 typedef double entropy;
 
@@ -58,3 +63,7 @@ entropy inform_mutual_info(inform_dist const *joint,
 entropy inform_conditional_entropy(inform_dist const* joint,
         inform_dist const *marginal,
         double base);
+
+#ifdef __cplusplus
+}
+#endif
