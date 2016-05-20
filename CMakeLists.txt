@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 2.8)
 project(inform C)
 
 if (UNIX)
-    add_definitions("-Wall -Wextra -Werror -Wno-unused-parameter -std=gnu11")
+    add_definitions("-Wall -Wextra -Werror -Wno-unused-parameter -std=gnu1x")
 endif()
 
 include_directories(include)
