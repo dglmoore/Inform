@@ -20,7 +20,7 @@ extern "C"
  * the observed event frequencies to probabilities.
  *
  * A distribution can be allocated with a set number of observable events
- * (inform_dist_alloc), resized (inform_dist_realloc), copied 
+ * (inform_dist_alloc), resized (inform_dist_realloc), copied
  * (inform_dist_copy) or duplicated (inform_dist_dup). Once the distribution
  * has served its purpose, it can be freed (inform_dist_free).
  *
@@ -151,7 +151,7 @@ bool inform_dist_is_valid(inform_dist const *dist);
 /**
  * Get the number of occurances of a given event.
  *
- * If the distribution is `NULL` or the `event` is not in the support, 
+ * If the distribution is `NULL` or the `event` is not in the support,
  * `0` is returned.
  *
  * @param[in] dist  the distribution
@@ -204,7 +204,7 @@ uint64_t inform_dist_tick(inform_dist *dist, uint64_t event);
  *
  * This function simply computes the probability of a given event and
  * returns that value.
- * 
+ *
  * If the event is not in the support, the distribution is `NULL`, or
  * no observations have yet been made, then a zero probability is returned.
  *
@@ -220,16 +220,19 @@ double inform_dist_prob(inform_dist const *dist, uint64_t event);
  * Dump the probabilities of all events to an array.
  *
  * This function computes the probabilities of all of the events in the
- * support, stores them in a dynamically allocated array, and returns said
- * array.
+ * support, stores them in the provided array, and the number of values
+ * written.
  *
- * If the distribution is `NULL`, the distribution has empty support, or the
- * memory allocation fails, then a `NULL` array is returned.
+ * If the distribution is `NULL`, -1 is returned. If the destination is
+ * NULL, -2 is returned. If `n` is not equal to the distribution's
+ * support, -3 is returned.
  *
- * @param[in] dist the distribution
- * @return a dynamically allocated array of the probabilities
+ * @param[in] dist  the distribution
+ * @param[out] arr  the preallocated array of probabilities
+ * @param[in] probs the size of the preallocated array
+ * @return the number of probabilities written to the array
  */
-double* inform_dist_dump(inform_dist const *dist);
+int inform_dist_dump(inform_dist const *dist, double *probs, size_t n);
 
 #ifdef __cplusplus
 }

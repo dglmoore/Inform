@@ -198,7 +198,7 @@ uint64_t inform_dist_get(inform_dist const *dist, uint64_t event)
 }
 
 uint64_t inform_dist_set(inform_dist *dist, uint64_t event, uint64_t x)
-{    
+{
     // if the distribution is NULL or the event is outsize of the support
     if (dist == NULL || event >= dist->size)
     {
@@ -244,25 +244,26 @@ double inform_dist_prob(inform_dist const *dist, uint64_t event)
     return inform_dist_unsafe_prob(dist, event);
 }
 
-double* inform_dist_dump(inform_dist const *dist)
+int inform_dist_dump(inform_dist const *dist, double *probs, size_t n)
 {
     // if the distribution is NULL or the event is outsize of the support
     if (dist == NULL || dist->size == 0)
     {
-        return NULL;
+        return -1;
     }
-    // allocate an array to store the probabilities
-    double *probabilities = calloc(dist->size, sizeof(double));
-    // if the allocation succeeded
-    if (probabilities != NULL)
+    if (probs == NULL)
     {
-        // loop over the events
-        for (size_t i = 0; i < inform_dist_size(dist); ++i)
-        {
-            // store their probabilities in the array
-            probabilities[i] = inform_dist_unsafe_prob(dist,i);
-        }
+        return -2;
     }
-    // return the (possibly NULL) array of probabilities
-    return probabilities;
+    if (n != dist->size)
+    {
+        return -3;
+    }
+    // loop over the events
+    for (size_t i = 0; i < inform_dist_size(dist); ++i)
+    {
+        // store their probabilities in the array
+        probs[i] = inform_dist_unsafe_prob(dist,i);
+    }
+    return n;
 }

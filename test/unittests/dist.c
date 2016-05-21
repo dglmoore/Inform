@@ -64,7 +64,7 @@ CTEST(Distribution, Set)
 
     for (uint64_t i = 0; i < inform_dist_size(dist); ++i)
     {
-        inform_dist_set(dist, i, 0); 
+        inform_dist_set(dist, i, 0);
     }
     ASSERT_FALSE(inform_dist_is_valid(dist));
     ASSERT_EQUAL(3, inform_dist_size(dist));
@@ -179,7 +179,7 @@ CTEST(Distribution, CopyToNULL)
     for (size_t i = 0; i < inform_dist_size(source); ++i)
     {
         ASSERT_EQUAL(inform_dist_get(source,i), inform_dist_get(dest,i));
-    	ASSERT_EQUAL(i+1, inform_dist_get(dest,i));
+        ASSERT_EQUAL(i+1, inform_dist_get(dest,i));
     }
     inform_dist_free(dest);
     inform_dist_free(source);
@@ -315,24 +315,27 @@ CTEST(Distribution, Prob)
 
 CTEST(Distribution, Dump)
 {
-    inform_dist* dist = NULL;
-    ASSERT_NULL(inform_dist_dump(dist));
+    inform_dist *dist = NULL;
+    ASSERT_EQUAL(-1, inform_dist_dump(dist, NULL, 0));
 
     dist = inform_dist_alloc(5);
     ASSERT_NOT_NULL(dist);
+
+    ASSERT_EQUAL(-2, inform_dist_dump(dist, NULL, 0));
 
     for (size_t i = 1; i < inform_dist_size(dist); ++i)
     {
         inform_dist_set(dist, i, i+1);
     }
     ASSERT_EQUAL(14, inform_dist_counts(dist));
-    double expect[5] = {0., 2./14, 3/14., 4/14., 5/14.};
-    double* probs = inform_dist_dump(dist);
-    ASSERT_NOT_NULL(probs);
+    double expect[5] = {0., 2./14, 3./14, 4./14, 5./14};
+    double got[7] = {0., 0., 0., 0., 0., 0.};
+    ASSERT_EQUAL(-3, inform_dist_dump(dist, got, 4));
+    ASSERT_EQUAL(-3, inform_dist_dump(dist, got, 6));
+    ASSERT_EQUAL(5, inform_dist_dump(dist, got, 5));
     for (size_t i = 0; i < inform_dist_size(dist); ++i)
     {
-        ASSERT_DBL_NEAR(expect[i], probs[i]);
+        ASSERT_DBL_NEAR(expect[i], got[i]);
     }
-    free(probs);
     inform_dist_free(dist);
 }
