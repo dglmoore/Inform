@@ -34,7 +34,8 @@ uint64_t inform_encode(uint64_t const *state, uint64_t n, uint64_t base)
             return INFORM_ENCODING_ERROR(3+i);
         }
         // otherwise, encode that value
-        encoding += state[i] * (uint64_t)powl(base,i);
+        encoding *= base;
+        encoding += state[i];
     }
     // return the encoding
     return encoding;
@@ -56,7 +57,7 @@ uint64_t* inform_decode(uint64_t encoding, uint64_t n, uint64_t base)
         // loop over the digits and extract the decoded value
         for (uint64_t i = 0; i < n; ++i, encoding /= base)
         {
-            state[i] = encoding % base;
+        	state[n-i-1] = encoding % base;
         }
     }
     // return the (possibly NULL) state

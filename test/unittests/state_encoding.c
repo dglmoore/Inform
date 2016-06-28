@@ -83,89 +83,90 @@ CTEST(StateEncoding, EncodeLengthOne_Base5)
 CTEST(StateEncoding, EncodeLengthTwo_Base2)
 {
    ASSERT_EQUAL_U(0, inform_encode((uint64_t[]){0,0},2,2));
-   ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){1,0},2,2));
-   ASSERT_EQUAL_U(2, inform_encode((uint64_t[]){0,1},2,2));
+   ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){0,1},2,2));
+   ASSERT_EQUAL_U(2, inform_encode((uint64_t[]){1,0},2,2));
    ASSERT_EQUAL_U(3, inform_encode((uint64_t[]){1,1},2,2));
 
    ASSERT_EQUAL_U(0, inform_encode((uint64_t[]){0,0,0},2,2));
-   ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){1,0,0},2,2));
-   ASSERT_EQUAL_U(2, inform_encode((uint64_t[]){0,1,0},2,2));
+   ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){0,1,0},2,2));
+   ASSERT_EQUAL_U(2, inform_encode((uint64_t[]){1,0,0},2,2));
    ASSERT_EQUAL_U(3, inform_encode((uint64_t[]){1,1,0},2,2));
    ASSERT_EQUAL_U(0, inform_encode((uint64_t[]){0,0,1},2,2));
-   ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){1,0,1},2,2));
-   ASSERT_EQUAL_U(2, inform_encode((uint64_t[]){0,1,1},2,2));
+   ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){0,1,1},2,2));
+   ASSERT_EQUAL_U(2, inform_encode((uint64_t[]){1,0,1},2,2));
    ASSERT_EQUAL_U(3, inform_encode((uint64_t[]){1,1,1},2,2));
+   
 }
 
 CTEST(StateEncoding, EncodeLengthTwo_Base5)
 {
-   ASSERT_EQUAL_U(0, inform_encode((uint64_t[]){0,0},2,5));
-   ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){1,0},2,5));
-   ASSERT_EQUAL_U(2, inform_encode((uint64_t[]){2,0},2,5));
-   ASSERT_EQUAL_U(3, inform_encode((uint64_t[]){3,0},2,5));
-   ASSERT_EQUAL_U(4, inform_encode((uint64_t[]){4,0},2,5));
-   ASSERT_EQUAL_U(5, inform_encode((uint64_t[]){0,1},2,5));
-   ASSERT_EQUAL_U(6, inform_encode((uint64_t[]){1,1},2,5));
-   ASSERT_EQUAL_U(7, inform_encode((uint64_t[]){2,1},2,5));
-   ASSERT_EQUAL_U(8, inform_encode((uint64_t[]){3,1},2,5));
-   ASSERT_EQUAL_U(9, inform_encode((uint64_t[]){4,1},2,5));
-   ASSERT_EQUAL_U(10, inform_encode((uint64_t[]){0,2},2,5));
-   ASSERT_EQUAL_U(11, inform_encode((uint64_t[]){1,2},2,5));
+   ASSERT_EQUAL_U( 0, inform_encode((uint64_t[]){0,0},2,5));
+   ASSERT_EQUAL_U( 1, inform_encode((uint64_t[]){0,1},2,5));
+   ASSERT_EQUAL_U( 2, inform_encode((uint64_t[]){0,2},2,5));
+   ASSERT_EQUAL_U( 3, inform_encode((uint64_t[]){0,3},2,5));
+   ASSERT_EQUAL_U( 4, inform_encode((uint64_t[]){0,4},2,5));
+   ASSERT_EQUAL_U( 5, inform_encode((uint64_t[]){1,0},2,5));
+   ASSERT_EQUAL_U( 6, inform_encode((uint64_t[]){1,1},2,5));
+   ASSERT_EQUAL_U( 7, inform_encode((uint64_t[]){1,2},2,5));
+   ASSERT_EQUAL_U( 8, inform_encode((uint64_t[]){1,3},2,5));
+   ASSERT_EQUAL_U( 9, inform_encode((uint64_t[]){1,4},2,5));
+   ASSERT_EQUAL_U(10, inform_encode((uint64_t[]){2,0},2,5));
+   ASSERT_EQUAL_U(11, inform_encode((uint64_t[]){2,1},2,5));
    ASSERT_EQUAL_U(12, inform_encode((uint64_t[]){2,2},2,5));
-   ASSERT_EQUAL_U(13, inform_encode((uint64_t[]){3,2},2,5));
-   ASSERT_EQUAL_U(14, inform_encode((uint64_t[]){4,2},2,5));
-   ASSERT_EQUAL_U(15, inform_encode((uint64_t[]){0,3},2,5));
-   ASSERT_EQUAL_U(16, inform_encode((uint64_t[]){1,3},2,5));
-   ASSERT_EQUAL_U(17, inform_encode((uint64_t[]){2,3},2,5));
+   ASSERT_EQUAL_U(13, inform_encode((uint64_t[]){2,3},2,5));
+   ASSERT_EQUAL_U(14, inform_encode((uint64_t[]){2,4},2,5));
+   ASSERT_EQUAL_U(15, inform_encode((uint64_t[]){3,0},2,5));
+   ASSERT_EQUAL_U(16, inform_encode((uint64_t[]){3,1},2,5));
+   ASSERT_EQUAL_U(17, inform_encode((uint64_t[]){3,2},2,5));
    ASSERT_EQUAL_U(18, inform_encode((uint64_t[]){3,3},2,5));
-   ASSERT_EQUAL_U(19, inform_encode((uint64_t[]){4,3},2,5));
-   ASSERT_EQUAL_U(20, inform_encode((uint64_t[]){0,4},2,5));
-   ASSERT_EQUAL_U(21, inform_encode((uint64_t[]){1,4},2,5));
-   ASSERT_EQUAL_U(22, inform_encode((uint64_t[]){2,4},2,5));
-   ASSERT_EQUAL_U(23, inform_encode((uint64_t[]){3,4},2,5));
+   ASSERT_EQUAL_U(19, inform_encode((uint64_t[]){3,4},2,5));
+   ASSERT_EQUAL_U(20, inform_encode((uint64_t[]){4,0},2,5));
+   ASSERT_EQUAL_U(21, inform_encode((uint64_t[]){4,1},2,5));
+   ASSERT_EQUAL_U(22, inform_encode((uint64_t[]){4,2},2,5));
+   ASSERT_EQUAL_U(23, inform_encode((uint64_t[]){4,3},2,5));
    ASSERT_EQUAL_U(24, inform_encode((uint64_t[]){4,4},2,5));
 }
 
 CTEST(StateEncoding, EncodeLengthThree_Base2)
 {
    ASSERT_EQUAL_U(0, inform_encode((uint64_t[]){0,0,0},3,2));
-   ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){1,0,0},3,2));
+   ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){0,0,1},3,2));
    ASSERT_EQUAL_U(2, inform_encode((uint64_t[]){0,1,0},3,2));
-   ASSERT_EQUAL_U(3, inform_encode((uint64_t[]){1,1,0},3,2));
-   ASSERT_EQUAL_U(4, inform_encode((uint64_t[]){0,0,1},3,2));
+   ASSERT_EQUAL_U(3, inform_encode((uint64_t[]){0,1,1},3,2));
+   ASSERT_EQUAL_U(4, inform_encode((uint64_t[]){1,0,0},3,2));
    ASSERT_EQUAL_U(5, inform_encode((uint64_t[]){1,0,1},3,2));
-   ASSERT_EQUAL_U(6, inform_encode((uint64_t[]){0,1,1},3,2));
+   ASSERT_EQUAL_U(6, inform_encode((uint64_t[]){1,1,0},3,2));
    ASSERT_EQUAL_U(7, inform_encode((uint64_t[]){1,1,1},3,2));
 }
 
 CTEST(StateEncoding, EncodeLengthThree_Base3)
 {
-   ASSERT_EQUAL_U(0, inform_encode((uint64_t[]){0,0,0},3,3));
-   ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){1,0,0},3,3));
-   ASSERT_EQUAL_U(2, inform_encode((uint64_t[]){2,0,0},3,3));
-   ASSERT_EQUAL_U(3, inform_encode((uint64_t[]){0,1,0},3,3));
-   ASSERT_EQUAL_U(4, inform_encode((uint64_t[]){1,1,0},3,3));
-   ASSERT_EQUAL_U(5, inform_encode((uint64_t[]){2,1,0},3,3));
-   ASSERT_EQUAL_U(6, inform_encode((uint64_t[]){0,2,0},3,3));
-   ASSERT_EQUAL_U(7, inform_encode((uint64_t[]){1,2,0},3,3));
-   ASSERT_EQUAL_U(8, inform_encode((uint64_t[]){2,2,0},3,3));
-   ASSERT_EQUAL_U(9, inform_encode((uint64_t[]){0,0,1},3,3));
+   ASSERT_EQUAL_U( 0, inform_encode((uint64_t[]){0,0,0},3,3));
+   ASSERT_EQUAL_U( 1, inform_encode((uint64_t[]){0,0,1},3,3));
+   ASSERT_EQUAL_U( 2, inform_encode((uint64_t[]){0,0,2},3,3));
+   ASSERT_EQUAL_U( 3, inform_encode((uint64_t[]){0,1,0},3,3));
+   ASSERT_EQUAL_U( 4, inform_encode((uint64_t[]){0,1,1},3,3));
+   ASSERT_EQUAL_U( 5, inform_encode((uint64_t[]){0,1,2},3,3));
+   ASSERT_EQUAL_U( 6, inform_encode((uint64_t[]){0,2,0},3,3));
+   ASSERT_EQUAL_U( 7, inform_encode((uint64_t[]){0,2,1},3,3));
+   ASSERT_EQUAL_U( 8, inform_encode((uint64_t[]){0,2,2},3,3));
+   ASSERT_EQUAL_U( 9, inform_encode((uint64_t[]){1,0,0},3,3));
    ASSERT_EQUAL_U(10, inform_encode((uint64_t[]){1,0,1},3,3));
-   ASSERT_EQUAL_U(11, inform_encode((uint64_t[]){2,0,1},3,3));
-   ASSERT_EQUAL_U(12, inform_encode((uint64_t[]){0,1,1},3,3));
+   ASSERT_EQUAL_U(11, inform_encode((uint64_t[]){1,0,2},3,3));
+   ASSERT_EQUAL_U(12, inform_encode((uint64_t[]){1,1,0},3,3));
    ASSERT_EQUAL_U(13, inform_encode((uint64_t[]){1,1,1},3,3));
-   ASSERT_EQUAL_U(14, inform_encode((uint64_t[]){2,1,1},3,3));
-   ASSERT_EQUAL_U(15, inform_encode((uint64_t[]){0,2,1},3,3));
+   ASSERT_EQUAL_U(14, inform_encode((uint64_t[]){1,1,2},3,3));
+   ASSERT_EQUAL_U(15, inform_encode((uint64_t[]){1,2,0},3,3));
    ASSERT_EQUAL_U(16, inform_encode((uint64_t[]){1,2,1},3,3));
-   ASSERT_EQUAL_U(17, inform_encode((uint64_t[]){2,2,1},3,3));
-   ASSERT_EQUAL_U(18, inform_encode((uint64_t[]){0,0,2},3,3));
-   ASSERT_EQUAL_U(19, inform_encode((uint64_t[]){1,0,2},3,3));
+   ASSERT_EQUAL_U(17, inform_encode((uint64_t[]){1,2,2},3,3));
+   ASSERT_EQUAL_U(18, inform_encode((uint64_t[]){2,0,0},3,3));
+   ASSERT_EQUAL_U(19, inform_encode((uint64_t[]){2,0,1},3,3));
    ASSERT_EQUAL_U(20, inform_encode((uint64_t[]){2,0,2},3,3));
-   ASSERT_EQUAL_U(21, inform_encode((uint64_t[]){0,1,2},3,3));
-   ASSERT_EQUAL_U(22, inform_encode((uint64_t[]){1,1,2},3,3));
+   ASSERT_EQUAL_U(21, inform_encode((uint64_t[]){2,1,0},3,3));
+   ASSERT_EQUAL_U(22, inform_encode((uint64_t[]){2,1,1},3,3));
    ASSERT_EQUAL_U(23, inform_encode((uint64_t[]){2,1,2},3,3));
-   ASSERT_EQUAL_U(24, inform_encode((uint64_t[]){0,2,2},3,3));
-   ASSERT_EQUAL_U(25, inform_encode((uint64_t[]){1,2,2},3,3));
+   ASSERT_EQUAL_U(24, inform_encode((uint64_t[]){2,2,0},3,3));
+   ASSERT_EQUAL_U(25, inform_encode((uint64_t[]){2,2,1},3,3));
    ASSERT_EQUAL_U(26, inform_encode((uint64_t[]){2,2,2},3,3));
 }
 
