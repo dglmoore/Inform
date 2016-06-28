@@ -5,6 +5,10 @@ if (UNIX)
     add_definitions("-Wall -Wextra -Werror -Wno-unused-parameter -std=gnu1x")
 endif()
 
+if (APPLE)
+	set(CMAKE_MACOSX_RPATH ON)
+endif()
+
 include_directories(include)
 add_subdirectory(src)
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES})
