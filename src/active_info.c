@@ -85,38 +85,25 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
         accumulate_observations(series, m, b, k, states, histories, futures);
     }
 
-    inform_dist *states_dist = inform_dist_alloc(states_size);
+    inform_dist *states_dist = inform_dist_create(states, states_size);
     if (states_dist == NULL)
     {
         return inform_nan(7);
     }
 
-    inform_dist *histories_dist = inform_dist_alloc(histories_size);
+    inform_dist *histories_dist = inform_dist_create(histories, histories_size);
     if (histories_dist == NULL)
     {
         inform_dist_free(states_dist);
         return inform_nan(8);
     }
 
-    inform_dist *futures_dist = inform_dist_alloc(futures_size);
+    inform_dist *futures_dist = inform_dist_create(futures, futures_size);
     if (futures_dist == NULL)
     {
         inform_dist_free(histories_dist);
         inform_dist_free(states_dist);
         return inform_nan(9);
-    }
-
-    for (int i = 0; i < states_size; ++i)
-    {
-        inform_dist_set(states_dist, i, states[i]);
-    }
-    for (int i = 0; i < histories_size; ++i)
-    {
-        inform_dist_set(histories_dist, i, histories[i]);
-    }
-    for (int i = 0; i < futures_size; ++i)
-    {
-        inform_dist_set(futures_dist, i, futures[i]);
     }
 
     entropy ai = inform_mutual_info(states_dist, histories_dist, futures_dist, b);
