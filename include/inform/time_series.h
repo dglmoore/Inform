@@ -11,27 +11,6 @@ extern "C"
 #endif
 
 /**
- * @brief Populate the active information distributions
- *
- * In computing the active information of a time series, three distributions
- * are created for the states, histories and future states, respectively. This
- * function populates those distributions allowing code reuse and facilitating
- * parallel processing.
- *
- * @param[in] series        the time series of values
- * @param[in] n             the length of the time series
- * @param[in] b             the base or number of distinct states at each time step
- * @param[in] k             the history length
- * @param[in,out] states    the observed distribution of states
- * @param[in,out] histories the observed distribution of histories
- * @param[in,out] futures   the observed distribution of future states
- * @return `0` when successful and `1` on a state-encoding error
- */
-int inform_active_info_dist(uint64_t const* series, size_t n, uint64_t b, uint64_t k,
-                            inform_dist *states,
-                            inform_dist *histories,
-                            inform_dist *futures);
-/**
  * @brief Compute the active information of a time series.
  *
  * `NaN` is returned in at least the following erroneous situtations
