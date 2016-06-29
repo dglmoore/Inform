@@ -159,6 +159,43 @@ inform_dist* inform_dist_dup(inform_dist const *dist)
     return dup;
 }
 
+inform_dist* inform_dist_create(uint64_t const *data, size_t n)
+{
+    // if the requested support size is zero, return NULL
+    if (n == 0)
+    {
+        return NULL;
+    }
+    // allocate the distribution
+    inform_dist *dist = malloc(sizeof(inform_dist));
+    // if the allocation succeeded
+    if (dist != NULL)
+    {
+        // allocate the underlying histogram
+        dist->histogram = calloc(n, sizeof(uint64_t));
+        // if the allocation succeeded
+        if (dist->histogram != NULL)
+        {
+            // set the distribution content, size and counts
+            memcpy(dist->histogram, data, n*sizeof(uint64_t));
+            dist->size   = n;
+            dist->counts = 0;
+            for (size_t i = 0; i < n; ++i)
+            {
+                dist->counts += dist->histogram[i];
+            }
+        }
+        // otherwise free the distribution
+        else
+        {
+            free(dist);
+            dist = NULL;
+        }
+    }
+    // return the (potentially NULL) distribution
+    return dist;
+}
+
 void inform_dist_free(inform_dist *dist)
 {
     if (dist != NULL)

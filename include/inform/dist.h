@@ -111,6 +111,14 @@ inform_dist* inform_dist_copy(inform_dist const *src, inform_dist *dest);
  */
 inform_dist* inform_dist_dup(inform_dist const *dist);
 /**
+ * Create a distribution from an underlying histogram.
+ *
+ * @param[in] data the underlying histogram data
+ * @param[in] n    the number of events in the histogram
+ * @return the new distribution
+ */
+inform_dist* inform_dist_create(uint64_t const *data, size_t n);
+/**
  * Free all dynamically allocated memory associated with a distribution.
  *
  * @param[in] dist the distribution to free
