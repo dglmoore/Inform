@@ -9,6 +9,8 @@ if (APPLE)
 	set(CMAKE_MACOSX_RPATH ON)
 endif()
 
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -ggdb -pg")
+
 include_directories(include)
 add_subdirectory(src)
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES})
