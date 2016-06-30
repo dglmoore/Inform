@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 #include <ctest.h>
 #include <inform/state_encoding.h>
-#include <inform/time_series.h>
+#include <inform/transfer_entropy.h>
 #include "random.h"
 
 CTEST(TimeSeries, TransferEntropyTooShort)

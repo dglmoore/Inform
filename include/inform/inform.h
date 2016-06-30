@@ -6,5 +6,7 @@
 #include <inform/dist.h>
 #include <inform/entropy.h>
 #include <inform/state_encoding.h>
-#include <inform/time_series.h>
 
+#include <inform/active_info.h>
+#include <inform/entropy_rate.h>
+#include <inform/transfer_entropy.h>

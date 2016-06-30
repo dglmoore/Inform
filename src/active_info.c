@@ -2,7 +2,7 @@
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 #include <inform/error.h>
-#include <inform/time_series.h>
+#include <inform/active_info.h>
 
 static void accumulate_observations(uint64_t const* series, size_t n, uint64_t b,
     uint64_t k, inform_dist *states, inform_dist *histories, inform_dist *futures)
