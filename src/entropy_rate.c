@@ -6,7 +6,7 @@
 #include <inform/time_series.h>
 
 static void accumulate_observations(uint64_t const* series, size_t n,
-    uint64_t b, uint64_t k, uint64_t *states, uint64_t *histories)
+    uint64_t b, uint64_t k, inform_dist *states, inform_dist *histories)
 {
     uint64_t history = 0, q = 1, state, future;
     for (uint64_t i = 0; i < k; ++i)
@@ -20,8 +20,8 @@ static void accumulate_observations(uint64_t const* series, size_t n,
         future = series[i];
         state  = history * b + future;
 
-        states[state]++;
-        histories[history]++;
+        states->histogram[state]++;
+        histories->histogram[history]++;
 
         history = state - series[i - k]*q;
     }
@@ -63,50 +63,34 @@ entropy inform_entropy_rate_ensemble(uint64_t const *series, size_t n, size_t m,
         }
     }
 
+    int const N = n * (m - k);
+
     // compute the sizes of the histograms
-    int states_size = b * pow(b,k);
-    int histories_size = states_size / b;
+    int const states_size = b * pow(b,k);
+    int const histories_size = states_size / b;
+    int const total_size = states_size + histories_size;
 
     // allocate memory to store the histograms
-    uint64_t *data = calloc(states_size + histories_size, sizeof(uint64_t));
+    uint64_t *data = calloc(total_size, sizeof(uint64_t));
     // ensure that the memory was allocated
     if (data == NULL)
     {
         return inform_nan(6);
     }
 
-    // create some pointers to facilitate observation accumulation
-    uint64_t *states = data;
-    uint64_t *histories = states + states_size;
+    // create the distributions
+    inform_dist states    = { data, states_size, N };
+    inform_dist histories = { data + states_size, histories_size, N };
 
     // for each initial condition
     for (uint64_t i = 0; i < n; ++i, series += m)
     {
         // accumulate the observations
-        accumulate_observations(series, m, b, k, states, histories);
-    }
-
-    // create the states distribution
-    inform_dist *states_dist = inform_dist_create(states, states_size);
-    if (states_dist == NULL)
-    {
-        return inform_nan(7);
-    }
-
-    // create the histories distribution
-    inform_dist *histories_dist = inform_dist_create(histories, histories_size);
-    if (histories_dist == NULL)
-    {
-        inform_dist_free(states_dist);
-        return inform_nan(8);
+        accumulate_observations(series, m, b, k, &states, &histories);
     }
 
     // compute the entropy rate
-    entropy er = inform_conditional_entropy(states_dist, histories_dist, b);
-
-    // free up the distributions
-    inform_dist_free(histories_dist);
-    inform_dist_free(states_dist);
+    entropy er = inform_conditional_entropy(&states, &histories, b);
 
     // free up the data array
     free(data);
