@@ -52,7 +52,7 @@ CTEST(TimeSeries, TransferEntropyEncodingError)
          ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 5, 2, 2)));
 
          ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 5, 3, 2)));
-         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 5, 2, 2)));
+         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 5, 2, 2)));
      }
 
      {
@@ -61,7 +61,7 @@ CTEST(TimeSeries, TransferEntropyEncodingError)
          ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 5, 2, 2)));
 
          ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 5, 3, 2)));
-         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 5, 2, 2)));
+         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 5, 2, 2)));
      }
 
      {

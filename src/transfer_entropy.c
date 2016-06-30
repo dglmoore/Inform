@@ -13,41 +13,29 @@ int inform_transfer_entropy_dist(uint64_t const *series_y,
                                  inform_dist *sources,
                                  inform_dist *predicates)
 {
-    // store a pointer to the end of the target series
-    uint64_t const *last    = series_x + n;
-    // store a pointer to the future state of the target series
-    uint64_t const *future  = series_x + k;
-    // store a pointer to the current state of the source series
-    uint64_t const *y_state = series_y + k - 1;
-    // while the future state is in the target series
-    while (future != last)
-    {
-        // encode the k-length history as an integer
-        uint64_t const history = inform_encode(series_x, k, b);
-        // if the encoding failed or either of the future state and y-state are
-        // not valid given the base, return an error code
-        if (history >= INFORM_ENCODING_ERROR(0) || *future >= b || *y_state >= b)
-        {
-            return 1;
-        }
-        // construct an encoding of the state (history + future + y-state)
-        uint64_t const state     = history + (*future * powl(b, k)) + (*y_state * powl(b, k+1));
-        // construct an encoding of the sources (history + ystate)
-        uint64_t const source    = history + (*y_state * powl(b, k));
-        // construct an encoding of the predicates (history + future)
-        uint64_t const predicate = history + (*future * powl(b, k));
+	uint64_t history = 0, q = 1, y_state, future, state, source, predicate;
+	for (uint64_t i = 0; i < k; ++i)
+	{
+		q *= b;
+		history *= b;
+		history += series_x[i];
+	}
+	for (uint64_t i = k; i < n; ++i)
+	{
+		y_state   = series_y[i-1];
+		future    = series_x[i];
+		state     = (history * b + future) * b + y_state;
+		source    = history * b + y_state;
+		predicate = history * b + future;
 
-        // log observations of the state, history, source and predicate
-        inform_dist_tick(states, state);
-        inform_dist_tick(histories, history);
-        inform_dist_tick(sources, source);
-        inform_dist_tick(predicates, predicate);
+		inform_dist_tick(states, state);
+		inform_dist_tick(histories, history);
+		inform_dist_tick(sources, source);
+		inform_dist_tick(predicates, predicate);
 
-        // move to the next time step
-        ++series_x;
-        ++y_state;
-        ++future;
-    }
+		history = predicate - series_x[i - k]*q;
+	}
+
     return 0;
 }
 
@@ -78,6 +66,13 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
     {
         return inform_nan(4);
     }
+	for (size_t i = 0; i < n * m; ++i)
+	{
+		if (b <= node_x[i] || b <= node_y[i])
+		{
+			return inform_nan(6);
+		}
+	}
 
     // allocate a distribution for the observed states, histories,
     // sources and predicates
@@ -85,20 +80,20 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
     inform_dist *states = inform_dist_alloc(powl(b,k+2));
     if (states == NULL)
     {
-        return inform_nan(5);
+        return inform_nan(7);
     }
     inform_dist *histories  = inform_dist_alloc(powl(b,k));
     if (histories == NULL)
     {
         inform_dist_free(states);
-        return inform_nan(5);
+        return inform_nan(7);
     }
     inform_dist *sources = inform_dist_alloc(powl(b,k+1));
     if (sources == NULL)
     {
         inform_dist_free(states);
         inform_dist_free(histories);
-        return inform_nan(5);
+        return inform_nan(7);
     }
     inform_dist *predicates = inform_dist_alloc(powl(b,k+1));
     if (predicates == NULL)
@@ -106,21 +101,14 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
         inform_dist_free(states);
         inform_dist_free(histories);
         inform_dist_free(sources);
-        return inform_nan(5);
+        return inform_nan(8);
     }
 
     // for each initial condition
     for (uint64_t i = 0; i < n; ++i, node_x += m, node_y += m)
     {
         // accumulate observations and return NaN if there is an encoding error
-        if (inform_transfer_entropy_dist(node_y, node_x, m, b, k, states, histories, sources, predicates) != 0)
-        {
-            inform_dist_free(predicates);
-            inform_dist_free(sources);
-            inform_dist_free(histories);
-            inform_dist_free(states);
-            return inform_nan(6);
-        }
+        inform_transfer_entropy_dist(node_y, node_x, m, b, k, states, histories, sources, predicates);
     }
     // compute the transfer entropy from the distributions
     entropy te = inform_shannon(sources, b) + inform_shannon(predicates, b) -
