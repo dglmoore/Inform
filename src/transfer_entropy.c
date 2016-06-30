@@ -34,13 +34,13 @@ static void accumulate_observations(uint64_t const *series_y,
     }
 }
 
-entropy inform_transfer_entropy(uint64_t const *node_y, uint64_t const *node_x,
+double inform_transfer_entropy(uint64_t const *node_y, uint64_t const *node_x,
     size_t n, uint64_t b, uint64_t k)
 {
     return inform_transfer_entropy_ensemble(node_y, node_x, 1, n, b, k);
 }
 
-entropy inform_transfer_entropy_ensemble(uint64_t const *node_y,
+double inform_transfer_entropy_ensemble(uint64_t const *node_y,
     uint64_t const *node_x, size_t n, size_t m, uint64_t b, uint64_t k)
 {
     // ensure that neither of the time series are NULL
@@ -104,7 +104,7 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y,
     }
 
     // compute the transfer entropy from the distributions
-    entropy te = inform_shannon(&sources, b) + inform_shannon(&predicates, b) -
+    double te = inform_shannon(&sources, b) + inform_shannon(&predicates, b) -
         inform_shannon(&states, b) - inform_shannon(&histories, b);
 
     // free up the data array

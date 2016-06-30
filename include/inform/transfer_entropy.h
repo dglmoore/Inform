@@ -28,7 +28,8 @@ extern "C"
  * @param[in] k        the history length used to calculate the transfer entropy
  * @return the transfer entropy
  */
-entropy inform_transfer_entropy(uint64_t const *series_y, uint64_t const *series_x, size_t n, uint64_t b, uint64_t k);
+double inform_transfer_entropy(uint64_t const *series_y, uint64_t const *series_x, size_t n, uint64_t b, uint64_t k);
+
 /**
  * Compute the transfer entropy from one time series to another.
  *
@@ -48,7 +49,7 @@ entropy inform_transfer_entropy(uint64_t const *series_y, uint64_t const *series
  * @param[in] k        the history length used to calculate the transfer entropy
  * @return the transfer entropy of the ensemble
  */
-entropy inform_transfer_entropy_ensemble(uint64_t const *series_y, uint64_t const *series_x, size_t n, size_t m, uint64_t b, uint64_t k);
+double inform_transfer_entropy_ensemble(uint64_t const *series_y, uint64_t const *series_x, size_t n, size_t m, uint64_t b, uint64_t k);
 
 #ifdef __cplusplus
 }

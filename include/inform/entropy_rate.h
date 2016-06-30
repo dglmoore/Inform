@@ -27,7 +27,8 @@ extern "C"
  *
  * @see inform_entropy_rate_ensemble
  */
-entropy inform_entropy_rate(uint64_t const *series, size_t n, uint64_t b, uint64_t k);
+double inform_entropy_rate(uint64_t const *series, size_t n, uint64_t b, uint64_t k);
+
 /**
  * Compute the entropy rate of an ensemble of time series.
  *
@@ -47,7 +48,7 @@ entropy inform_entropy_rate(uint64_t const *series, size_t n, uint64_t b, uint64
  *
  * @see inform_entropy_rate
  */
-entropy inform_entropy_rate_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k);
+double inform_entropy_rate_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k);
 
 #ifdef __cplusplus
 }

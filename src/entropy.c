@@ -4,12 +4,12 @@
 #include <inform/entropy.h>
 #include <inform/error.h>
 
-entropy inform_shannon(inform_dist const *dist, double base)
+double inform_shannon(inform_dist const *dist, double base)
 {
     // ensure that the distribution is valid
     if (inform_dist_is_valid(dist))
     {
-        entropy h = 0.;
+        double h = 0.;
         // for each element of the distribution's support
         for (size_t i = 0; i < inform_dist_size(dist); ++i)
         {
@@ -29,7 +29,7 @@ entropy inform_shannon(inform_dist const *dist, double base)
     return inform_nan(1);
 }
 
-entropy inform_mutual_info(inform_dist const *joint,
+double inform_mutual_info(inform_dist const *joint,
         inform_dist const *marginal_x,
         inform_dist const *marginal_y,
         double base)
@@ -41,7 +41,7 @@ entropy inform_mutual_info(inform_dist const *joint,
         - inform_shannon(joint,base);
 }
 
-entropy inform_conditional_entropy(inform_dist const *joint,
+double inform_conditional_entropy(inform_dist const *joint,
         inform_dist const *marginal,
         double base)
 {

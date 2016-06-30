@@ -11,9 +11,6 @@ extern "C"
 {
 #endif
 
-/// an entropy is just a double
-typedef double entropy;
-
 /**
  * Compute the Shannon entropy of a distribution.
  * 
@@ -24,7 +21,7 @@ typedef double entropy;
  * @param[in] base the logarithmic base
  * @return the shannon entropy
  */
-entropy inform_shannon(inform_dist const *dist, double base);
+double inform_shannon(inform_dist const *dist, double base);
 
 /**
  * Compute the Shannon-based mutual information of a distribution and
@@ -41,7 +38,7 @@ entropy inform_shannon(inform_dist const *dist, double base);
  *
  * @see inform_shannon
  */
-entropy inform_mutual_info(inform_dist const *joint,
+double inform_mutual_info(inform_dist const *joint,
         inform_dist const *marginal_x,
         inform_dist const *marginal_y,
         double base);
@@ -60,7 +57,7 @@ entropy inform_mutual_info(inform_dist const *joint,
  *
  * @see inform_shannon
  */
-entropy inform_conditional_entropy(inform_dist const* joint,
+double inform_conditional_entropy(inform_dist const* joint,
         inform_dist const *marginal,
         double base);
 
