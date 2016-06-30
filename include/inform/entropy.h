@@ -12,8 +12,20 @@ extern "C"
 #endif
 
 /**
+ * Compute the self-information of an event given some distribution.
+ *
+ * This function will return `NaN` if the distribution is not valid.
+ *
+ * @param[in] dist  the probability distribution
+ * @param[in] event the event in question
+ * @param[in] base  the logarithmic base
+ * @return the self-information of the event
+ */
+double inform_self_info(inform_dist const *dist, uint64_t event, double base);
+
+/**
  * Compute the Shannon entropy of a distribution.
- * 
+ *
  * This function will return `NaN` if the distribution is not valid,
  * i.e. `!inform_dist_is_valid(dist)`.
  *

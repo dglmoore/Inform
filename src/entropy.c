@@ -4,6 +4,15 @@
 #include <inform/entropy.h>
 #include <inform/error.h>
 
+double inform_self_info(inform_dist const *dist, uint64_t event, double base)
+{
+    if (inform_dist_is_valid(dist))
+    {
+        return -log2(inform_dist_prob(dist, event)) / log2(base);
+    }
+    return inform_nan(1);
+}
+
 double inform_shannon(inform_dist const *dist, double base)
 {
     // ensure that the distribution is valid

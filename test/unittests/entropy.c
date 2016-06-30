@@ -56,7 +56,7 @@ CTEST2(Entropy, ShannonUniform)
 {
     data->dist = inform_dist_alloc(5);
     inform_dist_fill(data->dist, 1, 1, 1, 1, 1);
-    
+
     ASSERT_TRUE(isnan(inform_shannon(data->dist, -1.0)));
     ASSERT_TRUE(isnan(inform_shannon(data->dist, -0.5)));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 0.0), 1e-6);
@@ -71,7 +71,7 @@ CTEST2(Entropy, ShannonNonUniform)
 {
     data->dist = inform_dist_alloc(2);
     inform_dist_fill(data->dist, 2, 1);
-    
+
     ASSERT_TRUE(isnan(inform_shannon(data->dist, -1.0)));
     ASSERT_TRUE(isnan(inform_shannon(data->dist, -0.5)));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 0.0), 1e-6);
@@ -83,7 +83,7 @@ CTEST2(Entropy, ShannonNonUniform)
 
     data->dist = inform_dist_realloc(data->dist, 3);
     inform_dist_fill(data->dist, 1, 1, 0);
-    
+
     ASSERT_TRUE(isnan(inform_shannon(data->dist, -1.0)));
     ASSERT_TRUE(isnan(inform_shannon(data->dist, -0.5)));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 0.0), 1e-6);
@@ -95,7 +95,7 @@ CTEST2(Entropy, ShannonNonUniform)
 
     inform_dist_fill(data->dist, 2, 2, 1);
     ASSERT_DBL_NEAR_TOL(1.521928, inform_shannon(data->dist, 2), 1e-6);
-    
+
     ASSERT_TRUE(isnan(inform_shannon(data->dist, -1.0)));
     ASSERT_TRUE(isnan(inform_shannon(data->dist, -0.5)));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon(data->dist, 0.0), 1e-6);
@@ -157,4 +157,42 @@ CTEST2(Entropy, MutualInformationDependent)
     ASSERT_DBL_NEAR_TOL(0.107086, inform_mutual_info(data->dist, xs, ys, 4), 1e-6);
     inform_dist_free(ys);
     inform_dist_free(xs);
+}
+
+CTEST2(Entropy, SelfInformationInvalidDist)
+{
+    ASSERT_TRUE(isnan(inform_self_info(data->dist, 0, 2)));
+}
+
+CTEST2(Entropy, SelfInformationImposibleEvent)
+{
+    data->dist = inform_dist_alloc(2);
+    inform_dist_fill(data->dist, 1, 0);
+    ASSERT_FALSE(isinf(inform_self_info(data->dist, 0, 2)));
+    ASSERT_TRUE(isinf(inform_self_info(data->dist, 2, 2)));
+}
+
+CTEST2(Entropy, SelfInformationBase2)
+{
+    data->dist = inform_dist_alloc(2);
+    inform_dist_fill(data->dist, 1, 1);
+    ASSERT_DBL_NEAR_TOL(1.000000, inform_self_info(data->dist, 0, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.000000, inform_self_info(data->dist, 1, 2), 1e-6);
+
+    inform_dist_fill(data->dist, 2, 1);
+    ASSERT_DBL_NEAR_TOL(0.584963, inform_self_info(data->dist, 0, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.584963, inform_self_info(data->dist, 1, 2), 1e-6);
+
+    inform_dist_fill(data->dist, 2, 0);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_self_info(data->dist, 0, 2), 1e-6);
+    ASSERT_TRUE(isinf(inform_self_info(data->dist, 1, 2)));
+}
+
+CTEST2(Entropy, SelfInformatoinBase3)
+{
+    data->dist = inform_dist_alloc(3);
+    inform_dist_fill(data->dist, 1, 2, 3);
+    ASSERT_DBL_NEAR_TOL(1.630930, inform_self_info(data->dist, 0, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.000000, inform_self_info(data->dist, 1, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.630930, inform_self_info(data->dist, 2, 3), 1e-6);
 }
