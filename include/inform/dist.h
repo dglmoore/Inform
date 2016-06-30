@@ -43,7 +43,15 @@ extern "C"
  * probabilities extracted from it. One can use inform_dist_is_valid to assess
  * the validity of the distribution.
  */
-typedef struct inform_distribution inform_dist;
+typedef struct inform_distribution
+{
+    /// the histogram or array of observation frequencies
+    uint64_t *histogram;
+    /// the size of the support
+    size_t size;
+    /// the number of observations made so far
+    uint64_t counts;
+} inform_dist;
 
 /**
  * Allocate a distribution with a specified support size.

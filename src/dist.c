@@ -5,16 +5,6 @@
 
 #include <string.h>
 
-struct inform_distribution
-{
-    /// the size of the support
-    size_t size;
-    /// the histogram or array of observation frequencies
-    uint64_t *histogram;
-    /// the number of observations made so far
-    uint64_t counts;
-};
-
 inform_dist* inform_dist_alloc(size_t n)
 {
     // if the requested support size is zero, return NULL
