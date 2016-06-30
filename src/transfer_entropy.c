@@ -6,8 +6,8 @@
 
 static void accumulate_observations(uint64_t const *series_y,
     uint64_t const *series_x, size_t n, uint64_t b, uint64_t k,
-    uint64_t *states, uint64_t *histories, uint64_t *sources,
-    uint64_t *predicates)
+    inform_dist *states, inform_dist *histories, inform_dist *sources,
+    inform_dist *predicates)
 
 {
     uint64_t history = 0, q = 1, y_state, future, state, source, predicate;
@@ -25,10 +25,10 @@ static void accumulate_observations(uint64_t const *series_y,
         source    = history * b + y_state;
         predicate = history * b + future;
 
-        states[state]++;
-        histories[history]++;
-        sources[source]++;
-        predicates[predicate]++;
+        states->histogram[state]++;
+        histories->histogram[history]++;
+        sources->histogram[source]++;
+        predicates->histogram[predicate]++;
 
         history = predicate - series_x[i - k]*q;
     }
@@ -71,76 +71,41 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y,
         }
     }
 
+    // compute the number of observations to be made
+    int const N = n * (m - k);
+
     // compute the sizes of the various histograms
-    int q = pow(b,k);
-    int states_size     = b*b*q;
-    int histories_size  = q;
-    int sources_size    = b*q;
-    int predicates_size = b*q;
+    int const q = pow(b,k);
+    int const states_size     = b*b*q;
+    int const histories_size  = q;
+    int const sources_size    = b*q;
+    int const predicates_size = b*q;
+    int const total_size = states_size + histories_size + sources_size
+        + predicates_size;
 
     // allocate memory to store the basic histograms
-    uint64_t *data = calloc(states_size + histories_size + sources_size + predicates_size, sizeof(uint64_t));
+    uint64_t *data = calloc(total_size, sizeof(uint64_t));
     if (data == NULL)
     {
         return inform_nan(7);
     }
 
     // create some pointers to facilitate observation accumulation
-    uint64_t *states     = data;
-    uint64_t *histories  = states + states_size;
-    uint64_t *sources    = histories + histories_size;
-    uint64_t *predicates = sources + sources_size;
+    inform_dist states     = { data, states_size, N };
+    inform_dist histories  = { data + states_size, histories_size, N };
+    inform_dist sources    = { data + states_size + histories_size, sources_size, N };
+    inform_dist predicates = { data + states_size + histories_size + sources_size, predicates_size, N };
 
     // for each initial condition
     for (uint64_t i = 0; i < n; ++i, node_x += m, node_y += m)
     {
         // accumulate the observations
-        accumulate_observations(node_y, node_x, m, b, k, states, histories, sources, predicates);
-    }
-
-    // create the states distribution
-    inform_dist *states_dist = inform_dist_create(states, states_size);
-    if (states_dist == NULL)
-    {
-        return inform_nan(8);
-    }
-
-    // create the histories distribution
-    inform_dist *histories_dist = inform_dist_create(histories, histories_size);
-    if (histories_dist == NULL)
-    {
-        inform_dist_free(states_dist);
-        return inform_nan(9);
-    }
-
-    // create the sources distribution
-    inform_dist *sources_dist = inform_dist_create(sources, sources_size);
-    if (sources_dist == NULL)
-    {
-        inform_dist_free(histories_dist);
-        inform_dist_free(states_dist);
-        return inform_nan(10);
-    }
-
-    // create the predicates distribution
-    inform_dist *predicates_dist = inform_dist_create(predicates, predicates_size);
-    if (predicates_dist == NULL)
-    {
-        inform_dist_free(sources_dist);
-        inform_dist_free(histories_dist);
-        inform_dist_free(states_dist);
-        return inform_nan(11);
+        accumulate_observations(node_y, node_x, m, b, k, &states, &histories, &sources, &predicates);
     }
 
     // compute the transfer entropy from the distributions
-    entropy te = inform_shannon(sources_dist, b) + inform_shannon(predicates_dist, b) -
-        inform_shannon(states_dist, b) - inform_shannon(histories_dist, b);
-
-    // free up the distributions
-    inform_dist_free(predicates_dist);
-    inform_dist_free(sources_dist);
-    inform_dist_free(histories_dist);
-    inform_dist_free(states_dist);
+    entropy te = inform_shannon(&sources, b) + inform_shannon(&predicates, b) -
+        inform_shannon(&states, b) - inform_shannon(&histories, b);
 
     // free up the data array
     free(data);
