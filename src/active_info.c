@@ -5,7 +5,7 @@
 #include <inform/time_series.h>
 
 static void accumulate_observations(uint64_t const* series, size_t n, uint64_t b,
-    uint64_t k, uint64_t *states, uint64_t *histories, uint64_t *futures)
+    uint64_t k, inform_dist *states, inform_dist *histories, inform_dist *futures)
 {
     uint64_t history = 0, q = 1, state, future;
     for (uint64_t i = 0; i < k; ++i)
@@ -19,9 +19,9 @@ static void accumulate_observations(uint64_t const* series, size_t n, uint64_t b
         future = series[i];
         state  = history * b + future;
 
-        states[state]++;
-        histories[history]++;
-        futures[future]++;
+        states->histogram[state]++;
+        histories->histogram[history]++;
+        futures->histogram[future]++;
 
         history = state - series[i - k]*q;
     }
@@ -63,62 +63,34 @@ entropy inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, 
         }
     }
 
-    // compute the sizes of the various histograms
-    int states_size = b*pow(b,k);
-    int histories_size = states_size / b;
-    int futures_size = b;
+    // compute the number of observations to be made
+    int const N = n * (m - k);
 
-    // allocate memory to store the basic histograms
-    uint64_t *data = calloc(states_size + histories_size + futures_size, sizeof(uint64_t));
-    // ensure that the memory was allocated
+    // compute the sizes of the various histograms
+    int const states_size = b*pow(b,k);
+    int const histories_size = states_size / b;
+    int const futures_size = b;
+    int const total_size = states_size + histories_size + futures_size;
+
+    uint64_t *data = calloc(total_size, sizeof(uint64_t));
     if (data == NULL)
     {
         return inform_nan(6);
     }
 
-    // create some pointers to facilitate observation accumulation
-    uint64_t *states = data;
-    uint64_t *histories = states + states_size;
-    uint64_t *futures = histories + histories_size;
+    inform_dist states    = { data, states_size, N };
+    inform_dist histories = { data + states_size, histories_size, N };
+    inform_dist futures   = { data + states_size + histories_size, futures_size, N };
 
     // for each initial condition
     for (uint64_t i = 0; i < n; ++i, series += m)
     {
         // allocate the observations
-        accumulate_observations(series, m, b, k, states, histories, futures);
-    }
-
-    // create the states distribution
-    inform_dist *states_dist = inform_dist_create(states, states_size);
-    if (states_dist == NULL)
-    {
-        return inform_nan(7);
-    }
-
-    // create the histories distribution
-    inform_dist *histories_dist = inform_dist_create(histories, histories_size);
-    if (histories_dist == NULL)
-    {
-        inform_dist_free(states_dist);
-        return inform_nan(8);
-    }
-
-    // create the futures distribution
-    inform_dist *futures_dist = inform_dist_create(futures, futures_size);
-    if (futures_dist == NULL)
-    {
-        inform_dist_free(histories_dist);
-        inform_dist_free(states_dist);
-        return inform_nan(9);
+        accumulate_observations(series, m, b, k, &states, &histories, &futures);
     }
 
     // compute the active information
-    entropy ai = inform_mutual_info(states_dist, histories_dist, futures_dist, b);
-
-    // free up the distributions
-    inform_dist_free(futures_dist);
-    inform_dist_free(histories_dist);
-    inform_dist_free(states_dist);
+    entropy ai = inform_mutual_info(&states, &histories, &futures, b);
 
     // free up the data array
     free(data);
