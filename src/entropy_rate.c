@@ -5,8 +5,8 @@
 #include <inform/state_encoding.h>
 #include <inform/time_series.h>
 
-int inform_entropy_rate_dist(uint64_t const* series, size_t n,
-        uint64_t b, uint64_t k, inform_dist *states, inform_dist *histories)
+static void accumulate_observations(uint64_t const* series, size_t n,
+    uint64_t b, uint64_t k, inform_dist *states, inform_dist *histories)
 {
     uint64_t history = 0, q = 1, state, future;
     for (uint64_t i = 0; i < k; ++i)
@@ -25,7 +25,6 @@ int inform_entropy_rate_dist(uint64_t const* series, size_t n,
 
         history = state - series[i - k]*q;
     }
-    return 0;
 }
 
 entropy inform_entropy_rate(uint64_t const *series, size_t n, uint64_t b, uint64_t k)
@@ -55,31 +54,34 @@ entropy inform_entropy_rate_ensemble(uint64_t const *series, size_t n, size_t m,
     {
         return inform_nan(4);
     }
+    // ensure that the base is compatible with the time series
+    for (size_t i = 0; i < n * m; ++i)
+    {
+        if (b <= series[i])
+        {
+            return inform_nan(5);
+        }
+    }
 
     // allocate a distribution for the observed states and histories
     // clear memory and return NaN if any of the allocations fail
     inform_dist *states = inform_dist_alloc(powl(b,k+1));
     if (states == NULL)
     {
-        return inform_nan(5);
+        return inform_nan(6);
     }
     inform_dist *histories = inform_dist_alloc(powl(b,k));
     if (histories == NULL)
     {
         inform_dist_free(states);
-        return inform_nan(5);
+        return inform_nan(7);
     }
 
     // for each initial condition
     for (uint64_t i = 0; i < n; ++i, series += m)
     {
         // accumulate observations
-        if (inform_entropy_rate_dist(series, m, b, k, states, histories) != 0)
-        {
-            inform_dist_free(histories);
-            inform_dist_free(states);
-            return inform_nan(6);
-        }
+        accumulate_observations(series, m, b, k, states, histories);
     }
     // compute the conditional entropy etween the states and histories,
     // i.e. the entropy rate
