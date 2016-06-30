@@ -90,31 +90,6 @@ entropy inform_entropy_rate(uint64_t const *series, size_t n, uint64_t b, uint64
 entropy inform_entropy_rate_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k);
 
 /**
- * @brief Populate the transfer entropy distributions
- *
- * In computing the transfer entropy of a time series, four distributions
- * are created for the states, histories and sources, and predicates,
- * respectively. This function populates those distributions allowing code
- * reuse and facilitating parallel processing.
- *
- * @param[in] series_y       the time series of the source node
- * @param[in] series_x       the time series of the target node
- * @param[in] n              the length of the time series
- * @param[in] b              the base or number of distinct states at each time step
- * @param[in] k              the history length
- * @param[in,out] states     the observed distribution of states
- * @param[in,out] histories  the observed distribution of histories
- * @param[in,out] sources    the observed distribution of sources
- * @param[in,out] predicates the observed distribution of predicates
- * @return `0` when successful and `1` on a state-encoding error
- */
-int inform_transfer_entropy_dist(uint64_t const *series_y, uint64_t const *series_x, size_t n, uint64_t b, uint64_t k,
-                                 inform_dist *states,
-                                 inform_dist *histories,
-                                 inform_dist *sources,
-                                 inform_dist *predicates);
-
-/**
  * Compute the transfer entropy from one time series to another.
  *
  * `NaN` is returned in at least the following erroneous situtations

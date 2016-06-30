@@ -4,38 +4,34 @@
 #include <inform/error.h>
 #include <inform/time_series.h>
 
-int inform_transfer_entropy_dist(uint64_t const *series_y,
-                                 uint64_t const *series_x, size_t n,
-                                 uint64_t b, uint64_t k,
-                                 inform_dist *states,
-                                 inform_dist *histories,
-                                 inform_dist *sources,
-                                 inform_dist *predicates)
+static void accumulate_observations(uint64_t const *series_y,
+    uint64_t const *series_x, size_t n, uint64_t b, uint64_t k,
+    inform_dist *states, inform_dist *histories, inform_dist *sources,
+    inform_dist *predicates)
+
 {
-	uint64_t history = 0, q = 1, y_state, future, state, source, predicate;
-	for (uint64_t i = 0; i < k; ++i)
-	{
-		q *= b;
-		history *= b;
-		history += series_x[i];
-	}
-	for (uint64_t i = k; i < n; ++i)
-	{
-		y_state   = series_y[i-1];
-		future    = series_x[i];
-		state     = (history * b + future) * b + y_state;
-		source    = history * b + y_state;
-		predicate = history * b + future;
+    uint64_t history = 0, q = 1, y_state, future, state, source, predicate;
+    for (uint64_t i = 0; i < k; ++i)
+    {
+        q *= b;
+        history *= b;
+        history += series_x[i];
+    }
+    for (uint64_t i = k; i < n; ++i)
+    {
+        y_state   = series_y[i-1];
+        future    = series_x[i];
+        state     = (history * b + future) * b + y_state;
+        source    = history * b + y_state;
+        predicate = history * b + future;
 
-		inform_dist_tick(states, state);
-		inform_dist_tick(histories, history);
-		inform_dist_tick(sources, source);
-		inform_dist_tick(predicates, predicate);
+        inform_dist_tick(states, state);
+        inform_dist_tick(histories, history);
+        inform_dist_tick(sources, source);
+        inform_dist_tick(predicates, predicate);
 
-		history = predicate - series_x[i - k]*q;
-	}
-
-    return 0;
+        history = predicate - series_x[i - k]*q;
+    }
 }
 
 entropy inform_transfer_entropy(uint64_t const *node_y, uint64_t const *node_x, size_t n, uint64_t b, uint64_t k)
@@ -65,13 +61,13 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
     {
         return inform_nan(4);
     }
-	for (size_t i = 0; i < n * m; ++i)
-	{
-		if (b <= node_x[i] || b <= node_y[i])
-		{
-			return inform_nan(6);
-		}
-	}
+    for (size_t i = 0; i < n * m; ++i)
+    {
+        if (b <= node_x[i] || b <= node_y[i])
+        {
+            return inform_nan(6);
+        }
+    }
 
     // allocate a distribution for the observed states, histories,
     // sources and predicates
@@ -106,8 +102,8 @@ entropy inform_transfer_entropy_ensemble(uint64_t const *node_y, uint64_t const 
     // for each initial condition
     for (uint64_t i = 0; i < n; ++i, node_x += m, node_y += m)
     {
-        // accumulate observations and return NaN if there is an encoding error
-        inform_transfer_entropy_dist(node_y, node_x, m, b, k, states, histories, sources, predicates);
+        // accumulate the observations
+        accumulate_observations(node_y, node_x, m, b, k, states, histories, sources, predicates);
     }
     // compute the transfer entropy from the distributions
     entropy te = inform_shannon(sources, b) + inform_shannon(predicates, b) -
