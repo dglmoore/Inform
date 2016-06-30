@@ -63,31 +63,37 @@ entropy inform_entropy_rate_ensemble(uint64_t const *series, size_t n, size_t m,
         }
     }
 
+    // compute the sizes of the histograms
     int states_size = b * pow(b,k);
     int histories_size = states_size / b;
 
+    // allocate memory to store the histograms
     uint64_t *data = calloc(states_size + histories_size, sizeof(uint64_t));
+    // ensure that the memory was allocated
     if (data == NULL)
     {
         return inform_nan(6);
     }
 
+    // create some pointers to facilitate observation accumulation
     uint64_t *states = data;
     uint64_t *histories = states + states_size;
 
     // for each initial condition
     for (uint64_t i = 0; i < n; ++i, series += m)
     {
-        // accumulate observations
+        // accumulate the observations
         accumulate_observations(series, m, b, k, states, histories);
     }
 
+    // create the states distribution
     inform_dist *states_dist = inform_dist_create(states, states_size);
     if (states_dist == NULL)
     {
         return inform_nan(7);
     }
 
+    // create the histories distribution
     inform_dist *histories_dist = inform_dist_create(histories, histories_size);
     if (histories_dist == NULL)
     {
@@ -95,12 +101,14 @@ entropy inform_entropy_rate_ensemble(uint64_t const *series, size_t n, size_t m,
         return inform_nan(8);
     }
 
+    // compute the entropy rate
     entropy er = inform_conditional_entropy(states_dist, histories_dist, b);
 
-    // free up the distributions (otherwise there would be memory leaks)
+    // free up the distributions
     inform_dist_free(histories_dist);
     inform_dist_free(states_dist);
 
+    // free up the data array
     free(data);
 
     // return the active information
