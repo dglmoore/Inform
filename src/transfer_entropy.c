@@ -2,7 +2,6 @@
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 #include <inform/error.h>
-#include <inform/state_encoding.h>
 #include <inform/time_series.h>
 
 int inform_transfer_entropy_dist(uint64_t const *series_y,
