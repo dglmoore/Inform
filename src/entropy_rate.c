@@ -8,30 +8,22 @@
 int inform_entropy_rate_dist(uint64_t const* series, size_t n,
         uint64_t b, uint64_t k, inform_dist *states, inform_dist *histories)
 {
-    // store a pointer to the end of the time series
-    uint64_t const *last   = series + n;
-    // store a pointer to the future state
-    uint64_t const *future = series + k;
-    // while the future state is in the time series
-    while (future != last)
+    uint64_t history = 0, q = 1, state, future;
+    for (uint64_t i = 0; i < k; ++i)
     {
-        // encode the k-length history as an integer
-        uint64_t const history = inform_encode(series, k, b);
-        // if the encoding failed, return an error code
-        if (history >= INFORM_ENCODING_ERROR(0))
-        {
-            return 1;
-        }
-        // construct an encoding of the state (history + future) as an integer
-        uint64_t const state = history + (*future * powl(b, k));
+        q *= b;
+        history *= b;
+        history += series[i];
+    }
+    for (uint64_t i = k; i < n; ++i)
+    {
+        future = series[i];
+        state  = history * b + future;
 
-        // log observations of the state, history and future
         inform_dist_tick(states, state);
         inform_dist_tick(histories, history);
 
-        // move to the next time step
-        ++series;
-        ++future;
+        history = state - series[i - k]*q;
     }
     return 0;
 }
