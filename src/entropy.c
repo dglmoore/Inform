@@ -38,6 +38,15 @@ double inform_shannon(inform_dist const *dist, double base)
     return inform_nan(1);
 }
 
+double inform_pointwise_mutual_info(inform_dist const *joint,
+    inform_dist const * marginal_x, inform_dist const *marginal_y,
+    uint64_t event_joint, uint64_t event_x, uint64_t event_y, double base)
+{
+    return inform_self_info(marginal_x, event_x, base) +
+        inform_self_info(marginal_y, event_y, base) -
+        inform_self_info(joint, event_joint, base);
+}
+
 double inform_mutual_info(inform_dist const *joint,
         inform_dist const *marginal_x,
         inform_dist const *marginal_y,

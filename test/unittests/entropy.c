@@ -196,3 +196,56 @@ CTEST2(Entropy, SelfInformatoinBase3)
     ASSERT_DBL_NEAR_TOL(1.000000, inform_self_info(data->dist, 1, 3), 1e-6);
     ASSERT_DBL_NEAR_TOL(0.630930, inform_self_info(data->dist, 2, 3), 1e-6);
 }
+
+CTEST2(Entropy, PointwiseMutualInformationIndependent)
+{
+
+    inform_dist *xs = inform_dist_alloc(12);
+    inform_dist_fill(xs, 5, 2, 3, 5, 1, 4, 6, 2, 1, 4, 2, 4);
+
+    inform_dist *ys = inform_dist_alloc(12);
+    inform_dist_fill(ys, 2, 4, 5, 2, 7, 3, 9, 8, 8, 7, 2, 3);
+
+    data->dist = inform_dist_alloc(144);
+    for (size_t i = 0; i < inform_dist_size(xs); ++i)
+    {
+        for (size_t j = 0; j < inform_dist_size(ys); ++j)
+        {
+            inform_dist_set(data->dist, j+i*12,
+                    inform_dist_get(xs, i) * inform_dist_get(ys, j));
+        }
+    }
+
+    for (size_t i = 0; i < inform_dist_size(xs); ++i)
+    {
+        for (size_t j = 0; j < inform_dist_size(ys); ++j)
+        {
+            ASSERT_DBL_NEAR_TOL(0.000000, inform_pointwise_mutual_info(data->dist, xs, ys, j+i*12, i, j, 0.5), 1e-6);
+            ASSERT_DBL_NEAR_TOL(0.000000, inform_pointwise_mutual_info(data->dist, xs, ys, j+i*12, i, j, 2), 1e-6);
+            ASSERT_DBL_NEAR_TOL(0.000000, inform_pointwise_mutual_info(data->dist, xs, ys, j+i*12, i, j, 3), 1e-6);
+        }
+    }
+
+    inform_dist_free(ys);
+    inform_dist_free(xs);
+}
+
+CTEST2(Entropy, PointwiseMutualInformationDependent)
+{
+    data->dist = inform_dist_alloc(4);
+    inform_dist_fill(data->dist, 10, 70, 15, 5);
+
+    inform_dist *xs = inform_dist_alloc(2);
+    inform_dist_fill(xs, 80, 20);
+
+    inform_dist *ys = inform_dist_alloc(2);
+    inform_dist_fill(ys, 25, 75);
+
+    ASSERT_DBL_NEAR_TOL(-1.000000, inform_pointwise_mutual_info(data->dist, xs, ys, 0, 0, 0, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL( 0.222392, inform_pointwise_mutual_info(data->dist, xs, ys, 1, 0, 1, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL( 1.584963, inform_pointwise_mutual_info(data->dist, xs, ys, 2, 1, 0, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(-1.584963, inform_pointwise_mutual_info(data->dist, xs, ys, 3, 1, 1, 2), 1e-6);
+
+    inform_dist_free(ys);
+    inform_dist_free(xs);
+}
