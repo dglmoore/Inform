@@ -50,6 +50,33 @@ double inform_active_info(uint64_t const *series, size_t n, uint64_t b, uint64_t
  */
 double inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k);
 
+/**
+ * @param[in] series the time series of values
+ * @param[in] n      the number of time steps in the time series
+ * @param[in] b      the base or number of distinct states at each time step
+ * @param[in] k      the history length used to calculate the active information
+ * @param[out] ai    the local active information
+ * @return an error code
+ *
+ * @see inform_active_info_ensemble
+ */
+int inform_local_active_info(uint64_t const *series, size_t n, uint64_t b,
+    uint64_t k, double *ai);
+
+/**
+ * @param[in] series the ensemble of time series
+ * @param[in] n      the number of initial conditions
+ * @param[in] m      the number of time steps in each time series
+ * @param[in] b      the base or number of distinct states at each time step
+ * @param[in] k      the history length used to calculate the active information
+ * @param[out] ai    the local active information
+ * @return an error code
+ *
+ * @see inform_active_info
+ */
+int inform_local_active_info_ensemble(uint64_t const *series, size_t n,
+    size_t m, uint64_t b, uint64_t k, double *ai);
+
 #ifdef __cplusplus
 }
 #endif
