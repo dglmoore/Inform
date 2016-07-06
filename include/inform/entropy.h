@@ -72,6 +72,20 @@ double inform_mutual_info(inform_dist const *joint,
         double base);
 
 /**
+ * Compute the pointwise conditional entropy of a combination of events
+ *
+ * @param[in] joint    the joint probability distribution
+ * @param[in] marginal the marginal distribution
+ * @param[in] event_joint the joint event
+ * @param[in] event_marginal the marginal event
+ * @param[in] base           the logarithmic base
+ * @return the pointwise conditional entropy of the events
+ */
+double inform_pointwise_conditional_entropy(inform_dist const *joint,
+    inform_dist const *marginal, uint64_t event_joint,
+    uint64_t event_marginal, double base);
+
+/**
  * Compute the Shannon-based conditional entropy of a joint distribution and
  * a marginal.
  *

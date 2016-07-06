@@ -59,6 +59,14 @@ double inform_mutual_info(inform_dist const *joint,
         - inform_shannon(joint,base);
 }
 
+double inform_pointwise_conditional_entropy(inform_dist const *joint,
+    inform_dist const *marginal, uint64_t event_joint,uint64_t event_marginal,
+    double base)
+{
+    return inform_self_info(joint, event_joint, base) -
+        inform_self_info(marginal, event_marginal, base);
+}
+
 double inform_conditional_entropy(inform_dist const *joint,
         inform_dist const *marginal,
         double base)
