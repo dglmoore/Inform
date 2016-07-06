@@ -28,6 +28,31 @@ struct unit_suite
 
 extern jmp_buf __unit_err;
 
+inline static int run_unit(struct unit_suite *suite, struct unit *u)
+{
+    if (u == NULL) return 1;
+
+    printf("  [TEST] %s ", u->name);
+
+    assert(u->run != NULL);
+
+    ++suite->total;
+
+    int result = setjmp(__unit_err);
+    if (result == 0)
+    {
+        u->run();
+        printf(" [OK]\n");
+        ++suite->num_ok;
+    }
+    else
+    {
+        printf(" [FAIL]\n");
+        ++suite->num_failed;
+    }
+    return 0;
+}
+
 inline static void run_unit_suite(struct unit_suite *suite)
 {
     if (suite == NULL) return;
@@ -37,20 +62,10 @@ inline static void run_unit_suite(struct unit_suite *suite)
     struct unit **u = suite->units;
     while (*u != NULL)
     {
-        printf("  [TEST] %s ", (*u)->name);
-        assert((*u)->run != NULL);
-        ++suite->total;
-        int result = setjmp(__unit_err);
-        if (result == 0)
+        if (run_unit(suite, *u) != 0)
         {
-            (*u)->run();
-            printf("[OK]\n");
-            ++suite->num_ok;
-        }
-        else
-        {
-            printf(" [FAIL]\n");
-            ++suite->num_failed;
+            printf("[FRAMEWORK FAILURE]\n");
+            abort();
         }
         ++u;
     }
