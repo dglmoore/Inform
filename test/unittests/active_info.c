@@ -1,21 +1,21 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <ctest.h>
+#include <unit.h>
 #include <inform/state_encoding.h>
 #include <inform/active_info.h>
 #include "random.h"
 
 #include <stdio.h>
 
-CTEST(TimeSeries, ActiveInfoSeriesTooShort)
+UNIT(ActiveInfoSeriesTooShort)
 {
     uint64_t const series[] = {1,1,0,0,1,0,0,1};
     ASSERT_TRUE(isnan(inform_active_info(series, 0, 2, 2)));
     ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, 2)));
 }
 
-CTEST(TimeSeries, ActiveInfoHistoryTooLong)
+UNIT(ActiveInfoHistoryTooLong)
 {
     {
         uint64_t const series[] = {1,1,0,0,1,0,0,1};
@@ -41,14 +41,14 @@ CTEST(TimeSeries, ActiveInfoHistoryTooLong)
     }
 }
 
-CTEST(TimeSeries, ActiveInfoEncodingError)
+UNIT(ActiveInfoEncodingError)
 {
     uint64_t const series[] = {2,1,0,0,1,0,0,1};
     ASSERT_FALSE(isnan(inform_active_info(series, 8, 3, 2)));
     ASSERT_TRUE(isnan(inform_active_info(series, 8, 2, 2)));
 }
 
-CTEST(TimeSeries, ActiveInfoSingleSeries_Base2)
+UNIT(ActiveInfoSingleSeries_Base2)
 {
     ASSERT_DBL_NEAR_TOL(0.918296,
             inform_active_info((uint64_t[]){1,1,0,0,1,0,0,1}, 8, 2, 2),
@@ -91,7 +91,7 @@ CTEST(TimeSeries, ActiveInfoSingleSeries_Base2)
             1e-6);
 }
 
-CTEST(TimeSeries, ActiveInfoSingleSeries_Base4)
+UNIT(ActiveInfoSingleSeries_Base4)
 {
     ASSERT_DBL_NEAR_TOL(0.635471,
             inform_active_info((uint64_t[]){3,3,3,2,1,0,0,0,1}, 9, 4, 2),
@@ -106,7 +106,7 @@ CTEST(TimeSeries, ActiveInfoSingleSeries_Base4)
             1e-6);
 }
 
-CTEST(TimeSeries, ActiveInfoEnsemble)
+UNIT(ActiveInfoEnsemble)
 {
     {
         uint64_t series[16] = {
@@ -134,7 +134,7 @@ CTEST(TimeSeries, ActiveInfoEnsemble)
     }
 }
 
-CTEST(TimeSeries, ActiveInfoEnsemble_Base4)
+UNIT(ActiveInfoEnsemble_Base4)
 {
     {
         uint64_t series[36] = {
@@ -160,7 +160,7 @@ static double average(double *xs, size_t n)
     return x / n;
 }
 
-CTEST(TimeSeries, LocalActiveInfoSeriesTooShort)
+UNIT(LocalActiveInfoSeriesTooShort)
 {
     double ai[8];
     uint64_t const series[] = {1,1,0,0,1,0,0,1};
@@ -168,7 +168,7 @@ CTEST(TimeSeries, LocalActiveInfoSeriesTooShort)
     ASSERT_EQUAL(3, inform_local_active_info(series, 1, 2, 2, ai));
 }
 
-CTEST(TimeSeries, LocalActiveInfoHistoryTooLong)
+UNIT(LocalActiveInfoHistoryTooLong)
 {
     {
         double ai[6];
@@ -196,7 +196,7 @@ CTEST(TimeSeries, LocalActiveInfoHistoryTooLong)
     }
 }
 
-CTEST(TimeSeries, LocalActiveInfoEncodingError)
+UNIT(LocalActiveInfoEncodingError)
 {
     double ai[8];
     uint64_t const series[] = {2,1,0,0,1,0,0,1};
@@ -204,7 +204,7 @@ CTEST(TimeSeries, LocalActiveInfoEncodingError)
     ASSERT_EQUAL(6, inform_local_active_info(series, 8, 2, 2, ai));
 }
 
-CTEST(TimeSeries, LocalActiveInfoSingleSeries_Base2)
+UNIT(LocalActiveInfoSingleSeries_Base2)
 {
     double ai[7] = {0, 0, 0, 0, 0, 0, 0};
 
@@ -236,7 +236,7 @@ CTEST(TimeSeries, LocalActiveInfoSingleSeries_Base2)
     ASSERT_DBL_NEAR_TOL(0.347458, AVERAGE(ai), 1e-6);
 }
 
-CTEST(TimeSeries, LocalActiveInfoSingleSeries_Base4)
+UNIT(LocalActiveInfoSingleSeries_Base4)
 {
     double ai[7];
     ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){3, 3, 3, 2, 1, 0, 0, 0, 1}, 9, 4, 2, ai));
@@ -249,7 +249,7 @@ CTEST(TimeSeries, LocalActiveInfoSingleSeries_Base4)
     ASSERT_DBL_NEAR_TOL(0.234783, AVERAGE(ai), 1e-6);
 }
 
-CTEST(TimeSeries, LocalActiveInfoEnsemble)
+UNIT(LocalActiveInfoEnsemble)
 {
     {
         double ai[12];
@@ -279,7 +279,7 @@ CTEST(TimeSeries, LocalActiveInfoEnsemble)
     }
 }
 
-CTEST(TimeSeries, LocalActiveInfoEnsemble_Base4)
+UNIT(LocalActiveInfoEnsemble_Base4)
 {
     {
         double ai[28];
@@ -293,3 +293,20 @@ CTEST(TimeSeries, LocalActiveInfoEnsemble_Base4)
         ASSERT_DBL_NEAR_TOL(0.662146, AVERAGE(ai), 1e-6);
     }
 }
+
+BEGIN_SUITE(ActiveInformation)
+    ADD_UNIT(ActiveInfoSeriesTooShort)
+    ADD_UNIT(ActiveInfoHistoryTooLong)
+    ADD_UNIT(ActiveInfoEncodingError)
+    ADD_UNIT(ActiveInfoSingleSeries_Base2)
+    ADD_UNIT(ActiveInfoSingleSeries_Base4)
+    ADD_UNIT(ActiveInfoEnsemble)
+    ADD_UNIT(ActiveInfoEnsemble_Base4)
+    ADD_UNIT(LocalActiveInfoSeriesTooShort)
+    ADD_UNIT(LocalActiveInfoHistoryTooLong)
+    ADD_UNIT(LocalActiveInfoEncodingError)
+    ADD_UNIT(LocalActiveInfoSingleSeries_Base2)
+    ADD_UNIT(LocalActiveInfoSingleSeries_Base4)
+    ADD_UNIT(LocalActiveInfoEnsemble)
+    ADD_UNIT(LocalActiveInfoEnsemble_Base4)
+END_SUITE

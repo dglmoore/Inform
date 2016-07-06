@@ -1,19 +1,19 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <ctest.h>
+#include <unit.h>
 #include <inform/state_encoding.h>
 #include <inform/entropy_rate.h>
 #include "random.h"
 
-CTEST(TimeSeries, EntropyRateSeriesTooShort)
+UNIT(EntropyRateSeriesTooShort)
 {
     uint64_t const series[] = {1,1,0,0,1,0,0,1};
     ASSERT_TRUE(isnan(inform_entropy_rate(series, 0, 2, 2)));
     ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, 2)));
 }
 
-CTEST(TimeSeries, EntropyRateHistoryTooLong)
+UNIT(EntropyRateHistoryTooLong)
 {
     {
         uint64_t const series[] = {1,1,0,0,1,0,0,1};
@@ -39,14 +39,14 @@ CTEST(TimeSeries, EntropyRateHistoryTooLong)
     }
 }
 
-CTEST(TimeSeries, EntropyRateEncodingError)
+UNIT(EntropyRateEncodingError)
 {
     uint64_t const series[] = {2,1,0,0,1,0,0,1};
     ASSERT_FALSE(isnan(inform_entropy_rate(series, 8, 3, 2)));
     ASSERT_TRUE(isnan(inform_entropy_rate(series, 8, 2, 2)));
 }
 
-CTEST(TimeSeries, EntropyRateSingleSeries_Base2)
+UNIT(EntropyRateSingleSeries_Base2)
 {
     ASSERT_DBL_NEAR_TOL(0.000000,
             inform_entropy_rate((uint64_t[]){1,1,0,0,1,0,0,1}, 8, 2, 2),
@@ -89,7 +89,7 @@ CTEST(TimeSeries, EntropyRateSingleSeries_Base2)
             1e-6);
 }
 
-CTEST(TimeSeries, EntropyRateSingleSeries_Base4)
+UNIT(EntropyRateSingleSeries_Base4)
 {
     ASSERT_DBL_NEAR_TOL(0.285715,
             inform_entropy_rate((uint64_t[]){3,3,3,2,1,0,0,0,1}, 9, 4, 2),
@@ -104,7 +104,7 @@ CTEST(TimeSeries, EntropyRateSingleSeries_Base4)
             1e-6);
 }
 
-CTEST(TimeSeries, EntropyRateEnsemble)
+UNIT(EntropyRateEnsemble)
 {
     {
         uint64_t series[16] = {
@@ -132,7 +132,7 @@ CTEST(TimeSeries, EntropyRateEnsemble)
     }
 }
 
-CTEST(TimeSeries, EntropyRateEnsemble_Base4)
+UNIT(EntropyRateEnsemble_Base4)
 {
     {
         uint64_t series[36] = {
@@ -145,3 +145,13 @@ CTEST(TimeSeries, EntropyRateEnsemble_Base4)
                 inform_entropy_rate_ensemble(series, 4, 9, 4, 2), 1e-6);
     }
 }
+
+BEGIN_SUITE(EntropyRate)
+    ADD_UNIT(EntropyRateSeriesTooShort)
+    ADD_UNIT(EntropyRateHistoryTooLong)
+    ADD_UNIT(EntropyRateEncodingError)
+    ADD_UNIT(EntropyRateSingleSeries_Base2)
+    ADD_UNIT(EntropyRateSingleSeries_Base4)
+    ADD_UNIT(EntropyRateEnsemble)
+    ADD_UNIT(EntropyRateEnsemble_Base4)
+END_SUITE

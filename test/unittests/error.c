@@ -1,13 +1,13 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <ctest.h>
+#include <unit.h>
 
 #include <math.h>
 #include <inform/error.h>
 #include <stdio.h>
 
-CTEST(Error, TagNaN)
+UNIT(TagNaN)
 {
     double x = inform_nan(0);
     uint64_t *y = (uint64_t*)&x;
@@ -40,7 +40,7 @@ CTEST(Error, TagNaN)
     ASSERT_EQUAL_U(0xbff0000000000000, *y);
 }
 
-CTEST(Error, NaNTag)
+UNIT(NaNTag)
 {
     for (uint64_t x = 0; x <= 0xffff; ++x)
     {
@@ -49,3 +49,8 @@ CTEST(Error, NaNTag)
 
     ASSERT_FALSE(inform_tag_is_valid(inform_nan_tag(0)));
 }
+
+BEGIN_SUITE(Error)
+    ADD_UNIT(TagNaN)
+    ADD_UNIT(NaNTag)
+END_SUITE

@@ -1,24 +1,24 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <ctest.h>
+#include <unit.h>
 
 #include <inform/state_encoding.h>
 #include <math.h>
 
-CTEST(StateEncoding, EncodeNULL)
+UNIT(EncodeNULL)
 {
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(0), inform_encode(NULL,0,2));
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(0), inform_encode(NULL,1,2));
 }
 
-CTEST(StateEncoding, EncodeInvalidBase)
+UNIT(EncodeInvalidBase)
 {
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(1), inform_encode((uint64_t[]){0},1, 0));
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(1), inform_encode((uint64_t[]){0},1, 1));
 }
 
-CTEST(StateEncoding, EncodeTooLong_Base2)
+UNIT(EncodeTooLong_Base2)
 {
     uint64_t *ones = calloc(63, sizeof(uint64_t));
     for (size_t i = 0; i < 63; ++i) ones[i] = 1;
@@ -27,7 +27,7 @@ CTEST(StateEncoding, EncodeTooLong_Base2)
     free(ones);
 }
 
-CTEST(StateEncoding, EncodeTooLong_Base3)
+UNIT(EncodeTooLong_Base3)
 {
     uint64_t *twos = calloc(40, sizeof(uint64_t));
     for (size_t i = 0; i < 40; ++i) twos[i] = 2;
@@ -36,7 +36,7 @@ CTEST(StateEncoding, EncodeTooLong_Base3)
     free(twos);
 }
 
-CTEST(StateEncoding, EncodeTooLong_Base4)
+UNIT(EncodeTooLong_Base4)
 {
     uint64_t *threes = calloc(31, sizeof(uint64_t));
     for (size_t i = 0; i < 31; ++i) threes[i] = 3;
@@ -45,7 +45,7 @@ CTEST(StateEncoding, EncodeTooLong_Base4)
     free(threes);
 }
 
-CTEST(StateEncoding, EncodeTooLong_Base5)
+UNIT(EncodeTooLong_Base5)
 {
     uint64_t *fours = calloc(27, sizeof(uint64_t));
     for (size_t i = 0; i < 27; ++i) fours[i] = 4;
@@ -54,7 +54,7 @@ CTEST(StateEncoding, EncodeTooLong_Base5)
     free(fours);
 }
 
-CTEST(StateEncoding, EncodeLengthOne_Base2)
+UNIT(EncodeLengthOne_Base2)
 {
    ASSERT_EQUAL_U(0, inform_encode((uint64_t[]){0},1,2));
    ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){1},1,2));
@@ -65,7 +65,7 @@ CTEST(StateEncoding, EncodeLengthOne_Base2)
    ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){1,1},1,2));
 }
 
-CTEST(StateEncoding, EncodeLengthOne_Base5)
+UNIT(EncodeLengthOne_Base5)
 {
    ASSERT_EQUAL_U(0, inform_encode((uint64_t[]){0},1,5));
    ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){1},1,5));
@@ -80,7 +80,7 @@ CTEST(StateEncoding, EncodeLengthOne_Base5)
    ASSERT_EQUAL_U(4, inform_encode((uint64_t[]){4,1},1,5));
 }
 
-CTEST(StateEncoding, EncodeLengthTwo_Base2)
+UNIT(EncodeLengthTwo_Base2)
 {
    ASSERT_EQUAL_U(0, inform_encode((uint64_t[]){0,0},2,2));
    ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){0,1},2,2));
@@ -95,10 +95,10 @@ CTEST(StateEncoding, EncodeLengthTwo_Base2)
    ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){0,1,1},2,2));
    ASSERT_EQUAL_U(2, inform_encode((uint64_t[]){1,0,1},2,2));
    ASSERT_EQUAL_U(3, inform_encode((uint64_t[]){1,1,1},2,2));
-   
+
 }
 
-CTEST(StateEncoding, EncodeLengthTwo_Base5)
+UNIT(EncodeLengthTwo_Base5)
 {
    ASSERT_EQUAL_U( 0, inform_encode((uint64_t[]){0,0},2,5));
    ASSERT_EQUAL_U( 1, inform_encode((uint64_t[]){0,1},2,5));
@@ -127,7 +127,7 @@ CTEST(StateEncoding, EncodeLengthTwo_Base5)
    ASSERT_EQUAL_U(24, inform_encode((uint64_t[]){4,4},2,5));
 }
 
-CTEST(StateEncoding, EncodeLengthThree_Base2)
+UNIT(EncodeLengthThree_Base2)
 {
    ASSERT_EQUAL_U(0, inform_encode((uint64_t[]){0,0,0},3,2));
    ASSERT_EQUAL_U(1, inform_encode((uint64_t[]){0,0,1},3,2));
@@ -139,7 +139,7 @@ CTEST(StateEncoding, EncodeLengthThree_Base2)
    ASSERT_EQUAL_U(7, inform_encode((uint64_t[]){1,1,1},3,2));
 }
 
-CTEST(StateEncoding, EncodeLengthThree_Base3)
+UNIT(EncodeLengthThree_Base3)
 {
    ASSERT_EQUAL_U( 0, inform_encode((uint64_t[]){0,0,0},3,3));
    ASSERT_EQUAL_U( 1, inform_encode((uint64_t[]){0,0,1},3,3));
@@ -170,7 +170,7 @@ CTEST(StateEncoding, EncodeLengthThree_Base3)
    ASSERT_EQUAL_U(26, inform_encode((uint64_t[]){2,2,2},3,3));
 }
 
-CTEST(StateEncoding, EncodingInvalidState_Base2)
+UNIT(EncodingInvalidState_Base2)
 {
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(3), inform_encode((uint64_t[]){-1},1,2));
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(3), inform_encode((uint64_t[]){2},1,2));
@@ -179,7 +179,7 @@ CTEST(StateEncoding, EncodingInvalidState_Base2)
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(4), inform_encode((uint64_t[]){0,3},2,2));
 }
 
-CTEST(StateEncoding, EncodingInvalidState_Base3)
+UNIT(EncodingInvalidState_Base3)
 {
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(3), inform_encode((uint64_t[]){-1},1,3));
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(3), inform_encode((uint64_t[]){3},1,3));
@@ -188,7 +188,7 @@ CTEST(StateEncoding, EncodingInvalidState_Base3)
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(4), inform_encode((uint64_t[]){0,4},2,3));
 }
 
-CTEST(StateEncoding, EncodingInvalidState_Base4)
+UNIT(EncodingInvalidState_Base4)
 {
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(3), inform_encode((uint64_t[]){-1},1,4));
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(3), inform_encode((uint64_t[]){4},1,4));
@@ -197,7 +197,7 @@ CTEST(StateEncoding, EncodingInvalidState_Base4)
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(4), inform_encode((uint64_t[]){0,5},2,4));
 }
 
-CTEST(StateEncoding, EncodingInvalidState_Base5)
+UNIT(EncodingInvalidState_Base5)
 {
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(3), inform_encode((uint64_t[]){-1},1,5));
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(3), inform_encode((uint64_t[]){5},1,5));
@@ -206,7 +206,7 @@ CTEST(StateEncoding, EncodingInvalidState_Base5)
     ASSERT_EQUAL_U(INFORM_ENCODING_ERROR(4), inform_encode((uint64_t[]){0,6},2,5));
 }
 
-CTEST(StateEncoding, EncodeInvertsDecode_Base2)
+UNIT(EncodeInvertsDecode_Base2)
 {
     uint64_t const base = 2;
     uint64_t const M = 10;
@@ -218,7 +218,7 @@ CTEST(StateEncoding, EncodeInvertsDecode_Base2)
     }
 }
 
-CTEST(StateEncoding, EncodeInvertsDecode_Base3)
+UNIT(EncodeInvertsDecode_Base3)
 {
     uint64_t const base = 3;
     uint64_t const M = 6;
@@ -230,7 +230,7 @@ CTEST(StateEncoding, EncodeInvertsDecode_Base3)
     }
 }
 
-CTEST(StateEncoding, EncodeInvertsDecode_Base4)
+UNIT(EncodeInvertsDecode_Base4)
 {
     uint64_t const base = 4;
     uint64_t const M = 5;
@@ -242,7 +242,7 @@ CTEST(StateEncoding, EncodeInvertsDecode_Base4)
     }
 }
 
-CTEST(StateEncoding, EncodeInvertsDecode_Base5)
+UNIT(EncodeInvertsDecode_Base5)
 {
     uint64_t const base = 5;
     uint64_t const M = 4;
@@ -254,7 +254,7 @@ CTEST(StateEncoding, EncodeInvertsDecode_Base5)
     }
 }
 
-CTEST(StateEncoding, DecodeErrors)
+UNIT(DecodeErrors)
 {
     ASSERT_NULL(inform_decode(inform_encoding_error,1,2));
     ASSERT_NULL(inform_decode(inform_encoding_error + 1,1,2));
@@ -265,7 +265,7 @@ CTEST(StateEncoding, DecodeErrors)
     ASSERT_NULL(inform_decode(inform_encoding_error + 2,1,3));
 }
 
-CTEST(StateEncoding, DecodeTooManyBits_Base2)
+UNIT(DecodeTooManyBits_Base2)
 {
     uint64_t *state = inform_decode(0,63,2);
     ASSERT_NOT_NULL(state);
@@ -274,7 +274,7 @@ CTEST(StateEncoding, DecodeTooManyBits_Base2)
     ASSERT_NULL(inform_decode(0,64,2));
 }
 
-CTEST(StateEncoding, DecodeTooManyBits_Base3)
+UNIT(DecodeTooManyBits_Base3)
 {
     uint64_t *state = inform_decode(0,40,3);
     ASSERT_NOT_NULL(state);
@@ -283,7 +283,7 @@ CTEST(StateEncoding, DecodeTooManyBits_Base3)
     ASSERT_NULL(inform_decode(0,41,3));
 }
 
-CTEST(StateEncoding, DecodeTooManyBits_Base4)
+UNIT(DecodeTooManyBits_Base4)
 {
     uint64_t *state = inform_decode(0,31,4);
     ASSERT_NOT_NULL(state);
@@ -292,7 +292,7 @@ CTEST(StateEncoding, DecodeTooManyBits_Base4)
     ASSERT_NULL(inform_decode(0,32,4));
 }
 
-CTEST(StateEncoding, DecodeTooManyBits_Base5)
+UNIT(DecodeTooManyBits_Base5)
 {
     uint64_t *state = inform_decode(0,27,5);
     ASSERT_NOT_NULL(state);
@@ -300,3 +300,31 @@ CTEST(StateEncoding, DecodeTooManyBits_Base5)
 
     ASSERT_NULL(inform_decode(0,28,5));
 }
+
+BEGIN_SUITE(StateEncoding)
+    ADD_UNIT(EncodeNULL)
+    ADD_UNIT(EncodeInvalidBase)
+    ADD_UNIT(EncodeTooLong_Base2)
+    ADD_UNIT(EncodeTooLong_Base3)
+    ADD_UNIT(EncodeTooLong_Base4)
+    ADD_UNIT(EncodeTooLong_Base5)
+    ADD_UNIT(EncodeLengthOne_Base2)
+    ADD_UNIT(EncodeLengthOne_Base5)
+    ADD_UNIT(EncodeLengthTwo_Base2)
+    ADD_UNIT(EncodeLengthTwo_Base5)
+    ADD_UNIT(EncodeLengthThree_Base2)
+    ADD_UNIT(EncodeLengthThree_Base3)
+    ADD_UNIT(EncodingInvalidState_Base2)
+    ADD_UNIT(EncodingInvalidState_Base3)
+    ADD_UNIT(EncodingInvalidState_Base4)
+    ADD_UNIT(EncodingInvalidState_Base5)
+    ADD_UNIT(EncodeInvertsDecode_Base2)
+    ADD_UNIT(EncodeInvertsDecode_Base3)
+    ADD_UNIT(EncodeInvertsDecode_Base4)
+    ADD_UNIT(EncodeInvertsDecode_Base5)
+    ADD_UNIT(DecodeErrors)
+    ADD_UNIT(DecodeTooManyBits_Base2)
+    ADD_UNIT(DecodeTooManyBits_Base3)
+    ADD_UNIT(DecodeTooManyBits_Base4)
+    ADD_UNIT(DecodeTooManyBits_Base5)
+END_SUITE

@@ -1,19 +1,19 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <ctest.h>
+#include <unit.h>
 #include <inform/state_encoding.h>
 #include <inform/transfer_entropy.h>
 #include "random.h"
 
-CTEST(TimeSeries, TransferEntropyTooShort)
+UNIT(TransferEntropyTooShort)
 {
     uint64_t const series[] = {1,1,1,0,0,1,1,0,0,1};
     ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 0, 2, 2)));
     ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 2, 2)));
 }
 
-CTEST(TimeSeries, TransferEntropyHistoryTooLong)
+UNIT(TransferEntropyHistoryTooLong)
 {
     {
         uint64_t const series[] = {1,1,1,0,0,1,1,0,0,1};
@@ -44,7 +44,7 @@ CTEST(TimeSeries, TransferEntropyHistoryTooLong)
     }
 }
 
-CTEST(TimeSeries, TransferEntropyEncodingError)
+UNIT(TransferEntropyEncodingError)
 {
      {
          uint64_t const series[10] = {2,1,1,0,1,0,0,1,0,1};
@@ -74,7 +74,7 @@ CTEST(TimeSeries, TransferEntropyEncodingError)
      }
 }
 
-CTEST(TimeSeries, TransferEntropySingleSeries_Base2)
+UNIT(TransferEntropySingleSeries_Base2)
 {
     {
         uint64_t series[10] = {
@@ -122,7 +122,7 @@ CTEST(TimeSeries, TransferEntropySingleSeries_Base2)
     }
 }
 
-CTEST(TimeSeries, TransferEntropyEnsemble_Base2)
+UNIT(TransferEntropyEnsemble_Base2)
 {
     {
         uint64_t xseries[50] = {
@@ -193,3 +193,11 @@ CTEST(TimeSeries, TransferEntropyEnsemble_Base2)
                 inform_transfer_entropy_ensemble(yseries, yseries, 4, 10, 2, 2), 1e-6);
     }
 }
+
+BEGIN_SUITE(TransferEntropy)
+    ADD_UNIT(TransferEntropyTooShort)
+    ADD_UNIT(TransferEntropyHistoryTooLong)
+    ADD_UNIT(TransferEntropyEncodingError)
+    ADD_UNIT(TransferEntropySingleSeries_Base2)
+    ADD_UNIT(TransferEntropyEnsemble_Base2)
+END_SUITE

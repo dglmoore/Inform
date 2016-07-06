@@ -1,16 +1,16 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <ctest.h>
+#include <unit.h>
 #include <inform/dist.h>
 
-CTEST(Distribution, AllocZero)
+UNIT(AllocZero)
 {
     inform_dist *dist = inform_dist_alloc(0);
     ASSERT_NULL(dist);
 }
 
-CTEST(Distribution, AllocOne)
+UNIT(AllocOne)
 {
     inform_dist *dist = inform_dist_alloc(1);
     ASSERT_NOT_NULL(dist);
@@ -20,7 +20,7 @@ CTEST(Distribution, AllocOne)
     inform_dist_free(dist);
 }
 
-CTEST(Distribution, AllocTwo)
+UNIT(AllocTwo)
 {
     inform_dist *dist = inform_dist_alloc(2);
     ASSERT_NOT_NULL(dist);
@@ -30,7 +30,7 @@ CTEST(Distribution, AllocTwo)
     inform_dist_free(dist);
 }
 
-CTEST(Distribution, GetNull)
+UNIT(GetNull)
 {
     inform_dist *dist = NULL;
     ASSERT_EQUAL(0, inform_dist_get(dist, 0));
@@ -38,7 +38,7 @@ CTEST(Distribution, GetNull)
     ASSERT_EQUAL(0, inform_dist_get(dist, 2));
 }
 
-CTEST(Distribution, SetNull)
+UNIT(SetNull)
 {
     inform_dist *dist = NULL;
     ASSERT_EQUAL(0, inform_dist_set(dist, 0, 1));
@@ -46,7 +46,7 @@ CTEST(Distribution, SetNull)
     ASSERT_EQUAL(0, inform_dist_set(dist, 2, 1));
 }
 
-CTEST(Distribution, Set)
+UNIT(Set)
 {
     inform_dist *dist = inform_dist_alloc(3);
     ASSERT_NOT_NULL(dist);
@@ -72,7 +72,7 @@ CTEST(Distribution, Set)
     inform_dist_free(dist);
 }
 
-CTEST(Distribution, Get)
+UNIT(Get)
 {
     inform_dist *dist = inform_dist_alloc(3);
     ASSERT_NOT_NULL(dist);
@@ -89,7 +89,7 @@ CTEST(Distribution, Get)
     inform_dist_free(dist);
 }
 
-CTEST(Distribution, ReallocNull)
+UNIT(ReallocNull)
 {
     inform_dist *dist = NULL;
     inform_dist *resize = inform_dist_realloc(dist, 5);
@@ -104,7 +104,7 @@ CTEST(Distribution, ReallocNull)
     inform_dist_free(resize);
 }
 
-CTEST(Distribution, ReallocGrow)
+UNIT(ReallocGrow)
 {
     inform_dist *dist = inform_dist_alloc(3);
     ASSERT_NOT_NULL(dist);
@@ -131,7 +131,7 @@ CTEST(Distribution, ReallocGrow)
     inform_dist_free(resized);
 }
 
-CTEST(Distribution, ReallocShrink)
+UNIT(ReallocShrink)
 {
     inform_dist *dist = inform_dist_alloc(5);
     ASSERT_NOT_NULL(dist);
@@ -154,7 +154,7 @@ CTEST(Distribution, ReallocShrink)
     inform_dist_free(resized);
 }
 
-CTEST(Distribution, CopyNull)
+UNIT(CopyNull)
 {
     inform_dist *dest = inform_dist_alloc(5);
     ASSERT_NOT_NULL(dest);
@@ -162,7 +162,7 @@ CTEST(Distribution, CopyNull)
     inform_dist_free(dest);
 }
 
-CTEST(Distribution, CopyToNULL)
+UNIT(CopyToNULL)
 {
     inform_dist *source = inform_dist_alloc(5);
     ASSERT_NOT_NULL(source);
@@ -185,7 +185,7 @@ CTEST(Distribution, CopyToNULL)
     inform_dist_free(source);
 }
 
-CTEST(Distribution, CopySamePlace)
+UNIT(CopySamePlace)
 {
     inform_dist *source = inform_dist_alloc(5);
     inform_dist *dest = source;
@@ -193,7 +193,7 @@ CTEST(Distribution, CopySamePlace)
     inform_dist_free(source);
 }
 
-CTEST(Distribution, CopySameSize)
+UNIT(CopySameSize)
 {
     inform_dist *source = inform_dist_alloc(3);
     for (size_t i = 0; i < inform_dist_size(source); ++i)
@@ -217,7 +217,7 @@ CTEST(Distribution, CopySameSize)
     inform_dist_free(source);
 }
 
-CTEST(Distribution, CopyResize)
+UNIT(CopyResize)
 {
     inform_dist *source = inform_dist_alloc(3);
     for (size_t i = 0; i < inform_dist_size(source); ++i)
@@ -241,14 +241,14 @@ CTEST(Distribution, CopyResize)
     inform_dist_free(source);
 }
 
-CTEST(Distribution, DupNull)
+UNIT(DupNull)
 {
     inform_dist *dist = NULL;
     inform_dist *dist2 = inform_dist_dup(dist);
     ASSERT_NULL(dist2);
 }
 
-CTEST(Distribution, Dup)
+UNIT(Dup)
 {
     inform_dist *dist = inform_dist_alloc(5);
     ASSERT_NOT_NULL(dist);
@@ -268,7 +268,7 @@ CTEST(Distribution, Dup)
     inform_dist_free(dist);
 }
 
-CTEST(Distribution, Tick)
+UNIT(Tick)
 {
     inform_dist *dist = inform_dist_alloc(3);
     ASSERT_NOT_NULL(dist);
@@ -295,7 +295,7 @@ CTEST(Distribution, Tick)
     inform_dist_free(dist);
 }
 
-CTEST(Distribution, Prob)
+UNIT(Prob)
 {
     inform_dist* dist = inform_dist_alloc(5);
     ASSERT_NOT_NULL(dist);
@@ -313,7 +313,7 @@ CTEST(Distribution, Prob)
     inform_dist_free(dist);
 }
 
-CTEST(Distribution, Dump)
+UNIT(Dump)
 {
     inform_dist *dist = NULL;
     ASSERT_EQUAL(-1, inform_dist_dump(dist, NULL, 0));
@@ -339,3 +339,26 @@ CTEST(Distribution, Dump)
     }
     inform_dist_free(dist);
 }
+
+BEGIN_SUITE(Distribution)
+    ADD_UNIT(AllocZero)
+    ADD_UNIT(AllocOne)
+    ADD_UNIT(AllocTwo)
+    ADD_UNIT(GetNull)
+    ADD_UNIT(SetNull)
+    ADD_UNIT(Set)
+    ADD_UNIT(Get)
+    ADD_UNIT(ReallocNull)
+    ADD_UNIT(ReallocGrow)
+    ADD_UNIT(ReallocShrink)
+    ADD_UNIT(CopyNull)
+    ADD_UNIT(CopyToNULL)
+    ADD_UNIT(CopySamePlace)
+    ADD_UNIT(CopySameSize)
+    ADD_UNIT(CopyResize)
+    ADD_UNIT(DupNull)
+    ADD_UNIT(Dup)
+    ADD_UNIT(Tick)
+    ADD_UNIT(Prob)
+    ADD_UNIT(Dump)
+END_SUITE
