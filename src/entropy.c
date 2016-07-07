@@ -48,15 +48,14 @@ double inform_shannon_pmi(inform_dist const *joint,
 }
 
 double inform_shannon_mi(inform_dist const *joint,
-        inform_dist const *marginal_x, inform_dist const *marginal_y, double base)
+    inform_dist const *marginal_x, inform_dist const *marginal_y, double base)
 {
     return inform_shannon(marginal_x,base) + inform_shannon(marginal_y,base)
         - inform_shannon(joint,base);
 }
 
-double inform_pointwise_conditional_entropy(inform_dist const *joint,
-    inform_dist const *marginal, uint64_t event_joint,uint64_t event_marginal,
-    double base)
+double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
+    uint64_t event_joint,uint64_t event_marginal, double base)
 {
     return inform_shannon_si(joint, event_joint, base) -
         inform_shannon_si(marginal, event_marginal, base);

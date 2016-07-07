@@ -195,8 +195,7 @@ int inform_local_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64
     // compute the entropy rate
     for (size_t i = 0; i < N; ++i)
     {
-        er[i] = inform_pointwise_conditional_entropy(&states, &histories,			
-            state[i], history[i], b);
+        er[i] = inform_shannon_pce(&states, &histories, state[i], history[i], b);
     }
 
     // free up the data array
