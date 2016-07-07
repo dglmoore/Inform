@@ -230,9 +230,8 @@ int inform_local_transfer_entropy(uint64_t const *node_y,
     // compute the transfer entropy from the distributions
     for (size_t i = 0; i < N; ++i)
     {
-        te[i] = inform_pointwise_conditional_mutual_info(&states,
-            &sources, &predicates, &histories, state[i], source[i],
-            predicate[i], history[i], b);
+        te[i] = inform_shannon_pcmi(&states, &sources, &predicates, &histories,
+            state[i], source[i], predicate[i], history[i], b);
     }
 
     // free up the data array

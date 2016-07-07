@@ -109,7 +109,7 @@ double inform_shannon_ce(inform_dist const* joint, inform_dist const *marginal,
  * @param[in] base              the logarithmic base
  * @return the pointwise conditional mutual information
  */
-double inform_pointwise_conditional_mutual_info(inform_dist const *joint,
+double inform_shannon_pcmi(inform_dist const *joint,
     inform_dist const *marginal_xz, inform_dist const *marginal_yz,
     inform_dist const *marginal_z, uint64_t event_joint,
     uint64_t event_marginal_xz, uint64_t event_marginal_yz,
