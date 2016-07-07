@@ -114,7 +114,7 @@ double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b
     }
 
     // compute the active information
-    double ai = inform_mutual_info(&states, &histories, &futures, b);
+    double ai = inform_shannon_mi(&states, &histories, &futures, b);
 
     // free up the data array
     free(data);

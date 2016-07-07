@@ -36,7 +36,7 @@ double inform_shannon_si(inform_dist const *dist, uint64_t event, double base);
 double inform_shannon(inform_dist const *dist, double base);
 
 /**
- * Compute the point-wise mutual information of an combination of events
+ * Compute the pointwise mutual information of an combination of events
  *
  * @param[in] joint       the joint distribution
  * @param[in] marginal_x  the x-marginal
@@ -66,10 +66,8 @@ double inform_shannon_pmi(inform_dist const *joint,
  *
  * @see inform_shannon
  */
-double inform_mutual_info(inform_dist const *joint,
-    inform_dist const *marginal_x,
-    inform_dist const *marginal_y,
-    double base);
+double inform_shannon_mi(inform_dist const *joint,
+    inform_dist const *marginal_x, inform_dist const *marginal_y, double base);
 
 /**
  * Compute the pointwise conditional information of a combination of events

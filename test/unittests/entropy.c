@@ -115,14 +115,14 @@ UNIT(MutualInformationIndependent)
                     inform_dist_get(xs, i) * inform_dist_get(ys, j));
         }
     }
-    ASSERT_TRUE(isnan(inform_mutual_info(dist, xs, ys, -1.0)));
-    ASSERT_TRUE(isnan(inform_mutual_info(dist, xs, ys, -0.5)));
-    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(dist, xs, ys, 0.0), 1e-6);
-    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(dist, xs, ys, 0.5), 1e-6);
-    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(dist, xs, ys, 1.5), 1e-6);
-    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(dist, xs, ys, 2), 1e-6);
-    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(dist, xs, ys, 3), 1e-6);
-    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(dist, xs, ys, 4), 1e-6);
+    ASSERT_TRUE(isnan(inform_shannon_mi(dist, xs, ys, -1.0)));
+    ASSERT_TRUE(isnan(inform_shannon_mi(dist, xs, ys, -0.5)));
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_mi(dist, xs, ys, 0.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_mi(dist, xs, ys, 0.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_mi(dist, xs, ys, 1.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_mi(dist, xs, ys, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_mi(dist, xs, ys, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_mi(dist, xs, ys, 4), 1e-6);
     inform_dist_free(dist);
     inform_dist_free(ys);
     inform_dist_free(xs);
@@ -139,14 +139,14 @@ UNIT(MutualInformationDependent)
     inform_dist *ys = inform_dist_alloc(2);
     inform_dist_fill(ys, 25, 75);
 
-    ASSERT_TRUE(isnan(inform_mutual_info(dist, xs, ys, -1.0)));
-    ASSERT_TRUE(isnan(inform_mutual_info(dist, xs, ys, -0.5)));
-    ASSERT_DBL_NEAR_TOL(0.000000, inform_mutual_info(dist, xs, ys, 0.0), 1e-6);
-    ASSERT_DBL_NEAR_TOL(-0.214171, inform_mutual_info(dist, xs, ys, 0.5), 1e-6);
-    ASSERT_DBL_NEAR_TOL(0.366128, inform_mutual_info(dist, xs, ys, 1.5), 1e-6);
-    ASSERT_DBL_NEAR_TOL(0.214171, inform_mutual_info(dist, xs, ys, 2), 1e-6);
-    ASSERT_DBL_NEAR_TOL(0.135127, inform_mutual_info(dist, xs, ys, 3), 1e-6);
-    ASSERT_DBL_NEAR_TOL(0.107086, inform_mutual_info(dist, xs, ys, 4), 1e-6);
+    ASSERT_TRUE(isnan(inform_shannon_mi(dist, xs, ys, -1.0)));
+    ASSERT_TRUE(isnan(inform_shannon_mi(dist, xs, ys, -0.5)));
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_mi(dist, xs, ys, 0.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(-0.214171, inform_shannon_mi(dist, xs, ys, 0.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.366128, inform_shannon_mi(dist, xs, ys, 1.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.214171, inform_shannon_mi(dist, xs, ys, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.135127, inform_shannon_mi(dist, xs, ys, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.107086, inform_shannon_mi(dist, xs, ys, 4), 1e-6);
     inform_dist_free(ys);
     inform_dist_free(xs);
     inform_dist_free(dist);

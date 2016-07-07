@@ -47,14 +47,9 @@ double inform_shannon_pmi(inform_dist const *joint,
         inform_shannon_si(joint, event_joint, base);
 }
 
-double inform_mutual_info(inform_dist const *joint,
-        inform_dist const *marginal_x,
-        inform_dist const *marginal_y,
-        double base)
+double inform_shannon_mi(inform_dist const *joint,
+        inform_dist const *marginal_x, inform_dist const *marginal_y, double base)
 {
-    // Simply farm out the computation to the inform_shannon function.
-    // This sidesteps the possibility that the joint and the marginals
-    // may all have different support.
     return inform_shannon(marginal_x,base) + inform_shannon(marginal_y,base)
         - inform_shannon(joint,base);
 }
