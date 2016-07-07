@@ -191,8 +191,8 @@ int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
 
     for (size_t i = 0; i < n * (m - k); ++i)
     {
-        ai[i] = inform_pointwise_mutual_info(&states, &histories, &futures,
-            state[i], history[i], future[i], b);
+        ai[i] = inform_shannon_pmi(&states, &histories, &futures, state[i],
+            history[i], future[i], b);
     }
 
     // free up the data array

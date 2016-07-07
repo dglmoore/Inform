@@ -47,7 +47,7 @@ double inform_shannon(inform_dist const *dist, double base);
  * @param[in] base        the logarithmic base
  * @return the pointwise mutual information of the events
  */
-double inform_pointwise_mutual_info(inform_dist const *joint,
+double inform_shannon_pmi(inform_dist const *joint,
     inform_dist const *marginal_x, inform_dist const *marginal_y,
     uint64_t event_joint, uint64_t event_x, uint64_t enent_y, double base);
 

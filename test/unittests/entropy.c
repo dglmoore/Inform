@@ -218,9 +218,9 @@ UNIT(PointwiseMutualInformationIndependent)
     {
         for (size_t j = 0; j < inform_dist_size(ys); ++j)
         {
-            ASSERT_DBL_NEAR_TOL(0.000000, inform_pointwise_mutual_info(dist, xs, ys, j+i*12, i, j, 0.5), 1e-6);
-            ASSERT_DBL_NEAR_TOL(0.000000, inform_pointwise_mutual_info(dist, xs, ys, j+i*12, i, j, 2), 1e-6);
-            ASSERT_DBL_NEAR_TOL(0.000000, inform_pointwise_mutual_info(dist, xs, ys, j+i*12, i, j, 3), 1e-6);
+            ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_pmi(dist, xs, ys, j+i*12, i, j, 0.5), 1e-6);
+            ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_pmi(dist, xs, ys, j+i*12, i, j, 2), 1e-6);
+            ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_pmi(dist, xs, ys, j+i*12, i, j, 3), 1e-6);
         }
     }
 
@@ -240,10 +240,10 @@ UNIT(PointwiseMutualInformationDependent)
     inform_dist *ys = inform_dist_alloc(2);
     inform_dist_fill(ys, 25, 75);
 
-    ASSERT_DBL_NEAR_TOL(-1.000000, inform_pointwise_mutual_info(dist, xs, ys, 0, 0, 0, 2), 1e-6);
-    ASSERT_DBL_NEAR_TOL( 0.222392, inform_pointwise_mutual_info(dist, xs, ys, 1, 0, 1, 2), 1e-6);
-    ASSERT_DBL_NEAR_TOL( 1.584963, inform_pointwise_mutual_info(dist, xs, ys, 2, 1, 0, 2), 1e-6);
-    ASSERT_DBL_NEAR_TOL(-1.584963, inform_pointwise_mutual_info(dist, xs, ys, 3, 1, 1, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(-1.000000, inform_shannon_pmi(dist, xs, ys, 0, 0, 0, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL( 0.222392, inform_shannon_pmi(dist, xs, ys, 1, 0, 1, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL( 1.584963, inform_shannon_pmi(dist, xs, ys, 2, 1, 0, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(-1.584963, inform_shannon_pmi(dist, xs, ys, 3, 1, 1, 2), 1e-6);
 
     inform_dist_free(ys);
     inform_dist_free(xs);
