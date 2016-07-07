@@ -54,12 +54,7 @@ static void accumulate_local_observations(uint64_t const* series, size_t n,
     }
 }
 
-double inform_entropy_rate(uint64_t const *series, size_t n, uint64_t b, uint64_t k)
-{
-    return inform_entropy_rate_ensemble(series, 1, n, b, k);
-}
-
-double inform_entropy_rate_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k)
+double inform_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k)
 {
     // ensure that the time series is not NULL
     if (series == NULL)
@@ -126,12 +121,7 @@ double inform_entropy_rate_ensemble(uint64_t const *series, size_t n, size_t m, 
     return er;
 }
 
-int inform_local_entropy_rate(uint64_t const *series, size_t n, uint64_t b, uint64_t k, double *er)
-{
-    return inform_local_entropy_rate_ensemble(series, 1, n, b, k, er);
-}
-
-int inform_local_entropy_rate_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k, double *er)
+int inform_local_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k, double *er)
 {
     // ensure that the time series is not NULL
     if (series == NULL)
