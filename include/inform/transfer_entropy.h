@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
-#include <inform/entropy.h>
+#include <inform/shannon.h>
 
 #ifdef __cplusplus
 extern "C"

@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 #include <unit.h>
 
-#include <inform/entropy.h>
+#include <inform/shannon.h>
 
 #define inform_dist_fill_array(dist, array) \
     ASSERT_NOT_NULL(dist); \
