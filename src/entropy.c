@@ -79,7 +79,7 @@ double inform_shannon_pcmi(inform_dist const *joint,
         inform_shannon_si(marginal_z, event_marginal_z, base);
 }
 
-double inform_conditional_mutual_info(inform_dist const *joint,
+double inform_shannon_cmi(inform_dist const *joint,
     inform_dist const *marginal_xz, inform_dist const *marginal_yz,
     inform_dist const *marginal_z, double base)
 {
