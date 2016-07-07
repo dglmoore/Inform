@@ -155,15 +155,15 @@ UNIT(MutualInformationDependent)
 UNIT(SelfInformationInvalidDist)
 {
     inform_dist *dist = NULL;
-    ASSERT_TRUE(isnan(inform_self_info(dist, 0, 2)));
+    ASSERT_TRUE(isnan(inform_shannon_si(dist, 0, 2)));
 }
 
 UNIT(SelfInformationImposibleEvent)
 {
     inform_dist *dist = inform_dist_alloc(2);
     inform_dist_fill(dist, 1, 0);
-    ASSERT_FALSE(isinf(inform_self_info(dist, 0, 2)));
-    ASSERT_TRUE(isinf(inform_self_info(dist, 2, 2)));
+    ASSERT_FALSE(isinf(inform_shannon_si(dist, 0, 2)));
+    ASSERT_TRUE(isinf(inform_shannon_si(dist, 2, 2)));
     inform_dist_free(dist);
 }
 
@@ -171,16 +171,16 @@ UNIT(SelfInformationBase2)
 {
     inform_dist *dist = inform_dist_alloc(2);
     inform_dist_fill(dist, 1, 1);
-    ASSERT_DBL_NEAR_TOL(1.000000, inform_self_info(dist, 0, 2), 1e-6);
-    ASSERT_DBL_NEAR_TOL(1.000000, inform_self_info(dist, 1, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.000000, inform_shannon_si(dist, 0, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.000000, inform_shannon_si(dist, 1, 2), 1e-6);
 
     inform_dist_fill(dist, 2, 1);
-    ASSERT_DBL_NEAR_TOL(0.584963, inform_self_info(dist, 0, 2), 1e-6);
-    ASSERT_DBL_NEAR_TOL(1.584963, inform_self_info(dist, 1, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.584963, inform_shannon_si(dist, 0, 2), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.584963, inform_shannon_si(dist, 1, 2), 1e-6);
 
     inform_dist_fill(dist, 2, 0);
-    ASSERT_DBL_NEAR_TOL(0.000000, inform_self_info(dist, 0, 2), 1e-6);
-    ASSERT_TRUE(isinf(inform_self_info(dist, 1, 2)));
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_si(dist, 0, 2), 1e-6);
+    ASSERT_TRUE(isinf(inform_shannon_si(dist, 1, 2)));
 
     inform_dist_free(dist);
 }
@@ -189,9 +189,9 @@ UNIT(SelfInformatoinBase3)
 {
     inform_dist *dist = inform_dist_alloc(3);
     inform_dist_fill(dist, 1, 2, 3);
-    ASSERT_DBL_NEAR_TOL(1.630930, inform_self_info(dist, 0, 3), 1e-6);
-    ASSERT_DBL_NEAR_TOL(1.000000, inform_self_info(dist, 1, 3), 1e-6);
-    ASSERT_DBL_NEAR_TOL(0.630930, inform_self_info(dist, 2, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.630930, inform_shannon_si(dist, 0, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.000000, inform_shannon_si(dist, 1, 3), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.630930, inform_shannon_si(dist, 2, 3), 1e-6);
     inform_dist_free(dist);
 }
 

@@ -12,7 +12,7 @@ extern "C"
 #endif
 
 /**
- * Compute the self-information of an event given some distribution.
+ * Compute the Shannon self-information of an event given some distribution
  *
  * This function will return `NaN` if the distribution is not valid.
  *
@@ -21,7 +21,7 @@ extern "C"
  * @param[in] base  the logarithmic base
  * @return the self-information of the event
  */
-double inform_self_info(inform_dist const *dist, uint64_t event, double base);
+double inform_shannon_si(inform_dist const *dist, uint64_t event, double base);
 
 /**
  * Compute the Shannon information of a distribution.
