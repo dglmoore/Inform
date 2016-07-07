@@ -11,8 +11,8 @@
 UNIT(ActiveInfoSeriesTooShort)
 {
     uint64_t const series[] = {1,1,0,0,1,0,0,1};
-    ASSERT_TRUE(isnan(inform_active_info(series, 0, 2, 2)));
-    ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, 2)));
+    ASSERT_TRUE(isnan(inform_active_info(series, 1, 0, 2, 2)));
+    ASSERT_TRUE(isnan(inform_active_info(series, 1, 1, 2, 2)));
 }
 
 UNIT(ActiveInfoHistoryTooLong)
@@ -20,23 +20,23 @@ UNIT(ActiveInfoHistoryTooLong)
     {
         uint64_t const series[] = {1,1,0,0,1,0,0,1};
 
-        ASSERT_TRUE(isnan(inform_active_info(series, 2, 2, 2)));
-        ASSERT_FALSE(isnan(inform_active_info(series, 3, 2, 2)));
+        ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, 2, 2)));
+        ASSERT_FALSE(isnan(inform_active_info(series, 1, 3, 2, 2)));
     }
 
     {
         size_t const size = 30;
 
         uint64_t *series = random_series(size, 2);
-        ASSERT_TRUE(isnan(inform_active_info(series, size, 2, 26)));
+        ASSERT_TRUE(isnan(inform_active_info(series, 1, size, 2, 26)));
         free(series);
 
         series = random_series(size, 3);
-        ASSERT_TRUE(isnan(inform_active_info(series, size, 3, 16)));
+        ASSERT_TRUE(isnan(inform_active_info(series, 1, size, 3, 16)));
         free(series);
 
         series = random_series(size, 4);
-        ASSERT_TRUE(isnan(inform_active_info(series, size, 4, 13)));
+        ASSERT_TRUE(isnan(inform_active_info(series, 1, size, 4, 13)));
         free(series);
     }
 }
@@ -44,65 +44,65 @@ UNIT(ActiveInfoHistoryTooLong)
 UNIT(ActiveInfoEncodingError)
 {
     uint64_t const series[] = {2,1,0,0,1,0,0,1};
-    ASSERT_FALSE(isnan(inform_active_info(series, 8, 3, 2)));
-    ASSERT_TRUE(isnan(inform_active_info(series, 8, 2, 2)));
+    ASSERT_FALSE(isnan(inform_active_info(series, 1, 8, 3, 2)));
+    ASSERT_TRUE(isnan(inform_active_info(series, 1, 8, 2, 2)));
 }
 
 UNIT(ActiveInfoSingleSeries_Base2)
 {
     ASSERT_DBL_NEAR_TOL(0.918296,
-            inform_active_info((uint64_t[]){1,1,0,0,1,0,0,1}, 8, 2, 2),
+            inform_active_info((uint64_t[]){1,1,0,0,1,0,0,1}, 1, 8, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.000000,
-            inform_active_info((uint64_t[]){1,0,0,0,0,0,0,0,0}, 9, 2, 2),
+            inform_active_info((uint64_t[]){1,0,0,0,0,0,0,0,0}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.305958,
-            inform_active_info((uint64_t[]){0,0,1,1,1,1,0,0,0}, 9, 2, 2),
+            inform_active_info((uint64_t[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.347458,
-            inform_active_info((uint64_t[]){1,0,0,0,0,0,0,1,1}, 9, 2, 2),
+            inform_active_info((uint64_t[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.347458,
-            inform_active_info((uint64_t[]){1,0,0,0,0,0,0,1,1}, 9, 2, 2),
+            inform_active_info((uint64_t[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.399533,
-            inform_active_info((uint64_t[]){0,0,0,0,0,1,1,0,0}, 9, 2, 2),
+            inform_active_info((uint64_t[]){0,0,0,0,0,1,1,0,0}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.399533,
-            inform_active_info((uint64_t[]){0,0,0,0,1,1,0,0,0}, 9, 2, 2),
+            inform_active_info((uint64_t[]){0,0,0,0,1,1,0,0,0}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.305958,
-            inform_active_info((uint64_t[]){1,1,1,0,0,0,0,1,1}, 9, 2, 2),
+            inform_active_info((uint64_t[]){1,1,1,0,0,0,0,1,1}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.305958,
-            inform_active_info((uint64_t[]){0,0,0,1,1,1,1,0,0}, 9, 2, 2),
+            inform_active_info((uint64_t[]){0,0,0,1,1,1,1,0,0}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.347458,
-            inform_active_info((uint64_t[]){0,0,0,0,0,0,1,1,0}, 9, 2, 2),
+            inform_active_info((uint64_t[]){0,0,0,0,0,0,1,1,0}, 1, 9, 2, 2),
             1e-6);
 }
 
 UNIT(ActiveInfoSingleSeries_Base4)
 {
     ASSERT_DBL_NEAR_TOL(0.635471,
-            inform_active_info((uint64_t[]){3,3,3,2,1,0,0,0,1}, 9, 4, 2),
+            inform_active_info((uint64_t[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.635471,
-            inform_active_info((uint64_t[]){2,2,3,3,3,3,2,1,0}, 9, 4, 2),
+            inform_active_info((uint64_t[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.234783,
-            inform_active_info((uint64_t[]){2,2,2,2,2,2,1,1,1}, 9, 4, 2),
+            inform_active_info((uint64_t[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2),
             1e-6);
 }
 
@@ -114,7 +114,8 @@ UNIT(ActiveInfoEnsemble)
             0,0,0,1,0,0,0,1,
         };
         ASSERT_DBL_NEAR_TOL(0.459148,
-                inform_active_info_ensemble(series, 2, 8, 2, 2), 1e-6);
+                inform_active_info(series, 2, 8, 2, 2),
+                1e-6);
     }
 
     {
@@ -130,7 +131,8 @@ UNIT(ActiveInfoEnsemble)
             0,0,0,0,0,0,1,1,0,
         };
         ASSERT_DBL_NEAR_TOL(0.3080467,
-                inform_active_info_ensemble(series, 9, 9, 2, 2), 1e-6);
+                inform_active_info(series, 9, 9, 2, 2),
+                1e-6);
     }
 }
 
@@ -144,7 +146,8 @@ UNIT(ActiveInfoEnsemble_Base4)
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
         ASSERT_DBL_NEAR_TOL(0.662146,
-                inform_active_info_ensemble(series, 4, 9, 4, 2), 1e-6);
+                inform_active_info(series, 4, 9, 4, 2),
+                1e-6);
     }
 }
 
@@ -164,8 +167,8 @@ UNIT(LocalActiveInfoSeriesTooShort)
 {
     double ai[8];
     uint64_t const series[] = {1,1,0,0,1,0,0,1};
-    ASSERT_EQUAL(3, inform_local_active_info(series, 0, 2, 2, ai));
-    ASSERT_EQUAL(3, inform_local_active_info(series, 1, 2, 2, ai));
+    ASSERT_EQUAL(3, inform_local_active_info(series, 1, 0, 2, 2, ai));
+    ASSERT_EQUAL(3, inform_local_active_info(series, 1, 1, 2, 2, ai));
 }
 
 UNIT(LocalActiveInfoHistoryTooLong)
@@ -174,8 +177,8 @@ UNIT(LocalActiveInfoHistoryTooLong)
         double ai[6];
         uint64_t const series[] = {1,1,0,0,1,0,0,1};
 
-        ASSERT_EQUAL(4, inform_local_active_info(series, 2, 2, 2, ai));
-        ASSERT_EQUAL(0, inform_local_active_info(series, 3, 2, 2, ai));
+        ASSERT_EQUAL(4, inform_local_active_info(series, 1, 2, 2, 2, ai));
+        ASSERT_EQUAL(0, inform_local_active_info(series, 1, 3, 2, 2, ai));
     }
 
     {
@@ -183,15 +186,15 @@ UNIT(LocalActiveInfoHistoryTooLong)
         size_t const size = 30;
 
         uint64_t *series = random_series(size, 2);
-        ASSERT_EQUAL(5, inform_local_active_info(series, size, 2, 26, ai));
+        ASSERT_EQUAL(5, inform_local_active_info(series, 1, size, 2, 26, ai));
         free(series);
 
         series = random_series(size, 3);
-        ASSERT_EQUAL(5, inform_local_active_info(series, size, 3, 16, ai));
+        ASSERT_EQUAL(5, inform_local_active_info(series, 1, size, 3, 16, ai));
         free(series);
 
         series = random_series(size, 4);
-        ASSERT_EQUAL(5, inform_local_active_info(series, size, 4, 13, ai));
+        ASSERT_EQUAL(5, inform_local_active_info(series, 1, size, 4, 13, ai));
         free(series);
     }
 }
@@ -200,52 +203,52 @@ UNIT(LocalActiveInfoEncodingError)
 {
     double ai[8];
     uint64_t const series[] = {2,1,0,0,1,0,0,1};
-    ASSERT_EQUAL(0, inform_local_active_info(series, 8, 3, 2, ai));
-    ASSERT_EQUAL(6, inform_local_active_info(series, 8, 2, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info(series, 1, 8, 3, 2, ai));
+    ASSERT_EQUAL(6, inform_local_active_info(series, 1, 8, 2, 2, ai));
 }
 
 UNIT(LocalActiveInfoSingleSeries_Base2)
 {
     double ai[7] = {0, 0, 0, 0, 0, 0, 0};
 
-    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){1,0,0,0,0,0,0,0,0}, 9, 2, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){1,0,0,0,0,0,0,0,0}, 1, 9, 2, 2, ai));
     ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){0,0,1,1,1,1,0,0,0}, 9, 2, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2, ai));
     ASSERT_DBL_NEAR_TOL(0.305958, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){1,0,0,0,0,0,0,1,1}, 9, 2, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2, ai));
     ASSERT_DBL_NEAR_TOL(0.347458, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){1,0,0,0,0,0,0,1,1}, 9, 2, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2, ai));
     ASSERT_DBL_NEAR_TOL(0.347458, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){0,0,0,0,0,1,1,0,0}, 9, 2, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){0,0,0,0,0,1,1,0,0}, 1, 9, 2, 2, ai));
     ASSERT_DBL_NEAR_TOL(0.399533, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){0,0,0,0,1,1,0,0,0}, 9, 2, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){0,0,0,0,1,1,0,0,0}, 1, 9, 2, 2, ai));
     ASSERT_DBL_NEAR_TOL(0.399533, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){1,1,1,0,0,0,0,1,1}, 9, 2, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){1,1,1,0,0,0,0,1,1}, 1, 9, 2, 2, ai));
     ASSERT_DBL_NEAR_TOL(0.305958, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){0,0,0,1,1,1,1,0,0}, 9, 2, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){0,0,0,1,1,1,1,0,0}, 1, 9, 2, 2, ai));
     ASSERT_DBL_NEAR_TOL(0.305958, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){0,0,0,0,0,0,1,1,0}, 9, 2, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){0,0,0,0,0,0,1,1,0}, 1, 9, 2, 2, ai));
     ASSERT_DBL_NEAR_TOL(0.347458, AVERAGE(ai), 1e-6);
 }
 
 UNIT(LocalActiveInfoSingleSeries_Base4)
 {
     double ai[7];
-    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){3, 3, 3, 2, 1, 0, 0, 0, 1}, 9, 4, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, ai));
     ASSERT_DBL_NEAR_TOL(0.635471, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){2,2,3,3,3,3,2,1,0}, 9, 4, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, ai));
     ASSERT_DBL_NEAR_TOL(0.635471, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){2,2,2,2,2,2,1,1,1}, 9, 4, 2, ai));
+    ASSERT_EQUAL(0, inform_local_active_info((uint64_t[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, ai));
     ASSERT_DBL_NEAR_TOL(0.234783, AVERAGE(ai), 1e-6);
 }
 
@@ -257,7 +260,7 @@ UNIT(LocalActiveInfoEnsemble)
             1,1,0,0,1,0,0,1,
             0,0,0,1,0,0,0,1,
         };
-        ASSERT_EQUAL(0, inform_local_active_info_ensemble(series, 2, 8, 2, 2, ai));
+        ASSERT_EQUAL(0, inform_local_active_info(series, 2, 8, 2, 2, ai));
         ASSERT_DBL_NEAR_TOL(0.459148, AVERAGE(ai), 1e-6);
     }
 
@@ -274,7 +277,7 @@ UNIT(LocalActiveInfoEnsemble)
             0,0,0,1,1,1,1,0,0,
             0,0,0,0,0,0,1,1,0,
         };
-        ASSERT_EQUAL(0, inform_local_active_info_ensemble(series, 9, 9, 2, 2, ai));
+        ASSERT_EQUAL(0, inform_local_active_info(series, 9, 9, 2, 2, ai));
         ASSERT_DBL_NEAR_TOL(0.3080467, AVERAGE(ai), 1e-6);
     }
 }
@@ -289,7 +292,7 @@ UNIT(LocalActiveInfoEnsemble_Base4)
             0, 0, 0, 0, 1, 1, 0, 0, 0,
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
-        ASSERT_EQUAL(0, inform_local_active_info_ensemble(series, 4, 9, 4, 2, ai));
+        ASSERT_EQUAL(0, inform_local_active_info(series, 4, 9, 4, 2, ai));
         ASSERT_DBL_NEAR_TOL(0.662146, AVERAGE(ai), 1e-6);
     }
 }

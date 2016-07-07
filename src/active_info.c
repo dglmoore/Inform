@@ -56,12 +56,7 @@ static void accumulate_local_observations(uint64_t const* series, size_t n, uint
     }
 }
 
-double inform_active_info(uint64_t const *series, size_t n, uint64_t b, uint64_t k)
-{
-    return inform_active_info_ensemble(series, 1, n, b, k);
-}
-
-double inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k)
+double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k)
 {
     // ensure that the time series is not NULL
     if (series == NULL)
@@ -128,13 +123,7 @@ double inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, u
     return ai;
 }
 
-int inform_local_active_info(uint64_t const *series, size_t n, uint64_t b,
-    uint64_t k, double *ai)
-{
-    return inform_local_active_info_ensemble(series, 1, n, b, k, ai);
-}
-
-int inform_local_active_info_ensemble(uint64_t const *series, size_t n, size_t m,
+int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
     uint64_t b, uint64_t k, double *ai)
 {
     if (series == NULL)

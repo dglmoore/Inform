@@ -11,33 +11,7 @@ extern "C"
 #endif
 
 /**
- * @brief Compute the active information of a time series.
- *
- * `NaN` is returned in at least the following erroneous situtations
- *   - `series == NULL`
- *   - `n == 0`
- *   - `n <= k`
- *   - `series[i] >= b` for some `0 <= i && i < n`
- *
- * @param[in] series the time series of values
- * @param[in] n      the number of time steps in the time series
- * @param[in] b      the base or number of distinct states at each time step
- * @param[in] k      the history length used to calculate the active information
- * @return the active information
- *
- * @see inform_active_info_ensemble
- */
-double inform_active_info(uint64_t const *series, size_t n, uint64_t b, uint64_t k);
-
-/**
- * Compute the active information of an ensemble of time series.
- *
- * `NaN` is returned in at least the following erroneous situtations
- *   - `series == NULL`
- *   - `n == 0`
- *   - `m <= 1`
- *   - `m <= k`
- *   - `series[i] >= b` for some `0 <= i && i < n*m`
+ * Compute the active information of an ensemble of time series
  *
  * @param[in] series the ensemble of time series
  * @param[in] n      the number of initial conditions
@@ -45,25 +19,12 @@ double inform_active_info(uint64_t const *series, size_t n, uint64_t b, uint64_t
  * @param[in] b      the base or number of distinct states at each time step
  * @param[in] k      the history length used to calculate the active information
  * @return the active information for the ensemble
- *
- * @see inform_active_info
  */
-double inform_active_info_ensemble(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k);
+double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k);
 
 /**
- * @param[in] series the time series of values
- * @param[in] n      the number of time steps in the time series
- * @param[in] b      the base or number of distinct states at each time step
- * @param[in] k      the history length used to calculate the active information
- * @param[out] ai    the local active information
- * @return an error code
+ * Compute the local active information of a ensemble of time series
  *
- * @see inform_active_info_ensemble
- */
-int inform_local_active_info(uint64_t const *series, size_t n, uint64_t b,
-    uint64_t k, double *ai);
-
-/**
  * @param[in] series the ensemble of time series
  * @param[in] n      the number of initial conditions
  * @param[in] m      the number of time steps in each time series
@@ -71,11 +32,9 @@ int inform_local_active_info(uint64_t const *series, size_t n, uint64_t b,
  * @param[in] k      the history length used to calculate the active information
  * @param[out] ai    the local active information
  * @return an error code
- *
- * @see inform_active_info
  */
-int inform_local_active_info_ensemble(uint64_t const *series, size_t n,
-    size_t m, uint64_t b, uint64_t k, double *ai);
+int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
+    uint64_t b, uint64_t k, double *ai);
 
 #ifdef __cplusplus
 }
