@@ -63,8 +63,6 @@ double inform_shannon_pmi(inform_dist const *joint,
  * @param[in] marginal_y a marginal distribution
  * @param[in] base       the logarithmic base
  * @return the mutual information
- *
- * @see inform_shannon
  */
 double inform_shannon_mi(inform_dist const *joint,
     inform_dist const *marginal_x, inform_dist const *marginal_y, double base);
@@ -83,7 +81,7 @@ double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
     uint64_t event_joint, uint64_t event_marginal, double base);
 
 /**
- * Compute the Shannon-based conditional information of a joint distribution and
+ * Compute the Shannon-based conditional entropy of a joint distribution and
  * a marginal.
  *
  * This function will return `NaN` if `inform_shannon` returns `NaN`
@@ -93,11 +91,8 @@ double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
  * @param[in] marginal a marginal distribution
  * @param[in] base     the logarithmic base
  * @return the conditional information
- *
- * @see inform_shannon
  */
-double inform_conditional_entropy(inform_dist const* joint,
-    inform_dist const *marginal,
+double inform_shannon_ce(inform_dist const* joint, inform_dist const *marginal,
     double base);
 
 /**

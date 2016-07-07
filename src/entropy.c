@@ -61,9 +61,8 @@ double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
         inform_shannon_si(marginal, event_marginal, base);
 }
 
-double inform_conditional_entropy(inform_dist const *joint,
-        inform_dist const *marginal,
-        double base)
+double inform_shannon_ce(inform_dist const *joint, inform_dist const *marginal,
+    double base)
 {
     return inform_shannon(joint, base) - inform_shannon(marginal, base);
 }

@@ -112,7 +112,7 @@ double inform_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64_t 
     }
 
     // compute the entropy rate
-    double er = inform_conditional_entropy(&states, &histories, b);
+    double er = inform_shannon_ce(&states, &histories, b);
 
     // free up the data array
     free(data);
