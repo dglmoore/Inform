@@ -9,16 +9,16 @@
 UNIT(TransferEntropyTooShort)
 {
     uint64_t const series[] = {1,1,1,0,0,1,1,0,0,1};
-    ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 0, 2, 2)));
-    ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 2, 2)));
+    ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 0, 2, 2)));
+    ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 1, 2, 2)));
 }
 
 UNIT(TransferEntropyHistoryTooLong)
 {
     {
         uint64_t const series[] = {1,1,1,0,0,1,1,0,0,1};
-        ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 2, 2, 2)));
-        ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 3, 2, 2)));
+        ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 2, 2, 2)));
+        ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 1, 3, 2, 2)));
     }
 
     {
@@ -26,19 +26,19 @@ UNIT(TransferEntropyHistoryTooLong)
 
         uint64_t *xseries = random_series(size, 2);
         uint64_t *yseries = random_series(size, 2);
-        ASSERT_TRUE(isnan(inform_transfer_entropy(xseries, yseries, size, 2, 26)));
+        ASSERT_TRUE(isnan(inform_transfer_entropy(xseries, yseries, 1, size, 2, 26)));
         free(xseries);
         free(yseries);
 
         xseries = random_series(size, 3);
         yseries = random_series(size, 3);
-        ASSERT_TRUE(isnan(inform_transfer_entropy(xseries, yseries, size, 3, 16)));
+        ASSERT_TRUE(isnan(inform_transfer_entropy(xseries, yseries, 1, size, 3, 16)));
         free(xseries);
         free(yseries);
 
         xseries = random_series(size, 4);
         yseries = random_series(size, 4);
-        ASSERT_TRUE(isnan(inform_transfer_entropy(xseries, yseries, size, 4, 13)));
+        ASSERT_TRUE(isnan(inform_transfer_entropy(xseries, yseries, 1, size, 4, 13)));
         free(xseries);
         free(yseries);
     }
@@ -48,29 +48,29 @@ UNIT(TransferEntropyEncodingError)
 {
      {
          uint64_t const series[10] = {2,1,1,0,1,0,0,1,0,1};
-         ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 5, 3, 2)));
-         ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 5, 2, 2)));
+         ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 3, 2)));
+         ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 2, 2)));
 
-         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 5, 3, 2)));
-         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 5, 2, 2)));
+         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 1, 5, 3, 2)));
+         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 5, 2, 2)));
      }
 
      {
          uint64_t const series[] = {1,1,1,0,2,0,0,1,0,1};
-         ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 5, 3, 2)));
-         ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 5, 2, 2)));
+         ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 3, 2)));
+         ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 2, 2)));
 
-         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 5, 3, 2)));
-         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 5, 2, 2)));
+         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 1, 5, 3, 2)));
+         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 5, 2, 2)));
      }
 
      {
          uint64_t const series[] = {1,1,1,2,1,0,0,1,0,1};
-         ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 5, 3, 2)));
-         ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 5, 2, 2)));
+         ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 3, 2)));
+         ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 2, 2)));
 
-         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 5, 3, 2)));
-         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 5, 2, 2)));
+         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 1, 5, 3, 2)));
+         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 5, 2, 2)));
      }
 }
 
@@ -83,13 +83,13 @@ UNIT(TransferEntropySingleSeries_Base2)
                 1,1,0,0,1
         };
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy(series,   series,   5, 2, 2), 1e-6);
+                inform_transfer_entropy(series,   series,   1, 5, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.666666,
-                inform_transfer_entropy(series+5, series,   5, 2, 2), 1e-6);
+                inform_transfer_entropy(series+5, series,   1, 5, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy(series,   series+5, 5, 2, 2), 1e-6);
+                inform_transfer_entropy(series,   series+5, 1, 5, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy(series+5, series+5, 5, 2, 2), 1e-6);
+                inform_transfer_entropy(series+5, series+5, 1, 5, 2, 2), 1e-6);
     }
 
     {
@@ -98,13 +98,13 @@ UNIT(TransferEntropySingleSeries_Base2)
                 1,1,0,0,0,0,0,0,1,1
         };
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy(series,    series,    10, 2, 2), 1e-6);
+                inform_transfer_entropy(series,    series,    1, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.500000,
-                inform_transfer_entropy(series+10, series,    10, 2, 2), 1e-6);
+                inform_transfer_entropy(series+10, series,    1, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.106844,
-                inform_transfer_entropy(series,    series+10, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(series,    series+10, 1, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy(series+10, series+10, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(series+10, series+10, 1, 10, 2, 2), 1e-6);
     }
 
     {
@@ -113,13 +113,13 @@ UNIT(TransferEntropySingleSeries_Base2)
                 0,0,1,0,1,1,1,0,1,1
         };
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy(series,    series,    10, 2, 2), 1e-6);
+                inform_transfer_entropy(series,    series,    1, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.344361,
-                inform_transfer_entropy(series+10, series,    10, 2, 2), 1e-6);
+                inform_transfer_entropy(series+10, series,    1, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.250000,
-                inform_transfer_entropy(series,    series+10, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(series,    series+10, 1, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy(series+10, series+10, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(series+10, series+10, 1, 10, 2, 2), 1e-6);
     }
 }
 
@@ -142,22 +142,22 @@ UNIT(TransferEntropyEnsemble_Base2)
         };
 
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy_ensemble(xseries, xseries, 5, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(xseries, xseries, 5, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.091141,
-                inform_transfer_entropy_ensemble(yseries, xseries, 5, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(yseries, xseries, 5, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.107630,
-                inform_transfer_entropy_ensemble(xseries, yseries, 5, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(xseries, yseries, 5, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy_ensemble(yseries, yseries, 5, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(yseries, yseries, 5, 10, 2, 2), 1e-6);
 
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy_ensemble(xseries, xseries, 4, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(xseries, xseries, 4, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.134536,
-                inform_transfer_entropy_ensemble(yseries, xseries, 4, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(yseries, xseries, 4, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.089517,
-                inform_transfer_entropy_ensemble(xseries, yseries, 4, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(xseries, yseries, 4, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy_ensemble(yseries, yseries, 4, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(yseries, yseries, 4, 10, 2, 2), 1e-6);
     }
     {
         uint64_t xseries[50] = {
@@ -176,22 +176,22 @@ UNIT(TransferEntropyEnsemble_Base2)
         };
 
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy_ensemble(xseries, xseries, 5, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(xseries, xseries, 5, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.031471,
-                inform_transfer_entropy_ensemble(yseries, xseries, 5, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(yseries, xseries, 5, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.152561,
-                inform_transfer_entropy_ensemble(xseries, yseries, 5, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(xseries, yseries, 5, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy_ensemble(yseries, yseries, 5, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(yseries, yseries, 5, 10, 2, 2), 1e-6);
 
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy_ensemble(xseries, xseries, 4, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(xseries, xseries, 4, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.172618,
-                inform_transfer_entropy_ensemble(yseries, xseries, 4, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(yseries, xseries, 4, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.206156,
-                inform_transfer_entropy_ensemble(xseries, yseries, 4, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(xseries, yseries, 4, 10, 2, 2), 1e-6);
         ASSERT_DBL_NEAR_TOL(0.000000,
-                inform_transfer_entropy_ensemble(yseries, yseries, 4, 10, 2, 2), 1e-6);
+                inform_transfer_entropy(yseries, yseries, 4, 10, 2, 2), 1e-6);
     }
 }
 
@@ -211,8 +211,8 @@ UNIT(LocalTransferEntropyTooShort)
 {
     double te[8];
     uint64_t const series[] = {1,1,1,0,0,1,1,0,0,1};
-    ASSERT_EQUAL(3, inform_local_transfer_entropy(series, series+5, 0, 2, 2, te));
-    ASSERT_EQUAL(3, inform_local_transfer_entropy(series, series+5, 1, 2, 2, te));
+    ASSERT_EQUAL(3, inform_local_transfer_entropy(series, series+5, 1, 0, 2, 2, te));
+    ASSERT_EQUAL(3, inform_local_transfer_entropy(series, series+5, 1, 1, 2, 2, te));
 }
 
 UNIT(LocalTransferEntropyHistoryTooLong)
@@ -220,8 +220,8 @@ UNIT(LocalTransferEntropyHistoryTooLong)
     {
         double te[8];
         uint64_t const series[] = {1,1,1,0,0,1,1,0,0,1};
-        ASSERT_EQUAL(4, inform_local_transfer_entropy(series, series+5, 2, 2, 2, te));
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 3, 2, 2, te));
+        ASSERT_EQUAL(4, inform_local_transfer_entropy(series, series+5, 1, 2, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 1, 3, 2, 2, te));
     }
 
     {
@@ -230,19 +230,19 @@ UNIT(LocalTransferEntropyHistoryTooLong)
         double te[30];
         uint64_t *xseries = random_series(size, 2);
         uint64_t *yseries = random_series(size, 2);
-        ASSERT_EQUAL(5, inform_local_transfer_entropy(xseries, yseries, size, 2, 26, te));
+        ASSERT_EQUAL(5, inform_local_transfer_entropy(xseries, yseries, 1, size, 2, 26, te));
         free(xseries);
         free(yseries);
 
         xseries = random_series(size, 3);
         yseries = random_series(size, 3);
-        ASSERT_EQUAL(5, inform_local_transfer_entropy(xseries, yseries, size, 3, 16, te));
+        ASSERT_EQUAL(5, inform_local_transfer_entropy(xseries, yseries, 1, size, 3, 16, te));
         free(xseries);
         free(yseries);
 
         xseries = random_series(size, 4);
         yseries = random_series(size, 4);
-        ASSERT_EQUAL(5, inform_local_transfer_entropy(xseries, yseries, size, 4, 13, te));
+        ASSERT_EQUAL(5, inform_local_transfer_entropy(xseries, yseries, 1, size, 4, 13, te));
         free(xseries);
         free(yseries);
     }
@@ -253,31 +253,31 @@ UNIT(LocalTransferEntropyEncodingError)
      {
         double te[8];
          uint64_t const series[10] = {2,1,1,0,1,0,0,1,0,1};
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series, 5, 3, 2, te));
-        ASSERT_EQUAL(6, inform_local_transfer_entropy(series+5, series, 5, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series, 1, 5, 3, 2, te));
+        ASSERT_EQUAL(6, inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te));
 
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 5, 3, 2, te));
-        ASSERT_EQUAL(6, inform_local_transfer_entropy(series, series+5, 5, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 1, 5, 3, 2, te));
+        ASSERT_EQUAL(6, inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te));
      }
 
      {
          double te[8];
          uint64_t const series[] = {1,1,1,0,2,0,0,1,0,1};
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series, 5, 3, 2, te));
-        ASSERT_EQUAL(6, inform_local_transfer_entropy(series+5, series, 5, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series, 1, 5, 3, 2, te));
+        ASSERT_EQUAL(6, inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te));
 
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 5, 3, 2, te));
-        ASSERT_EQUAL(6, inform_local_transfer_entropy(series, series+5, 5, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 1, 5, 3, 2, te));
+        ASSERT_EQUAL(6, inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te));
      }
 
      {
         double te[8];
          uint64_t const series[] = {1,1,1,2,1,0,0,1,0,1};
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series, 5, 3, 2, te));
-        ASSERT_EQUAL(6, inform_local_transfer_entropy(series+5, series, 5, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series, 1, 5, 3, 2, te));
+        ASSERT_EQUAL(6, inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te));
 
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 5, 3, 2, te));
-        ASSERT_EQUAL(6, inform_local_transfer_entropy(series, series+5, 5, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 1, 5, 3, 2, te));
+        ASSERT_EQUAL(6, inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te));
      }
 }
 
@@ -289,13 +289,13 @@ UNIT(LocalTransferEntropySingleSeries_Base2)
                 1,1,1,0,0,
                 1,1,0,0,1
         };
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series, 5, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series, 1, 5, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series, 5, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.666666, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 5, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series+5, 5, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series+5, 1, 5, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
     }
 
@@ -305,13 +305,13 @@ UNIT(LocalTransferEntropySingleSeries_Base2)
                 0,0,1,1,1,0,0,0,0,1,
                 1,1,0,0,0,0,0,0,1,1
         };
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series, 1, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+10, series, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+10, series, 1, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.500000, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+10, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+10, 1, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.106844, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+10, series+10, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+10, series+10, 1, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
     }
 
@@ -321,13 +321,13 @@ UNIT(LocalTransferEntropySingleSeries_Base2)
                 0,1,0,1,0,0,1,1,0,0,
                 0,0,1,0,1,1,1,0,1,1
         };
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series, 1, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+10, series, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+10, series, 1, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.344361, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+10, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+10, 1, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.250000, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+10, series+10, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(series+10, series+10, 1, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
     }
 }
@@ -351,13 +351,13 @@ UNIT(LocalTransferEntropyEnsemble_Base2)
             0, 0, 1, 1, 0, 0, 0, 0, 0, 1,
         };
 
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(xseries, xseries, 5, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(xseries, xseries, 5, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(yseries, xseries, 5, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(yseries, xseries, 5, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.091141, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(xseries, yseries, 5, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(xseries, yseries, 5, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.107630, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(yseries, yseries, 5, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(yseries, yseries, 5, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
     }
     {
@@ -375,13 +375,13 @@ UNIT(LocalTransferEntropyEnsemble_Base2)
             0, 1, 1, 0, 1, 1, 1, 1, 1, 1,
         };
 
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(xseries, xseries, 4, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(xseries, xseries, 4, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(yseries, xseries, 4, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(yseries, xseries, 4, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.134536, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(xseries, yseries, 4, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(xseries, yseries, 4, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.089517, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(yseries, yseries, 4, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(yseries, yseries, 4, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
     }
     {
@@ -401,13 +401,13 @@ UNIT(LocalTransferEntropyEnsemble_Base2)
             0, 1, 1, 1, 1, 0, 1, 1, 1, 1,
         };
 
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(xseries, xseries, 5, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(xseries, xseries, 5, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(yseries, xseries, 5, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(yseries, xseries, 5, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.031471, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(xseries, yseries, 5, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(xseries, yseries, 5, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.152561, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(yseries, yseries, 5, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(yseries, yseries, 5, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
     }
     {
@@ -427,13 +427,13 @@ UNIT(LocalTransferEntropyEnsemble_Base2)
             0, 1, 1, 1, 1, 0, 1, 1, 1, 1,
         };
 
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(xseries, xseries, 4, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(xseries, xseries, 4, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(yseries, xseries, 4, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(yseries, xseries, 4, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.172618, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(xseries, yseries, 4, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(xseries, yseries, 4, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.206156, AVERAGE(te), 1e-6);
-        ASSERT_EQUAL(0, inform_local_transfer_entropy_ensemble(yseries, yseries, 4, 10, 2, 2, te));
+        ASSERT_EQUAL(0, inform_local_transfer_entropy(yseries, yseries, 4, 10, 2, 2, te));
         ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
     }
 }

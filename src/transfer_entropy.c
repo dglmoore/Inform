@@ -69,13 +69,7 @@ static void accumulate_local_observations(uint64_t const *series_y,
     }
 }
 
-double inform_transfer_entropy(uint64_t const *node_y, uint64_t const *node_x,
-    size_t n, uint64_t b, uint64_t k)
-{
-    return inform_transfer_entropy_ensemble(node_y, node_x, 1, n, b, k);
-}
-
-double inform_transfer_entropy_ensemble(uint64_t const *node_y,
+double inform_transfer_entropy(uint64_t const *node_y,
     uint64_t const *node_x, size_t n, size_t m, uint64_t b, uint64_t k)
 {
     // ensure that neither of the time series are NULL
@@ -149,13 +143,7 @@ double inform_transfer_entropy_ensemble(uint64_t const *node_y,
     return te;
 }
 
-int inform_local_transfer_entropy(uint64_t const *node_y, uint64_t const *node_x,
-    size_t n, uint64_t b, uint64_t k, double *te)
-{
-    return inform_local_transfer_entropy_ensemble(node_y, node_x, 1, n, b, k, te);
-}
-
-int inform_local_transfer_entropy_ensemble(uint64_t const *node_y,
+int inform_local_transfer_entropy(uint64_t const *node_y,
     uint64_t const *node_x, size_t n, size_t m, uint64_t b, uint64_t k,
     double *te)
 {
