@@ -19,10 +19,11 @@ set_target_properties(${PROJECT_NAME}_STATIC PROPERTIES OUTPUT_NAME ${PROJECT_NA
 
 if (UNIX)
     target_link_libraries(${PROJECT_NAME} m)
-    install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME} DESTINATION lib)
-    install(TARGETS ${PROJECT_NAME}_STATIC EXPORT ${PROJECT_NAME} DESTINATION lib)
-    install(DIRECTORY include/ DESTINATION include)
 endif()
+
+install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME} DESTINATION lib)
+install(TARGETS ${PROJECT_NAME}_STATIC EXPORT ${PROJECT_NAME} DESTINATION lib)
+install(DIRECTORY include/ DESTINATION include)
 
 enable_testing()
 add_subdirectory(test)
