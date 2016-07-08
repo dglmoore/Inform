@@ -4,7 +4,7 @@
 #pragma once
 
 #include <inform/dist.h>
-#include <inform/entropy.h>
+#include <inform/shannon.h>
 #include <inform/state_encoding.h>
 
 #include <inform/active_info.h>
