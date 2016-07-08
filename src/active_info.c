@@ -173,9 +173,9 @@ int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
     inform_dist histories = { data + states_size, histories_size, N };
     inform_dist futures   = { data + states_size + histories_size, futures_size, N };
 
-    uint64_t *state   = malloc(n * (m - k) * sizeof(uint64_t));
-    uint64_t *history = malloc(n * (m - k) * sizeof(uint64_t));
-    uint64_t *future  = malloc(n * (m - k) * sizeof(uint64_t));
+    uint64_t *state   = malloc(N * sizeof(uint64_t));
+    uint64_t *history = malloc(N * sizeof(uint64_t));
+    uint64_t *future  = malloc(N * sizeof(uint64_t));
 
     uint64_t const *series_ptr = series;
     uint64_t *state_ptr = state, *history_ptr = history, *future_ptr = future;
@@ -189,7 +189,7 @@ int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
         future_ptr += (m - k);
     }
 
-    for (size_t i = 0; i < n * (m - k); ++i)
+    for (size_t i = 0; i < N; ++i)
     {
         ai[i] = inform_shannon_pmi(&states, &histories, &futures, state[i],
             history[i], future[i], (double) b);
