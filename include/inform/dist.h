@@ -248,7 +248,7 @@ double inform_dist_prob(inform_dist const *dist, uint64_t event);
  * @param[in] probs the size of the preallocated array
  * @return the number of probabilities written to the array
  */
-int inform_dist_dump(inform_dist const *dist, double *probs, size_t n);
+size_t inform_dist_dump(inform_dist const *dist, double *probs, size_t n);
 
 #ifdef __cplusplus
 }

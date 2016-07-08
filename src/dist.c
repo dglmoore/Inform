@@ -271,7 +271,7 @@ double inform_dist_prob(inform_dist const *dist, uint64_t event)
     return inform_dist_unsafe_prob(dist, event);
 }
 
-int inform_dist_dump(inform_dist const *dist, double *probs, size_t n)
+size_t inform_dist_dump(inform_dist const *dist, double *probs, size_t n)
 {
     // if the distribution is NULL or the event is outsize of the support
     if (dist == NULL || dist->size == 0)

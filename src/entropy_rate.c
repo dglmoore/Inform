@@ -72,7 +72,7 @@ double inform_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64_t 
         return inform_nan(3);
     }
     // ensure that the history length is reasonable given memory constraints
-    else if (k > 25/ log2l(b))
+    else if (k > 25 / log2((double) b))
     {
         return inform_nan(4);
     }
@@ -85,12 +85,12 @@ double inform_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64_t 
         }
     }
 
-    int const N = n * (m - k);
+    size_t const N = n * (m - k);
 
     // compute the sizes of the histograms
-    int const states_size = b * pow(b,k);
-    int const histories_size = states_size / b;
-    int const total_size = states_size + histories_size;
+    size_t const states_size = (size_t) (b * pow((double) b, (double) k));
+    size_t const histories_size = states_size / b;
+    size_t const total_size = states_size + histories_size;
 
     // allocate memory to store the histograms
     uint64_t *data = calloc(total_size, sizeof(uint64_t));
@@ -112,7 +112,7 @@ double inform_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64_t 
     }
 
     // compute the entropy rate
-    double er = inform_shannon_ce(&states, &histories, b);
+    double er = inform_shannon_ce(&states, &histories, (double) b);
 
     // free up the data array
     free(data);
@@ -144,7 +144,7 @@ int inform_local_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64
         return 4;
     }
     // ensure that the history length is reasonable given memory constraints
-    else if (k > 25/ log2l(b))
+    else if (k > 25 / log2((double) b))
     {
         return 5;
     }
@@ -160,9 +160,9 @@ int inform_local_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64
     size_t const N = n * (m - k);
 
     // compute the sizes of the histograms
-    int const states_size = b * pow(b,k);
-    int const histories_size = states_size / b;
-    int const total_size = states_size + histories_size;
+    size_t const states_size = (size_t) (b * pow((double) b, (double) k));
+    size_t const histories_size = states_size / b;
+    size_t const total_size = states_size + histories_size;
 
     // allocate memory to store the histograms
     uint64_t *data = calloc(total_size, sizeof(uint64_t));
@@ -195,7 +195,8 @@ int inform_local_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64
     // compute the entropy rate
     for (size_t i = 0; i < N; ++i)
     {
-        er[i] = inform_shannon_pce(&states, &histories, state[i], history[i], b);
+        er[i] = inform_shannon_pce(&states, &histories, state[i], history[i],
+            (double) b);
     }
 
     // free up the data array
@@ -204,4 +205,3 @@ int inform_local_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64
     // return the active information
     return 0;
 }
-

@@ -19,7 +19,7 @@ uint64_t inform_encode(uint64_t const *state, uint64_t n, uint64_t base)
         return INFORM_ENCODING_ERROR(1);
     }
     // if the encoding will exceed 63 bits, return an error
-    else if (n >= 64 / log2l(base))
+    else if (n >= (uint64_t) 64 / log2((double) base))
     {
         return INFORM_ENCODING_ERROR(2);
     }
@@ -45,7 +45,7 @@ uint64_t* inform_decode(uint64_t encoding, uint64_t n, uint64_t base)
 {
     // If the encoding is invalid, the base is too small, or the requested
     // decoded length is too large, then return NULL.
-    if (encoding >= inform_encoding_error || base < 2 || n >= 64 / log2l(base))
+    if (encoding >= inform_encoding_error || base < 2 || n >= 64 / log2((double) base))
     {
         return NULL;
     }

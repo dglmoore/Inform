@@ -88,7 +88,7 @@ double inform_transfer_entropy(uint64_t const *node_y,
         return inform_nan(3);
     }
     // ensure that the history is reasonable given the history length
-    else if (k > 25 / log2l(b))
+    else if (k > 25 / log2((double) b))
     {
         return inform_nan(4);
     }
@@ -101,15 +101,15 @@ double inform_transfer_entropy(uint64_t const *node_y,
     }
 
     // compute the number of observations to be made
-    int const N = n * (m - k);
+    size_t const N = n * (m - k);
 
     // compute the sizes of the various histograms
-    int const q = pow(b,k);
-    int const states_size     = b*b*q;
-    int const histories_size  = q;
-    int const sources_size    = b*q;
-    int const predicates_size = b*q;
-    int const total_size = states_size + histories_size + sources_size
+    size_t const q = (size_t) pow((double) b, (double) k);
+    size_t const states_size     = b*b*q;
+    size_t const histories_size  = q;
+    size_t const sources_size    = b*q;
+    size_t const predicates_size = b*q;
+    size_t const total_size = states_size + histories_size + sources_size
         + predicates_size;
 
     // allocate memory to store the basic histograms
@@ -133,8 +133,10 @@ double inform_transfer_entropy(uint64_t const *node_y,
     }
 
     // compute the transfer entropy from the distributions
-    double te = inform_shannon(&sources, b) + inform_shannon(&predicates, b) -
-        inform_shannon(&states, b) - inform_shannon(&histories, b);
+    double te = inform_shannon(&sources, (double) b) +
+        inform_shannon(&predicates, (double) b) -
+        inform_shannon(&states, (double) b) -
+        inform_shannon(&histories, (double) b);
 
     // free up the data array
     free(data);
@@ -168,7 +170,7 @@ int inform_local_transfer_entropy(uint64_t const *node_y,
         return 4;
     }
     // ensure that the history is reasonable given the history length
-    else if (k > 25 / log2l(b))
+    else if (k > 25 / log2((double) b))
     {
         return 5;
     }
@@ -184,12 +186,12 @@ int inform_local_transfer_entropy(uint64_t const *node_y,
     size_t const N = n * (m - k);
 
     // compute the sizes of the various histograms
-    int const q = pow(b,k);
-    int const states_size     = b*b*q;
-    int const histories_size  = q;
-    int const sources_size    = b*q;
-    int const predicates_size = b*q;
-    int const total_size = states_size + histories_size + sources_size
+    size_t const q = (size_t) pow((double) b, (double) k);
+    size_t const states_size     = b*b*q;
+    size_t const histories_size  = q;
+    size_t const sources_size    = b*q;
+    size_t const predicates_size = b*q;
+    size_t const total_size = states_size + histories_size + sources_size
         + predicates_size;
 
     // allocate memory to store the basic histograms
@@ -231,7 +233,7 @@ int inform_local_transfer_entropy(uint64_t const *node_y,
     for (size_t i = 0; i < N; ++i)
     {
         te[i] = inform_shannon_pcmi(&states, &sources, &predicates, &histories,
-            state[i], source[i], predicate[i], history[i], b);
+            state[i], source[i], predicate[i], history[i], (double) b);
     }
 
     // free up the data array

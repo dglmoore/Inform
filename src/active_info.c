@@ -74,7 +74,7 @@ double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b
         return inform_nan(3);
     }
     // ensure that the history length is reasonable given memory constraints
-    else if (k > 25/ log2l(b))
+    else if (k > 25 / log2((double) b))
     {
         return inform_nan(4);
     }
@@ -88,13 +88,13 @@ double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b
     }
 
     // compute the number of observations to be made
-    int const N = n * (m - k);
+    size_t const N = n * (m - k);
 
     // compute the sizes of the various histograms
-    int const states_size = b*pow(b,k);
-    int const histories_size = states_size / b;
-    int const futures_size = b;
-    int const total_size = states_size + histories_size + futures_size;
+    size_t const states_size = (size_t) (b * pow((double) b,(double) k));
+    size_t const histories_size = states_size / b;
+    size_t const futures_size = b;
+    size_t const total_size = states_size + histories_size + futures_size;
 
     uint64_t *data = calloc(total_size, sizeof(uint64_t));
     if (data == NULL)
@@ -114,7 +114,7 @@ double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b
     }
 
     // compute the active information
-    double ai = inform_shannon_mi(&states, &histories, &futures, b);
+    double ai = inform_shannon_mi(&states, &histories, &futures, (double) b);
 
     // free up the data array
     free(data);
@@ -142,7 +142,7 @@ int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
     {
         return 4;
     }
-    else if (k > 25/ log2l(b))
+    else if (k > 25 / log2((double) b))
     {
         return 5;
     }
@@ -155,13 +155,13 @@ int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
     }
 
     // compute the number of observations to be made
-    int const N = n * (m - k);
+    size_t const N = n * (m - k);
 
     // compute the sizes of the various histograms
-    int const states_size = b*pow(b,k);
-    int const histories_size = states_size / b;
-    int const futures_size = b;
-    int const total_size = states_size + histories_size + futures_size;
+    size_t const states_size = (size_t) (b*pow((double) b,(double) k));
+    size_t const histories_size = states_size / b;
+    size_t const futures_size = b;
+    size_t const total_size = states_size + histories_size + futures_size;
 
     uint64_t *data = calloc(total_size, sizeof(uint64_t));
     if (data == NULL)
@@ -192,7 +192,7 @@ int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
     for (size_t i = 0; i < n * (m - k); ++i)
     {
         ai[i] = inform_shannon_pmi(&states, &histories, &futures, state[i],
-            history[i], future[i], b);
+            history[i], future[i], (double) b);
     }
 
     // free up the data array
