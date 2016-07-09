@@ -25,3 +25,20 @@ All three major operating systems are now supported. Inform has been tested on t
 - Debian 8 (gcc and clang)
 - Mac OSX 10.11 (El Capitan)
 - Windows 10 (MSVC 2015)
+
+## Related Projects
+
+Wrappers in the following languages are currently under active development:
+- Python ([PyInform](https://github.com/elife-asu/pyinform))
+- Julia ([Inform.jl](https://github.com/elife-asu/Inform.jl))
+- Wolfram Language/Mathematica ([InformWolfram](https://github.com/dglmoore/InformWolfram))
+
+Inform is still under heavy development. As such, the API and the feature set are rapidly changing. Below are a few alternative projects that are currently more mature, more stable and provide more features:
+- [JIDT](https://github.com/jlizier/jidt)
+- [DIT](https://github.com/dit/dit)
+
+
+## Build Status
+- Linux/OSX: [![Build Status](https://travis-ci.org/ELIFE-ASU/Inform.svg?branch=master)](https://travis-ci.org/ELIFE-ASU/Inform)
+- Windows: **Appveyor Support Pending**
+- Code Coverage: **Coming Soon**
