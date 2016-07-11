@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 project(inform C)
 
+set(${PROJECT_NAME}_VERSION_MAJOR 0)
+set(${PROJECT_NAME}_VERSION_MINOR 0.2)
+set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR})
+
 if (UNIX)
     add_definitions("-Wall -Wextra -Werror -Wno-unused-parameter -std=gnu1x")
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -ggdb -pg")
@@ -16,7 +20,8 @@ include_directories(include)
 add_subdirectory(src)
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES})
 add_library(${PROJECT_NAME}_STATIC ${${PROJECT_NAME}_SOURCES})
-set_target_properties(${PROJECT_NAME}_STATIC PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME} VERSION ${${PROJECT_NAME}_VERSION})
+set_target_properties(${PROJECT_NAME}_STATIC PROPERTIES OUTPUT_NAME ${PROJECT_NAME} VERSION ${${PROJECT_NAME}_VERSION})
 
 if (UNIX)
     target_link_libraries(${PROJECT_NAME} m)
