@@ -28,11 +28,11 @@ double inform_shannon(inform_dist const *dist, double base)
             if (p != 0)
             {
                 // accumulate the weighted self-information of the event
-                h -= p * log2(p)/log2(base);
+                h -= p * log2(p);
             }
         }
         // return the entropy
-        return h;
+        return h / log2(base);
     }
     // return NaN if the distribution is invalid
     return inform_nan(1);
