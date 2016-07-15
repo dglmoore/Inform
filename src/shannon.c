@@ -24,11 +24,11 @@ double inform_shannon(inform_dist const *dist, double base)
         // for each element of the distribution's support
         for (size_t i = 0; i < n; ++i)
         {
-            // get the probability
-            double const p = inform_dist_prob(dist, i);
-            // the the probability is non-zero
-            if (p != 0)
+            // the observation_count is non-zero
+            if (dist->histogram[i] != 0)
             {
+                // get the probability
+                double const p = inform_dist_prob(dist, i);
                 // accumulate the weighted self-information of the event
                 h -= p * log2(p);
             }
