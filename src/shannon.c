@@ -28,7 +28,7 @@ double inform_shannon(inform_dist const *dist, double base)
             if (dist->histogram[i] != 0)
             {
                 // get the probability
-                double const p = inform_dist_prob(dist, i);
+                double const p = (double) dist->histogram[i] / dist->counts;
                 // accumulate the weighted self-information of the event
                 h -= p * log2(p);
             }
