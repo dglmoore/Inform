@@ -18,9 +18,11 @@ double inform_shannon(inform_dist const *dist, double base)
     // ensure that the distribution is valid
     if (inform_dist_is_valid(dist))
     {
+        // get the size of the distribution's support
+        size_t const n = inform_dist_size(dist);
         double h = 0.;
         // for each element of the distribution's support
-        for (size_t i = 0; i < inform_dist_size(dist); ++i)
+        for (size_t i = 0; i < n; ++i)
         {
             // get the probability
             double const p = inform_dist_prob(dist, i);
