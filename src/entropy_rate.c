@@ -98,7 +98,7 @@ double inform_entropy_rate(int const *series, size_t n, size_t m, int b, size_t 
     size_t const total_size = states_size + histories_size;
 
     // allocate memory to store the histograms
-    uint64_t *data = calloc(total_size, sizeof(uint64_t));
+    uint32_t *data = calloc(total_size, sizeof(uint32_t));
     // ensure that the memory was allocated
     if (data == NULL)
     {
@@ -175,7 +175,7 @@ int inform_local_entropy_rate(int const *series, size_t n, size_t m, int b, size
     size_t const total_size = states_size + histories_size;
 
     // allocate memory to store the histograms
-    uint64_t *data = calloc(total_size, sizeof(uint64_t));
+    uint32_t *data = calloc(total_size, sizeof(uint32_t));
     // ensure that the memory was allocated
     if (data == NULL)
     {

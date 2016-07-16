@@ -120,7 +120,7 @@ double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
         + predicates_size;
 
     // allocate memory to store the basic histograms
-    uint64_t *data = calloc(total_size, sizeof(uint64_t));
+    uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
         return inform_nan(7);
@@ -210,7 +210,7 @@ int inform_local_transfer_entropy(int const *node_y, int const *node_x,
         + predicates_size;
 
     // allocate memory to store the basic histograms
-    uint64_t *data = calloc(total_size, sizeof(uint64_t));
+    uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
         return 8;

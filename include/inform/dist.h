@@ -3,9 +3,12 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
+#include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
+
+static_assert(sizeof(size_t) >= 4, "size_t must be at least 32-bits");
 
 #ifdef __cplusplus
 extern "C"
@@ -46,7 +49,7 @@ extern "C"
 typedef struct inform_distribution
 {
     /// the histogram or array of observation frequencies
-    uint64_t *histogram;
+    uint32_t *histogram;
     /// the size of the support
     size_t size;
     /// the number of observations made so far
@@ -125,7 +128,7 @@ inform_dist* inform_dist_dup(inform_dist const *dist);
  * @param[in] n    the number of events in the histogram
  * @return the new distribution
  */
-inform_dist* inform_dist_create(uint64_t const *data, size_t n);
+inform_dist* inform_dist_create(uint32_t const *data, size_t n);
 /**
  * Free all dynamically allocated memory associated with a distribution.
  *
@@ -176,7 +179,7 @@ bool inform_dist_is_valid(inform_dist const *dist);
  *
  * @see inform_dist_set
  */
-uint64_t inform_dist_get(inform_dist const *dist, uint64_t event);
+uint32_t inform_dist_get(inform_dist const *dist, size_t event);
 /**
  * Set the number of occurances of a given event.
  *
@@ -195,7 +198,7 @@ uint64_t inform_dist_get(inform_dist const *dist, uint64_t event);
  * @see inform_dist_get
  * @see inform_dist_tick
  */
-uint64_t inform_dist_set(inform_dist *dist, uint64_t event, uint64_t x);
+uint32_t inform_dist_set(inform_dist *dist, size_t event, uint32_t x);
 
 /**
  * Increment the number of observations of a given event.
@@ -213,7 +216,7 @@ uint64_t inform_dist_set(inform_dist *dist, uint64_t event, uint64_t x);
  *
  * @see inform_dist_set
  */
-uint64_t inform_dist_tick(inform_dist *dist, uint64_t event);
+uint32_t inform_dist_tick(inform_dist *dist, size_t event);
 
 /**
  * Extact the probability of an event.
@@ -231,7 +234,7 @@ uint64_t inform_dist_tick(inform_dist *dist, uint64_t event);
  * @see inform_dist_get
  * @see inform_dist_dump
  */
-double inform_dist_prob(inform_dist const *dist, uint64_t event);
+double inform_dist_prob(inform_dist const *dist, size_t event);
 /**
  * Dump the probabilities of all events to an array.
  *

@@ -101,7 +101,7 @@ double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k
     size_t const futures_size = b;
     size_t const total_size = states_size + histories_size + futures_size;
 
-    uint64_t *data = calloc(total_size, sizeof(uint64_t));
+    uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
         return inform_nan(7);
@@ -172,7 +172,7 @@ int inform_local_active_info(int const *series, size_t n, size_t m,
     size_t const futures_size = b;
     size_t const total_size = states_size + histories_size + futures_size;
 
-    uint64_t *data = calloc(total_size, sizeof(uint64_t));
+    uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
         return 6;
