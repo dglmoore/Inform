@@ -6,4 +6,4 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
-uint64_t* random_series(size_t size, uint64_t base);
+int* random_series(size_t size, int base);

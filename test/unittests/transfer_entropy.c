@@ -8,7 +8,7 @@
 
 UNIT(TransferEntropyTooShort)
 {
-    uint64_t const series[] = {1,1,1,0,0,1,1,0,0,1};
+    int const series[] = {1,1,1,0,0,1,1,0,0,1};
     ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 0, 2, 2)));
     ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 1, 2, 2)));
 }
@@ -16,7 +16,7 @@ UNIT(TransferEntropyTooShort)
 UNIT(TransferEntropyHistoryTooLong)
 {
     {
-        uint64_t const series[] = {1,1,1,0,0,1,1,0,0,1};
+        int const series[] = {1,1,1,0,0,1,1,0,0,1};
         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 2, 2, 2)));
         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 1, 3, 2, 2)));
     }
@@ -24,8 +24,8 @@ UNIT(TransferEntropyHistoryTooLong)
     {
         size_t const size = 30;
 
-        uint64_t *xseries = random_series(size, 2);
-        uint64_t *yseries = random_series(size, 2);
+        int *xseries = random_series(size, 2);
+        int *yseries = random_series(size, 2);
         ASSERT_TRUE(isnan(inform_transfer_entropy(xseries, yseries, 1, size, 2, 26)));
         free(xseries);
         free(yseries);
@@ -47,7 +47,7 @@ UNIT(TransferEntropyHistoryTooLong)
 UNIT(TransferEntropyEncodingError)
 {
      {
-         uint64_t const series[10] = {2,1,1,0,1,0,0,1,0,1};
+         int const series[10] = {2,1,1,0,1,0,0,1,0,1};
          ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 3, 2)));
          ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 2, 2)));
 
@@ -56,7 +56,7 @@ UNIT(TransferEntropyEncodingError)
      }
 
      {
-         uint64_t const series[] = {1,1,1,0,2,0,0,1,0,1};
+         int const series[] = {1,1,1,0,2,0,0,1,0,1};
          ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 3, 2)));
          ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 2, 2)));
 
@@ -65,7 +65,7 @@ UNIT(TransferEntropyEncodingError)
      }
 
      {
-         uint64_t const series[] = {1,1,1,2,1,0,0,1,0,1};
+         int const series[] = {1,1,1,2,1,0,0,1,0,1};
          ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 3, 2)));
          ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 2, 2)));
 
@@ -78,7 +78,7 @@ UNIT(TransferEntropyEncodingError)
 UNIT(TransferEntropySingleSeries_Base2)
 {
     {
-        uint64_t series[10] = {
+        int series[10] = {
                 1,1,1,0,0,
                 1,1,0,0,1
         };
@@ -93,7 +93,7 @@ UNIT(TransferEntropySingleSeries_Base2)
     }
 
     {
-        uint64_t series[20] = {
+        int series[20] = {
                 0,0,1,1,1,0,0,0,0,1,
                 1,1,0,0,0,0,0,0,1,1
         };
@@ -108,7 +108,7 @@ UNIT(TransferEntropySingleSeries_Base2)
     }
 
     {
-        uint64_t series[20] = {
+        int series[20] = {
                 0,1,0,1,0,0,1,1,0,0,
                 0,0,1,0,1,1,1,0,1,1
         };
@@ -126,14 +126,14 @@ UNIT(TransferEntropySingleSeries_Base2)
 UNIT(TransferEntropyEnsemble_Base2)
 {
     {
-        uint64_t xseries[50] = {
+        int xseries[50] = {
             1, 1, 1, 0, 0, 1, 1, 0, 1, 0,
             0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
             0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
             0, 0, 1, 0, 0, 0, 1, 0, 0, 1,
             0, 0, 1, 1, 1, 1, 1, 0, 0, 0,
         };
-        uint64_t yseries[50] = {
+        int yseries[50] = {
             0, 1, 0, 0, 0, 1, 0, 1, 1, 0,
             0, 0, 0, 1, 1, 1, 0, 1, 0, 0,
             1, 0, 1, 0, 1, 0, 0, 0, 1, 0,
@@ -160,14 +160,14 @@ UNIT(TransferEntropyEnsemble_Base2)
                 inform_transfer_entropy(yseries, yseries, 4, 10, 2, 2), 1e-6);
     }
     {
-        uint64_t xseries[50] = {
+        int xseries[50] = {
             0, 1, 0, 1, 0, 0, 1, 1, 1, 1,
             0, 1, 0, 1, 1, 1, 0, 0, 1, 0,
             1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
             1, 0, 0, 0, 0, 0, 0, 0, 1, 0,
             0, 1, 1, 1, 1, 1, 0, 1, 1, 1,
         };
-        uint64_t yseries[50] = {
+        int yseries[50] = {
             1, 1, 1, 1, 1, 0, 0, 0, 1, 0,
             0, 1, 1, 0, 0, 1, 1, 0, 0, 0,
             0, 1, 1, 1, 0, 1, 0, 0, 0, 0,
@@ -210,7 +210,7 @@ static double average(double *xs, size_t n)
 UNIT(LocalTransferEntropyTooShort)
 {
     double te[8];
-    uint64_t const series[] = {1,1,1,0,0,1,1,0,0,1};
+    int const series[] = {1,1,1,0,0,1,1,0,0,1};
     ASSERT_EQUAL(3, inform_local_transfer_entropy(series, series+5, 1, 0, 2, 2, te));
     ASSERT_EQUAL(3, inform_local_transfer_entropy(series, series+5, 1, 1, 2, 2, te));
 }
@@ -219,7 +219,7 @@ UNIT(LocalTransferEntropyHistoryTooLong)
 {
     {
         double te[8];
-        uint64_t const series[] = {1,1,1,0,0,1,1,0,0,1};
+        int const series[] = {1,1,1,0,0,1,1,0,0,1};
         ASSERT_EQUAL(4, inform_local_transfer_entropy(series, series+5, 1, 2, 2, 2, te));
         ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 1, 3, 2, 2, te));
     }
@@ -228,21 +228,21 @@ UNIT(LocalTransferEntropyHistoryTooLong)
         size_t const size = 30;
 
         double te[30];
-        uint64_t *xseries = random_series(size, 2);
-        uint64_t *yseries = random_series(size, 2);
-        ASSERT_EQUAL(5, inform_local_transfer_entropy(xseries, yseries, 1, size, 2, 26, te));
+        int *xseries = random_series(size, 2);
+        int *yseries = random_series(size, 2);
+        ASSERT_EQUAL(6, inform_local_transfer_entropy(xseries, yseries, 1, size, 2, 26, te));
         free(xseries);
         free(yseries);
 
         xseries = random_series(size, 3);
         yseries = random_series(size, 3);
-        ASSERT_EQUAL(5, inform_local_transfer_entropy(xseries, yseries, 1, size, 3, 16, te));
+        ASSERT_EQUAL(6, inform_local_transfer_entropy(xseries, yseries, 1, size, 3, 16, te));
         free(xseries);
         free(yseries);
 
         xseries = random_series(size, 4);
         yseries = random_series(size, 4);
-        ASSERT_EQUAL(5, inform_local_transfer_entropy(xseries, yseries, 1, size, 4, 13, te));
+        ASSERT_EQUAL(6, inform_local_transfer_entropy(xseries, yseries, 1, size, 4, 13, te));
         free(xseries);
         free(yseries);
     }
@@ -252,32 +252,32 @@ UNIT(LocalTransferEntropyEncodingError)
 {
      {
         double te[8];
-         uint64_t const series[10] = {2,1,1,0,1,0,0,1,0,1};
+         int const series[10] = {2,1,1,0,1,0,0,1,0,1};
         ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series, 1, 5, 3, 2, te));
-        ASSERT_EQUAL(6, inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te));
+        ASSERT_EQUAL(7, inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te));
 
         ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 1, 5, 3, 2, te));
-        ASSERT_EQUAL(6, inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te));
+        ASSERT_EQUAL(7, inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te));
      }
 
      {
          double te[8];
-         uint64_t const series[] = {1,1,1,0,2,0,0,1,0,1};
+         int const series[] = {1,1,1,0,2,0,0,1,0,1};
         ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series, 1, 5, 3, 2, te));
-        ASSERT_EQUAL(6, inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te));
+        ASSERT_EQUAL(7, inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te));
 
         ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 1, 5, 3, 2, te));
-        ASSERT_EQUAL(6, inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te));
+        ASSERT_EQUAL(7, inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te));
      }
 
      {
         double te[8];
-         uint64_t const series[] = {1,1,1,2,1,0,0,1,0,1};
+         int const series[] = {1,1,1,2,1,0,0,1,0,1};
         ASSERT_EQUAL(0, inform_local_transfer_entropy(series+5, series, 1, 5, 3, 2, te));
-        ASSERT_EQUAL(6, inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te));
+        ASSERT_EQUAL(7, inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te));
 
         ASSERT_EQUAL(0, inform_local_transfer_entropy(series, series+5, 1, 5, 3, 2, te));
-        ASSERT_EQUAL(6, inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te));
+        ASSERT_EQUAL(7, inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te));
      }
 }
 
@@ -285,7 +285,7 @@ UNIT(LocalTransferEntropySingleSeries_Base2)
 {
     {
         double te[3];
-        uint64_t series[10] = {
+        int series[10] = {
                 1,1,1,0,0,
                 1,1,0,0,1
         };
@@ -301,7 +301,7 @@ UNIT(LocalTransferEntropySingleSeries_Base2)
 
     {
         double te[8];
-        uint64_t series[20] = {
+        int series[20] = {
                 0,0,1,1,1,0,0,0,0,1,
                 1,1,0,0,0,0,0,0,1,1
         };
@@ -317,7 +317,7 @@ UNIT(LocalTransferEntropySingleSeries_Base2)
 
     {
         double te[8];
-        uint64_t series[20] = {
+        int series[20] = {
                 0,1,0,1,0,0,1,1,0,0,
                 0,0,1,0,1,1,1,0,1,1
         };
@@ -336,14 +336,14 @@ UNIT(LocalTransferEntropyEnsemble_Base2)
 {
     {
         double te[40];
-        uint64_t xseries[50] = {
+        int xseries[50] = {
             1, 1, 1, 0, 0, 1, 1, 0, 1, 0,
             0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
             0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
             0, 0, 1, 0, 0, 0, 1, 0, 0, 1,
             0, 0, 1, 1, 1, 1, 1, 0, 0, 0,
         };
-        uint64_t yseries[50] = {
+        int yseries[50] = {
             0, 1, 0, 0, 0, 1, 0, 1, 1, 0,
             0, 0, 0, 1, 1, 1, 0, 1, 0, 0,
             1, 0, 1, 0, 1, 0, 0, 0, 1, 0,
@@ -362,13 +362,13 @@ UNIT(LocalTransferEntropyEnsemble_Base2)
     }
     {
         double te[32];
-        uint64_t xseries[40] = {
+        int xseries[40] = {
             1, 1, 1, 0, 0, 1, 1, 0, 1, 0,
             0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
             0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
             0, 0, 1, 0, 0, 0, 1, 0, 0, 1,
         };
-        uint64_t yseries[40] = {
+        int yseries[40] = {
             0, 1, 0, 0, 0, 1, 0, 1, 1, 0,
             0, 0, 0, 1, 1, 1, 0, 1, 0, 0,
             1, 0, 1, 0, 1, 0, 0, 0, 1, 0,
@@ -386,14 +386,14 @@ UNIT(LocalTransferEntropyEnsemble_Base2)
     }
     {
         double te[40];
-        uint64_t xseries[50] = {
+        int xseries[50] = {
             0, 1, 0, 1, 0, 0, 1, 1, 1, 1,
             0, 1, 0, 1, 1, 1, 0, 0, 1, 0,
             1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
             1, 0, 0, 0, 0, 0, 0, 0, 1, 0,
             0, 1, 1, 1, 1, 1, 0, 1, 1, 1,
         };
-        uint64_t yseries[50] = {
+        int yseries[50] = {
             1, 1, 1, 1, 1, 0, 0, 0, 1, 0,
             0, 1, 1, 0, 0, 1, 1, 0, 0, 0,
             0, 1, 1, 1, 0, 1, 0, 0, 0, 0,
@@ -412,14 +412,14 @@ UNIT(LocalTransferEntropyEnsemble_Base2)
     }
     {
         double te[32];
-        uint64_t xseries[50] = {
+        int xseries[50] = {
             0, 1, 0, 1, 0, 0, 1, 1, 1, 1,
             0, 1, 0, 1, 1, 1, 0, 0, 1, 0,
             1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
             1, 0, 0, 0, 0, 0, 0, 0, 1, 0,
             0, 1, 1, 1, 1, 1, 0, 1, 1, 1,
         };
-        uint64_t yseries[50] = {
+        int yseries[50] = {
             1, 1, 1, 1, 1, 0, 0, 0, 1, 0,
             0, 1, 1, 0, 0, 1, 1, 0, 0, 0,
             0, 1, 1, 1, 0, 1, 0, 0, 0, 0,

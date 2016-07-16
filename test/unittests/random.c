@@ -3,9 +3,9 @@
 // license that can be found in the LICENSE file.
 #include "random.h"
 
-uint64_t* random_series(size_t size, uint64_t base)
+int* random_series(size_t size, int base)
 {
-    uint64_t *series = calloc(size, sizeof(uint64_t));
+    int *series = calloc(size, sizeof(int));
     if (series != NULL)
     {
         for (size_t i = 0; i < size; ++i)

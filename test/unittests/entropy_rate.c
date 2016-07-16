@@ -20,7 +20,7 @@ static double average(double *xs, size_t n)
 
 UNIT(EntropyRateSeriesTooShort)
 {
-    uint64_t const series[] = {1,1,0,0,1,0,0,1};
+    int const series[] = {1,1,0,0,1,0,0,1};
     ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 0, 2, 2)));
     ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 1, 2, 2)));
 }
@@ -28,7 +28,7 @@ UNIT(EntropyRateSeriesTooShort)
 UNIT(EntropyRateHistoryTooLong)
 {
     {
-        uint64_t const series[] = {1,1,0,0,1,0,0,1};
+        int const series[] = {1,1,0,0,1,0,0,1};
 
         ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, 2, 2)));
         ASSERT_FALSE(isnan(inform_entropy_rate(series, 1, 3, 2, 2)));
@@ -37,7 +37,7 @@ UNIT(EntropyRateHistoryTooLong)
     {
         size_t const size = 30;
 
-        uint64_t *series = random_series(size, 2);
+        int *series = random_series(size, 2);
         ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, size, 2, 26)));
         free(series);
 
@@ -53,7 +53,7 @@ UNIT(EntropyRateHistoryTooLong)
 
 UNIT(EntropyRateEncodingError)
 {
-    uint64_t const series[] = {2,1,0,0,1,0,0,1};
+    int const series[] = {2,1,0,0,1,0,0,1};
     ASSERT_FALSE(isnan(inform_entropy_rate(series, 1, 8, 3, 2)));
     ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 8, 2, 2)));
 }
@@ -61,65 +61,65 @@ UNIT(EntropyRateEncodingError)
 UNIT(EntropyRateSingleSeries_Base2)
 {
     ASSERT_DBL_NEAR_TOL(0.000000,
-            inform_entropy_rate((uint64_t[]){1,1,0,0,1,0,0,1}, 1, 8, 2, 2),
+            inform_entropy_rate((int[]){1,1,0,0,1,0,0,1}, 1, 8, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.000000,
-            inform_entropy_rate((uint64_t[]){1,0,0,0,0,0,0,0,0}, 1, 9, 2, 2),
+            inform_entropy_rate((int[]){1,0,0,0,0,0,0,0,0}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.679270,
-            inform_entropy_rate((uint64_t[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2),
+            inform_entropy_rate((int[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.515663,
-            inform_entropy_rate((uint64_t[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2),
+            inform_entropy_rate((int[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.515663,
-            inform_entropy_rate((uint64_t[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2),
+            inform_entropy_rate((int[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.463587,
-            inform_entropy_rate((uint64_t[]){0,0,0,0,0,1,1,0,0}, 1, 9, 2, 2),
+            inform_entropy_rate((int[]){0,0,0,0,0,1,1,0,0}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.463587,
-            inform_entropy_rate((uint64_t[]){0,0,0,0,1,1,0,0,0}, 1, 9, 2, 2),
+            inform_entropy_rate((int[]){0,0,0,0,1,1,0,0,0}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.679270,
-            inform_entropy_rate((uint64_t[]){1,1,1,0,0,0,0,1,1}, 1, 9, 2, 2),
+            inform_entropy_rate((int[]){1,1,1,0,0,0,0,1,1}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.679270,
-            inform_entropy_rate((uint64_t[]){0,0,0,1,1,1,1,0,0}, 1, 9, 2, 2),
+            inform_entropy_rate((int[]){0,0,0,1,1,1,1,0,0}, 1, 9, 2, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.515663,
-            inform_entropy_rate((uint64_t[]){0,0,0,0,0,0,1,1,0}, 1, 9, 2, 2),
+            inform_entropy_rate((int[]){0,0,0,0,0,0,1,1,0}, 1, 9, 2, 2),
             1e-6);
 }
 
 UNIT(EntropyRateSingleSeries_Base4)
 {
     ASSERT_DBL_NEAR_TOL(0.285715,
-            inform_entropy_rate((uint64_t[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2),
+            inform_entropy_rate((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.196778,
-            inform_entropy_rate((uint64_t[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2),
+            inform_entropy_rate((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.257831,
-            inform_entropy_rate((uint64_t[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2),
+            inform_entropy_rate((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2),
             1e-6);
 }
 
 UNIT(EntropyRateEnsemble)
 {
     {
-        uint64_t series[16] = {
+        int series[16] = {
             1,1,0,0,1,0,0,1,
             0,0,0,1,0,0,0,1,
         };
@@ -129,7 +129,7 @@ UNIT(EntropyRateEnsemble)
     }
 
     {
-        uint64_t series[81] = {
+        int series[81] = {
             1,0,0,0,0,0,0,0,0,
             0,0,1,1,1,1,0,0,0,
             1,0,0,0,0,0,0,1,1,
@@ -149,7 +149,7 @@ UNIT(EntropyRateEnsemble)
 UNIT(EntropyRateEnsemble_Base4)
 {
     {
-        uint64_t series[36] = {
+        int series[36] = {
             3, 3, 3, 2, 1, 0, 0, 0, 1,
             2, 2, 3, 3, 3, 3, 2, 1, 0,
             0, 0, 0, 0, 1, 1, 0, 0, 0,
@@ -164,7 +164,7 @@ UNIT(EntropyRateEnsemble_Base4)
 UNIT(LocalEntropyRateSeriesTooShort)
 {
     double er[6];
-    uint64_t const series[] = {1,1,0,0,1,0,0,1};
+    int const series[] = {1,1,0,0,1,0,0,1};
     ASSERT_EQUAL(3, inform_local_entropy_rate(series, 1, 0, 2, 2, er));
     ASSERT_EQUAL(3, inform_local_entropy_rate(series, 1, 1, 2, 2, er));
 }
@@ -173,7 +173,7 @@ UNIT(LocalEntropyRateHistoryTooLong)
 {
     {
         double er[6];
-        uint64_t const series[] = {1,1,0,0,1,0,0,1};
+        int const series[] = {1,1,0,0,1,0,0,1};
 
         ASSERT_EQUAL(4, inform_local_entropy_rate(series, 1, 2, 2, 2, er));
         ASSERT_EQUAL(0, inform_local_entropy_rate(series, 1, 3, 2, 2, er));
@@ -183,16 +183,16 @@ UNIT(LocalEntropyRateHistoryTooLong)
         size_t const size = 30;
 
         double er[30];
-        uint64_t *series = random_series(size, 2);
-        ASSERT_EQUAL(5, inform_local_entropy_rate(series, 1, size, 2, 26, er));
+        int *series = random_series(size, 2);
+        ASSERT_EQUAL(6, inform_local_entropy_rate(series, 1, size, 2, 26, er));
         free(series);
 
         series = random_series(size, 3);
-        ASSERT_EQUAL(5, inform_local_entropy_rate(series, 1, size, 3, 16, er));
+        ASSERT_EQUAL(6, inform_local_entropy_rate(series, 1, size, 3, 16, er));
         free(series);
 
         series = random_series(size, 4);
-        ASSERT_EQUAL(5, inform_local_entropy_rate(series, 1, size, 4, 13, er));
+        ASSERT_EQUAL(6, inform_local_entropy_rate(series, 1, size, 4, 13, er));
         free(series);
     }
 }
@@ -200,39 +200,39 @@ UNIT(LocalEntropyRateHistoryTooLong)
 UNIT(LocalEntropyRateEncodingError)
 {
     double er[6];
-    uint64_t const series[] = {2,1,0,0,1,0,0,1};
+    int const series[] = {2,1,0,0,1,0,0,1};
     ASSERT_EQUAL(0, inform_local_entropy_rate(series, 1, 8, 3, 2, er));
-    ASSERT_EQUAL(6, inform_local_entropy_rate(series, 1, 8, 2, 2, er));
+    ASSERT_EQUAL(7, inform_local_entropy_rate(series, 1, 8, 2, 2, er));
 }
 
 UNIT(LocalEntropyRateSingleSeries_Base2)
 {
     double er[7];
-    ASSERT_EQUAL(0, inform_local_entropy_rate((uint64_t[]){1,0,0,0,0,0,0,0,0}, 1, 9, 2, 2, er));
+    ASSERT_EQUAL(0, inform_local_entropy_rate((int[]){1,0,0,0,0,0,0,0,0}, 1, 9, 2, 2, er));
     ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(er), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_entropy_rate((uint64_t[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2, er));
+    ASSERT_EQUAL(0, inform_local_entropy_rate((int[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2, er));
     ASSERT_DBL_NEAR_TOL(0.679270, AVERAGE(er), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_entropy_rate((uint64_t[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2, er));
+    ASSERT_EQUAL(0, inform_local_entropy_rate((int[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2, er));
     ASSERT_DBL_NEAR_TOL(0.515663, AVERAGE(er), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_entropy_rate((uint64_t[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2, er));
+    ASSERT_EQUAL(0, inform_local_entropy_rate((int[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2, er));
     ASSERT_DBL_NEAR_TOL(0.515663, AVERAGE(er), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_entropy_rate((uint64_t[]){0,0,0,0,0,1,1,0,0}, 1, 9, 2, 2, er));
+    ASSERT_EQUAL(0, inform_local_entropy_rate((int[]){0,0,0,0,0,1,1,0,0}, 1, 9, 2, 2, er));
     ASSERT_DBL_NEAR_TOL(0.463587, AVERAGE(er), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_entropy_rate((uint64_t[]){0,0,0,0,1,1,0,0,0}, 1, 9, 2, 2, er));
+    ASSERT_EQUAL(0, inform_local_entropy_rate((int[]){0,0,0,0,1,1,0,0,0}, 1, 9, 2, 2, er));
     ASSERT_DBL_NEAR_TOL(0.463587, AVERAGE(er), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_entropy_rate((uint64_t[]){1,1,1,0,0,0,0,1,1}, 1, 9, 2, 2, er));
+    ASSERT_EQUAL(0, inform_local_entropy_rate((int[]){1,1,1,0,0,0,0,1,1}, 1, 9, 2, 2, er));
     ASSERT_DBL_NEAR_TOL(0.679270, AVERAGE(er), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_entropy_rate((uint64_t[]){0,0,0,1,1,1,1,0,0}, 1, 9, 2, 2, er));
+    ASSERT_EQUAL(0, inform_local_entropy_rate((int[]){0,0,0,1,1,1,1,0,0}, 1, 9, 2, 2, er));
     ASSERT_DBL_NEAR_TOL(0.679270, AVERAGE(er), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_entropy_rate((uint64_t[]){0,0,0,0,0,0,1,1,0}, 1, 9, 2, 2, er));
+    ASSERT_EQUAL(0, inform_local_entropy_rate((int[]){0,0,0,0,0,0,1,1,0}, 1, 9, 2, 2, er));
     ASSERT_DBL_NEAR_TOL(0.515663, AVERAGE(er), 1e-6);
 }
 
@@ -240,13 +240,13 @@ UNIT(LocalEntropyRateSingleSeries_Base4)
 {
     double er[7];
 
-    ASSERT_EQUAL(0, inform_local_entropy_rate((uint64_t[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, er));
+    ASSERT_EQUAL(0, inform_local_entropy_rate((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, er));
     ASSERT_DBL_NEAR_TOL(0.285715, AVERAGE(er), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_entropy_rate((uint64_t[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, er));
+    ASSERT_EQUAL(0, inform_local_entropy_rate((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, er));
     ASSERT_DBL_NEAR_TOL(0.196778, AVERAGE(er), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_entropy_rate((uint64_t[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, er));
+    ASSERT_EQUAL(0, inform_local_entropy_rate((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, er));
     ASSERT_DBL_NEAR_TOL(0.257831, AVERAGE(er), 1e-6);
 }
 
@@ -254,7 +254,7 @@ UNIT(LocalEntropyRateEnsemble)
 {
     {
         double er[12];
-        uint64_t series[16] = {
+        int series[16] = {
             1,1,0,0,1,0,0,1,
             0,0,0,1,0,0,0,1,
         };
@@ -264,7 +264,7 @@ UNIT(LocalEntropyRateEnsemble)
 
     {
         double er[63];
-        uint64_t series[81] = {
+        int series[81] = {
             1,0,0,0,0,0,0,0,0,
             0,0,1,1,1,1,0,0,0,
             1,0,0,0,0,0,0,1,1,
@@ -284,7 +284,7 @@ UNIT(LocalEntropyRateEnsemble_Base4)
 {
     {
         double er[28];
-        uint64_t series[36] = {
+        int series[36] = {
             3, 3, 3, 2, 1, 0, 0, 0, 1,
             2, 2, 3, 3, 3, 3, 2, 1, 0,
             0, 0, 0, 0, 1, 1, 0, 0, 0,

@@ -4,17 +4,17 @@
 #include <inform/error.h>
 #include <inform/active_info.h>
 
-static void accumulate_observations(uint64_t const* series, size_t n, uint64_t b,
-    uint64_t k, inform_dist *states, inform_dist *histories, inform_dist *futures)
+static void accumulate_observations(int const* series, size_t n, int b,
+    size_t k, inform_dist *states, inform_dist *histories, inform_dist *futures)
 {
-    uint64_t history = 0, q = 1, state, future;
-    for (uint64_t i = 0; i < k; ++i)
+    int history = 0, q = 1, state, future;
+    for (size_t i = 0; i < k; ++i)
     {
         q *= b;
         history *= b;
         history += series[i];
     }
-    for (uint64_t i = k; i < n; ++i)
+    for (size_t i = k; i < n; ++i)
     {
         future = series[i];
         state  = history * b + future;
@@ -27,27 +27,27 @@ static void accumulate_observations(uint64_t const* series, size_t n, uint64_t b
     }
 }
 
-static void accumulate_local_observations(uint64_t const* series, size_t n, uint64_t b,
-    uint64_t k, inform_dist *states, inform_dist *histories, inform_dist *futures,
-    uint64_t *state, uint64_t *history, uint64_t *future)
+static void accumulate_local_observations(int const* series, size_t n, int b,
+    size_t k, inform_dist *states, inform_dist *histories, inform_dist *futures,
+    int *state, int *history, int *future)
 {
     history[0] = 0;
-    uint64_t q = 1;
-    for (uint64_t i = 0; i < k; ++i)
+    int q = 1;
+    for (size_t i = 0; i < k; ++i)
     {
         q *= b;
         history[0] *= b;
         history[0] += series[i];
     }
-    for (uint64_t i = k; i < n; ++i)
+    for (size_t i = k; i < n; ++i)
     {
-        uint64_t l = i - k;
+        size_t l = i - k; // will never overflow
         future[l] = series[i];
         state[l] = history[l] * b + future[l];
 
-            states->histogram[state[l]]++;
-            histories->histogram[history[l]]++;
-            futures->histogram[future[l]]++;
+        states->histogram[state[l]]++;
+        histories->histogram[history[l]]++;
+        futures->histogram[future[l]]++;
 
         if (i + 1 != n)
         {
@@ -56,7 +56,7 @@ static void accumulate_local_observations(uint64_t const* series, size_t n, uint
     }
 }
 
-double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k)
+double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k)
 {
     // ensure that the time series is not NULL
     if (series == NULL)
@@ -73,17 +73,22 @@ double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b
     {
         return inform_nan(3);
     }
-    // ensure that the history length is reasonable given memory constraints
-    else if (k > 25 / log2((double) b))
+    // ensure that the base is at least 2
+    else if (b < 2)
     {
         return inform_nan(4);
+    }
+    // ensure that the history length is reasonable given memory constraints
+    else if (k == 0 || k > 25 / log2((double) b))
+    {
+        return inform_nan(5);
     }
     // ensure that the base is compatible with the time series
     for (size_t i = 0; i < n * m; ++i)
     {
-        if (b <= series[i])
+        if (b <= series[i] || series[i] < 0)
         {
-            return inform_nan(5);
+            return inform_nan(6);
         }
     }
 
@@ -99,7 +104,7 @@ double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b
     uint64_t *data = calloc(total_size, sizeof(uint64_t));
     if (data == NULL)
     {
-        return inform_nan(6);
+        return inform_nan(7);
     }
 
     inform_dist states    = { data, states_size, N };
@@ -107,7 +112,7 @@ double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b
     inform_dist futures   = { data + states_size + histories_size, futures_size, N };
 
     // for each initial condition
-    for (uint64_t i = 0; i < n; ++i, series += m)
+    for (size_t i = 0; i < n; ++i, series += m)
     {
         // allocate the observations
         accumulate_observations(series, m, b, k, &states, &histories, &futures);
@@ -123,8 +128,8 @@ double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b
     return ai;
 }
 
-int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
-    uint64_t b, uint64_t k, double *ai)
+int inform_local_active_info(int const *series, size_t n, size_t m,
+    int b, size_t k, double *ai)
 {
     if (series == NULL)
     {
@@ -142,15 +147,19 @@ int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
     {
         return 4;
     }
-    else if (k > 25 / log2((double) b))
+    else if (b < 2)
     {
         return 5;
     }
+    else if (k == 0 || k > 25 / log2((double) b))
+    {
+        return 6;
+    }
     for (size_t i = 0; i < n * m; ++i)
     {
-        if (b <= series[i])
+        if (b <= series[i] || series[i] < 0)
         {
-            return 6;
+            return 7;
         }
     }
 
@@ -173,13 +182,13 @@ int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
     inform_dist histories = { data + states_size, histories_size, N };
     inform_dist futures   = { data + states_size + histories_size, futures_size, N };
 
-    uint64_t *state   = malloc(N * sizeof(uint64_t));
-    uint64_t *history = malloc(N * sizeof(uint64_t));
-    uint64_t *future  = malloc(N * sizeof(uint64_t));
+    int *state   = malloc(N * sizeof(int));
+    int *history = malloc(N * sizeof(int));
+    int *future  = malloc(N * sizeof(int));
 
-    uint64_t const *series_ptr = series;
-    uint64_t *state_ptr = state, *history_ptr = history, *future_ptr = future;
-    for (uint64_t i = 0; i < n; ++i)
+    int const *series_ptr = series;
+    int *state_ptr = state, *history_ptr = history, *future_ptr = future;
+    for (size_t i = 0; i < n; ++i)
     {
         accumulate_local_observations(series_ptr, m, b, k, &states, &histories,
             &futures, state_ptr, history_ptr, future_ptr);
