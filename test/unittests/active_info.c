@@ -11,98 +11,111 @@
 UNIT(ActiveInfoSeriesTooShort)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
-    ASSERT_TRUE(isnan(inform_active_info(series, 1, 0, 2, 2)));
-    ASSERT_TRUE(isnan(inform_active_info(series, 1, 1, 2, 2)));
+    inform_error err;
+    inform_error *errptr = &err;
+
+    *errptr = INFORM_ERROR_SUCCESS;
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(isnan(inform_active_info(series, 1, 0, 2, 2, errptr)));
+    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+
+    *errptr = INFORM_ERROR_SUCCESS;
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(isnan(inform_active_info(series, 1, 1, 2, 2, errptr)));
+    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
 }
 
 UNIT(ActiveInfoHistoryTooLong)
 {
     {
+        inform_error err;
+        inform_error *errptr = &err;
         int const series[] = {1,1,0,0,1,0,0,1};
 
-        ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, 2, 2)));
-        ASSERT_FALSE(isnan(inform_active_info(series, 1, 3, 2, 2)));
-    }
+        *errptr = INFORM_ERROR_SUCCESS;
+        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, 2, 2, errptr)));
+        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
 
-    {
-        size_t const size = 30;
-
-        int *series = random_series(size, 2);
-        ASSERT_TRUE(isnan(inform_active_info(series, 1, size, 2, 26)));
-        free(series);
-
-        series = random_series(size, 3);
-        ASSERT_TRUE(isnan(inform_active_info(series, 1, size, 3, 16)));
-        free(series);
-
-        series = random_series(size, 4);
-        ASSERT_TRUE(isnan(inform_active_info(series, 1, size, 4, 13)));
-        free(series);
+        *errptr = INFORM_ERROR_SUCCESS;
+        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(isnan(inform_active_info(series, 1, 3, 2, 2, errptr)));
+        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
     }
 }
 
 UNIT(ActiveInfoEncodingError)
 {
+    inform_error err;
+    inform_error *errptr = &err;
     int const series[] = {2,1,0,0,1,0,0,1};
-    ASSERT_FALSE(isnan(inform_active_info(series, 1, 8, 3, 2)));
-    ASSERT_TRUE(isnan(inform_active_info(series, 1, 8, 2, 2)));
+
+    *errptr = INFORM_ERROR_SUCCESS;
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_FALSE(isnan(inform_active_info(series, 1, 8, 3, 2, errptr)));
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+
+    *errptr = INFORM_ERROR_SUCCESS;
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(isnan(inform_active_info(series, 1, 8, 2, 2, errptr)));
+    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
 }
 
 UNIT(ActiveInfoSingleSeries_Base2)
 {
     ASSERT_DBL_NEAR_TOL(0.918296,
-            inform_active_info((int[]){1,1,0,0,1,0,0,1}, 1, 8, 2, 2),
+            inform_active_info((int[]){1,1,0,0,1,0,0,1}, 1, 8, 2, 2, NULL),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.000000,
-            inform_active_info((int[]){1,0,0,0,0,0,0,0,0}, 1, 9, 2, 2),
+            inform_active_info((int[]){1,0,0,0,0,0,0,0,0}, 1, 9, 2, 2, NULL),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.305958,
-            inform_active_info((int[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2),
+            inform_active_info((int[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2, NULL),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.347458,
-            inform_active_info((int[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2),
+            inform_active_info((int[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2, NULL),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.347458,
-            inform_active_info((int[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2),
+            inform_active_info((int[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2, NULL),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.399533,
-            inform_active_info((int[]){0,0,0,0,0,1,1,0,0}, 1, 9, 2, 2),
+            inform_active_info((int[]){0,0,0,0,0,1,1,0,0}, 1, 9, 2, 2, NULL),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.399533,
-            inform_active_info((int[]){0,0,0,0,1,1,0,0,0}, 1, 9, 2, 2),
+            inform_active_info((int[]){0,0,0,0,1,1,0,0,0}, 1, 9, 2, 2, NULL),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.305958,
-            inform_active_info((int[]){1,1,1,0,0,0,0,1,1}, 1, 9, 2, 2),
+            inform_active_info((int[]){1,1,1,0,0,0,0,1,1}, 1, 9, 2, 2, NULL),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.305958,
-            inform_active_info((int[]){0,0,0,1,1,1,1,0,0}, 1, 9, 2, 2),
+            inform_active_info((int[]){0,0,0,1,1,1,1,0,0}, 1, 9, 2, 2, NULL),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.347458,
-            inform_active_info((int[]){0,0,0,0,0,0,1,1,0}, 1, 9, 2, 2),
+            inform_active_info((int[]){0,0,0,0,0,0,1,1,0}, 1, 9, 2, 2, NULL),
             1e-6);
 }
 
 UNIT(ActiveInfoSingleSeries_Base4)
 {
     ASSERT_DBL_NEAR_TOL(0.635471,
-            inform_active_info((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2),
+            inform_active_info((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, NULL),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.635471,
-            inform_active_info((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2),
+            inform_active_info((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, NULL),
             1e-6);
 
     ASSERT_DBL_NEAR_TOL(0.234783,
-            inform_active_info((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2),
+            inform_active_info((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, NULL),
             1e-6);
 }
 
@@ -114,7 +127,7 @@ UNIT(ActiveInfoEnsemble)
             0,0,0,1,0,0,0,1,
         };
         ASSERT_DBL_NEAR_TOL(0.459148,
-                inform_active_info(series, 2, 8, 2, 2),
+                inform_active_info(series, 2, 8, 2, 2, NULL),
                 1e-6);
     }
 
@@ -131,7 +144,7 @@ UNIT(ActiveInfoEnsemble)
             0,0,0,0,0,0,1,1,0,
         };
         ASSERT_DBL_NEAR_TOL(0.3080467,
-                inform_active_info(series, 9, 9, 2, 2),
+                inform_active_info(series, 9, 9, 2, 2, NULL),
                 1e-6);
     }
 }
@@ -146,7 +159,7 @@ UNIT(ActiveInfoEnsemble_Base4)
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
         ASSERT_DBL_NEAR_TOL(0.662146,
-                inform_active_info(series, 4, 9, 4, 2),
+                inform_active_info(series, 4, 9, 4, 2, NULL),
                 1e-6);
     }
 }

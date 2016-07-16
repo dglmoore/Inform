@@ -1,7 +1,6 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <inform/error.h>
 #include <inform/active_info.h>
 
 static void accumulate_observations(int const* series, size_t n, int b,
@@ -41,7 +40,7 @@ static void accumulate_local_observations(int const* series, size_t n, int b,
     }
     for (size_t i = k; i < n; ++i)
     {
-        size_t l = i - k; // will never overflow
+        size_t l = i - k;
         future[l] = series[i];
         state[l] = history[l] * b + future[l];
 
@@ -56,39 +55,41 @@ static void accumulate_local_observations(int const* series, size_t n, int b,
     }
 }
 
-double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k)
+double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k, inform_error *err)
 {
-    // ensure that the time series is not NULL
     if (series == NULL)
     {
-        return inform_nan(1);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series is NULL", NAN);
     }
-    // ensure that the dimensions of the time series make sense
-    else if (m <= 1 || n < 1)
+    else if (n < 1)
     {
-        return inform_nan(2);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", NAN);
     }
-    // ensure that the number of time steps greater than the history length
+    else if (m < 2)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has less than two timesteps", NAN);
+    }
     else if (m <= k)
     {
-        return inform_nan(3);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is too long for the timeseries", NAN);
     }
-    // ensure that the base is at least 2
     else if (b < 2)
     {
-        return inform_nan(4);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "base is less than two", NAN);
     }
-    // ensure that the history length is reasonable given memory constraints
-    else if (k == 0 || k > 25 / log2((double) b))
+    else if (k == 0)
     {
-        return inform_nan(5);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is zero", NAN);
     }
-    // ensure that the base is compatible with the time series
     for (size_t i = 0; i < n * m; ++i)
     {
-        if (b <= series[i] || series[i] < 0)
+        if (series[i] < 0)
         {
-            return inform_nan(6);
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has negative states", NAN);
+        }
+        else if (b <= series[i])
+        {
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has states inconsistent with the expected base", NAN);
         }
     }
 
@@ -104,7 +105,7 @@ double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k
     uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        return inform_nan(7);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate distribution histograms", NAN);
     }
 
     inform_dist states    = { data, states_size, N };
