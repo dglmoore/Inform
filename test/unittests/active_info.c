@@ -234,7 +234,7 @@ UNIT(LocalActiveInfoAllocatesOutput)
     inform_error err = INFORM_ERROR_SUCCESS;
     double *ai = inform_local_active_info((int[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2, NULL, &err);
     ASSERT_NOT_NULL(ai);
-    ASSERT_EQUAL(INFORM_SUCCESS, err.errno);
+    ASSERT_EQUAL(INFORM_SUCCESS, err.tag);
     free(ai);
 }
 

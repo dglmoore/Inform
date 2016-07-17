@@ -232,7 +232,7 @@ UNIT(LocalEntropyRateAllocatesOutput)
     inform_error err = INFORM_ERROR_SUCCESS;
     double *er = inform_local_entropy_rate((int[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2, NULL, &err);
     ASSERT_NOT_NULL(er);
-    ASSERT_EQUAL(INFORM_SUCCESS, err.errno);
+    ASSERT_EQUAL(INFORM_SUCCESS, err.tag);
     free(er);
 }
 

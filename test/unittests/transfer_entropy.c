@@ -378,7 +378,7 @@ UNIT(LocalTransferEntropyAllocatesOutput)
     int target[] = {0,1,0,0,1,0,0,1,0};
     double *te = inform_local_transfer_entropy(source, target, 1, 9, 2, 2, NULL, &err);
     ASSERT_NOT_NULL(te);
-    ASSERT_EQUAL(INFORM_SUCCESS, err.errno);
+    ASSERT_EQUAL(INFORM_SUCCESS, err.tag);
     free(te);
 }
 

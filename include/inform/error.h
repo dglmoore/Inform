@@ -27,7 +27,7 @@ typedef enum
  */
 typedef struct inform_error
 {
-    int errno;          /// the error number (i.e. an inform_error_tag)
+    int tag;          /// the error number (i.e. an inform_error_tag)
     char *msg;          /// the statically allocated error message
     int line;           /// the line number
     char const *file;   /// the filename
@@ -35,16 +35,16 @@ typedef struct inform_error
 
 /// A default success value for errors
 #define INFORM_ERROR_SUCCESS (inform_error) {\
-    .errno = INFORM_SUCCESS,\
+    .tag = INFORM_SUCCESS,\
     .msg = NULL,\
     .line = __LINE__,\
     .file = __FILE__,}
 
 /// set an error as pointed to by ERR
-#define INFORM_ERROR(ERR, ERRNO, MSG) do {\
+#define INFORM_ERROR(ERR, TAG, MSG) do {\
         if ((ERR) != NULL) {\
             *(ERR) = (inform_error) {\
-                .errno = (ERRNO),\
+                .tag = (TAG),\
                 .msg = (MSG),\
                 .line = __LINE__,\
                 .file = __FILE__,\
@@ -53,19 +53,19 @@ typedef struct inform_error
     } while(0)
 
 /// set an error and return a non-void result
-#define INFORM_ERROR_RETURN(ERR, ERRNO, MSG, RET) do {\
-        INFORM_ERROR(ERR, ERRNO, MSG); \
+#define INFORM_ERROR_RETURN(ERR, TAG, MSG, RET) do {\
+        INFORM_ERROR(ERR, TAG, MSG); \
         return RET; \
     } while(0)
 
 /// set an error and return a void result
-#define INFORM_ERROR_RETURN_VOID(ERR, ERRNO, MSG) do {\
-        INFORM_ERROR(ERR, ERRNO, MSG); \
+#define INFORM_ERROR_RETURN_VOID(ERR, TAG, MSG) do {\
+        INFORM_ERROR(ERR, TAG, MSG); \
         return; \
     } while(0)
 
 /// is the error a "success", i.e. no error
-#define INFORM_IS_SUCCESS(ERR) ((ERR) == NULL || (ERR)->errno == INFORM_SUCCESS)
+#define INFORM_IS_SUCCESS(ERR) ((ERR) == NULL || (ERR)->tag == INFORM_SUCCESS)
 
 /// is the error a "failure", i.e. not a "success"
 #define INFORM_IS_FAILURE(ERR) !INFORM_IS_SUCCESS(ERR)
