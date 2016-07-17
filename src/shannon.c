@@ -10,7 +10,7 @@ double inform_shannon_si(inform_dist const *dist, uint64_t event, double base)
     {
         return -log2(inform_dist_prob(dist, event)) / log2(base);
     }
-    return inform_nan(1);
+    return NAN;
 }
 
 double inform_shannon(inform_dist const *dist, double base)
@@ -37,7 +37,7 @@ double inform_shannon(inform_dist const *dist, double base)
         return h / log2(base);
     }
     // return NaN if the distribution is invalid
-    return inform_nan(1);
+    return NAN;
 }
 
 double inform_shannon_pmi(inform_dist const *joint,
