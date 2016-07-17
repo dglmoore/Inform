@@ -3,12 +3,9 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
-#include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-static_assert(sizeof(size_t) >= 4, "size_t must be at least 32-bits");
 
 #ifdef __cplusplus
 extern "C"

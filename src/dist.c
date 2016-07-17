@@ -1,9 +1,11 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
+#include <assert.h>
 #include <inform/dist.h>
-
 #include <string.h>
+
+static_assert(sizeof(size_t) >= 4, "size_t must be at least 32-bits");
 
 inform_dist* inform_dist_alloc(size_t n)
 {
