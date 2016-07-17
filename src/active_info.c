@@ -93,10 +93,8 @@ double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k
         }
     }
 
-    // compute the number of observations to be made
     size_t const N = n * (m - k);
 
-    // compute the sizes of the various histograms
     size_t const states_size = (size_t) (b * pow((double) b,(double) k));
     size_t const histories_size = states_size / b;
     size_t const futures_size = b;
@@ -112,20 +110,15 @@ double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k
     inform_dist histories = { data + states_size, histories_size, N };
     inform_dist futures   = { data + states_size + histories_size, futures_size, N };
 
-    // for each initial condition
     for (size_t i = 0; i < n; ++i, series += m)
     {
-        // allocate the observations
         accumulate_observations(series, m, b, k, &states, &histories, &futures);
     }
 
-    // compute the active information
     double ai = inform_shannon_mi(&states, &histories, &futures, (double) b);
 
-    // free up the data array
     free(data);
 
-    // return the active information
     return ai;
 }
 
@@ -135,10 +128,6 @@ double *inform_local_active_info(int const *series, size_t n, size_t m,
     if (series == NULL)
     {
         INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series is NULL", NULL);
-    }
-    else if (ai == NULL)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "AI output array is NULL", NULL);
     }
     else if (n < 1)
     {
@@ -172,10 +161,17 @@ double *inform_local_active_info(int const *series, size_t n, size_t m,
         }
     }
 
-    // compute the number of observations to be made
     size_t const N = n * (m - k);
 
-    // compute the sizes of the various histograms
+    if (ai == NULL)
+    {
+        ai = malloc(N * sizeof(double));
+        if (ai == NULL)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate the AI output array", NULL);
+        }
+    }
+
     size_t const states_size = (size_t) (b*pow((double) b,(double) k));
     size_t const histories_size = states_size / b;
     size_t const futures_size = b;
@@ -225,12 +221,10 @@ double *inform_local_active_info(int const *series, size_t n, size_t m,
             history[i], future[i], (double) b);
     }
 
-    // free up the data array
     free(future);
     free(history);
     free(state);
     free(data);
 
-    // return the error code
     return ai;
 }

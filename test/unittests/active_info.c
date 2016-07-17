@@ -228,6 +228,15 @@ UNIT(LocalActiveInfoEncodingError)
     ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
 }
 
+UNIT(LocalActiveInfoAllocatesOutput)
+{
+    inform_error err = INFORM_ERROR_SUCCESS;
+    double *ai = inform_local_active_info((int[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2, NULL, &err);
+    ASSERT_NOT_NULL(ai);
+    ASSERT_EQUAL(INFORM_SUCCESS, err.errno);
+    free(ai);
+}
+
 UNIT(LocalActiveInfoSingleSeries_Base2)
 {
     double ai[7] = {0, 0, 0, 0, 0, 0, 0};
@@ -329,6 +338,7 @@ BEGIN_SUITE(ActiveInformation)
     ADD_UNIT(LocalActiveInfoSeriesTooShort)
     ADD_UNIT(LocalActiveInfoHistoryTooLong)
     ADD_UNIT(LocalActiveInfoEncodingError)
+    ADD_UNIT(LocalActiveInfoAllocatesOutput)
     ADD_UNIT(LocalActiveInfoSingleSeries_Base2)
     ADD_UNIT(LocalActiveInfoSingleSeries_Base4)
     ADD_UNIT(LocalActiveInfoEnsemble)
