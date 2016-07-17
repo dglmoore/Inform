@@ -275,15 +275,15 @@ size_t inform_dist_dump(inform_dist const *dist, double *probs, size_t n)
     // if the distribution is NULL or the event is outsize of the support
     if (dist == NULL || dist->size == 0)
     {
-        return -1;
+        return 0;
     }
     if (probs == NULL)
     {
-        return -2;
+        return 0;
     }
     if (n != dist->size)
     {
-        return -3;
+        return 0;
     }
     // loop over the events
     for (size_t i = 0; i < inform_dist_size(dist); ++i)
@@ -291,5 +291,5 @@ size_t inform_dist_dump(inform_dist const *dist, double *probs, size_t n)
         // store their probabilities in the array
         probs[i] = inform_dist_unsafe_prob(dist,i);
     }
-    return n;
+    return (int) n;
 }

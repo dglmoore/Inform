@@ -316,12 +316,12 @@ UNIT(Prob)
 UNIT(Dump)
 {
     inform_dist *dist = NULL;
-    ASSERT_EQUAL(-1, inform_dist_dump(dist, NULL, 0));
+    ASSERT_EQUAL(0, inform_dist_dump(dist, NULL, 0));
 
     dist = inform_dist_alloc(5);
     ASSERT_NOT_NULL(dist);
 
-    ASSERT_EQUAL(-2, inform_dist_dump(dist, NULL, 0));
+    ASSERT_EQUAL(0, inform_dist_dump(dist, NULL, 0));
 
     for (size_t i = 1; i < inform_dist_size(dist); ++i)
     {
@@ -330,8 +330,8 @@ UNIT(Dump)
     ASSERT_EQUAL(14, inform_dist_counts(dist));
     double expect[5] = {0., 2./14, 3./14, 4./14, 5./14};
     double got[7] = {0., 0., 0., 0., 0., 0.};
-    ASSERT_EQUAL(-3, inform_dist_dump(dist, got, 4));
-    ASSERT_EQUAL(-3, inform_dist_dump(dist, got, 6));
+    ASSERT_EQUAL(0, inform_dist_dump(dist, got, 4));
+    ASSERT_EQUAL(0, inform_dist_dump(dist, got, 6));
     ASSERT_EQUAL(5, inform_dist_dump(dist, got, 5));
     for (size_t i = 0; i < inform_dist_size(dist); ++i)
     {
