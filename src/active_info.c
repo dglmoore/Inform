@@ -49,49 +49,53 @@ static void accumulate_local_observations(int const* series, size_t n, int b,
         futures->histogram[future[l]]++;
 
         if (i + 1 != n)
-        {
             history[l + 1] = state[l] - series[l]*q;
-        }
     }
 }
 
-double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k, inform_error *err)
+static bool check_arguments(int const *series, size_t n, size_t m, int b, size_t k, inform_error *err)
 {
     if (series == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series is NULL", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series is NULL", true);
     }
     else if (n < 1)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", true);
     }
     else if (m < 2)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has less than two timesteps", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has less than two timesteps", true);
     }
     else if (m <= k)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is too long for the timeseries", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is too long for the timeseries", true);
     }
     else if (b < 2)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "base is less than two", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "base is less than two", true);
     }
     else if (k == 0)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is zero", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is zero", true);
     }
     for (size_t i = 0; i < n * m; ++i)
     {
         if (series[i] < 0)
         {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has negative states", NAN);
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has negative states", true);
         }
         else if (b <= series[i])
         {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has states inconsistent with the expected base", NAN);
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has states inconsistent with the expected base", true);
         }
     }
+    return false;
+}
+
+double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k, inform_error *err)
+{
+    if (check_arguments(series, n, m, b, k, err)) return NAN;
 
     size_t const N = n * (m - k);
 
@@ -125,41 +129,7 @@ double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k
 double *inform_local_active_info(int const *series, size_t n, size_t m,
     int b, size_t k, double *ai, inform_error *err)
 {
-    if (series == NULL)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series is NULL", NULL);
-    }
-    else if (n < 1)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", NULL);
-    }
-    else if (m < 2)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has less than two timesteps", NULL);
-    }
-    else if (m <= k)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is too long for the timeseries", NULL);
-    }
-    else if (b < 2)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "base is less than two", NULL);
-    }
-    else if (k == 0)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is zero", NULL);
-    }
-    for (size_t i = 0; i < n * m; ++i)
-    {
-        if (series[i] < 0)
-        {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has negative states", NULL);
-        }
-        else if (b <= series[i])
-        {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has states inconsistent with the expected base", NULL);
-        }
-    }
+    if (check_arguments(series, n, m, b, k, err)) return NULL;
 
     size_t const N = n * (m - k);
 
