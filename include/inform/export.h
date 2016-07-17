@@ -9,6 +9,6 @@
     #else
         #define EXPORT __declspec(dllimport)
     #endif
-#elif
+#else
     #define EXPORT
 #endif
