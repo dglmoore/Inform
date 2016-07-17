@@ -1,7 +1,6 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <inform/error.h>
 #include <inform/transfer_entropy.h>
 
 static void accumulate_observations(int const *series_y, int const *series_x,
@@ -68,42 +67,53 @@ static void accumulate_local_observations(int const *series_y,
 }
 
 double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
-    size_t m, int b, size_t k)
+    size_t m, int b, size_t k, inform_error *err)
 {
-    // ensure that neither of the time series are NULL
-    if (node_x == NULL || node_y == NULL)
+    if (node_y == NULL)
     {
-        return inform_nan(1);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series is NULL", NAN);
     }
-    // ensure that the dimensions of the time series make sense
-    else if (m <= 1 || n < 1)
+    else if (node_x == NULL)
     {
-        return inform_nan(2);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "target node's time series is NULL", NAN);
     }
-    // ensure that the number of time steps greater than the history length
+    else if (n < 1)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", NAN);
+    }
+    else if (m < 2)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has less than two timesteps", NAN);
+    }
     else if (m <= k)
     {
-        return inform_nan(3);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is too long for the timeseries", NAN);
     }
-    // ensure that the base is at least 2
     else if (b < 2)
     {
-        return inform_nan(4);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "base is less than two", NAN);
     }
-    // ensure that the history is reasonable given the history length
-    else if (k == 0 || k > 25 / log2((double) b))
+    else if (k == 0)
     {
-        return inform_nan(4);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is zero", NAN);
     }
     for (size_t i = 0; i < n * m; ++i)
     {
-        if (b <= node_x[i] || b <= node_y[i])
+        if (b <= node_y[i])
         {
-            return inform_nan(5);
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series has negative states", NAN);
         }
-        else if (node_x[i] < 0 || node_y[i] < 0)
+        else if (node_y[i] < 0)
         {
-            return inform_nan(6);
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series has states inconsistent with the expected base", NAN);
+        }
+        if (b <= node_x[i])
+        {
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series has negative states", NAN);
+        }
+        else if (node_x[i] < 0)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series has states inconsistent with the expected base", NAN);
         }
     }
 
@@ -123,7 +133,7 @@ double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
     uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        return inform_nan(7);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate distribution histograms", NAN);
     }
 
     // create some pointers to facilitate observation accumulation
@@ -152,48 +162,58 @@ double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
     return te;
 }
 
-int inform_local_transfer_entropy(int const *node_y, int const *node_x,
-    size_t n, size_t m, int b, size_t k, double *te)
+double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
+    size_t n, size_t m, int b, size_t k, double *te, inform_error *err)
 {
-    // ensure that neither of the time series are NULL
-    if (node_x == NULL || node_y == NULL)
+    if (node_y == NULL)
     {
-        return 1;
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series is NULL", NULL);
     }
-    // ensure that the transfer entropy array is not NULL
+    else if (node_x == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "target node's time series is NULL", NULL);
+    }
     else if (te == NULL)
     {
-        return 2;
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "TE output array is NULL", NULL);
     }
-    // ensure that the dimensions of the time series make sense
-    else if (m <= 1 || n < 1)
+    else if (n < 1)
     {
-        return 3;
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", NULL);
     }
-    // ensure that the number of time steps greater than the history length
+    else if (m < 2)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has less than two timesteps", NULL);
+    }
     else if (m <= k)
     {
-        return 4;
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is too long for the timeseries", NULL);
     }
-    // enure that the base is at least 2
     else if (b < 2)
     {
-        return 5;
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "base is less than two", NULL);
     }
-    // ensure that the history is reasonable given the history length
-    else if (k == 0 || k > 25 / log2((double) b))
+    else if (k == 0)
     {
-        return 6;
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is zero", NULL);
     }
     for (size_t i = 0; i < n * m; ++i)
     {
-        if (b <= node_x[i] || b <= node_y[i])
+        if (b <= node_y[i])
         {
-            return 7;
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series has negative states", NULL);
         }
-        else if (node_x[i] < 0 || node_y[i] < 0)
+        else if (node_y[i] < 0)
         {
-            return 8;
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series has states inconsistent with the expected base", NULL);
+        }
+        if (b <= node_x[i])
+        {
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series has negative states", NULL);
+        }
+        else if (node_x[i] < 0)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series has states inconsistent with the expected base", NULL);
         }
     }
 
@@ -213,7 +233,7 @@ int inform_local_transfer_entropy(int const *node_y, int const *node_x,
     uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        return 8;
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate distribution histograms", NULL);
     }
 
     // create some pointers to facilitate observation accumulation
@@ -223,9 +243,25 @@ int inform_local_transfer_entropy(int const *node_y, int const *node_x,
     inform_dist predicates = { data + states_size + histories_size + sources_size, predicates_size, N };
 
     int *state      = malloc(N * sizeof(int));
+    if (state == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate state array", NULL);
+    }
     int *history    = malloc(N * sizeof(int));
+    if (history == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate history array", NULL);
+    }
     int *source     = malloc(N * sizeof(int));
+    if (source == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate source array", NULL);
+    }
     int *predicate  = malloc(N * sizeof(int));
+    if (predicate == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate predicate array", NULL);
+    }
 
     // for each initial condition
     int const *node_y_ptr = node_y, *node_x_ptr = node_x;
@@ -259,5 +295,5 @@ int inform_local_transfer_entropy(int const *node_y, int const *node_x,
     free(data);
 
     // return the transfer entropy
-    return 0;
+    return te;
 }
