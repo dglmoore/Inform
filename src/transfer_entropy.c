@@ -173,10 +173,6 @@ double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
     {
         INFORM_ERROR_RETURN(err, INFORM_EINVAL, "target node's time series is NULL", NULL);
     }
-    else if (te == NULL)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "TE output array is NULL", NULL);
-    }
     else if (n < 1)
     {
         INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", NULL);
@@ -219,6 +215,15 @@ double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
 
     // compute the number of observations to be made
     size_t const N = n * (m - k);
+
+    if (te == NULL)
+    {
+        te = malloc(N * sizeof(double));
+        if (te == NULL)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate TE output array", NULL);
+        }
+    }
 
     // compute the sizes of the various histograms
     size_t const q = (size_t) pow((double) b, (double) k);

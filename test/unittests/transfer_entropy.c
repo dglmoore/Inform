@@ -370,6 +370,17 @@ UNIT(LocalTransferEntropyEncodingError)
     }
 }
 
+UNIT(LocalTransferEntropyAllocatesOutput)
+{
+    inform_error err = INFORM_ERROR_SUCCESS;
+    int source[] = {0,0,1,0,0,1,0,1,0};
+    int target[] = {0,1,0,0,1,0,0,1,0};
+    double *te = inform_local_transfer_entropy(source, target, 1, 9, 2, 2, NULL, &err);
+    ASSERT_NOT_NULL(te);
+    ASSERT_EQUAL(INFORM_SUCCESS, err.errno);
+    free(te);
+}
+
 UNIT(LocalTransferEntropySingleSeries_Base2)
 {
     {
@@ -527,7 +538,7 @@ UNIT(LocalTransferEntropyEnsemble_Base2)
     }
 }
 
-    BEGIN_SUITE(TransferEntropy)
+BEGIN_SUITE(TransferEntropy)
     ADD_UNIT(TransferEntropyTooShort)
     ADD_UNIT(TransferEntropyHistoryTooLong)
     ADD_UNIT(TransferEntropyEncodingError)
@@ -536,6 +547,7 @@ UNIT(LocalTransferEntropyEnsemble_Base2)
     ADD_UNIT(LocalTransferEntropyTooShort)
     ADD_UNIT(LocalTransferEntropyHistoryTooLong)
     ADD_UNIT(LocalTransferEntropyEncodingError)
+    ADD_UNIT(LocalTransferEntropyAllocatesOutput)
     ADD_UNIT(LocalTransferEntropySingleSeries_Base2)
-ADD_UNIT(LocalTransferEntropyEnsemble_Base2)
-    END_SUITE
+    ADD_UNIT(LocalTransferEntropyEnsemble_Base2)
+END_SUITE
