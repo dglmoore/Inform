@@ -5,8 +5,6 @@
 #include <inform/shannon.h>
 #include <inform/transfer_entropy.h>
 
-static_assert(sizeof(int) >= 4, "int must be at least 32-bits");
-
 static void accumulate_observations(int const *series_y, int const *series_x,
      size_t n, uint64_t b, size_t k, inform_dist *states,
      inform_dist *histories, inform_dist *sources, inform_dist *predicates)
@@ -126,6 +124,8 @@ static bool check_arguments(int const *node_y, int const *node_x,
 double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
     size_t m, int b, size_t k, inform_error *err)
 {
+    static_assert(sizeof(int) >= 4, "int must be at least 32-bits");
+
     if (check_arguments(node_y, node_x, n, m, b, k, err)) return NAN;
 
     size_t const N = n * (m - k);

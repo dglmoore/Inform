@@ -5,10 +5,10 @@
 #include <inform/dist.h>
 #include <string.h>
 
-static_assert(sizeof(size_t) >= 4, "size_t must be at least 32-bits");
-
 inform_dist* inform_dist_alloc(size_t n)
 {
+    static_assert(sizeof(size_t) >= 4, "size_t must be at least 32-bits");
+
     // if the requested support size is zero, return NULL
     if (n == 0)
     {
