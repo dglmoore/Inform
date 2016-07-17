@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
+#include <inform/error.h>
 #include <inform/shannon.h>
 
 #include <assert.h>
@@ -24,7 +25,7 @@ extern "C"
  * @return the entropy rate for the ensemble
  */
 double inform_entropy_rate(int const *series, size_t n, size_t m, int b,
-    size_t k);
+    size_t k, inform_error *err);
 
 /**
  * Compute the entropy rate of an ensemble of time series
@@ -37,8 +38,8 @@ double inform_entropy_rate(int const *series, size_t n, size_t m, int b,
  * @param[out] err   the local entropy rate of the ensemble
  * @return an error code
  */
-int inform_local_entropy_rate(int const *series, size_t n, size_t m, int b,
-    size_t k, double *er);
+double *inform_local_entropy_rate(int const *series, size_t n, size_t m, int b,
+    size_t k, double *er, inform_error *err);
 
 #ifdef __cplusplus
 }
