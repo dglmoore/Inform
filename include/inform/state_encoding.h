@@ -40,7 +40,7 @@ static uint64_t const inform_encoding_error = 0x8000000000000000;
  *
  * @see inform_decode
  */
-EXPORT uint64_t inform_encode(uint64_t const *state, uint64_t n, uint64_t base);
+EXPORT uint64_t inform_encode(uint64_t const *state, size_t n, int base);
 /**
  * Decode an integer into a sequence of values.
  *
@@ -60,7 +60,7 @@ EXPORT uint64_t inform_encode(uint64_t const *state, uint64_t n, uint64_t base);
  *
  * @see inform_encode
  */
-EXPORT uint64_t* inform_decode(uint64_t encoding, uint64_t n, uint64_t base);
+EXPORT uint64_t* inform_decode(uint64_t encoding, size_t n, int base);
 
 #ifdef __cplusplus
 }

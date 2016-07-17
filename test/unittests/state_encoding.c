@@ -208,48 +208,48 @@ UNIT(EncodingInvalidState_Base5)
 
 UNIT(EncodeInvertsDecode_Base2)
 {
-    uint64_t const base = 2;
-    uint64_t const M = 10;
+    int const base = 2;
+    size_t const M = 10;
     for (uint64_t x = 0; x < (uint64_t) pow((double) base, (double) M); ++x)
     {
-       uint64_t *state = inform_decode(x,M,base);
-       ASSERT_EQUAL_U(x, inform_encode(state,M,base));
+       uint64_t *state = inform_decode(x, M, base);
+       ASSERT_EQUAL_U(x, inform_encode(state, M, base));
        free(state);
     }
 }
 
 UNIT(EncodeInvertsDecode_Base3)
 {
-    uint64_t const base = 3;
-    uint64_t const M = 6;
+    int const base = 3;
+    size_t const M = 6;
     for (uint64_t x = 0; x < (uint64_t) pow((double) base, (double) M); ++x)
     {
-       uint64_t *state = inform_decode(x,M,base);
-       ASSERT_EQUAL_U(x, inform_encode(state,M,base));
+       uint64_t *state = inform_decode(x, M, base);
+       ASSERT_EQUAL_U(x, inform_encode(state, M, base));
        free(state);
     }
 }
 
 UNIT(EncodeInvertsDecode_Base4)
 {
-    uint64_t const base = 4;
-    uint64_t const M = 5;
+    int const base = 4;
+    size_t const M = 5;
     for (uint64_t x = 0; x < (uint64_t) pow((double) base, (double) M); ++x)
     {
-       uint64_t *state = inform_decode(x,M,base);
-       ASSERT_EQUAL_U(x, inform_encode(state,M,base));
+       uint64_t *state = inform_decode(x, M, base);
+       ASSERT_EQUAL_U(x, inform_encode(state, M, base));
        free(state);
     }
 }
 
 UNIT(EncodeInvertsDecode_Base5)
 {
-    uint64_t const base = 5;
-    uint64_t const M = 4;
-    for (uint64_t x = 0; x < (uint64_t) pow((double) base, (double) M); ++x)
+    int const base = 5;
+    size_t const M = 4;
+    for (int x = 0; x < (int) pow((double) base, (double) M); ++x)
     {
-       uint64_t *state = inform_decode(x,M,base);
-       ASSERT_EQUAL_U(x, inform_encode(state,M,base));
+       uint64_t *state = inform_decode(x, M, base);
+       ASSERT_EQUAL_U(x, inform_encode(state, M, base));
        free(state);
     }
 }

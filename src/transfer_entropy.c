@@ -5,7 +5,7 @@
 #include <inform/transfer_entropy.h>
 
 static void accumulate_observations(int const *series_y, int const *series_x,
-     size_t n, uint64_t b, size_t k, inform_dist *states,
+     size_t n, int b, size_t k, inform_dist *states,
      inform_dist *histories, inform_dist *sources, inform_dist *predicates)
 {
     int history = 0, q = 1, y_state, future, state, source, predicate;

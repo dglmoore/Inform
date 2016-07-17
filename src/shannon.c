@@ -4,7 +4,7 @@
 #include <inform/shannon.h>
 #include <inform/error.h>
 
-double inform_shannon_si(inform_dist const *dist, uint64_t event, double base)
+double inform_shannon_si(inform_dist const *dist, size_t event, double base)
 {
     if (inform_dist_is_valid(dist))
     {
@@ -42,7 +42,7 @@ double inform_shannon(inform_dist const *dist, double base)
 
 double inform_shannon_pmi(inform_dist const *joint,
     inform_dist const * marginal_x, inform_dist const *marginal_y,
-    uint64_t event_joint, uint64_t event_x, uint64_t event_y, double base)
+    size_t event_joint, size_t event_x, size_t event_y, double base)
 {
     return inform_shannon_si(marginal_x, event_x, base) +
         inform_shannon_si(marginal_y, event_y, base) -
@@ -52,12 +52,12 @@ double inform_shannon_pmi(inform_dist const *joint,
 double inform_shannon_mi(inform_dist const *joint,
     inform_dist const *marginal_x, inform_dist const *marginal_y, double base)
 {
-    return inform_shannon(marginal_x,base) + inform_shannon(marginal_y,base)
-        - inform_shannon(joint,base);
+    return inform_shannon(marginal_x, base) + inform_shannon(marginal_y, base)
+        - inform_shannon(joint, base);
 }
 
 double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
-    uint64_t event_joint,uint64_t event_marginal, double base)
+    size_t event_joint,size_t event_marginal, double base)
 {
     return inform_shannon_si(joint, event_joint, base) -
         inform_shannon_si(marginal, event_marginal, base);
@@ -71,9 +71,9 @@ double inform_shannon_ce(inform_dist const *joint, inform_dist const *marginal,
 
 double inform_shannon_pcmi(inform_dist const *joint,
     inform_dist const *marginal_xz, inform_dist const *marginal_yz,
-    inform_dist const *marginal_z, uint64_t event_joint,
-    uint64_t event_marginal_xz, uint64_t event_marginal_yz,
-    uint64_t event_marginal_z, double base)
+    inform_dist const *marginal_z, size_t event_joint,
+    size_t event_marginal_xz, size_t event_marginal_yz,
+    size_t event_marginal_z, double base)
 {
     return inform_shannon_si(marginal_xz, event_marginal_xz, base) +
         inform_shannon_si(marginal_yz, event_marginal_yz, base) -

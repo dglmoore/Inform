@@ -62,7 +62,7 @@ UNIT(Set)
     ASSERT_EQUAL(3, inform_dist_size(dist));
     ASSERT_EQUAL(6, inform_dist_counts(dist));
 
-    for (uint64_t i = 0; i < inform_dist_size(dist); ++i)
+    for (size_t i = 0; i < inform_dist_size(dist); ++i)
     {
         inform_dist_set(dist, i, 0);
     }

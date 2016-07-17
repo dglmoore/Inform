@@ -6,7 +6,7 @@
 #include <math.h>
 #include <stdio.h>
 
-uint64_t inform_encode(uint64_t const *state, uint64_t n, uint64_t base)
+uint64_t inform_encode(uint64_t const *state, size_t n, int base)
 {
     // if the state is NULL, return an error
     if (state == NULL)
@@ -41,7 +41,7 @@ uint64_t inform_encode(uint64_t const *state, uint64_t n, uint64_t base)
     return encoding;
 }
 
-uint64_t* inform_decode(uint64_t encoding, uint64_t n, uint64_t base)
+uint64_t* inform_decode(uint64_t encoding, size_t n, int base)
 {
     // If the encoding is invalid, the base is too small, or the requested
     // decoded length is too large, then return NULL.
