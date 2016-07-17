@@ -9,7 +9,7 @@ if (UNIX)
     add_definitions("-Wall -Wextra -Werror -Wno-unused-parameter -std=gnu1x")
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -ggdb -pg")
 elseif(MSVC)
-    add_definitions("/Wall")
+    add_definitions("/DLIBRARY_EXPORTS")
 endif()
 
 if (APPLE)

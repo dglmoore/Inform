@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
+#include <inform/export.h>
 #include <inform/error.h>
 
 #ifdef __cplusplus
@@ -22,7 +23,7 @@ extern "C"
  * @param[out] err     an error structure
  * @return the transfer entropy of the ensemble
  */
-double inform_transfer_entropy(int const *series_y, int const *series_x,
+EXPORT double inform_transfer_entropy(int const *series_y, int const *series_x,
     size_t n, size_t m, int b, size_t k, inform_error *err);
 
 /**
@@ -38,7 +39,7 @@ double inform_transfer_entropy(int const *series_y, int const *series_x,
  * @param[out] err     an error structure
  * @return a pointer to the transfer entropy array
  */
-double *inform_local_transfer_entropy(int const *series_y, int const *series_x,
+EXPORT double *inform_local_transfer_entropy(int const *series_y, int const *series_x,
     size_t n, size_t m, int b, size_t k, double *te, inform_error *err);
 
 #ifdef __cplusplus

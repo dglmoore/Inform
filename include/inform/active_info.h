@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
+#include <inform/export.h>
 #include <inform/error.h>
 
 #ifdef __cplusplus
@@ -21,7 +22,7 @@ extern "C"
  * @param[out] err   an error structure
  * @return the active information for the ensemble
  */
-double inform_active_info(int const *series, size_t n, size_t m, int b,
+EXPORT double inform_active_info(int const *series, size_t n, size_t m, int b,
     size_t k, inform_error *err);
 
 /**
@@ -36,7 +37,7 @@ double inform_active_info(int const *series, size_t n, size_t m, int b,
  * @param[out] err   an error structure
  * @return a pointer to the local active information array
  */
-double *inform_local_active_info(int const *series, size_t n, size_t m, int b,
+EXPORT double *inform_local_active_info(int const *series, size_t n, size_t m, int b,
     size_t k, double *ai, inform_error *err);
 
 #ifdef __cplusplus
