@@ -53,120 +53,82 @@ static void accumulate_local_observations(int const* series, size_t n,
     }
 }
 
-double inform_entropy_rate(int const *series, size_t n, size_t m, int b,
-    size_t k, inform_error *err)
+static bool check_arguments(int const *series, size_t n, size_t m, int b, size_t k, inform_error *err)
 {
     if (series == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series is NULL", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series is NULL", true);
     }
     else if (n < 1)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", true);
     }
     else if (m < 2)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has less than two timesteps", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has less than two timesteps", true);
     }
     else if (m <= k)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is too long for the timeseries", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is too long for the timeseries", true);
     }
     else if (b < 2)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "base is less than two", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "base is less than two", true);
     }
     else if (k == 0)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is zero", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is zero", true);
     }
     for (size_t i = 0; i < n * m; ++i)
     {
         if (series[i] < 0)
         {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has negative states", NAN);
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has negative states", true);
         }
         else if (b <= series[i])
         {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has states inconsistent with the expected base", NAN);
+            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has states inconsistent with the expected base", true);
         }
     }
+    return false;
+}
 
-    // compute the number of observations to be made
+double inform_entropy_rate(int const *series, size_t n, size_t m, int b,
+    size_t k, inform_error *err)
+{
+    if (check_arguments(series, n, m, b, k, err)) return NAN;
+
     size_t const N = n * (m - k);
 
-    // compute the sizes of the histograms
     size_t const states_size = (size_t) (b * pow((double) b, (double) k));
     size_t const histories_size = states_size / b;
     size_t const total_size = states_size + histories_size;
 
-    // allocate memory to store the histograms
     uint32_t *data = calloc(total_size, sizeof(uint32_t));
-    // ensure that the memory was allocated
     if (data == NULL)
     {
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate distribution histograms", NAN);
     }
 
-    // create the distributions
     inform_dist states    = { data, states_size, N };
     inform_dist histories = { data + states_size, histories_size, N };
 
-    // for each initial condition
     for (size_t i = 0; i < n; ++i, series += m)
     {
-        // accumulate the observations
         accumulate_observations(series, m, b, k, &states, &histories);
     }
 
-    // compute the entropy rate
     double er = inform_shannon_ce(&states, &histories, (double) b);
 
-    // free up the data array
     free(data);
 
-    // return the active information
     return er;
 }
 
 double *inform_local_entropy_rate(int const *series, size_t n, size_t m, int b,
     size_t k, double *er, inform_error *err)
 {
-    if (series == NULL)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series is NULL", NULL);
-    }
-    else if (n < 1)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", NULL);
-    }
-    else if (m < 2)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has less than two timesteps", NULL);
-    }
-    else if (m <= k)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is too long for the timeseries", NULL);
-    }
-    else if (b < 2)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "base is less than two", NULL);
-    }
-    else if (k == 0)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is zero", NULL);
-    }
-    for (size_t i = 0; i < n * m; ++i)
-    {
-        if (series[i] < 0)
-        {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has negative states", NULL);
-        }
-        else if (b <= series[i])
-        {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has states inconsistent with the expected base", NULL);
-        }
-    }
+    if (check_arguments(series, n, m, b, k, err)) return NULL;
 
     size_t const N = n * (m - k);
 
