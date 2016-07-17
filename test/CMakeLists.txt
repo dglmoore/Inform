@@ -1,7 +1,7 @@
 include_directories(unit)
 add_subdirectory(unittests)
 add_executable(${PROJECT_NAME}_unittest ${${PROJECT_NAME}_UNITTEST_SOURCES})
-target_link_libraries(${PROJECT_NAME}_unittest ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME}_unittest ${PROJECT_NAME}_static)
 
 foreach(UNITTEST_SOURCE ${${PROJECT_NAME}_UNITTEST_SOURCES})
     file(STRINGS ${UNITTEST_SOURCE} TEST_NAMES REGEX ^BEGIN_SUITE)
