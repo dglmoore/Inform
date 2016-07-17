@@ -6,6 +6,5 @@ set(${PROJECT_NAME}_UNITTEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/random.c
     ${CMAKE_CURRENT_SOURCE_DIR}/shannon.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/state_encoding.c
     ${CMAKE_CURRENT_SOURCE_DIR}/transfer_entropy.c
     PARENT_SCOPE)

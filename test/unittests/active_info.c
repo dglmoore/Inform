@@ -2,7 +2,6 @@
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 #include <inform/active_info.h>
-#include <inform/state_encoding.h>
 #include <math.h>
 #include <stdio.h>
 #include <unit.h>

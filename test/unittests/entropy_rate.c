@@ -2,7 +2,6 @@
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 #include <inform/entropy_rate.h>
-#include <inform/state_encoding.h>
 #include <math.h>
 #include <unit.h>
 #include "random.h"
