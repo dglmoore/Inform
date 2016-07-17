@@ -1,7 +1,6 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <assert.h>
 #include <inform/shannon.h>
 #include <inform/transfer_entropy.h>
 
@@ -124,8 +123,6 @@ static bool check_arguments(int const *node_y, int const *node_x,
 double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
     size_t m, int b, size_t k, inform_error *err)
 {
-    static_assert(sizeof(int) >= 4, "int must be at least 32-bits");
-
     if (check_arguments(node_y, node_x, n, m, b, k, err)) return NAN;
 
     size_t const N = n * (m - k);
