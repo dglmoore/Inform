@@ -23,13 +23,14 @@ extern "C"
  * @param[in] m        the number of time steps in each time series
  * @param[in] b        the base or number of distinct states at each time step
  * @param[in] k        the history length used to calculate the transfer entropy
+ * @param[out] err     an error structure
  * @return the transfer entropy of the ensemble
  */
 double inform_transfer_entropy(int const *series_y, int const *series_x,
     size_t n, size_t m, int b, size_t k, inform_error *err);
 
 /**
- * Compute the transfer entropy from one time series to another
+ * Compute the local transfer entropy from one time series to another
  *
  * @param[in] series_y the ensemble of the source node
  * @param[in] series_x the ensemble of the target node
@@ -38,7 +39,8 @@ double inform_transfer_entropy(int const *series_y, int const *series_x,
  * @param[in] b        the base or number of distinct states at each time step
  * @param[in] k        the history length used to calculate the transfer entropy
  * @param[out] te      the transfer entropy
- * @return an error code
+ * @param[out] err     an error structure
+ * @return a pointer to the transfer entropy array
  */
 double *inform_local_transfer_entropy(int const *series_y, int const *series_x,
     size_t n, size_t m, int b, size_t k, double *te, inform_error *err);
