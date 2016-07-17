@@ -226,6 +226,15 @@ UNIT(LocalEntropyRateEncodingError)
     ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
 }
 
+UNIT(LocalEntropyRateAllocatesOutput)
+{
+    inform_error err = INFORM_ERROR_SUCCESS;
+    double *er = inform_local_entropy_rate((int[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2, NULL, &err);
+    ASSERT_NOT_NULL(er);
+    ASSERT_EQUAL(INFORM_SUCCESS, err.errno);
+    free(er);
+}
+
 UNIT(LocalEntropyRateSingleSeries_Base2)
 {
     double er[7];
@@ -327,6 +336,7 @@ BEGIN_SUITE(EntropyRate)
     ADD_UNIT(LocalEntropyRateSeriesTooShort)
     ADD_UNIT(LocalEntropyRateHistoryTooLong)
     ADD_UNIT(LocalEntropyRateEncodingError)
+    ADD_UNIT(LocalEntropyRateAllocatesOutput)
     ADD_UNIT(LocalEntropyRateSingleSeries_Base2)
     ADD_UNIT(LocalEntropyRateSingleSeries_Base4)
     ADD_UNIT(LocalEntropyRateEnsemble)

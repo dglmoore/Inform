@@ -136,10 +136,6 @@ double *inform_local_entropy_rate(int const *series, size_t n, size_t m, int b,
     {
         INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series is NULL", NULL);
     }
-    else if (er == NULL)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "ER output array is NULL", NULL);
-    }
     else if (n < 1)
     {
         INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", NULL);
@@ -172,23 +168,27 @@ double *inform_local_entropy_rate(int const *series, size_t n, size_t m, int b,
         }
     }
 
-    // compute the number of observations to be made
     size_t const N = n * (m - k);
 
-    // compute the sizes of the histograms
+    if (er == NULL)
+    {
+        er = malloc(N * sizeof(double));
+        if (er == NULL)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate ER output array", NULL);
+        }
+    }
+
     size_t const states_size = (size_t) (b * pow((double) b, (double) k));
     size_t const histories_size = states_size / b;
     size_t const total_size = states_size + histories_size;
 
-    // allocate memory to store the histograms
     uint32_t *data = calloc(total_size, sizeof(uint32_t));
-    // ensure that the memory was allocated
     if (data == NULL)
     {
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate distribution histograms", NULL);
     }
 
-    // create the distributions
     inform_dist states    = { data, states_size, N };
     inform_dist histories = { data + states_size, histories_size, N };
 
@@ -203,29 +203,22 @@ double *inform_local_entropy_rate(int const *series, size_t n, size_t m, int b,
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate history array", NULL);
     }
 
-    // for each initial condition
     int const *series_ptr = series;
     int *state_ptr = state, *history_ptr = history;
     for (size_t i = 0; i < n; ++i)
     {
-        // accumulate the observations
-        accumulate_local_observations(series_ptr, m, b, k, &states, &histories,
-            state_ptr, history_ptr);
+        accumulate_local_observations(series_ptr, m, b, k, &states, &histories, state_ptr, history_ptr);
         series_ptr += m;
         state_ptr += (m - k);
         history_ptr += (m - k);
     }
 
-    // compute the entropy rate
     for (size_t i = 0; i < N; ++i)
     {
-        er[i] = inform_shannon_pce(&states, &histories, state[i], history[i],
-            (double) b);
+        er[i] = inform_shannon_pce(&states, &histories, state[i], history[i], (double) b);
     }
 
-    // free up the data array
     free(data);
 
-    // return the active information
     return er;
 }
