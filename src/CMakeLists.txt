@@ -2,7 +2,6 @@ set(${PROJECT_NAME}_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/active_info.c
     ${CMAKE_CURRENT_SOURCE_DIR}/dist.c
     ${CMAKE_CURRENT_SOURCE_DIR}/entropy_rate.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/error.c
     ${CMAKE_CURRENT_SOURCE_DIR}/shannon.c
     ${CMAKE_CURRENT_SOURCE_DIR}/state_encoding.c
     ${CMAKE_CURRENT_SOURCE_DIR}/transfer_entropy.c
