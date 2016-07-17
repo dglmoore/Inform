@@ -4,10 +4,6 @@
 #pragma once
 
 #include <inform/error.h>
-#include <inform/shannon.h>
-
-#include <assert.h>
-static_assert(sizeof(int) >= 4, "int must be at least 32-bits");
 
 #ifdef __cplusplus
 extern "C"

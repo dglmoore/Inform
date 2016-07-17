@@ -1,7 +1,11 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
+#include <assert.h>
 #include <inform/active_info.h>
+#include <inform/shannon.h>
+
+static_assert(sizeof(int) >= 4, "int must be at least 32-bits");
 
 static void accumulate_observations(int const* series, size_t n, int b,
     size_t k, inform_dist *states, inform_dist *histories, inform_dist *futures)

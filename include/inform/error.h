@@ -3,6 +3,8 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
+#include <stdlib.h>
+
 #ifdef __cplusplus
 extern "C"
 {

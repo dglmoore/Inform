@@ -1,12 +1,13 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <unit.h>
-#include <inform/state_encoding.h>
 #include <inform/active_info.h>
-#include "random.h"
-
+#include <inform/state_encoding.h>
+#include <math.h>
 #include <stdio.h>
+#include <unit.h>
+
+#include "random.h"
 
 UNIT(ActiveInfoSeriesTooShort)
 {

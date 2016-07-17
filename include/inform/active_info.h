@@ -3,11 +3,7 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
-#include <assert.h>
 #include <inform/error.h>
-#include <inform/shannon.h>
-
-static_assert(sizeof(int) >= 4, "int must be at least 32-bits");
 
 #ifdef __cplusplus
 extern "C"

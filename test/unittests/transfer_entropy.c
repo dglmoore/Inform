@@ -1,9 +1,10 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <unit.h>
 #include <inform/state_encoding.h>
 #include <inform/transfer_entropy.h>
+#include <math.h>
+#include <unit.h>
 #include "random.h"
 
 UNIT(TransferEntropyTooShort)
