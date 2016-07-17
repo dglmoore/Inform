@@ -24,7 +24,8 @@ extern "C"
  * @param[in] k      the history length used to calculate the active information
  * @return the active information for the ensemble
  */
-double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k, inform_error *err);
+double inform_active_info(int const *series, size_t n, size_t m, int b,
+    size_t k, inform_error *err);
 
 /**
  * Compute the local active information of a ensemble of time series
@@ -37,8 +38,8 @@ double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k
  * @param[out] ai    the local active information
  * @return an error code
  */
-int inform_local_active_info(int const *series, size_t n, size_t m, int b,
-        size_t k, double *ai);
+double *inform_local_active_info(int const *series, size_t n, size_t m, int b,
+    size_t k, double *ai, inform_error *err);
 
 #ifdef __cplusplus
 }

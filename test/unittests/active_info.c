@@ -27,21 +27,19 @@ UNIT(ActiveInfoSeriesTooShort)
 
 UNIT(ActiveInfoHistoryTooLong)
 {
-    {
-        inform_error err;
-        inform_error *errptr = &err;
-        int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err;
+    inform_error *errptr = &err;
+    int const series[] = {1,1,0,0,1,0,0,1};
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
-        ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, 2, 2, errptr)));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_ERROR_SUCCESS;
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, 2, 2, errptr)));
+    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
-        ASSERT_FALSE(isnan(inform_active_info(series, 1, 3, 2, 2, errptr)));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
-    }
+    *errptr = INFORM_ERROR_SUCCESS;
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_FALSE(isnan(inform_active_info(series, 1, 3, 2, 2, errptr)));
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
 }
 
 UNIT(ActiveInfoEncodingError)
@@ -180,88 +178,98 @@ UNIT(LocalActiveInfoSeriesTooShort)
 {
     double ai[8];
     int const series[] = {1,1,0,0,1,0,0,1};
-    ASSERT_EQUAL(3, inform_local_active_info(series, 1, 0, 2, 2, ai));
-    ASSERT_EQUAL(3, inform_local_active_info(series, 1, 1, 2, 2, ai));
+    inform_error err;
+    inform_error *errptr = &err;
+
+    *errptr = INFORM_ERROR_SUCCESS;
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_NULL(inform_local_active_info(series, 1, 0, 2, 2, ai, errptr));
+    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+
+    *errptr = INFORM_ERROR_SUCCESS;
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_NULL(inform_local_active_info(series, 1, 1, 2, 2, ai, errptr));
+    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
 }
 
 UNIT(LocalActiveInfoHistoryTooLong)
 {
-    {
-        double ai[6];
-        int const series[] = {1,1,0,0,1,0,0,1};
+    double ai[6];
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err;
+    inform_error *errptr = &err;
 
-        ASSERT_EQUAL(4, inform_local_active_info(series, 1, 2, 2, 2, ai));
-        ASSERT_EQUAL(0, inform_local_active_info(series, 1, 3, 2, 2, ai));
-    }
+    *errptr = INFORM_ERROR_SUCCESS;
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_NULL(inform_local_active_info(series, 1, 2, 2, 2, ai, errptr));
+    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
 
-    {
-        double ai[30];
-        size_t const size = 30;
-
-        int *series = random_series(size, 2);
-        ASSERT_EQUAL(6, inform_local_active_info(series, 1, size, 2, 26, ai));
-        free(series);
-
-        series = random_series(size, 3);
-        ASSERT_EQUAL(6, inform_local_active_info(series, 1, size, 3, 16, ai));
-        free(series);
-
-        series = random_series(size, 4);
-        ASSERT_EQUAL(6, inform_local_active_info(series, 1, size, 4, 13, ai));
-        free(series);
-    }
+    *errptr = INFORM_ERROR_SUCCESS;
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_NOT_NULL(inform_local_active_info(series, 1, 3, 2, 2, ai, errptr));
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
 }
 
 UNIT(LocalActiveInfoEncodingError)
 {
     double ai[8];
     int const series[] = {2,1,0,0,1,0,0,1};
-    ASSERT_EQUAL(0, inform_local_active_info(series, 1, 8, 3, 2, ai));
-    ASSERT_EQUAL(7, inform_local_active_info(series, 1, 8, 2, 2, ai));
+    inform_error err;
+    inform_error *errptr = &err;
+
+    *errptr = INFORM_ERROR_SUCCESS;
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_NOT_NULL(inform_local_active_info(series, 1, 8, 3, 2, ai, errptr));
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+
+    *errptr = INFORM_ERROR_SUCCESS;
+    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_NULL(inform_local_active_info(series, 1, 8, 2, 2, ai, errptr));
+    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
 }
 
 UNIT(LocalActiveInfoSingleSeries_Base2)
 {
     double ai[7] = {0, 0, 0, 0, 0, 0, 0};
 
-    ASSERT_EQUAL(0, inform_local_active_info((int[]){1,0,0,0,0,0,0,0,0}, 1, 9, 2, 2, ai));
+    ASSERT_NOT_NULL(inform_local_active_info((int[]){1,0,0,0,0,0,0,0,0}, 1, 9, 2, 2, ai, NULL));
     ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((int[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2, ai));
+    ASSERT_NOT_NULL(inform_local_active_info((int[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2, ai, NULL));
     ASSERT_DBL_NEAR_TOL(0.305958, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((int[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2, ai));
+    ASSERT_NOT_NULL(inform_local_active_info((int[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2, ai, NULL));
     ASSERT_DBL_NEAR_TOL(0.347458, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((int[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2, ai));
+    ASSERT_NOT_NULL(inform_local_active_info((int[]){1,0,0,0,0,0,0,1,1}, 1, 9, 2, 2, ai, NULL));
     ASSERT_DBL_NEAR_TOL(0.347458, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((int[]){0,0,0,0,0,1,1,0,0}, 1, 9, 2, 2, ai));
+    ASSERT_NOT_NULL(inform_local_active_info((int[]){0,0,0,0,0,1,1,0,0}, 1, 9, 2, 2, ai, NULL));
     ASSERT_DBL_NEAR_TOL(0.399533, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((int[]){0,0,0,0,1,1,0,0,0}, 1, 9, 2, 2, ai));
+    ASSERT_NOT_NULL(inform_local_active_info((int[]){0,0,0,0,1,1,0,0,0}, 1, 9, 2, 2, ai, NULL));
     ASSERT_DBL_NEAR_TOL(0.399533, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((int[]){1,1,1,0,0,0,0,1,1}, 1, 9, 2, 2, ai));
+    ASSERT_NOT_NULL(inform_local_active_info((int[]){1,1,1,0,0,0,0,1,1}, 1, 9, 2, 2, ai, NULL));
     ASSERT_DBL_NEAR_TOL(0.305958, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((int[]){0,0,0,1,1,1,1,0,0}, 1, 9, 2, 2, ai));
+    ASSERT_NOT_NULL(inform_local_active_info((int[]){0,0,0,1,1,1,1,0,0}, 1, 9, 2, 2, ai, NULL));
     ASSERT_DBL_NEAR_TOL(0.305958, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((int[]){0,0,0,0,0,0,1,1,0}, 1, 9, 2, 2, ai));
+    ASSERT_NOT_NULL(inform_local_active_info((int[]){0,0,0,0,0,0,1,1,0}, 1, 9, 2, 2, ai, NULL));
     ASSERT_DBL_NEAR_TOL(0.347458, AVERAGE(ai), 1e-6);
 }
 
 UNIT(LocalActiveInfoSingleSeries_Base4)
 {
     double ai[7];
-    ASSERT_EQUAL(0, inform_local_active_info((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, ai));
+    ASSERT_NOT_NULL(inform_local_active_info((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, ai, NULL));
     ASSERT_DBL_NEAR_TOL(0.635471, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, ai));
+    ASSERT_NOT_NULL(inform_local_active_info((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, ai, NULL));
     ASSERT_DBL_NEAR_TOL(0.635471, AVERAGE(ai), 1e-6);
 
-    ASSERT_EQUAL(0, inform_local_active_info((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, ai));
+    ASSERT_NOT_NULL(inform_local_active_info((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, ai, NULL));
     ASSERT_DBL_NEAR_TOL(0.234783, AVERAGE(ai), 1e-6);
 }
 
@@ -273,7 +281,7 @@ UNIT(LocalActiveInfoEnsemble)
             1,1,0,0,1,0,0,1,
             0,0,0,1,0,0,0,1,
         };
-        ASSERT_EQUAL(0, inform_local_active_info(series, 2, 8, 2, 2, ai));
+        ASSERT_NOT_NULL(inform_local_active_info(series, 2, 8, 2, 2, ai, NULL));
         ASSERT_DBL_NEAR_TOL(0.459148, AVERAGE(ai), 1e-6);
     }
 
@@ -290,7 +298,7 @@ UNIT(LocalActiveInfoEnsemble)
             0,0,0,1,1,1,1,0,0,
             0,0,0,0,0,0,1,1,0,
         };
-        ASSERT_EQUAL(0, inform_local_active_info(series, 9, 9, 2, 2, ai));
+        ASSERT_NOT_NULL(inform_local_active_info(series, 9, 9, 2, 2, ai, NULL));
         ASSERT_DBL_NEAR_TOL(0.3080467, AVERAGE(ai), 1e-6);
     }
 }
@@ -305,7 +313,7 @@ UNIT(LocalActiveInfoEnsemble_Base4)
             0, 0, 0, 0, 1, 1, 0, 0, 0,
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
-        ASSERT_EQUAL(0, inform_local_active_info(series, 4, 9, 4, 2, ai));
+        ASSERT_NOT_NULL(inform_local_active_info(series, 4, 9, 4, 2, ai, NULL));
         ASSERT_DBL_NEAR_TOL(0.662146, AVERAGE(ai), 1e-6);
     }
 }
