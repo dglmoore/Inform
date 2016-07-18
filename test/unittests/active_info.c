@@ -1,62 +1,105 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
+#include "random.h"
 #include <inform/active_info.h>
 #include <math.h>
-#include <stdio.h>
 #include <unit.h>
 
-#include "random.h"
+#define AVERAGE(XS) average(XS, sizeof(XS) / sizeof(double))
+
+static double average(double *xs, size_t n)
+{
+    double x = 0;
+    for (size_t i = 0; i < n; ++i)
+    {
+        x += xs[i];
+    }
+    return x / n;
+}
+
+UNIT(ActiveInfoSeriesNULLSeries)
+{
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_TRUE(isnan(inform_active_info(NULL, 1, 3, 2, 2, &err)));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_ETIMESERIES, err);
+}
+
+UNIT(ActiveInfoSeriesNoInits)
+{
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_TRUE(isnan(inform_active_info(series, 0, 3, 2, 2, &err)));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_ENOINITS, err);
+}
 
 UNIT(ActiveInfoSeriesTooShort)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
-    inform_error err;
-    inform_error *errptr = &err;
+    inform_error err = INFORM_SUCCESS;
 
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_TRUE(isnan(inform_active_info(series, 1, 0, 2, 2, errptr)));
-    ASSERT_TRUE(inform_failed(errptr));
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_TRUE(isnan(inform_active_info(series, 1, 1, 2, 2, errptr)));
-    ASSERT_TRUE(inform_failed(errptr));
+    for (size_t i = 0; i < 2; ++i)
+    {
+        err = INFORM_SUCCESS;
+        ASSERT_TRUE(isnan(inform_active_info(series, 1, i, 2, 2, &err)));
+        ASSERT_TRUE(inform_failed(&err));
+        ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
+    }
 }
 
 UNIT(ActiveInfoHistoryTooLong)
 {
-    inform_error err;
-    inform_error *errptr = &err;
     int const series[] = {1,1,0,0,1,0,0,1};
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, 2, 2, errptr)));
-    ASSERT_TRUE(inform_failed(errptr));
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_FALSE(isnan(inform_active_info(series, 1, 3, 2, 2, errptr)));
-    ASSERT_FALSE(inform_failed(errptr));
+    inform_error err = INFORM_SUCCESS;
+    for (size_t i = 2; i < 4; ++i)
+    {
+        err = INFORM_SUCCESS;
+        ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, 2, i, &err)));
+        ASSERT_TRUE(inform_failed(&err));
+        ASSERT_EQUAL(INFORM_EKLONG, err);
+    }
 }
 
-UNIT(ActiveInfoEncodingError)
+UNIT(ActiveInfoZeroHistory)
 {
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, 2, 0, &err)));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_EKZERO, err);
+}
+
+UNIT(ActiveInfoInvalidBase)
+{
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+    for (int i = 0; i < 2; ++i)
+    {
+        err = INFORM_SUCCESS;
+        ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, i, 2, &err)));
+        ASSERT_TRUE(inform_failed(&err));
+        ASSERT_EQUAL(INFORM_EBASE, err);
+    }
+}
+
+UNIT(ActiveInfoNegativeState)
+{
+    int const series[] = {-1,1,0,0,1,0,0,1};
     inform_error err;
-    inform_error *errptr = &err;
-    int const series[] = {2,1,0,0,1,0,0,1};
+    ASSERT_TRUE(isnan(inform_active_info(series, 1, 8, 3, 2, &err)));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_ENEGSTATE, err);
+}
 
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_FALSE(isnan(inform_active_info(series, 1, 8, 3, 2, errptr)));
-    ASSERT_FALSE(inform_failed(errptr));
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_TRUE(isnan(inform_active_info(series, 1, 8, 2, 2, errptr)));
-    ASSERT_TRUE(inform_failed(errptr));
+UNIT(ActiveInfoBadState)
+{
+    int const series[] = {1,2,0,0,1,0,0,1};
+    inform_error err;
+    ASSERT_TRUE(isnan(inform_active_info(series, 1, 8, 2, 2, &err)));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_EBADSTATE, err);
 }
 
 UNIT(ActiveInfoSingleSeries_Base2)
@@ -162,70 +205,97 @@ UNIT(ActiveInfoEnsemble_Base4)
     }
 }
 
-#define AVERAGE(XS) average(XS, sizeof(XS) / sizeof(double))
-
-static double average(double *xs, size_t n)
+UNIT(LocalActiveInfoSeriesNULLSeries)
 {
-    double x = 0;
-    for (size_t i = 0; i < n; ++i)
-    {
-        x += xs[i];
-    }
-    return x / n;
+    double ai[8];
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_local_active_info(NULL, 1, 3, 2, 2, ai, &err));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_ETIMESERIES, err);
+}
+
+UNIT(LocalActiveInfoSeriesNoInits)
+{
+    double ai[8];
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_local_active_info(series, 0, 3, 2, 2, ai, &err));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_ENOINITS, err);
 }
 
 UNIT(LocalActiveInfoSeriesTooShort)
 {
     double ai[8];
     int const series[] = {1,1,0,0,1,0,0,1};
-    inform_error err;
-    inform_error *errptr = &err;
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_NULL(inform_local_active_info(series, 1, 0, 2, 2, ai, errptr));
-    ASSERT_TRUE(inform_failed(errptr));
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_NULL(inform_local_active_info(series, 1, 1, 2, 2, ai, errptr));
-    ASSERT_TRUE(inform_failed(errptr));
+    inform_error err = INFORM_SUCCESS;
+    for (size_t i = 0; i < 2; ++i)
+    {
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_local_active_info(series, 1, i, 2, 2, ai, &err));
+        ASSERT_TRUE(inform_failed(&err));
+        ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
+    }
 }
 
 UNIT(LocalActiveInfoHistoryTooLong)
 {
     double ai[6];
     int const series[] = {1,1,0,0,1,0,0,1};
-    inform_error err;
-    inform_error *errptr = &err;
+    inform_error err = INFORM_SUCCESS;
 
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_NULL(inform_local_active_info(series, 1, 2, 2, 2, ai, errptr));
-    ASSERT_TRUE(inform_failed(errptr));
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_NOT_NULL(inform_local_active_info(series, 1, 3, 2, 2, ai, errptr));
-    ASSERT_FALSE(inform_failed(errptr));
+    for (size_t i = 2; i < 4; ++i)
+    {
+        ASSERT_NULL(inform_local_active_info(series, 1, 2, 2, 2, ai, &err));
+        ASSERT_TRUE(inform_failed(&err));
+        ASSERT_EQUAL(INFORM_EKLONG, err);
+    }
 }
 
-UNIT(LocalActiveInfoEncodingError)
+UNIT(LocalActiveInfoZeroHistory)
+{
+    double ai[8];
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_local_active_info(series, 1, 2, 2, 0, ai, &err));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_EKZERO, err);
+}
+
+UNIT(LocalActiveInfoInvalidBase)
+{
+    double ai[8];
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+    for (int i = 0; i < 2; ++i)
+    {
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_local_active_info(series, 1, 2, i, 2, ai, &err));
+        ASSERT_TRUE(inform_failed(&err));
+        ASSERT_EQUAL(INFORM_EBASE, err);
+    }
+}
+
+UNIT(LocalActiveInfoNegativeState)
+{
+    double ai[8];
+    int const series[] = {-1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+
+    ASSERT_NULL(inform_local_active_info(series, 1, 8, 2, 2, ai, &err));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_ENEGSTATE, err);
+}
+
+UNIT(LocalActiveInfoBadState)
 {
     double ai[8];
     int const series[] = {2,1,0,0,1,0,0,1};
-    inform_error err;
-    inform_error *errptr = &err;
+    inform_error err = INFORM_SUCCESS;
 
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_NOT_NULL(inform_local_active_info(series, 1, 8, 3, 2, ai, errptr));
-    ASSERT_FALSE(inform_failed(errptr));
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_NULL(inform_local_active_info(series, 1, 8, 2, 2, ai, errptr));
-    ASSERT_TRUE(inform_failed(errptr));
+    ASSERT_NULL(inform_local_active_info(series, 1, 8, 2, 2, ai, &err));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_EBADSTATE, err);
 }
 
 UNIT(LocalActiveInfoAllocatesOutput)
@@ -328,16 +398,26 @@ UNIT(LocalActiveInfoEnsemble_Base4)
 }
 
 BEGIN_SUITE(ActiveInformation)
+    ADD_UNIT(ActiveInfoSeriesNULLSeries)
+    ADD_UNIT(ActiveInfoSeriesNoInits)
     ADD_UNIT(ActiveInfoSeriesTooShort)
     ADD_UNIT(ActiveInfoHistoryTooLong)
-    ADD_UNIT(ActiveInfoEncodingError)
+    ADD_UNIT(ActiveInfoZeroHistory)
+    ADD_UNIT(ActiveInfoInvalidBase)
+    ADD_UNIT(ActiveInfoNegativeState)
+    ADD_UNIT(ActiveInfoBadState)
     ADD_UNIT(ActiveInfoSingleSeries_Base2)
     ADD_UNIT(ActiveInfoSingleSeries_Base4)
     ADD_UNIT(ActiveInfoEnsemble)
     ADD_UNIT(ActiveInfoEnsemble_Base4)
+    ADD_UNIT(LocalActiveInfoSeriesNULLSeries)
+    ADD_UNIT(LocalActiveInfoSeriesNoInits)
     ADD_UNIT(LocalActiveInfoSeriesTooShort)
     ADD_UNIT(LocalActiveInfoHistoryTooLong)
-    ADD_UNIT(LocalActiveInfoEncodingError)
+    ADD_UNIT(LocalActiveInfoZeroHistory)
+    ADD_UNIT(LocalActiveInfoInvalidBase)
+    ADD_UNIT(LocalActiveInfoNegativeState)
+    ADD_UNIT(LocalActiveInfoBadState)
     ADD_UNIT(LocalActiveInfoAllocatesOutput)
     ADD_UNIT(LocalActiveInfoSingleSeries_Base2)
     ADD_UNIT(LocalActiveInfoSingleSeries_Base4)
