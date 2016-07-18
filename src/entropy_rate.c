@@ -67,10 +67,6 @@ static bool check_arguments(int const *series, size_t n, size_t m, int b, size_t
     {
         INFORM_ERROR_RETURN(err, INFORM_ESHORTSERIES, true);
     }
-    else if (m <= k)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EKLONG, true);
-    }
     else if (b < 2)
     {
         INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
@@ -78,6 +74,10 @@ static bool check_arguments(int const *series, size_t n, size_t m, int b, size_t
     else if (k == 0)
     {
         INFORM_ERROR_RETURN(err, INFORM_EKZERO, true);
+    }
+    else if (m <= k)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EKLONG, true);
     }
     for (size_t i = 0; i < n * m; ++i)
     {

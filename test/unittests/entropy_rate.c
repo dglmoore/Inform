@@ -1,10 +1,10 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
+#include "random.h"
 #include <inform/entropy_rate.h>
 #include <math.h>
 #include <unit.h>
-#include "random.h"
 
 #define AVERAGE(XS) average(XS, sizeof(XS) / sizeof(double))
 
@@ -18,55 +18,90 @@ static double average(double *xs, size_t n)
     return x / n;
 }
 
+UNIT(EntropyRateNULLSeries)
+{
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_TRUE(isnan(inform_entropy_rate(NULL, 1, 8, 2, 2, &err)));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_ETIMESERIES, err);
+}
+
+UNIT(EntropyRateNoInits)
+{
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_TRUE(isnan(inform_entropy_rate(series, 0, 8, 2, 2, &err)));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_ENOINITS, err);
+}
+
 UNIT(EntropyRateSeriesTooShort)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
-    inform_error err;
-    inform_error *errptr = &err;
+    inform_error err = INFORM_SUCCESS;
+    
+    for (size_t i = 0; i < 2; ++i)
+    {
+        err = INFORM_SUCCESS;
+        ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, i, 2, 2, &err)));
+        ASSERT_TRUE(inform_failed(&err));
+        ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
+    }
+}
 
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 0, 2, 2, errptr)));
-    ASSERT_TRUE(inform_failed(errptr));
+UNIT(EntropyRateInvalidBase)
+{
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+    
+    for (int i = 0; i < 2; ++i)
+    {
+        ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, i, 2, &err)));
+        ASSERT_TRUE(inform_failed(&err));
+        ASSERT_EQUAL(INFORM_EBASE, err);
+    }
+}
 
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 1, 2, 2, errptr)));
-    ASSERT_TRUE(inform_failed(errptr));
+UNIT(EntropyRateZeroHistory)
+{
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+    
+    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, 2, 0, &err)));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_EKZERO, err);
 }
 
 UNIT(EntropyRateHistoryTooLong)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
-    inform_error err;
-    inform_error *errptr = &err;
+    inform_error err = INFORM_SUCCESS;
 
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, 2, 2, errptr)));
-    ASSERT_TRUE(inform_failed(errptr));
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_FALSE(isnan(inform_entropy_rate(series, 1, 3, 2, 2, errptr)));
-    ASSERT_FALSE(inform_failed(errptr));
+    for (size_t i = 2; i < 4; ++i)
+    {
+        err = INFORM_SUCCESS;
+        ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, 2, i, &err)));
+        ASSERT_TRUE(inform_failed(&err));
+        ASSERT_EQUAL(INFORM_EKLONG, err);
+    }
 }
 
-UNIT(EntropyRateEncodingError)
+UNIT(EntropyRateNegativeState)
 {
-    int const series[] = {2,1,0,0,1,0,0,1};
+    int const series[] = {-1,1,0,0,1,0,0,1};
     inform_error err;
-    inform_error *errptr = &err;
+    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 8, 3, 2, &err)));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_ENEGSTATE, err);
+}
 
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_FALSE(isnan(inform_entropy_rate(series, 1, 8, 3, 2, errptr)));
-    ASSERT_FALSE(inform_failed(errptr));
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 8, 2, 2, errptr)));
-    ASSERT_TRUE(inform_failed(errptr));
+UNIT(EntropyRateBadState)
+{
+    int const series[] = {1,2,0,0,1,0,0,1};
+    inform_error err;
+    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 8, 2, 2, &err)));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_EBADSTATE, err);
 }
 
 UNIT(EntropyRateSingleSeries_Base2)
@@ -172,59 +207,99 @@ UNIT(EntropyRateEnsemble_Base4)
     }
 }
 
+UNIT(LocalEntropyRateNULLSeries)
+{
+    double er[8];
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_local_entropy_rate(NULL, 1, 3, 2, 2, er, &err));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_ETIMESERIES, err);
+}
+
+UNIT(LocalEntropyRateNoInits)
+{
+    double er[8];
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_local_entropy_rate(series, 0, 3, 2, 2, er, &err));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_ENOINITS, err);
+}
+
 UNIT(LocalEntropyRateSeriesTooShort)
 {
-    double er[6];
+    double er[8];
     int const series[] = {1,1,0,0,1,0,0,1};
-    inform_error err;
-    inform_error *errptr = &err;
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_NULL(inform_local_entropy_rate(series, 1, 0, 2, 2, er, errptr));
-    ASSERT_TRUE(inform_failed(errptr));
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_NULL(inform_local_entropy_rate(series, 1, 1, 2, 2, er, errptr));
-    ASSERT_TRUE(inform_failed(errptr));
+    inform_error err = INFORM_SUCCESS;
+    for (size_t i = 0; i < 2; ++i)
+    {
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_local_entropy_rate(series, 1, i, 2, 2, er, &err));
+        ASSERT_TRUE(inform_failed(&err));
+        ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
+    }
 }
 
 UNIT(LocalEntropyRateHistoryTooLong)
 {
     double er[6];
     int const series[] = {1,1,0,0,1,0,0,1};
-    inform_error err;
-    inform_error *errptr = &err;
+    inform_error err = INFORM_SUCCESS;
 
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_NULL(inform_local_entropy_rate(series, 1, 2, 2, 2, er, errptr));
-    ASSERT_TRUE(inform_failed(errptr));
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_NOT_NULL(inform_local_entropy_rate(series, 1, 3, 2, 2, er, errptr));
-    ASSERT_FALSE(inform_failed(errptr));
+    for (size_t i = 2; i < 4; ++i)
+    {
+        ASSERT_NULL(inform_local_entropy_rate(series, 1, 2, 2, 2, er, &err));
+        ASSERT_TRUE(inform_failed(&err));
+        ASSERT_EQUAL(INFORM_EKLONG, err);
+    }
 }
 
-UNIT(LocalEntropyRateEncodingError)
+UNIT(LocalEntropyRateZeroHistory)
 {
-    double er[6];
-    int const series[] = {2,1,0,0,1,0,0,1};
-    inform_error err;
-    inform_error *errptr = &err;
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_NOT_NULL(inform_local_entropy_rate(series, 1, 8, 3, 2, er, errptr));
-    ASSERT_FALSE(inform_failed(errptr));
-
-    *errptr = INFORM_SUCCESS;
-    ASSERT_FALSE(inform_failed(errptr));
-    ASSERT_NULL(inform_local_entropy_rate(series, 1, 8, 2, 2, er, errptr));
-    ASSERT_TRUE(inform_failed(errptr));
+    double er[8];
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_local_entropy_rate(series, 1, 2, 2, 0, er, &err));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_EKZERO, err);
 }
+
+UNIT(LocalEntropyRateInvalidBase)
+{
+    double er[8];
+    int const series[] = {1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+    for (int i = 0; i < 2; ++i)
+    {
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_local_entropy_rate(series, 1, 2, i, 2, er, &err));
+        ASSERT_TRUE(inform_failed(&err));
+        ASSERT_EQUAL(INFORM_EBASE, err);
+    }
+}
+
+UNIT(LocalEntropyRateNegativeState)
+{
+    double er[8];
+    int const series[] = {-1,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+
+    ASSERT_NULL(inform_local_entropy_rate(series, 1, 8, 2, 2, er, &err));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_ENEGSTATE, err);
+}
+
+UNIT(LocalEntropyRateBadState)
+{
+    double er[8];
+    int const series[] = {2,1,0,0,1,0,0,1};
+    inform_error err = INFORM_SUCCESS;
+
+    ASSERT_NULL(inform_local_entropy_rate(series, 1, 8, 2, 2, er, &err));
+    ASSERT_TRUE(inform_failed(&err));
+    ASSERT_EQUAL(INFORM_EBADSTATE, err);
+}
+
 
 UNIT(LocalEntropyRateAllocatesOutput)
 {
@@ -326,16 +401,26 @@ UNIT(LocalEntropyRateEnsemble_Base4)
 }
 
 BEGIN_SUITE(EntropyRate)
+    ADD_UNIT(EntropyRateNULLSeries)
+    ADD_UNIT(EntropyRateNoInits)
     ADD_UNIT(EntropyRateSeriesTooShort)
+    ADD_UNIT(EntropyRateInvalidBase)
+    ADD_UNIT(EntropyRateZeroHistory)
     ADD_UNIT(EntropyRateHistoryTooLong)
-    ADD_UNIT(EntropyRateEncodingError)
+    ADD_UNIT(EntropyRateNegativeState)
+    ADD_UNIT(EntropyRateBadState)
     ADD_UNIT(EntropyRateSingleSeries_Base2)
     ADD_UNIT(EntropyRateSingleSeries_Base4)
     ADD_UNIT(EntropyRateEnsemble)
     ADD_UNIT(EntropyRateEnsemble_Base4)
+    ADD_UNIT(LocalEntropyRateNULLSeries)
+    ADD_UNIT(LocalEntropyRateNoInits)
     ADD_UNIT(LocalEntropyRateSeriesTooShort)
+    ADD_UNIT(LocalEntropyRateInvalidBase)
+    ADD_UNIT(LocalEntropyRateZeroHistory)
     ADD_UNIT(LocalEntropyRateHistoryTooLong)
-    ADD_UNIT(LocalEntropyRateEncodingError)
+    ADD_UNIT(LocalEntropyRateNegativeState)
+    ADD_UNIT(LocalEntropyRateBadState)
     ADD_UNIT(LocalEntropyRateAllocatesOutput)
     ADD_UNIT(LocalEntropyRateSingleSeries_Base2)
     ADD_UNIT(LocalEntropyRateSingleSeries_Base4)
