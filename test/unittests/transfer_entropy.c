@@ -12,15 +12,15 @@ UNIT(TransferEntropyTooShort)
     inform_error err;
     inform_error *errptr = &err;
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 0, 2, 2, errptr)));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 1, 2, 2, errptr)));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 }
 
 UNIT(TransferEntropyHistoryTooLong)
@@ -30,15 +30,15 @@ UNIT(TransferEntropyHistoryTooLong)
         inform_error err;
         inform_error *errptr = &err;
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 2, 2, 2, errptr)));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 1, 3, 2, 2, errptr)));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
     }
 }
 
@@ -50,73 +50,73 @@ UNIT(TransferEntropyEncodingError)
     {
         int const series[10] = {2,1,1,0,1,0,0,1,0,1};
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 3, 2, errptr)));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 2, 2, errptr)));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 1, 5, 3, 2, errptr)));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 5, 2, 2, errptr)));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
     }
 
     {
         int const series[] = {1,1,1,0,2,0,0,1,0,1};
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 3, 2, errptr)));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 2, 2, errptr)));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 1, 5, 3, 2, errptr)));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 5, 2, 2, errptr)));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
     }
 
     {
         int const series[] = {1,1,1,2,1,0,0,1,0,1};
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_FALSE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 3, 2, errptr)));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_TRUE(isnan(inform_transfer_entropy(series+5, series, 1, 5, 2, 2, errptr)));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_FALSE(isnan(inform_transfer_entropy(series, series+5, 1, 5, 3, 2, errptr)));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_TRUE(isnan(inform_transfer_entropy(series, series+5, 1, 5, 2, 2, errptr)));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
     }
 }
 
@@ -260,15 +260,15 @@ UNIT(LocalTransferEntropyTooShort)
     inform_error err;
     inform_error *errptr = &err;
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_NULL(inform_local_transfer_entropy(series, series+5, 1, 0, 2, 2, te, errptr));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_NULL(inform_local_transfer_entropy(series, series+5, 1, 1, 2, 2, te, errptr));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 }
 
 UNIT(LocalTransferEntropyHistoryTooLong)
@@ -278,15 +278,15 @@ UNIT(LocalTransferEntropyHistoryTooLong)
     inform_error err;
     inform_error *errptr = &err;
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_NULL(inform_local_transfer_entropy(series, series+5, 1, 2, 2, 2, te, errptr));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_NOT_NULL(inform_local_transfer_entropy(series, series+5, 1, 3, 2, 2, te, errptr));
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_FALSE(inform_failed(errptr));
 }
 
 UNIT(LocalTransferEntropyEncodingError)
@@ -298,86 +298,86 @@ UNIT(LocalTransferEntropyEncodingError)
         double te[8];
         int const series[10] = {2,1,1,0,1,0,0,1,0,1};
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_NOT_NULL(inform_local_transfer_entropy(series+5, series, 1, 5, 3, 2, te, errptr));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_NULL(inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te, errptr));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_NOT_NULL(inform_local_transfer_entropy(series, series+5, 1, 5, 3, 2, te, errptr));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_NULL(inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te, errptr));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
     }
 
     {
         double te[8];
         int const series[] = {1,1,1,0,2,0,0,1,0,1};
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_NOT_NULL(inform_local_transfer_entropy(series+5, series, 1, 5, 3, 2, te, errptr));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_NULL(inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te, errptr));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_NOT_NULL(inform_local_transfer_entropy(series, series+5, 1, 5, 3, 2, te, errptr));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_NULL(inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te, errptr));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
     }
 
     {
         double te[8];
         int const series[] = {1,1,1,2,1,0,0,1,0,1};
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_NOT_NULL(inform_local_transfer_entropy(series+5, series, 1, 5, 3, 2, te, errptr));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_NULL(inform_local_transfer_entropy(series+5, series, 1, 5, 2, 2, te, errptr));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_NOT_NULL(inform_local_transfer_entropy(series, series+5, 1, 5, 3, 2, te, errptr));
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        ASSERT_FALSE(inform_failed(errptr));
 
-        *errptr = INFORM_ERROR_SUCCESS;
-        ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+        *errptr = INFORM_SUCCESS;
+        ASSERT_FALSE(inform_failed(errptr));
         ASSERT_NULL(inform_local_transfer_entropy(series, series+5, 1, 5, 2, 2, te, errptr));
-        ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+        ASSERT_TRUE(inform_failed(errptr));
     }
 }
 
 UNIT(LocalTransferEntropyAllocatesOutput)
 {
-    inform_error err = INFORM_ERROR_SUCCESS;
+    inform_error err = INFORM_SUCCESS;
     int source[] = {0,0,1,0,0,1,0,1,0};
     int target[] = {0,1,0,0,1,0,0,1,0};
     double *te = inform_local_transfer_entropy(source, target, 1, 9, 2, 2, NULL, &err);
     ASSERT_NOT_NULL(te);
-    ASSERT_EQUAL(INFORM_SUCCESS, err.tag);
+    ASSERT_EQUAL(INFORM_SUCCESS, err);
     free(te);
 }
 

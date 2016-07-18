@@ -3,6 +3,8 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
+#include <inform/export.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
 #ifdef __cplusplus
@@ -15,60 +17,44 @@ extern "C"
  */
 typedef enum
 {
-    INFORM_SUCCESS =  0, /// no error occurred
-    INFORM_FAILURE = -1, /// an unspecified error occurred
-    INFORM_EFAULT  =  1, /// an invalid pointer was encountered
-    INFORM_EINVAL  =  2, /// an invalid agrument was provided
-    INFORM_ENOMEM  =  3, /// malloc failed to allocate memory
-} inform_error_tag;
-
-/**
- * An error structure for propogating meaningful errors
- */
-typedef struct inform_error
-{
-    int tag;          /// the error number (i.e. an inform_error_tag)
-    char *msg;          /// the statically allocated error message
-    int line;           /// the line number
-    char const *file;   /// the filename
+    INFORM_SUCCESS      =  0, /// no error occurred
+    INFORM_FAILURE      = -1, /// an unspecified error occurred
+    INFORM_EFAULT       =  1, /// invalid pointer
+    INFORM_EARG         =  2, /// invalid argument
+    INFORM_ENOMEM       =  3, /// malloc/calloc/realloc failed
+    INFORM_ETIMESERIES  =  4, /// time series is NULL
+    INFORM_ENOINITS     =  5, /// time series has no initial conditions
+    INFORM_ESHORTSERIES =  6, /// time series has less than two timesteps
+    INFORM_EKZERO       =  7, /// history length is zero
+    INFORM_EKLONG       =  8, /// history is too long for the time series
+    INFORM_EBASE        =  9, /// the provided base is invalid
+    INFORM_ENEGSTATE    = 10, /// time series has negative state
+    INFORM_EBADSTATE    = 11, /// time series has states inconsistent with expected base
+    INFORM_EDIST        = 12, /// invalid distribution
 } inform_error;
 
-/// A default success value for errors
-#define INFORM_ERROR_SUCCESS (inform_error) {\
-    .tag = INFORM_SUCCESS,\
-    .msg = NULL,\
-    .line = __LINE__,\
-    .file = __FILE__,}
-
 /// set an error as pointed to by ERR
-#define INFORM_ERROR(ERR, TAG, MSG) do {\
+#define INFORM_ERROR(ERR, TAG) do {\
         if ((ERR) != NULL) {\
-            *(ERR) = (inform_error) {\
-                .tag = (TAG),\
-                .msg = (MSG),\
-                .line = __LINE__,\
-                .file = __FILE__,\
-            };\
+            *(ERR) = (inform_error) TAG;\
         }\
     } while(0)
 
-/// set an error and return a non-void result
-#define INFORM_ERROR_RETURN(ERR, TAG, MSG, RET) do {\
-        INFORM_ERROR(ERR, TAG, MSG); \
+/// set an error and return a result
+#define INFORM_ERROR_RETURN(ERR, TAG, RET) do {\
+        INFORM_ERROR(ERR, TAG); \
         return RET; \
     } while(0)
 
 /// set an error and return a void result
-#define INFORM_ERROR_RETURN_VOID(ERR, TAG, MSG) do {\
-        INFORM_ERROR(ERR, TAG, MSG); \
+#define INFORM_ERROR_RETURN_VOID(ERR, TAG) do {\
+        INFORM_ERROR(ERR, TAG); \
         return; \
     } while(0)
 
-/// is the error a "success", i.e. no error
-#define INFORM_IS_SUCCESS(ERR) ((ERR) == NULL || (ERR)->tag == INFORM_SUCCESS)
+EXPORT inline extern bool inform_succeeded(inform_error const *err);
 
-/// is the error a "failure", i.e. not a "success"
-#define INFORM_IS_FAILURE(ERR) !INFORM_IS_SUCCESS(ERR)
+EXPORT inline extern bool inform_failed(inform_error const *err);
 
 #ifdef __cplusplus
 }

@@ -24,15 +24,15 @@ UNIT(EntropyRateSeriesTooShort)
     inform_error err;
     inform_error *errptr = &err;
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 0, 2, 2, errptr)));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 1, 2, 2, errptr)));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 }
 
 UNIT(EntropyRateHistoryTooLong)
@@ -41,15 +41,15 @@ UNIT(EntropyRateHistoryTooLong)
     inform_error err;
     inform_error *errptr = &err;
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, 2, 2, errptr)));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_FALSE(isnan(inform_entropy_rate(series, 1, 3, 2, 2, errptr)));
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_FALSE(inform_failed(errptr));
 }
 
 UNIT(EntropyRateEncodingError)
@@ -58,15 +58,15 @@ UNIT(EntropyRateEncodingError)
     inform_error err;
     inform_error *errptr = &err;
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_FALSE(isnan(inform_entropy_rate(series, 1, 8, 3, 2, errptr)));
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_FALSE(inform_failed(errptr));
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 8, 2, 2, errptr)));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 }
 
 UNIT(EntropyRateSingleSeries_Base2)
@@ -179,15 +179,15 @@ UNIT(LocalEntropyRateSeriesTooShort)
     inform_error err;
     inform_error *errptr = &err;
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_NULL(inform_local_entropy_rate(series, 1, 0, 2, 2, er, errptr));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_NULL(inform_local_entropy_rate(series, 1, 1, 2, 2, er, errptr));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 }
 
 UNIT(LocalEntropyRateHistoryTooLong)
@@ -197,15 +197,15 @@ UNIT(LocalEntropyRateHistoryTooLong)
     inform_error err;
     inform_error *errptr = &err;
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_NULL(inform_local_entropy_rate(series, 1, 2, 2, 2, er, errptr));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_NOT_NULL(inform_local_entropy_rate(series, 1, 3, 2, 2, er, errptr));
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_FALSE(inform_failed(errptr));
 }
 
 UNIT(LocalEntropyRateEncodingError)
@@ -215,23 +215,23 @@ UNIT(LocalEntropyRateEncodingError)
     inform_error err;
     inform_error *errptr = &err;
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_NOT_NULL(inform_local_entropy_rate(series, 1, 8, 3, 2, er, errptr));
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    ASSERT_FALSE(inform_failed(errptr));
 
-    *errptr = INFORM_ERROR_SUCCESS;
-    ASSERT_FALSE(INFORM_IS_FAILURE(errptr));
+    *errptr = INFORM_SUCCESS;
+    ASSERT_FALSE(inform_failed(errptr));
     ASSERT_NULL(inform_local_entropy_rate(series, 1, 8, 2, 2, er, errptr));
-    ASSERT_TRUE(INFORM_IS_FAILURE(errptr));
+    ASSERT_TRUE(inform_failed(errptr));
 }
 
 UNIT(LocalEntropyRateAllocatesOutput)
 {
-    inform_error err = INFORM_ERROR_SUCCESS;
+    inform_error err = INFORM_SUCCESS;
     double *er = inform_local_entropy_rate((int[]){0,0,1,1,1,1,0,0,0}, 1, 9, 2, 2, NULL, &err);
     ASSERT_NOT_NULL(er);
-    ASSERT_EQUAL(INFORM_SUCCESS, err.tag);
+    ASSERT_EQUAL(INFORM_SUCCESS, err);
     free(er);
 }
 

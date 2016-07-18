@@ -72,49 +72,41 @@ static bool check_arguments(int const *node_y, int const *node_x,
 {
     if (node_y == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series is NULL", true);
+        INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
     }
     else if (node_x == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "target node's time series is NULL", true);
+        INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
     }
     else if (n < 1)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", true);
+        INFORM_ERROR_RETURN(err, INFORM_ENOINITS, true);
     }
     else if (m < 2)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has less than two timesteps", true);
+        INFORM_ERROR_RETURN(err, INFORM_ESHORTSERIES, true);
     }
     else if (m <= k)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is too long for the timeseries", true);
+        INFORM_ERROR_RETURN(err, INFORM_EKLONG, true);
     }
     else if (b < 2)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "base is less than two", true);
+        INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
     }
     else if (k == 0)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is zero", true);
+        INFORM_ERROR_RETURN(err, INFORM_EKZERO, true);
     }
     for (size_t i = 0; i < n * m; ++i)
     {
-        if (b <= node_y[i])
+        if (b <= node_y[i] || b <= node_x[i])
         {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series has negative states", true);
+            INFORM_ERROR_RETURN(err, INFORM_EBADSTATE, true);
         }
-        else if (node_y[i] < 0)
+        else if (node_y[i] < 0 || node_x[i] < 0)
         {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series has states inconsistent with the expected base", true);
-        }
-        if (b <= node_x[i])
-        {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series has negative states", true);
-        }
-        else if (node_x[i] < 0)
-        {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "source node's time series has states inconsistent with the expected base", true);
+            INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
         }
     }
     return false;
@@ -137,7 +129,7 @@ double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
     uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate distribution histograms", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NAN);
     }
 
     inform_dist states     = { data, states_size, N };
@@ -172,7 +164,7 @@ double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
         te = malloc(N * sizeof(double));
         if (te == NULL)
         {
-            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate TE output array", NULL);
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
         }
     }
 
@@ -186,7 +178,7 @@ double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
     uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate distribution histograms", NULL);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
     inform_dist states     = { data, states_size, N };
@@ -197,22 +189,22 @@ double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
     int *state      = malloc(N * sizeof(int));
     if (state == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate state array", NULL);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
     int *history    = malloc(N * sizeof(int));
     if (history == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate history array", NULL);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
     int *source     = malloc(N * sizeof(int));
     if (source == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate source array", NULL);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
     int *predicate  = malloc(N * sizeof(int));
     if (predicate == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate predicate array", NULL);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
     int const *node_y_ptr = node_y, *node_x_ptr = node_x;

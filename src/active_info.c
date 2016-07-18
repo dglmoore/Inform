@@ -58,37 +58,37 @@ static bool check_arguments(int const *series, size_t n, size_t m, int b, size_t
 {
     if (series == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series is NULL", true);
+        INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
     }
     else if (n < 1)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has no initial conditions", true);
+        INFORM_ERROR_RETURN(err, INFORM_ENOINITS, true);
     }
     else if (m < 2)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has less than two timesteps", true);
+        INFORM_ERROR_RETURN(err, INFORM_ESHORTSERIES, true);
     }
     else if (m <= k)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is too long for the timeseries", true);
+        INFORM_ERROR_RETURN(err, INFORM_EKLONG, true);
     }
     else if (b < 2)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "base is less than two", true);
+        INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
     }
     else if (k == 0)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EINVAL, "history length is zero", true);
+        INFORM_ERROR_RETURN(err, INFORM_EKZERO, true);
     }
     for (size_t i = 0; i < n * m; ++i)
     {
         if (series[i] < 0)
         {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has negative states", true);
+            INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
         }
         else if (b <= series[i])
         {
-            INFORM_ERROR_RETURN(err, INFORM_EINVAL, "time series has states inconsistent with the expected base", true);
+            INFORM_ERROR_RETURN(err, INFORM_EBADSTATE, true);
         }
     }
     return false;
@@ -108,7 +108,7 @@ double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k
     uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate distribution histograms", NAN);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NAN);
     }
 
     inform_dist states    = { data, states_size, N };
@@ -139,7 +139,7 @@ double *inform_local_active_info(int const *series, size_t n, size_t m,
         ai = malloc(N * sizeof(double));
         if (ai == NULL)
         {
-            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate the AI output array", NULL);
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
         }
     }
 
@@ -151,7 +151,7 @@ double *inform_local_active_info(int const *series, size_t n, size_t m,
     uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate distribution histograms", NULL);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
     inform_dist states    = { data, states_size, N };
@@ -161,17 +161,17 @@ double *inform_local_active_info(int const *series, size_t n, size_t m,
     int *state   = malloc(N * sizeof(int));
     if (state == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate state array", NULL);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
     int *history = malloc(N * sizeof(int));
     if (history == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate history array", NULL);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
     int *future  = malloc(N * sizeof(int));
     if (future == NULL)
     {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, "failed to allocate future array", NULL);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
     int const *series_ptr = series;
