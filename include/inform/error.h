@@ -52,9 +52,9 @@ typedef enum
         return; \
     } while(0)
 
-EXPORT inline extern bool inform_succeeded(inform_error const *err);
+EXPORT bool inform_succeeded(inform_error const *err);
 
-EXPORT inline extern bool inform_failed(inform_error const *err);
+EXPORT bool inform_failed(inform_error const *err);
 
 #ifdef __cplusplus
 }
