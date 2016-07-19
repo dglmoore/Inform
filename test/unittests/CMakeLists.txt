@@ -4,7 +4,7 @@ set(${PROJECT_NAME}_UNITTEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/dist.c
     ${CMAKE_CURRENT_SOURCE_DIR}/entropy_rate.c
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/random.c
     ${CMAKE_CURRENT_SOURCE_DIR}/shannon.c
     ${CMAKE_CURRENT_SOURCE_DIR}/transfer_entropy.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/util.c
     PARENT_SCOPE)
