@@ -15,3 +15,13 @@ int* random_series(size_t size, int base)
     }
     return series;
 }
+
+double average(double const *xs, size_t n)
+{
+    double x = 0;
+    for (size_t i = 0; i < n; ++i)
+    {
+        x += xs[i];
+    }
+    return x / n;
+}

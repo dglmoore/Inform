@@ -6,18 +6,6 @@
 #include <math.h>
 #include <unit.h>
 
-#define AVERAGE(XS) average(XS, sizeof(XS) / sizeof(double))
-
-static double average(double *xs, size_t n)
-{
-    double x = 0;
-    for (size_t i = 0; i < n; ++i)
-    {
-        x += xs[i];
-    }
-    return x / n;
-}
-
 UNIT(TransferEntropyNULLSeries)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
