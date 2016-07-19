@@ -86,13 +86,13 @@ static bool check_arguments(int const *node_y, int const *node_x,
     {
         INFORM_ERROR_RETURN(err, INFORM_ESHORTSERIES, true);
     }
-    else if (m <= k)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EKLONG, true);
-    }
     else if (b < 2)
     {
         INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
+    }
+    else if (m <= k)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EKLONG, true);
     }
     else if (k == 0)
     {
