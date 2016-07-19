@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
-#include <inform/export.h>
 #include <inform/error.h>
 
 #ifdef __cplusplus
