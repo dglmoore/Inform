@@ -52,9 +52,29 @@ typedef enum
         return; \
     } while(0)
 
+/**
+ * Determine if an error code signifies a success.
+ *
+ * @param[in] err a pointer to an error code
+ * @return `true` if the error is success, and `false` otherwise
+ */
 EXPORT bool inform_succeeded(inform_error const *err);
 
+/**
+ * Determine if an error code signifies a failure.
+ *
+ * @param[in] err a pointer to an error code
+ * @return `true` if the error is not success, and `false` otherwise
+ */
 EXPORT bool inform_failed(inform_error const *err);
+
+/**
+ * Provide a string describing an error code.
+ * 
+ * @param[in] err a pointer to an error code
+ * @return a descrptive string
+ */
+EXPORT char const *inform_strerror(inform_error const *err);
 
 #ifdef __cplusplus
 }

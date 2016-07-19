@@ -12,3 +12,29 @@ bool inform_failed(inform_error const *err)
 {
     return !inform_succeeded(err);
 }
+
+char const *inform_strerror(inform_error const *err)
+{
+    if (err == NULL)
+    {
+        return "success";
+    }
+    switch (*err)
+    {
+        case INFORM_SUCCESS:      return "success";
+        case INFORM_FAILURE:      return "generic failure";
+        case INFORM_EFAULT:       return "invalid pointer encountered";
+        case INFORM_EARG:         return "invalid argument provided";
+        case INFORM_ENOMEM:       return "memory allocation failed";
+        case INFORM_ETIMESERIES:  return "timeseries is NULL";
+        case INFORM_ENOINITS:     return "timeseries has not initial conditions";
+        case INFORM_ESHORTSERIES: return "timeseries is too short";
+        case INFORM_EKZERO:       return "history length is zero";
+        case INFORM_EKLONG:       return "history length is too long";
+        case INFORM_EBASE:        return "base is invalid";
+        case INFORM_ENEGSTATE:    return "negative state in timeseries";
+        case INFORM_EBADSTATE:    return "unexpected state in timeseries";
+        case INFORM_EDIST:        return "invalid distribution encountered";
+        default:                  return "unrecognized error";
+    }
+}
