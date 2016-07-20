@@ -180,6 +180,8 @@ double *inform_local_entropy_rate(int const *series, size_t n, size_t m, int b,
         er[i] = inform_shannon_pce(&states, &histories, state[i], history[i], (double) b);
     }
 
+    free(history);
+    free(state);
     free(data);
 
     return er;
