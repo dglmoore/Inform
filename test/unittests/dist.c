@@ -254,7 +254,7 @@ UNIT(Dup)
     ASSERT_NOT_NULL(dist);
     for (size_t i = 0; i < inform_dist_size(dist); ++i)
     {
-        inform_dist_set(dist, i, (uint32_t) i*i);
+        inform_dist_set(dist, i, (uint32_t) (i*i));
     }
     inform_dist *dup = inform_dist_dup(dist);
     ASSERT_NOT_NULL(dup);
