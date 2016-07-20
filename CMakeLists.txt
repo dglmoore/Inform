@@ -5,6 +5,8 @@ set(${PROJECT_NAME}_VERSION_MAJOR 0)
 set(${PROJECT_NAME}_VERSION_MINOR 0.3)
 set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR})
 
+message(STATUS "inform version: ${${PROJECT_NAME}_VERSION}")
+
 if (UNIX)
     add_definitions("-Wall -Wextra -Werror -Wno-unused-parameter -std=gnu1x")
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -ggdb -pg")
