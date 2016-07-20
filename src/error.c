@@ -27,7 +27,7 @@ char const *inform_strerror(inform_error const *err)
         case INFORM_EARG:         return "invalid argument provided";
         case INFORM_ENOMEM:       return "memory allocation failed";
         case INFORM_ETIMESERIES:  return "timeseries is NULL";
-        case INFORM_ENOINITS:     return "timeseries has not initial conditions";
+        case INFORM_ENOINITS:     return "timeseries has no initial conditions";
         case INFORM_ESHORTSERIES: return "timeseries is too short";
         case INFORM_EKZERO:       return "history length is zero";
         case INFORM_EKLONG:       return "history length is too long";
