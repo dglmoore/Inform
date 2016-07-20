@@ -39,7 +39,7 @@ static void accumulate_local_observations(int const *series_y,
     int *source, int *predicate)
 {
     history[0] = 0;
-    size_t q = 1;
+    int q = 1;
     for (size_t i = 0; i < k; ++i)
     {
         q *= b;
