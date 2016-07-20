@@ -10,6 +10,6 @@ before_build:
 - ps: cmake .
 build:
   project: ALL_BUILD.vcxproj
-  verbosity: minimal
+  verbosity: detailed
 test_script:
 - cmd: test\%CONFIGURATION%\inform_unittest.exe
