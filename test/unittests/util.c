@@ -1,11 +1,11 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include "random.h"
+#include "util.h"
 
-uint64_t* random_series(size_t size, uint64_t base)
+int* random_series(size_t size, int base)
 {
-    uint64_t *series = calloc(size, sizeof(uint64_t));
+    int *series = calloc(size, sizeof(int));
     if (series != NULL)
     {
         for (size_t i = 0; i < size; ++i)
@@ -14,4 +14,14 @@ uint64_t* random_series(size_t size, uint64_t base)
         }
     }
     return series;
+}
+
+double average(double const *xs, size_t n)
+{
+    double x = 0;
+    for (size_t i = 0; i < n; ++i)
+    {
+        x += xs[i];
+    }
+    return x / n;
 }

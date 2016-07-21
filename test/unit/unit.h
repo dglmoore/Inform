@@ -14,7 +14,7 @@
 struct unit
 {
     char const *name;
-    void (*run)();
+    void (*run)(void);
 };
 
 struct unit_suite
@@ -74,12 +74,12 @@ inline static void run_unit_suite(struct unit_suite *suite)
 #define __FUNCNAME(NAME) __unit_test_##NAME##_body
 #define __UNITNAME(NAME) __unit_test_##NAME
 #define UNIT(NAME) \
-    static void __FUNCNAME(NAME)(); \
+    static void __FUNCNAME(NAME)(void); \
     static struct unit __UNITNAME(NAME) = { \
         .name = #NAME, \
         .run  = __FUNCNAME(NAME) \
     }; \
-    static void __FUNCNAME(NAME)()
+    static void __FUNCNAME(NAME)(void)
 
 #define __SUITENAME(NAME) __unit_suite_##NAME
 #define BEGIN_SUITE(NAME) \

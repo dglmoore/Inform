@@ -21,7 +21,7 @@ extern "C"
  * @param[in] base  the logarithmic base
  * @return the self-information of the event
  */
-double inform_shannon_si(inform_dist const *dist, uint64_t event, double base);
+EXPORT double inform_shannon_si(inform_dist const *dist, size_t event, double base);
 
 /**
  * Compute the Shannon information of a distribution.
@@ -33,7 +33,7 @@ double inform_shannon_si(inform_dist const *dist, uint64_t event, double base);
  * @param[in] base the logarithmic base
  * @return the shannon information
  */
-double inform_shannon(inform_dist const *dist, double base);
+EXPORT double inform_shannon(inform_dist const *dist, double base);
 
 /**
  * Compute the pointwise mutual information of an combination of events
@@ -47,9 +47,9 @@ double inform_shannon(inform_dist const *dist, double base);
  * @param[in] base        the logarithmic base
  * @return the pointwise mutual information of the events
  */
-double inform_shannon_pmi(inform_dist const *joint,
+EXPORT double inform_shannon_pmi(inform_dist const *joint,
     inform_dist const *marginal_x, inform_dist const *marginal_y,
-    uint64_t event_joint, uint64_t event_x, uint64_t enent_y, double base);
+    size_t event_joint, size_t event_x, size_t event_y, double base);
 
 /**
  * Compute the Shannon-based mutual information of a distribution and
@@ -64,7 +64,7 @@ double inform_shannon_pmi(inform_dist const *joint,
  * @param[in] base       the logarithmic base
  * @return the mutual information
  */
-double inform_shannon_mi(inform_dist const *joint,
+EXPORT double inform_shannon_mi(inform_dist const *joint,
     inform_dist const *marginal_x, inform_dist const *marginal_y, double base);
 
 /**
@@ -77,8 +77,8 @@ double inform_shannon_mi(inform_dist const *joint,
  * @param[in] base           the logarithmic base
  * @return the pointwise conditional entropy of the events
  */
-double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
-    uint64_t event_joint, uint64_t event_marginal, double base);
+EXPORT double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
+    size_t event_joint, size_t event_marginal, double base);
 
 /**
  * Compute the Shannon-based conditional entropy of a joint distribution and
@@ -92,7 +92,7 @@ double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
  * @param[in] base     the logarithmic base
  * @return the conditional information
  */
-double inform_shannon_ce(inform_dist const* joint, inform_dist const *marginal,
+EXPORT double inform_shannon_ce(inform_dist const* joint, inform_dist const *marginal,
     double base);
 
 /**
@@ -109,11 +109,11 @@ double inform_shannon_ce(inform_dist const* joint, inform_dist const *marginal,
  * @param[in] base              the logarithmic base
  * @return the pointwise conditional mutual information
  */
-double inform_shannon_pcmi(inform_dist const *joint,
+EXPORT double inform_shannon_pcmi(inform_dist const *joint,
     inform_dist const *marginal_xz, inform_dist const *marginal_yz,
-    inform_dist const *marginal_z, uint64_t event_joint,
-    uint64_t event_marginal_xz, uint64_t event_marginal_yz,
-    uint64_t event_marginal_z, double base);
+    inform_dist const *marginal_z, size_t event_joint,
+    size_t event_marginal_xz, size_t event_marginal_yz,
+    size_t event_marginal_z, double base);
 
 /**
  * Compute the conditional mutual entropy of a joint distribution, and
@@ -126,7 +126,7 @@ double inform_shannon_pcmi(inform_dist const *joint,
  * @param[in] base        the logarithmic base
  * @return the conditional mutual information;
  */
-double inform_shannon_cmi(inform_dist const *joint,
+EXPORT double inform_shannon_cmi(inform_dist const *joint,
     inform_dist const *marginal_xz, inform_dist const *marginal_yz,
     inform_dist const *marginal_z, double base);
 

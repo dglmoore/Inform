@@ -40,5 +40,5 @@ Inform is still under heavy development. As such, the API and the feature set ar
 
 ## Build Status
 - Linux/OSX: [![Build Status](https://travis-ci.org/ELIFE-ASU/Inform.svg?branch=master)](https://travis-ci.org/ELIFE-ASU/Inform)
-- Windows: **Appveyor Support Pending**
+- Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/7y015h6p7n0q7097/branch/master?svg=true)](https://ci.appveyor.com/project/dglmoore/inform-vx977)
 - Code Coverage: **Coming Soon**

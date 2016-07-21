@@ -1,20 +1,20 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <inform/error.h>
 #include <inform/active_info.h>
+#include <inform/shannon.h>
 
-static void accumulate_observations(uint64_t const* series, size_t n, uint64_t b,
-    uint64_t k, inform_dist *states, inform_dist *histories, inform_dist *futures)
+static void accumulate_observations(int const* series, size_t n, int b,
+    size_t k, inform_dist *states, inform_dist *histories, inform_dist *futures)
 {
-    uint64_t history = 0, q = 1, state, future;
-    for (uint64_t i = 0; i < k; ++i)
+    int history = 0, q = 1, state, future;
+    for (size_t i = 0; i < k; ++i)
     {
         q *= b;
         history *= b;
         history += series[i];
     }
-    for (uint64_t i = k; i < n; ++i)
+    for (size_t i = k; i < n; ++i)
     {
         future = series[i];
         state  = history * b + future;
@@ -27,159 +27,156 @@ static void accumulate_observations(uint64_t const* series, size_t n, uint64_t b
     }
 }
 
-static void accumulate_local_observations(uint64_t const* series, size_t n, uint64_t b,
-    uint64_t k, inform_dist *states, inform_dist *histories, inform_dist *futures,
-    uint64_t *state, uint64_t *history, uint64_t *future)
+static void accumulate_local_observations(int const* series, size_t n, int b,
+    size_t k, inform_dist *states, inform_dist *histories, inform_dist *futures,
+    int *state, int *history, int *future)
 {
     history[0] = 0;
-    uint64_t q = 1;
-    for (uint64_t i = 0; i < k; ++i)
+    int q = 1;
+    for (size_t i = 0; i < k; ++i)
     {
         q *= b;
         history[0] *= b;
         history[0] += series[i];
     }
-    for (uint64_t i = k; i < n; ++i)
+    for (size_t i = k; i < n; ++i)
     {
-        uint64_t l = i - k;
+        size_t l = i - k;
         future[l] = series[i];
         state[l] = history[l] * b + future[l];
 
-            states->histogram[state[l]]++;
-            histories->histogram[history[l]]++;
-            futures->histogram[future[l]]++;
+        states->histogram[state[l]]++;
+        histories->histogram[history[l]]++;
+        futures->histogram[future[l]]++;
 
         if (i + 1 != n)
-        {
             history[l + 1] = state[l] - series[l]*q;
-        }
     }
 }
 
-double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k)
+static bool check_arguments(int const *series, size_t n, size_t m, int b, size_t k, inform_error *err)
 {
-    // ensure that the time series is not NULL
     if (series == NULL)
     {
-        return inform_nan(1);
+        INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
     }
-    // ensure that the dimensions of the time series make sense
-    else if (m <= 1 || n < 1)
+    else if (n < 1)
     {
-        return inform_nan(2);
+        INFORM_ERROR_RETURN(err, INFORM_ENOINITS, true);
     }
-    // ensure that the number of time steps greater than the history length
+    else if (m < 2)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ESHORTSERIES, true);
+    }
+    else if (b < 2)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
+    }
+    else if (k == 0)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EKZERO, true);
+    }
     else if (m <= k)
     {
-        return inform_nan(3);
+        INFORM_ERROR_RETURN(err, INFORM_EKLONG, true);
     }
-    // ensure that the history length is reasonable given memory constraints
-    else if (k > 25 / log2((double) b))
-    {
-        return inform_nan(4);
-    }
-    // ensure that the base is compatible with the time series
     for (size_t i = 0; i < n * m; ++i)
     {
-        if (b <= series[i])
+        if (series[i] < 0)
         {
-            return inform_nan(5);
+            INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
+        }
+        else if (b <= series[i])
+        {
+            INFORM_ERROR_RETURN(err, INFORM_EBADSTATE, true);
         }
     }
+    return false;
+}
 
-    // compute the number of observations to be made
+double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k, inform_error *err)
+{
+    if (check_arguments(series, n, m, b, k, err)) return NAN;
+
     size_t const N = n * (m - k);
 
-    // compute the sizes of the various histograms
     size_t const states_size = (size_t) (b * pow((double) b,(double) k));
     size_t const histories_size = states_size / b;
     size_t const futures_size = b;
     size_t const total_size = states_size + histories_size + futures_size;
 
-    uint64_t *data = calloc(total_size, sizeof(uint64_t));
+    uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        return inform_nan(6);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NAN);
     }
 
     inform_dist states    = { data, states_size, N };
     inform_dist histories = { data + states_size, histories_size, N };
     inform_dist futures   = { data + states_size + histories_size, futures_size, N };
 
-    // for each initial condition
-    for (uint64_t i = 0; i < n; ++i, series += m)
+    for (size_t i = 0; i < n; ++i, series += m)
     {
-        // allocate the observations
         accumulate_observations(series, m, b, k, &states, &histories, &futures);
     }
 
-    // compute the active information
     double ai = inform_shannon_mi(&states, &histories, &futures, (double) b);
 
-    // free up the data array
     free(data);
 
-    // return the active information
     return ai;
 }
 
-int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
-    uint64_t b, uint64_t k, double *ai)
+double *inform_local_active_info(int const *series, size_t n, size_t m,
+    int b, size_t k, double *ai, inform_error *err)
 {
-    if (series == NULL)
+    if (check_arguments(series, n, m, b, k, err)) return NULL;
+
+    size_t const N = n * (m - k);
+
+    if (ai == NULL)
     {
-        return 1;
-    }
-    else if (ai == NULL)
-    {
-        return 2;
-    }
-    else if (m <= 1 || n < 1)
-    {
-        return 3;
-    }
-    else if (m <= k)
-    {
-        return 4;
-    }
-    else if (k > 25 / log2((double) b))
-    {
-        return 5;
-    }
-    for (size_t i = 0; i < n * m; ++i)
-    {
-        if (b <= series[i])
+        ai = malloc(N * sizeof(double));
+        if (ai == NULL)
         {
-            return 6;
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
         }
     }
 
-    // compute the number of observations to be made
-    size_t const N = n * (m - k);
-
-    // compute the sizes of the various histograms
     size_t const states_size = (size_t) (b*pow((double) b,(double) k));
     size_t const histories_size = states_size / b;
     size_t const futures_size = b;
     size_t const total_size = states_size + histories_size + futures_size;
 
-    uint64_t *data = calloc(total_size, sizeof(uint64_t));
+    uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        return 6;
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
     inform_dist states    = { data, states_size, N };
     inform_dist histories = { data + states_size, histories_size, N };
     inform_dist futures   = { data + states_size + histories_size, futures_size, N };
 
-    uint64_t *state   = malloc(N * sizeof(uint64_t));
-    uint64_t *history = malloc(N * sizeof(uint64_t));
-    uint64_t *future  = malloc(N * sizeof(uint64_t));
+    int *state   = malloc(N * sizeof(int));
+    if (state == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    int *history = malloc(N * sizeof(int));
+    if (history == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    int *future  = malloc(N * sizeof(int));
+    if (future == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
 
-    uint64_t const *series_ptr = series;
-    uint64_t *state_ptr = state, *history_ptr = history, *future_ptr = future;
-    for (uint64_t i = 0; i < n; ++i)
+    int const *series_ptr = series;
+    int *state_ptr = state, *history_ptr = history, *future_ptr = future;
+    for (size_t i = 0; i < n; ++i)
     {
         accumulate_local_observations(series_ptr, m, b, k, &states, &histories,
             &futures, state_ptr, history_ptr, future_ptr);
@@ -195,12 +192,10 @@ int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
             history[i], future[i], (double) b);
     }
 
-    // free up the data array
     free(future);
     free(history);
     free(state);
     free(data);
 
-    // return the error code
-    return 0;
+    return ai;
 }

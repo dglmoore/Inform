@@ -3,38 +3,38 @@
 // license that can be found in the LICENSE file.
 #include <inform/error.h>
 
-#include <math.h>
-
-/// The largest admissable NaN tag
-static uint64_t const inform_max_tag = 0x0007ffffffffffff;
-/// The binary encoding of the zero-tagged NaN
-static uint64_t const inform_raw_nan = 0x7ff8000000000000;
-
-bool inform_tag_is_valid(uint64_t tag)
+bool inform_succeeded(inform_error const *err)
 {
-    return tag <= inform_max_tag;
+    return err == NULL || *err == INFORM_SUCCESS;
 }
 
-double inform_nan(uint64_t tag)
+bool inform_failed(inform_error const *err)
 {
-    if (!inform_tag_is_valid(tag))
-    {
-        return -1.;
-    }
-    tag ^= inform_raw_nan;
-    double *nan = (double*)&tag;
-    return *nan;
+    return !inform_succeeded(err);
 }
 
-uint64_t inform_nan_tag(double x)
+char const *inform_strerror(inform_error const *err)
 {
-    if (!isnan(x))
+    if (err == NULL)
     {
-        return inform_max_tag + 1;
+        return "success";
     }
-    else
+    switch (*err)
     {
-        uint64_t *y = (uint64_t*)&x;
-        return *y ^ inform_raw_nan;
+        case INFORM_SUCCESS:      return "success";
+        case INFORM_FAILURE:      return "generic failure";
+        case INFORM_EFAULT:       return "invalid pointer encountered";
+        case INFORM_EARG:         return "invalid argument provided";
+        case INFORM_ENOMEM:       return "memory allocation failed";
+        case INFORM_ETIMESERIES:  return "timeseries is NULL";
+        case INFORM_ENOINITS:     return "timeseries has no initial conditions";
+        case INFORM_ESHORTSERIES: return "timeseries is too short";
+        case INFORM_EKZERO:       return "history length is zero";
+        case INFORM_EKLONG:       return "history length is too long";
+        case INFORM_EBASE:        return "base is invalid";
+        case INFORM_ENEGSTATE:    return "negative state in timeseries";
+        case INFORM_EBADSTATE:    return "unexpected state in timeseries";
+        case INFORM_EDIST:        return "invalid distribution encountered";
+        default:                  return "unrecognized error";
     }
 }

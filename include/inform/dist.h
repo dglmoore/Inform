@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
+#include <inform/export.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -46,7 +47,7 @@ extern "C"
 typedef struct inform_distribution
 {
     /// the histogram or array of observation frequencies
-    uint64_t *histogram;
+    uint32_t *histogram;
     /// the size of the support
     size_t size;
     /// the number of observations made so far
@@ -64,7 +65,7 @@ typedef struct inform_distribution
  * @param[in] n the number of distinct events that could be observed
  * @return the distribution
  */
-inform_dist* inform_dist_alloc(size_t n);
+EXPORT inform_dist* inform_dist_alloc(size_t n);
 /**
  * Resize the distribution to have new support.
  *
@@ -88,7 +89,7 @@ inform_dist* inform_dist_alloc(size_t n);
  * @param[in] n        the desired support size
  * @return the reallocated distribution
  */
-inform_dist* inform_dist_realloc(inform_dist *dist, size_t n);
+EXPORT inform_dist* inform_dist_realloc(inform_dist *dist, size_t n);
 /**
  * Copy a distribution to a destination.
  *
@@ -103,7 +104,7 @@ inform_dist* inform_dist_realloc(inform_dist *dist, size_t n);
  * @param[in,out] the destination distribution
  * @return a pointer to the copied distribution
  */
-inform_dist* inform_dist_copy(inform_dist const *src, inform_dist *dest);
+EXPORT inform_dist* inform_dist_copy(inform_dist const *src, inform_dist *dest);
 /**
  * Duplicate a distribution.
  *
@@ -117,7 +118,7 @@ inform_dist* inform_dist_copy(inform_dist const *src, inform_dist *dest);
  * @param[in] dist the source distribution
  * @return the new distribution
  */
-inform_dist* inform_dist_dup(inform_dist const *dist);
+EXPORT inform_dist* inform_dist_dup(inform_dist const *dist);
 /**
  * Create a distribution from an underlying histogram.
  *
@@ -125,13 +126,13 @@ inform_dist* inform_dist_dup(inform_dist const *dist);
  * @param[in] n    the number of events in the histogram
  * @return the new distribution
  */
-inform_dist* inform_dist_create(uint64_t const *data, size_t n);
+EXPORT inform_dist* inform_dist_create(uint32_t const *data, size_t n);
 /**
  * Free all dynamically allocated memory associated with a distribution.
  *
  * @param[in] dist the distribution to free
  */
-void inform_dist_free(inform_dist *dist);
+EXPORT void inform_dist_free(inform_dist *dist);
 
 /**
  * Get the size of the distribution's support.
@@ -141,7 +142,7 @@ void inform_dist_free(inform_dist *dist);
  * @param[in] dist the distribution
  * @return the size of the distribution's support
  */
-size_t inform_dist_size(inform_dist const *dist);
+EXPORT size_t inform_dist_size(inform_dist const *dist);
 /**
  * Get the total number of observations so far made.
  *
@@ -150,7 +151,7 @@ size_t inform_dist_size(inform_dist const *dist);
  * @param[in] dist the distribution
  * @return the number of observations thus far made
  */
-uint64_t inform_dist_counts(inform_dist const *dist);
+EXPORT uint64_t inform_dist_counts(inform_dist const *dist);
 /**
  * Determine whether or not the distribution is valid.
  *
@@ -162,7 +163,7 @@ uint64_t inform_dist_counts(inform_dist const *dist);
  * @param[in] dist the distribution
  * @return the validity of the distribution
  */
-bool inform_dist_is_valid(inform_dist const *dist);
+EXPORT bool inform_dist_is_valid(inform_dist const *dist);
 
 /**
  * Get the number of occurances of a given event.
@@ -176,7 +177,7 @@ bool inform_dist_is_valid(inform_dist const *dist);
  *
  * @see inform_dist_set
  */
-uint64_t inform_dist_get(inform_dist const *dist, uint64_t event);
+EXPORT uint32_t inform_dist_get(inform_dist const *dist, size_t event);
 /**
  * Set the number of occurances of a given event.
  *
@@ -195,7 +196,7 @@ uint64_t inform_dist_get(inform_dist const *dist, uint64_t event);
  * @see inform_dist_get
  * @see inform_dist_tick
  */
-uint64_t inform_dist_set(inform_dist *dist, uint64_t event, uint64_t x);
+EXPORT uint32_t inform_dist_set(inform_dist *dist, size_t event, uint32_t x);
 
 /**
  * Increment the number of observations of a given event.
@@ -213,7 +214,7 @@ uint64_t inform_dist_set(inform_dist *dist, uint64_t event, uint64_t x);
  *
  * @see inform_dist_set
  */
-uint64_t inform_dist_tick(inform_dist *dist, uint64_t event);
+EXPORT uint32_t inform_dist_tick(inform_dist *dist, size_t event);
 
 /**
  * Extact the probability of an event.
@@ -231,7 +232,7 @@ uint64_t inform_dist_tick(inform_dist *dist, uint64_t event);
  * @see inform_dist_get
  * @see inform_dist_dump
  */
-double inform_dist_prob(inform_dist const *dist, uint64_t event);
+EXPORT double inform_dist_prob(inform_dist const *dist, size_t event);
 /**
  * Dump the probabilities of all events to an array.
  *
@@ -248,7 +249,7 @@ double inform_dist_prob(inform_dist const *dist, uint64_t event);
  * @param[in] probs the size of the preallocated array
  * @return the number of probabilities written to the array
  */
-size_t inform_dist_dump(inform_dist const *dist, double *probs, size_t n);
+EXPORT size_t inform_dist_dump(inform_dist const *dist, double *probs, size_t n);
 
 #ifdef __cplusplus
 }

@@ -1,21 +1,20 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <inform/error.h>
-#include <inform/state_encoding.h>
 #include <inform/entropy_rate.h>
+#include <inform/shannon.h>
 
-static void accumulate_observations(uint64_t const* series, size_t n,
-    uint64_t b, uint64_t k, inform_dist *states, inform_dist *histories)
+static void accumulate_observations(int const* series, size_t n,
+    int b, size_t k, inform_dist *states, inform_dist *histories)
 {
-    uint64_t history = 0, q = 1, state, future;
-    for (uint64_t i = 0; i < k; ++i)
+    int history = 0, q = 1, state, future;
+    for (size_t i = 0; i < k; ++i)
     {
         q *= b;
         history *= b;
         history += series[i];
     }
-    for (uint64_t i = k; i < n; ++i)
+    for (size_t i = k; i < n; ++i)
     {
         future = series[i];
         state  = history * b + future;
@@ -27,21 +26,21 @@ static void accumulate_observations(uint64_t const* series, size_t n,
     }
 }
 
-static void accumulate_local_observations(uint64_t const* series, size_t n,
-    uint64_t b, uint64_t k, inform_dist *states, inform_dist *histories,
-    uint64_t *state, uint64_t *history)
+static void accumulate_local_observations(int const* series, size_t n,
+    int b, size_t k, inform_dist *states, inform_dist *histories,
+    int *state, int *history)
 {
-    uint64_t q = 1;
+    int q = 1;
     history[0] = 0;
-    for (uint64_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < k; ++i)
     {
         q *= b;
         history[0] *= b;
         history[0] += series[i];
     }
-    for (uint64_t i = k; i < n; ++i)
+    for (size_t i = k; i < n; ++i)
     {
-        uint64_t l = i - k;
+        size_t l = i - k;
         state[l]  = history[l] * b + series[i];
 
         states->histogram[state[l]]++;
@@ -54,154 +53,136 @@ static void accumulate_local_observations(uint64_t const* series, size_t n,
     }
 }
 
-double inform_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k)
+static bool check_arguments(int const *series, size_t n, size_t m, int b, size_t k, inform_error *err)
 {
-    // ensure that the time series is not NULL
     if (series == NULL)
     {
-        return inform_nan(1);
+        INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
     }
-    // ensure that the dimensions of the time series make sense
-    else if (m <= 1 || n < 1)
+    else if (n < 1)
     {
-        return inform_nan(2);
+        INFORM_ERROR_RETURN(err, INFORM_ENOINITS, true);
     }
-    // ensure that the number of time steps greater than the history length
+    else if (m < 2)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ESHORTSERIES, true);
+    }
+    else if (b < 2)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
+    }
+    else if (k == 0)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EKZERO, true);
+    }
     else if (m <= k)
     {
-        return inform_nan(3);
+        INFORM_ERROR_RETURN(err, INFORM_EKLONG, true);
     }
-    // ensure that the history length is reasonable given memory constraints
-    else if (k > 25 / log2((double) b))
-    {
-        return inform_nan(4);
-    }
-    // ensure that the base is compatible with the time series
     for (size_t i = 0; i < n * m; ++i)
     {
-        if (b <= series[i])
+        if (series[i] < 0)
         {
-            return inform_nan(5);
+            INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
+        }
+        else if (b <= series[i])
+        {
+            INFORM_ERROR_RETURN(err, INFORM_EBADSTATE, true);
         }
     }
+    return false;
+}
+
+double inform_entropy_rate(int const *series, size_t n, size_t m, int b,
+    size_t k, inform_error *err)
+{
+    if (check_arguments(series, n, m, b, k, err)) return NAN;
 
     size_t const N = n * (m - k);
 
-    // compute the sizes of the histograms
     size_t const states_size = (size_t) (b * pow((double) b, (double) k));
     size_t const histories_size = states_size / b;
     size_t const total_size = states_size + histories_size;
 
-    // allocate memory to store the histograms
-    uint64_t *data = calloc(total_size, sizeof(uint64_t));
-    // ensure that the memory was allocated
+    uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        return inform_nan(6);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NAN);
     }
 
-    // create the distributions
     inform_dist states    = { data, states_size, N };
     inform_dist histories = { data + states_size, histories_size, N };
 
-    // for each initial condition
-    for (uint64_t i = 0; i < n; ++i, series += m)
+    for (size_t i = 0; i < n; ++i, series += m)
     {
-        // accumulate the observations
         accumulate_observations(series, m, b, k, &states, &histories);
     }
 
-    // compute the entropy rate
     double er = inform_shannon_ce(&states, &histories, (double) b);
 
-    // free up the data array
     free(data);
 
-    // return the active information
     return er;
 }
 
-int inform_local_entropy_rate(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k, double *er)
+double *inform_local_entropy_rate(int const *series, size_t n, size_t m, int b,
+    size_t k, double *er, inform_error *err)
 {
-    // ensure that the time series is not NULL
-    if (series == NULL)
-    {
-    return 1;
-    }
-    // ensure that the entropy rate array is not NULL
-    else if (er == NULL)
-    {
-        return 2;
-    }
-    // ensure that the dimensions of the time series make sense
-    else if (m <= 1 || n < 1)
-    {
-        return 3;
-    }
-    // ensure that the number of time steps greater than the history length
-    else if (m <= k)
-    {
-        return 4;
-    }
-    // ensure that the history length is reasonable given memory constraints
-    else if (k > 25 / log2((double) b))
-    {
-        return 5;
-    }
-    // ensure that the base is compatible with the time series
-    for (size_t i = 0; i < n * m; ++i)
-    {
-        if (b <= series[i])
-        {
-        return 6;
-        }
-    }
+    if (check_arguments(series, n, m, b, k, err)) return NULL;
 
     size_t const N = n * (m - k);
 
-    // compute the sizes of the histograms
+    if (er == NULL)
+    {
+        er = malloc(N * sizeof(double));
+        if (er == NULL)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
+    }
+
     size_t const states_size = (size_t) (b * pow((double) b, (double) k));
     size_t const histories_size = states_size / b;
     size_t const total_size = states_size + histories_size;
 
-    // allocate memory to store the histograms
-    uint64_t *data = calloc(total_size, sizeof(uint64_t));
-    // ensure that the memory was allocated
+    uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        return 7;
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
-    // create the distributions
     inform_dist states    = { data, states_size, N };
     inform_dist histories = { data + states_size, histories_size, N };
 
-    uint64_t *state = malloc(N * sizeof(uint64_t));
-    uint64_t *history = malloc(N * sizeof(uint64_t));
-
-    // for each initial condition
-    uint64_t const *series_ptr = series;
-    uint64_t *state_ptr = state, *history_ptr = history;
-    for (uint64_t i = 0; i < n; ++i)
+    int *state = malloc(N * sizeof(uint64_t));
+    if (state == NULL)
     {
-        // accumulate the observations
-        accumulate_local_observations(series_ptr, m, b, k, &states, &histories,
-            state_ptr, history_ptr);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    int *history = malloc(N * sizeof(uint64_t));
+    if (history == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+
+    int const *series_ptr = series;
+    int *state_ptr = state, *history_ptr = history;
+    for (size_t i = 0; i < n; ++i)
+    {
+        accumulate_local_observations(series_ptr, m, b, k, &states, &histories, state_ptr, history_ptr);
         series_ptr += m;
         state_ptr += (m - k);
         history_ptr += (m - k);
     }
 
-    // compute the entropy rate
     for (size_t i = 0; i < N; ++i)
     {
-        er[i] = inform_shannon_pce(&states, &histories, state[i], history[i],
-            (double) b);
+        er[i] = inform_shannon_pce(&states, &histories, state[i], history[i], (double) b);
     }
 
-    // free up the data array
+    free(history);
+    free(state);
     free(data);
 
-    // return the active information
-    return 0;
+    return er;
 }

@@ -62,7 +62,7 @@ UNIT(Set)
     ASSERT_EQUAL(3, inform_dist_size(dist));
     ASSERT_EQUAL(6, inform_dist_counts(dist));
 
-    for (uint64_t i = 0; i < inform_dist_size(dist); ++i)
+    for (size_t i = 0; i < inform_dist_size(dist); ++i)
     {
         inform_dist_set(dist, i, 0);
     }
@@ -110,7 +110,7 @@ UNIT(ReallocGrow)
     ASSERT_NOT_NULL(dist);
     for (size_t i = 0; i < inform_dist_size(dist); ++i)
     {
-        inform_dist_set(dist, i, i+1);
+        inform_dist_set(dist, i, (uint32_t) i+1);
     }
     ASSERT_EQUAL(3, inform_dist_size(dist));
     ASSERT_EQUAL(6, inform_dist_counts(dist));
@@ -137,7 +137,7 @@ UNIT(ReallocShrink)
     ASSERT_NOT_NULL(dist);
     for (size_t i = 0; i < inform_dist_size(dist); ++i)
     {
-        inform_dist_set(dist, i, i+1);
+        inform_dist_set(dist, i, (uint32_t) i+1);
     }
     ASSERT_EQUAL(5, inform_dist_size(dist));
     ASSERT_EQUAL(15, inform_dist_counts(dist));
@@ -168,7 +168,7 @@ UNIT(CopyToNULL)
     ASSERT_NOT_NULL(source);
     for (size_t i = 0; i < inform_dist_size(source); ++i)
     {
-        inform_dist_set(source, i, i+1);
+        inform_dist_set(source, i, (uint32_t) i+1);
     }
     inform_dist *dest = NULL;
     ASSERT_NULL(dest);
@@ -198,7 +198,7 @@ UNIT(CopySameSize)
     inform_dist *source = inform_dist_alloc(3);
     for (size_t i = 0; i < inform_dist_size(source); ++i)
     {
-        inform_dist_set(source, i, i+1);
+        inform_dist_set(source, i, (uint32_t) i+1);
     }
     inform_dist *dest = inform_dist_alloc(3);
 
@@ -222,7 +222,7 @@ UNIT(CopyResize)
     inform_dist *source = inform_dist_alloc(3);
     for (size_t i = 0; i < inform_dist_size(source); ++i)
     {
-        inform_dist_set(source, i, i+1);
+        inform_dist_set(source, i, (uint32_t) i+1);
     }
     inform_dist *dest = inform_dist_alloc(5);
 
@@ -254,7 +254,7 @@ UNIT(Dup)
     ASSERT_NOT_NULL(dist);
     for (size_t i = 0; i < inform_dist_size(dist); ++i)
     {
-        inform_dist_set(dist, i, i*i);
+        inform_dist_set(dist, i, (uint32_t) (i*i));
     }
     inform_dist *dup = inform_dist_dup(dist);
     ASSERT_NOT_NULL(dup);
@@ -302,7 +302,7 @@ UNIT(Prob)
 
     for (size_t i = 0; i < inform_dist_size(dist); ++i)
     {
-        inform_dist_set(dist, i, i+1);
+        inform_dist_set(dist, i, (uint32_t) i+1);
     }
     ASSERT_EQUAL(15, inform_dist_counts(dist));
     for (size_t i = 0; i < inform_dist_size(dist); ++i)
@@ -316,22 +316,22 @@ UNIT(Prob)
 UNIT(Dump)
 {
     inform_dist *dist = NULL;
-    ASSERT_EQUAL(-1, inform_dist_dump(dist, NULL, 0));
+    ASSERT_EQUAL(0, inform_dist_dump(dist, NULL, 0));
 
     dist = inform_dist_alloc(5);
     ASSERT_NOT_NULL(dist);
 
-    ASSERT_EQUAL(-2, inform_dist_dump(dist, NULL, 0));
+    ASSERT_EQUAL(0, inform_dist_dump(dist, NULL, 0));
 
     for (size_t i = 1; i < inform_dist_size(dist); ++i)
     {
-        inform_dist_set(dist, i, i+1);
+        inform_dist_set(dist, i, (uint32_t) i+1);
     }
     ASSERT_EQUAL(14, inform_dist_counts(dist));
     double expect[5] = {0., 2./14, 3./14, 4./14, 5./14};
     double got[7] = {0., 0., 0., 0., 0., 0.};
-    ASSERT_EQUAL(-3, inform_dist_dump(dist, got, 4));
-    ASSERT_EQUAL(-3, inform_dist_dump(dist, got, 6));
+    ASSERT_EQUAL(0, inform_dist_dump(dist, got, 4));
+    ASSERT_EQUAL(0, inform_dist_dump(dist, got, 6));
     ASSERT_EQUAL(5, inform_dist_dump(dist, got, 5));
     for (size_t i = 0; i < inform_dist_size(dist); ++i)
     {

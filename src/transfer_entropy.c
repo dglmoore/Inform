@@ -1,23 +1,21 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <inform/error.h>
+#include <inform/shannon.h>
 #include <inform/transfer_entropy.h>
 
-static void accumulate_observations(uint64_t const *series_y,
-    uint64_t const *series_x, size_t n, uint64_t b, uint64_t k,
-    inform_dist *states, inform_dist *histories, inform_dist *sources,
-    inform_dist *predicates)
-
+static void accumulate_observations(int const *series_y, int const *series_x,
+     size_t n, int b, size_t k, inform_dist *states,
+     inform_dist *histories, inform_dist *sources, inform_dist *predicates)
 {
-    uint64_t history = 0, q = 1, y_state, future, state, source, predicate;
-    for (uint64_t i = 0; i < k; ++i)
+    int history = 0, q = 1, y_state, future, state, source, predicate;
+    for (size_t i = 0; i < k; ++i)
     {
         q *= b;
         history *= b;
         history += series_x[i];
     }
-    for (uint64_t i = k; i < n; ++i)
+    for (size_t i = k; i < n; ++i)
     {
         y_state   = series_y[i-1];
         future    = series_x[i];
@@ -34,28 +32,28 @@ static void accumulate_observations(uint64_t const *series_y,
     }
 }
 
-static void accumulate_local_observations(uint64_t const *series_y,
-    uint64_t const *series_x, size_t n, uint64_t b, uint64_t k,
+static void accumulate_local_observations(int const *series_y,
+    int const *series_x, size_t n, int b, size_t k,
     inform_dist *states, inform_dist *histories, inform_dist *sources,
-    inform_dist *predicates, uint64_t *state, uint64_t *history,
-    uint64_t *source, uint64_t *predicate)
+    inform_dist *predicates, int *state, int *history,
+    int *source, int *predicate)
 {
     history[0] = 0;
-    uint64_t q = 1;
-    for (uint64_t i = 0; i < k; ++i)
+    int q = 1;
+    for (size_t i = 0; i < k; ++i)
     {
         q *= b;
         history[0] *= b;
         history[0] += series_x[i];
     }
-    for (uint64_t i = k; i < n; ++i)
+    for (size_t i = k; i < n; ++i)
     {
-        uint64_t l = i - k;
-        uint64_t y_state   = series_y[i-1];
-        uint64_t future    = series_x[i];
-        predicate[l]       = history[l] * b + future;
-        state[l]           = predicate[l] * b + y_state;
-        source[l]          = history[l] * b + y_state;
+        size_t l = i - k;
+        int y_state   = series_y[i-1];
+        int future    = series_x[i];
+        predicate[l]  = history[l] * b + future;
+        state[l]      = predicate[l] * b + y_state;
+        source[l]     = history[l] * b + y_state;
 
         states->histogram[state[l]]++;
         histories->histogram[history[l]]++;
@@ -69,155 +67,150 @@ static void accumulate_local_observations(uint64_t const *series_y,
     }
 }
 
-double inform_transfer_entropy(uint64_t const *node_y,
-    uint64_t const *node_x, size_t n, size_t m, uint64_t b, uint64_t k)
+static bool check_arguments(int const *node_y, int const *node_x,
+    size_t n, size_t m, int b, size_t k, inform_error *err)
 {
-    // ensure that neither of the time series are NULL
-    if (node_x == NULL || node_y == NULL)
+    if (node_y == NULL)
     {
-        return inform_nan(1);
+        INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
     }
-    // ensure that the dimensions of the time series make sense
-    else if (m <= 1 || n < 1)
+    else if (node_x == NULL)
     {
-        return inform_nan(2);
+        INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
     }
-    // ensure that the number of time steps greater than the history length
+    else if (n < 1)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOINITS, true);
+    }
+    else if (m < 2)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ESHORTSERIES, true);
+    }
+    else if (b < 2)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
+    }
     else if (m <= k)
     {
-        return inform_nan(3);
+        INFORM_ERROR_RETURN(err, INFORM_EKLONG, true);
     }
-    // ensure that the history is reasonable given the history length
-    else if (k > 25 / log2((double) b))
+    else if (k == 0)
     {
-        return inform_nan(4);
+        INFORM_ERROR_RETURN(err, INFORM_EKZERO, true);
     }
     for (size_t i = 0; i < n * m; ++i)
     {
-        if (b <= node_x[i] || b <= node_y[i])
+        if (b <= node_y[i] || b <= node_x[i])
         {
-            return inform_nan(6);
+            INFORM_ERROR_RETURN(err, INFORM_EBADSTATE, true);
+        }
+        else if (node_y[i] < 0 || node_x[i] < 0)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
         }
     }
+    return false;
+}
 
-    // compute the number of observations to be made
+double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
+    size_t m, int b, size_t k, inform_error *err)
+{
+    if (check_arguments(node_y, node_x, n, m, b, k, err)) return NAN;
+
     size_t const N = n * (m - k);
 
-    // compute the sizes of the various histograms
     size_t const q = (size_t) pow((double) b, (double) k);
     size_t const states_size     = b*b*q;
     size_t const histories_size  = q;
     size_t const sources_size    = b*q;
     size_t const predicates_size = b*q;
-    size_t const total_size = states_size + histories_size + sources_size
-        + predicates_size;
+    size_t const total_size = states_size + histories_size + sources_size + predicates_size;
 
-    // allocate memory to store the basic histograms
-    uint64_t *data = calloc(total_size, sizeof(uint64_t));
+    uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        return inform_nan(7);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NAN);
     }
 
-    // create some pointers to facilitate observation accumulation
     inform_dist states     = { data, states_size, N };
     inform_dist histories  = { data + states_size, histories_size, N };
     inform_dist sources    = { data + states_size + histories_size, sources_size, N };
     inform_dist predicates = { data + states_size + histories_size + sources_size, predicates_size, N };
 
-    // for each initial condition
-    for (uint64_t i = 0; i < n; ++i, node_x += m, node_y += m)
+    for (size_t i = 0; i < n; ++i, node_x += m, node_y += m)
     {
-        // accumulate the observations
         accumulate_observations(node_y, node_x, m, b, k, &states, &histories, &sources, &predicates);
     }
 
-    // compute the transfer entropy from the distributions
     double te = inform_shannon(&sources, (double) b) +
         inform_shannon(&predicates, (double) b) -
         inform_shannon(&states, (double) b) -
         inform_shannon(&histories, (double) b);
 
-    // free up the data array
     free(data);
 
-    // return the transfer entropy
     return te;
 }
 
-int inform_local_transfer_entropy(uint64_t const *node_y,
-    uint64_t const *node_x, size_t n, size_t m, uint64_t b, uint64_t k,
-    double *te)
+double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
+    size_t n, size_t m, int b, size_t k, double *te, inform_error *err)
 {
-    // ensure that neither of the time series are NULL
-    if (node_x == NULL || node_y == NULL)
+    if (check_arguments(node_y, node_x, n, m, b, k, err)) return NULL;
+
+    size_t const N = n * (m - k);
+
+    if (te == NULL)
     {
-        return 1;
-    }
-    // ensure that the transfer entropy array is not NULL
-    else if (te == NULL)
-    {
-        return 2;
-    }
-    // ensure that the dimensions of the time series make sense
-    else if (m <= 1 || n < 1)
-    {
-        return 3;
-    }
-    // ensure that the number of time steps greater than the history length
-    else if (m <= k)
-    {
-        return 4;
-    }
-    // ensure that the history is reasonable given the history length
-    else if (k > 25 / log2((double) b))
-    {
-        return 5;
-    }
-    for (size_t i = 0; i < n * m; ++i)
-    {
-        if (b <= node_x[i] || b <= node_y[i])
+        te = malloc(N * sizeof(double));
+        if (te == NULL)
         {
-            return 6;
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
         }
     }
 
-    // compute the number of observations to be made
-    size_t const N = n * (m - k);
-
-    // compute the sizes of the various histograms
     size_t const q = (size_t) pow((double) b, (double) k);
     size_t const states_size     = b*b*q;
     size_t const histories_size  = q;
     size_t const sources_size    = b*q;
     size_t const predicates_size = b*q;
-    size_t const total_size = states_size + histories_size + sources_size
-        + predicates_size;
+    size_t const total_size = states_size + histories_size + sources_size + predicates_size;
 
-    // allocate memory to store the basic histograms
-    uint64_t *data = calloc(total_size, sizeof(uint64_t));
+    uint32_t *data = calloc(total_size, sizeof(uint32_t));
     if (data == NULL)
     {
-        return 7;
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
-    // create some pointers to facilitate observation accumulation
     inform_dist states     = { data, states_size, N };
     inform_dist histories  = { data + states_size, histories_size, N };
     inform_dist sources    = { data + states_size + histories_size, sources_size, N };
     inform_dist predicates = { data + states_size + histories_size + sources_size, predicates_size, N };
 
-    uint64_t *state      = malloc(N * sizeof(uint64_t));
-    uint64_t *history    = malloc(N * sizeof(uint64_t));
-    uint64_t *source     = malloc(N * sizeof(uint64_t));
-    uint64_t *predicate  = malloc(N * sizeof(uint64_t));
-
-    // for each initial condition
-    uint64_t const *node_y_ptr = node_y, *node_x_ptr = node_x;
-    uint64_t *state_ptr = state, *source_ptr = source, *history_ptr = history, *predicate_ptr = predicate;
-    for (uint64_t i = 0; i < n; ++i)
+    int *state      = malloc(N * sizeof(int));
+    if (state == NULL)
     {
-        // accumulate the observations
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    int *history    = malloc(N * sizeof(int));
+    if (history == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    int *source     = malloc(N * sizeof(int));
+    if (source == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    int *predicate  = malloc(N * sizeof(int));
+    if (predicate == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+
+    int const *node_y_ptr = node_y, *node_x_ptr = node_x;
+    int *state_ptr = state, *source_ptr = source, *history_ptr = history, *predicate_ptr = predicate;
+    for (size_t i = 0; i < n; ++i)
+    {
         accumulate_local_observations(node_y_ptr, node_x_ptr, m, b, k, &states,
             &histories, &sources, &predicates, state_ptr, history_ptr,
             source_ptr, predicate_ptr);
@@ -229,20 +222,17 @@ int inform_local_transfer_entropy(uint64_t const *node_y,
         predicate_ptr += (m - k);
     }
 
-    // compute the transfer entropy from the distributions
     for (size_t i = 0; i < N; ++i)
     {
         te[i] = inform_shannon_pcmi(&states, &sources, &predicates, &histories,
             state[i], source[i], predicate[i], history[i], (double) b);
     }
 
-    // free up the data array
     free(predicate);
     free(source);
     free(history);
     free(state);
     free(data);
 
-    // return the transfer entropy
-    return 0;
+    return te;
 }

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
 #include <inform/dist.h>
-
 #include <string.h>
 
 inform_dist* inform_dist_alloc(size_t n)
@@ -18,7 +17,7 @@ inform_dist* inform_dist_alloc(size_t n)
     if (dist != NULL)
     {
         // allocate the underlying histogram
-        dist->histogram = calloc(n, sizeof(uint64_t));
+        dist->histogram = calloc(n, sizeof(uint32_t));
         // if the allocation succeeded
         if (dist->histogram != NULL)
         {
@@ -49,7 +48,7 @@ inform_dist* inform_dist_realloc(inform_dist *dist, size_t n)
     if (dist != NULL && dist->size != n)
     {
         // realloc the histogram
-        uint64_t *histogram = realloc(dist->histogram, n * sizeof(uint64_t));
+        uint32_t *histogram = realloc(dist->histogram, n * sizeof(uint32_t));
         // if the reallocation succeeded
         if (histogram != NULL)
         {
@@ -123,7 +122,7 @@ inform_dist* inform_dist_copy(inform_dist const *src, inform_dist *dest)
         return dest;
     }
     // copy the contents of the histogram from the source to the destination
-    memcpy(dest->histogram, src->histogram, src->size * sizeof(uint64_t));
+    memcpy(dest->histogram, src->histogram, src->size * sizeof(uint32_t));
     // set the counts appropriately
     dest->counts = src->counts;
     // return the modified destination
@@ -149,7 +148,7 @@ inform_dist* inform_dist_dup(inform_dist const *dist)
     return dup;
 }
 
-inform_dist* inform_dist_create(uint64_t const *data, size_t n)
+inform_dist* inform_dist_create(uint32_t const *data, size_t n)
 {
     // if the requested support size is zero, return NULL
     if (n == 0)
@@ -162,12 +161,12 @@ inform_dist* inform_dist_create(uint64_t const *data, size_t n)
     if (dist != NULL)
     {
         // allocate the underlying histogram
-        dist->histogram = calloc(n, sizeof(uint64_t));
+        dist->histogram = calloc(n, sizeof(uint32_t));
         // if the allocation succeeded
         if (dist->histogram != NULL)
         {
             // set the distribution content, size and counts
-            memcpy(dist->histogram, data, n*sizeof(uint64_t));
+            memcpy(dist->histogram, data, n*sizeof(uint32_t));
             dist->size   = n;
             dist->counts = 0;
             for (size_t i = 0; i < n; ++i)
@@ -213,7 +212,7 @@ bool inform_dist_is_valid(inform_dist const *dist)
     return dist != NULL && dist->size != 0 && dist->counts != 0;
 }
 
-uint64_t inform_dist_get(inform_dist const *dist, uint64_t event)
+uint32_t inform_dist_get(inform_dist const *dist, size_t event)
 {
     // if the distribution is NULL or the event is outsize of the support
     if (dist == NULL || event >= dist->size)
@@ -224,7 +223,7 @@ uint64_t inform_dist_get(inform_dist const *dist, uint64_t event)
     return dist->histogram[event];
 }
 
-uint64_t inform_dist_set(inform_dist *dist, uint64_t event, uint64_t x)
+uint32_t inform_dist_set(inform_dist *dist, size_t event, uint32_t x)
 {
     // if the distribution is NULL or the event is outsize of the support
     if (dist == NULL || event >= dist->size)
@@ -239,7 +238,7 @@ uint64_t inform_dist_set(inform_dist *dist, uint64_t event, uint64_t x)
     return (dist->histogram[event] = x);
 }
 
-uint64_t inform_dist_tick(inform_dist *dist, uint64_t event)
+uint32_t inform_dist_tick(inform_dist *dist, size_t event)
 {
     // if the distribution is NULL or the event is outsize of the support
     if (dist == NULL || event >= dist->size)
@@ -252,14 +251,14 @@ uint64_t inform_dist_tick(inform_dist *dist, uint64_t event)
     return (dist->histogram[event] += 1);
 }
 
-static double inform_dist_unsafe_prob(inform_dist const *dist, uint64_t event)
+static double inform_dist_unsafe_prob(inform_dist const *dist, size_t event)
 {
     // unsafely compute the probability of an event
     // this will fail if there have been no observations made
     return (double)(dist->histogram[event]) / dist->counts;
 }
 
-double inform_dist_prob(inform_dist const *dist, uint64_t event)
+double inform_dist_prob(inform_dist const *dist, size_t event)
 {
     // if the distribution is NULL, no observations have been made
     // or the event is outsize of the support
@@ -276,15 +275,15 @@ size_t inform_dist_dump(inform_dist const *dist, double *probs, size_t n)
     // if the distribution is NULL or the event is outsize of the support
     if (dist == NULL || dist->size == 0)
     {
-        return -1;
+        return 0;
     }
     if (probs == NULL)
     {
-        return -2;
+        return 0;
     }
     if (n != dist->size)
     {
-        return -3;
+        return 0;
     }
     // loop over the events
     for (size_t i = 0; i < inform_dist_size(dist); ++i)
@@ -292,5 +291,5 @@ size_t inform_dist_dump(inform_dist const *dist, double *probs, size_t n)
         // store their probabilities in the array
         probs[i] = inform_dist_unsafe_prob(dist,i);
     }
-    return n;
+    return (int) n;
 }

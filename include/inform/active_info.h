@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 #pragma once
 
-#include <inform/shannon.h>
+#include <inform/error.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -18,9 +18,11 @@ extern "C"
  * @param[in] m      the number of time steps in each time series
  * @param[in] b      the base or number of distinct states at each time step
  * @param[in] k      the history length used to calculate the active information
+ * @param[out] err   an error structure
  * @return the active information for the ensemble
  */
-double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b, uint64_t k);
+EXPORT double inform_active_info(int const *series, size_t n, size_t m, int b,
+    size_t k, inform_error *err);
 
 /**
  * Compute the local active information of a ensemble of time series
@@ -31,10 +33,11 @@ double inform_active_info(uint64_t const *series, size_t n, size_t m, uint64_t b
  * @param[in] b      the base or number of distinct states at each time step
  * @param[in] k      the history length used to calculate the active information
  * @param[out] ai    the local active information
- * @return an error code
+ * @param[out] err   an error structure
+ * @return a pointer to the local active information array
  */
-int inform_local_active_info(uint64_t const *series, size_t n, size_t m,
-    uint64_t b, uint64_t k, double *ai);
+EXPORT double *inform_local_active_info(int const *series, size_t n, size_t m, int b,
+    size_t k, double *ai, inform_error *err);
 
 #ifdef __cplusplus
 }

@@ -4,13 +4,13 @@
 #include <inform/shannon.h>
 #include <inform/error.h>
 
-double inform_shannon_si(inform_dist const *dist, uint64_t event, double base)
+double inform_shannon_si(inform_dist const *dist, size_t event, double base)
 {
     if (inform_dist_is_valid(dist))
     {
         return -log2(inform_dist_prob(dist, event)) / log2(base);
     }
-    return inform_nan(1);
+    return NAN;
 }
 
 double inform_shannon(inform_dist const *dist, double base)
@@ -18,29 +18,31 @@ double inform_shannon(inform_dist const *dist, double base)
     // ensure that the distribution is valid
     if (inform_dist_is_valid(dist))
     {
+        // get the size of the distribution's support
+        size_t const n = inform_dist_size(dist);
         double h = 0.;
         // for each element of the distribution's support
-        for (size_t i = 0; i < inform_dist_size(dist); ++i)
+        for (size_t i = 0; i < n; ++i)
         {
-            // get the probability
-            double const p = inform_dist_prob(dist, i);
-            // the the probability is non-zero
-            if (p != 0)
+            // the observation_count is non-zero
+            if (dist->histogram[i] != 0)
             {
+                // get the probability
+                double const p = (double) dist->histogram[i] / dist->counts;
                 // accumulate the weighted self-information of the event
-                h -= p * log2(p)/log2(base);
+                h -= p * log2(p);
             }
         }
         // return the entropy
-        return h;
+        return h / log2(base);
     }
     // return NaN if the distribution is invalid
-    return inform_nan(1);
+    return NAN;
 }
 
 double inform_shannon_pmi(inform_dist const *joint,
     inform_dist const * marginal_x, inform_dist const *marginal_y,
-    uint64_t event_joint, uint64_t event_x, uint64_t event_y, double base)
+    size_t event_joint, size_t event_x, size_t event_y, double base)
 {
     return inform_shannon_si(marginal_x, event_x, base) +
         inform_shannon_si(marginal_y, event_y, base) -
@@ -50,12 +52,12 @@ double inform_shannon_pmi(inform_dist const *joint,
 double inform_shannon_mi(inform_dist const *joint,
     inform_dist const *marginal_x, inform_dist const *marginal_y, double base)
 {
-    return inform_shannon(marginal_x,base) + inform_shannon(marginal_y,base)
-        - inform_shannon(joint,base);
+    return inform_shannon(marginal_x, base) + inform_shannon(marginal_y, base)
+        - inform_shannon(joint, base);
 }
 
 double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
-    uint64_t event_joint,uint64_t event_marginal, double base)
+    size_t event_joint,size_t event_marginal, double base)
 {
     return inform_shannon_si(joint, event_joint, base) -
         inform_shannon_si(marginal, event_marginal, base);
@@ -69,9 +71,9 @@ double inform_shannon_ce(inform_dist const *joint, inform_dist const *marginal,
 
 double inform_shannon_pcmi(inform_dist const *joint,
     inform_dist const *marginal_xz, inform_dist const *marginal_yz,
-    inform_dist const *marginal_z, uint64_t event_joint,
-    uint64_t event_marginal_xz, uint64_t event_marginal_yz,
-    uint64_t event_marginal_z, double base)
+    inform_dist const *marginal_z, size_t event_joint,
+    size_t event_marginal_xz, size_t event_marginal_yz,
+    size_t event_marginal_z, double base)
 {
     return inform_shannon_si(marginal_xz, event_marginal_xz, base) +
         inform_shannon_si(marginal_yz, event_marginal_yz, base) -

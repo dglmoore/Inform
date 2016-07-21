@@ -7,13 +7,13 @@
 
 #define inform_dist_fill_array(dist, array) \
     ASSERT_NOT_NULL(dist); \
-    ASSERT_EQUAL(sizeof(array)/sizeof(uint64_t), inform_dist_size(dist)); \
+    ASSERT_EQUAL(sizeof(array)/sizeof(int), inform_dist_size(dist)); \
     for (size_t i = 0; i < inform_dist_size(dist); ++i) \
     { \
         inform_dist_set(dist, i, array[i]); \
     }
 
-#define inform_dist_fill(dist, ...) inform_dist_fill_array(dist, ((uint64_t[]){__VA_ARGS__}))
+#define inform_dist_fill(dist, ...) inform_dist_fill_array(dist, ((int[]){__VA_ARGS__}))
 
 UNIT(ShannonInvalidDistribution)
 {

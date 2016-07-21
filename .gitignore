@@ -32,3 +32,10 @@ build
 
 # Visual Studio Code
 .vscode
+
+# temporary directories
+tmp
+temp
+
+# distribution directories and files
+dist/inform-*

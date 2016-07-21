@@ -4,9 +4,10 @@
 #pragma once
 
 #include <inform/dist.h>
+#include <inform/error.h>
 #include <inform/shannon.h>
-#include <inform/state_encoding.h>
 
+#include <inform/block_entropy.h>
 #include <inform/active_info.h>
 #include <inform/entropy_rate.h>
 #include <inform/transfer_entropy.h>
