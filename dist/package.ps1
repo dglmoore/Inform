@@ -11,8 +11,10 @@ nmake
 test/inform_unittest.exe
 nmake install
 cd ../..
+Copy-Item LICENSE $target
+Copy-Item README.md $target
 
-
+Remove-Item -force $archive
 Add-Type -Assembly System.IO.Compression.FileSystem
 $compressionLevel = [System.IO.Compression.CompressionLevel]::Optimal
-[System.IO.Compression.ZipFile]::CreateFromDirectory($target, $archive, $compressionLevel, $false)
+[System.IO.Compression.ZipFile]::CreateFromDirectory($target, $archive, $compressionLevel, $true)
