@@ -31,6 +31,7 @@ typedef enum
     INFORM_ENEGSTATE    = 10, /// time series has negative state
     INFORM_EBADSTATE    = 11, /// time series has states inconsistent with expected base
     INFORM_EDIST        = 12, /// invalid distribution
+    INFORM_EBIN         = 13, /// invalid binning
 } inform_error;
 
 /// set an error as pointed to by ERR
