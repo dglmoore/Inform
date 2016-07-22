@@ -354,6 +354,89 @@ UNIT(CoalesceNoGaps)
     }
 }
 
+UNIT(EncodeNullState)
+{
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_EQUAL(-1, inform_encode(NULL, 0, 0, &err));
+    ASSERT_EQUAL(INFORM_EARG, err);
+}
+
+UNIT(EncodeEmpty)
+{
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_EQUAL(-1, inform_encode((int[]){0,0,1}, 0, 0, &err));
+    ASSERT_EQUAL(INFORM_EARG, err);
+}
+
+UNIT(EncodeBadBase)
+{
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_EQUAL(-1, inform_encode((int[]){0,0,1}, 3, 0, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_EQUAL(-1, inform_encode((int[]){0,0,1}, 3, 1, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+}
+
+UNIT(EncodeOneBaseTwo)
+{
+    ASSERT_EQUAL(0, inform_encode((int[]){0}, 1, 2, NULL));
+    ASSERT_EQUAL(1, inform_encode((int[]){1}, 1, 2, NULL));
+
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_EQUAL(-1, inform_encode((int[]){2}, 1, 2, &err));
+    ASSERT_EQUAL(INFORM_EENCODE, err);
+}
+
+UNIT(EncodeOneBaseThree)
+{
+    ASSERT_EQUAL(0, inform_encode((int[]){0}, 1, 3, NULL));
+    ASSERT_EQUAL(1, inform_encode((int[]){1}, 1, 3, NULL));
+    ASSERT_EQUAL(2, inform_encode((int[]){2}, 1, 3, NULL));
+
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_EQUAL(-1, inform_encode((int[]){3}, 1, 3, &err));
+    ASSERT_EQUAL(INFORM_EENCODE, err);
+}
+
+UNIT(EncodeTwoBaseTwo)
+{
+    ASSERT_EQUAL(0, inform_encode((int[]){0,0}, 2, 2, NULL));
+    ASSERT_EQUAL(1, inform_encode((int[]){0,1}, 2, 2, NULL));
+    ASSERT_EQUAL(2, inform_encode((int[]){1,0}, 2, 2, NULL));
+    ASSERT_EQUAL(3, inform_encode((int[]){1,1}, 2, 2, NULL));
+
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_EQUAL(-1, inform_encode((int[]){0,2}, 2, 2, &err));
+    ASSERT_EQUAL(INFORM_EENCODE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_EQUAL(-1, inform_encode((int[]){2,0}, 2, 2, &err));
+    ASSERT_EQUAL(INFORM_EENCODE, err);
+}
+
+UNIT(EncodeTwoBaseThree)
+{
+    ASSERT_EQUAL(0, inform_encode((int[]){0,0}, 2, 3, NULL));
+    ASSERT_EQUAL(1, inform_encode((int[]){0,1}, 2, 3, NULL));
+    ASSERT_EQUAL(2, inform_encode((int[]){0,2}, 2, 3, NULL));
+    ASSERT_EQUAL(3, inform_encode((int[]){1,0}, 2, 3, NULL));
+    ASSERT_EQUAL(4, inform_encode((int[]){1,1}, 2, 3, NULL));
+    ASSERT_EQUAL(5, inform_encode((int[]){1,2}, 2, 3, NULL));
+    ASSERT_EQUAL(6, inform_encode((int[]){2,0}, 2, 3, NULL));
+    ASSERT_EQUAL(7, inform_encode((int[]){2,1}, 2, 3, NULL));
+    ASSERT_EQUAL(8, inform_encode((int[]){2,2}, 2, 3, NULL));
+
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_EQUAL(-1, inform_encode((int[]){0,3}, 2, 3, &err));
+    ASSERT_EQUAL(INFORM_EENCODE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_EQUAL(-1, inform_encode((int[]){3,0}, 2, 3, &err));
+    ASSERT_EQUAL(INFORM_EENCODE, err);
+}
+
 BEGIN_SUITE(Utilities)
     ADD_UNIT(RangeNullSeries)
     ADD_UNIT(RangeEmpty)
@@ -392,4 +475,12 @@ BEGIN_SUITE(Utilities)
     ADD_UNIT(CoalesceUnchanged)
     ADD_UNIT(CoalesceShifted)
     ADD_UNIT(CoalesceNoGaps)
+
+    ADD_UNIT(EncodeNullState)
+    ADD_UNIT(EncodeEmpty)
+    ADD_UNIT(EncodeBadBase)
+    ADD_UNIT(EncodeOneBaseTwo)
+    ADD_UNIT(EncodeOneBaseThree)
+    ADD_UNIT(EncodeTwoBaseTwo)
+    ADD_UNIT(EncodeTwoBaseThree)
 END_SUITE

@@ -75,6 +75,12 @@ EXPORT int inform_bin_bounds(double const *series, size_t n,
 EXPORT int inform_coalesce(int const *series, size_t n, int *coal,
     inform_error *err);
 
+/**
+ * Encode a base-`b` array of integers into a single integer.
+ */
+EXPORT int32_t inform_encode(int const *series, size_t n, int b,
+    inform_error *err);
+
 #ifdef __cplusplus
 }
 #endif

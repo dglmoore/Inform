@@ -166,3 +166,21 @@ int inform_coalesce(int const *series, size_t n, int *coal, inform_error *err)
     free(map);
     return b;
 }
+
+int32_t inform_encode(int const *state, size_t n, int b, inform_error *err)
+{
+    if (state == NULL || n == 0)
+        INFORM_ERROR_RETURN(err, INFORM_EARG, -1);
+    else if (b < 2)
+        INFORM_ERROR_RETURN(err, INFORM_EBASE, -1);
+
+    int32_t encoding = 0;
+    for (int32_t i = 0; i < (int32_t) n; ++i)
+    {
+        if (b <= state[i])
+            INFORM_ERROR_RETURN(err, INFORM_EENCODE, -1);
+        encoding *= b;
+        encoding += state[i];
+    }
+    return encoding;
+}
