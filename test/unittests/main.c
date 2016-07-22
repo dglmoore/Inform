@@ -10,6 +10,7 @@ IMPORT_SUITE(Distribution);
 IMPORT_SUITE(Entropy);
 IMPORT_SUITE(EntropyRate);
 IMPORT_SUITE(TransferEntropy);
+IMPORT_SUITE(Utilities);
 
 BEGIN_REGISTRATION
     REGISTER(ActiveInformation)
@@ -19,6 +20,7 @@ BEGIN_REGISTRATION
     REGISTER(Entropy)
     REGISTER(EntropyRate)
     REGISTER(TransferEntropy)
+    REGISTER(Utilities)
 END_REGISTRATION
 
 UNIT_MAIN();
