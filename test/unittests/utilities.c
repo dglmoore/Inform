@@ -437,6 +437,101 @@ UNIT(EncodeTwoBaseThree)
     ASSERT_EQUAL(INFORM_EENCODE, err);
 }
 
+UNIT(DecodeNegativeEncoding)
+{
+    inform_error err = INFORM_SUCCESS;
+    inform_decode(-1, 0, NULL, 0, &err);
+    ASSERT_EQUAL(INFORM_EARG, err);
+}
+
+UNIT(DecodeBadBase)
+{
+    inform_error err = INFORM_SUCCESS;
+    inform_decode(3, 0, NULL, 0, &err);
+    ASSERT_EQUAL(INFORM_EARG, err);
+
+    err = INFORM_SUCCESS;
+    inform_decode(3, 1, NULL, 0, &err);
+    ASSERT_EQUAL(INFORM_EARG, err);
+}
+
+UNIT(DecodeToNullState)
+{
+    inform_error err = INFORM_SUCCESS;
+    inform_decode(3, 2, NULL, 0, &err);
+    ASSERT_EQUAL(INFORM_EARG, err);
+}
+
+UNIT(DecodeToEmptyState)
+{
+    inform_error err = INFORM_SUCCESS;
+    int state[2];
+    inform_decode(3, 2, state, 0, &err);
+    ASSERT_EQUAL(INFORM_EARG, err);
+}
+
+UNIT(DecodeBaseTwo)
+{
+    int state[3];
+    {
+        int expect[3] = {0,1,0};
+        inform_decode(2, 2, state, 3, NULL);
+        for (size_t i = 0; i < 3; ++i) ASSERT_EQUAL(expect[i], state[i]);
+    }
+
+    {
+        int expect[3] = {1,0,1};
+        inform_decode(5, 2, state, 3, NULL);
+        for (size_t i = 0; i < 3; ++i) ASSERT_EQUAL(expect[i], state[i]);
+    }
+
+    {
+        inform_error err = INFORM_SUCCESS;
+        int expect[3] = {0,0,0};
+        inform_decode(8, 2, state, 3, &err);
+        for (size_t i = 0; i < 3; ++i) ASSERT_EQUAL(expect[i], state[i]);
+        ASSERT_EQUAL(INFORM_EENCODE, err);
+    }
+}
+
+UNIT(DecodeBaseThree)
+{
+    int state[3];
+    {
+        int expect[3] = {0,2,2};
+        inform_decode(8, 3, state, 3, NULL);
+        for (size_t i = 0; i < 3; ++i) ASSERT_EQUAL(expect[i], state[i]);
+    }
+
+    {
+        int expect[3] = {1,1,0};
+        inform_decode(12, 3, state, 3, NULL);
+        for (size_t i = 0; i < 3; ++i) ASSERT_EQUAL(expect[i], state[i]);
+    }
+
+    {
+        inform_error err = INFORM_SUCCESS;
+        int expect[3] = {0,1,0};
+        inform_decode(30, 3, state, 3, &err);
+        for (size_t i = 0; i < 3; ++i) ASSERT_EQUAL(expect[i], state[i]);
+        ASSERT_EQUAL(INFORM_EENCODE, err);
+    }
+}
+
+UNIT(DecodeEncode)
+{
+    int state[4];
+    inform_error err = INFORM_SUCCESS;
+    for (int i = 0; i < 81; ++i)
+    {
+        inform_decode(i, 3, state, 4, &err); 
+        ASSERT_EQUAL(INFORM_SUCCESS, err);
+
+        ASSERT_EQUAL(i, inform_encode(state, 4, 3, &err));
+        ASSERT_EQUAL(INFORM_SUCCESS, err);
+    }
+}
+
 BEGIN_SUITE(Utilities)
     ADD_UNIT(RangeNullSeries)
     ADD_UNIT(RangeEmpty)
@@ -483,4 +578,13 @@ BEGIN_SUITE(Utilities)
     ADD_UNIT(EncodeOneBaseThree)
     ADD_UNIT(EncodeTwoBaseTwo)
     ADD_UNIT(EncodeTwoBaseThree)
+
+    ADD_UNIT(DecodeNegativeEncoding)
+    ADD_UNIT(DecodeBadBase)
+    ADD_UNIT(DecodeToNullState)
+    ADD_UNIT(DecodeToEmptyState)
+    ADD_UNIT(DecodeBaseTwo)
+    ADD_UNIT(DecodeBaseThree)
+
+    ADD_UNIT(DecodeEncode)
 END_SUITE

@@ -81,6 +81,12 @@ EXPORT int inform_coalesce(int const *series, size_t n, int *coal,
 EXPORT int32_t inform_encode(int const *series, size_t n, int b,
     inform_error *err);
 
+/**
+ * Decode an integer into a base-`b` array of integers.
+ */
+EXPORT void inform_decode(int32_t encoding, int b, int *state, size_t n,
+    inform_error *err);
+
 #ifdef __cplusplus
 }
 #endif

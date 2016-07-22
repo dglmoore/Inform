@@ -184,3 +184,19 @@ int32_t inform_encode(int const *state, size_t n, int b, inform_error *err)
     }
     return encoding;
 }
+
+void inform_decode(int32_t encoding, int b, int *state, size_t n, inform_error *err)
+{
+    if (encoding < 0 || state == NULL || n == 0)
+        INFORM_ERROR_RETURN_VOID(err, INFORM_EARG);
+    else if (b < 2)
+        INFORM_ERROR_RETURN_VOID(err, INFORM_EBASE);
+    else if (state == NULL || n == 0)
+        INFORM_ERROR_RETURN_VOID(err, INFORM_EARG);
+
+    for (size_t i = 0; i < n; ++i, encoding /= b)
+        state[n - i - 1] = encoding % b;
+
+    if (encoding != 0)
+        INFORM_ERROR_RETURN_VOID(err, INFORM_EENCODE);
+}
