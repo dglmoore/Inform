@@ -36,6 +36,7 @@ char const *inform_strerror(inform_error const *err)
         case INFORM_EBADSTATE:    return "unexpected state in timeseries";
         case INFORM_EDIST:        return "invalid distribution encountered";
         case INFORM_EBIN:         return "invalid binning";
+        case INFORM_EENCODE:      return "encoding/decoding failed";
         default:                  return "unrecognized error";
     }
 }
