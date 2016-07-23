@@ -90,3 +90,27 @@ double inform_shannon_cmi(inform_dist const *joint,
         inform_shannon(joint, base) -
         inform_shannon(marginal_z, base);
 }
+
+double inform_shannon_re(inform_dist const *p, inform_dist const *q,
+    double base)
+{
+    if (inform_dist_is_valid(p) && inform_dist_is_valid(q) && p->size == q->size)
+    {
+        double re = 0.;
+        for (size_t i = 0; i < p->size; ++i)
+        {
+            if (p->histogram[i] != 0 && q->histogram[i] != 0)
+            {
+                double u = (double) p->histogram[i] / p->counts;
+                double v = (double) q->histogram[i] / q->counts;
+                re += u * log2(u / v);
+            }
+            else if (p->histogram[i] != 0 && q->histogram[i] == 0)
+            {
+                return NAN;
+            }
+        }
+        return re / log2(base);
+    }
+    return NAN;
+}
