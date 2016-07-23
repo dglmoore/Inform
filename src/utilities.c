@@ -173,6 +173,8 @@ int32_t inform_encode(int const *state, size_t n, int b, inform_error *err)
         INFORM_ERROR_RETURN(err, INFORM_EARG, -1);
     else if (b < 2)
         INFORM_ERROR_RETURN(err, INFORM_EBASE, -1);
+    else if (n * log2(b) > 31)
+        INFORM_ERROR_RETURN(err, INFORM_EENCODE, -1);
 
     int32_t encoding = 0;
     for (int32_t i = 0; i < (int32_t) n; ++i)
@@ -187,7 +189,7 @@ int32_t inform_encode(int const *state, size_t n, int b, inform_error *err)
 
 void inform_decode(int32_t encoding, int b, int *state, size_t n, inform_error *err)
 {
-    if (encoding < 0 || state == NULL || n == 0)
+    if (encoding < 0)
         INFORM_ERROR_RETURN_VOID(err, INFORM_EARG);
     else if (b < 2)
         INFORM_ERROR_RETURN_VOID(err, INFORM_EBASE);

@@ -379,6 +379,17 @@ UNIT(EncodeBadBase)
     ASSERT_EQUAL(INFORM_EBASE, err);
 }
 
+UNIT(EncodeToLarge)
+{
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_EQUAL(-1, inform_encode((int[]){0,0,1}, 32, 2, &err));
+    ASSERT_EQUAL(INFORM_EENCODE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_EQUAL(-1, inform_encode((int[]){0,0,1}, 16, 4, &err));
+    ASSERT_EQUAL(INFORM_EENCODE, err);
+}
+
 UNIT(EncodeOneBaseTwo)
 {
     ASSERT_EQUAL(0, inform_encode((int[]){0}, 1, 2, NULL));
@@ -448,11 +459,11 @@ UNIT(DecodeBadBase)
 {
     inform_error err = INFORM_SUCCESS;
     inform_decode(3, 0, NULL, 0, &err);
-    ASSERT_EQUAL(INFORM_EARG, err);
+    ASSERT_EQUAL(INFORM_EBASE, err);
 
     err = INFORM_SUCCESS;
     inform_decode(3, 1, NULL, 0, &err);
-    ASSERT_EQUAL(INFORM_EARG, err);
+    ASSERT_EQUAL(INFORM_EBASE, err);
 }
 
 UNIT(DecodeToNullState)
@@ -574,6 +585,7 @@ BEGIN_SUITE(Utilities)
     ADD_UNIT(EncodeNullState)
     ADD_UNIT(EncodeEmpty)
     ADD_UNIT(EncodeBadBase)
+    ADD_UNIT(EncodeToLarge)
     ADD_UNIT(EncodeOneBaseTwo)
     ADD_UNIT(EncodeOneBaseThree)
     ADD_UNIT(EncodeTwoBaseTwo)
