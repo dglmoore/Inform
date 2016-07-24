@@ -5,7 +5,11 @@
 
 #include <inform/dist.h>
 #include <inform/error.h>
+#include <inform/utilities.h>
+
 #include <inform/shannon.h>
+
+#include <inform/mutual_info.h>
 
 #include <inform/block_entropy.h>
 #include <inform/active_info.h>

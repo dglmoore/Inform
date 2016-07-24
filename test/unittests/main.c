@@ -9,7 +9,9 @@ IMPORT_SUITE(Canary);
 IMPORT_SUITE(Distribution);
 IMPORT_SUITE(Entropy);
 IMPORT_SUITE(EntropyRate);
+IMPORT_SUITE(MutualInfo);
 IMPORT_SUITE(TransferEntropy);
+IMPORT_SUITE(Utilities);
 
 BEGIN_REGISTRATION
     REGISTER(ActiveInformation)
@@ -18,7 +20,9 @@ BEGIN_REGISTRATION
     REGISTER(Distribution)
     REGISTER(Entropy)
     REGISTER(EntropyRate)
+    REGISTER(MutualInfo)
     REGISTER(TransferEntropy)
+    REGISTER(Utilities)
 END_REGISTRATION
 
 UNIT_MAIN();

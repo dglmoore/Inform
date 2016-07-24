@@ -5,8 +5,7 @@
 
 #include <stdlib.h>
 #include <inttypes.h>
-
-int* random_series(size_t size, int base);
+#include <inform/utilities.h>
 
 #define AVERAGE(XS) average(XS, sizeof(XS) / sizeof(double))
 double average(double const *xs, size_t n);

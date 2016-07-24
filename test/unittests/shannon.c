@@ -4,6 +4,7 @@
 #include <unit.h>
 
 #include <inform/shannon.h>
+#include <inform/utilities/random.h>
 
 #define inform_dist_fill_array(dist, array) \
     ASSERT_NOT_NULL(dist); \
@@ -250,17 +251,147 @@ UNIT(PointwiseMutualInformationDependent)
     inform_dist_free(dist);
 }
 
+UNIT(RelativeEntropyInvalidDistributions)
+{
+    inform_dist *p = NULL, *q = NULL;
+    ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
+
+    p = inform_dist_alloc(5);
+    ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
+    ASSERT_TRUE(isnan(inform_shannon_re(q, p, 2)));
+
+    inform_dist_tick(p, 0);
+    ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
+    ASSERT_TRUE(isnan(inform_shannon_re(q, p, 2)));
+
+    q = inform_dist_alloc(5);
+    ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
+    ASSERT_TRUE(isnan(inform_shannon_re(q, p, 2)));
+
+    inform_dist_free(q);
+    inform_dist_free(p);
+}
+
+UNIT(RelativeEntropyIncompatibleSizes)
+{
+    inform_dist *p = inform_dist_alloc(5);
+    inform_dist *q = inform_dist_alloc(4);
+
+    inform_dist_tick(p, 0);
+    inform_dist_tick(q, 1);
+
+    ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
+    ASSERT_TRUE(isnan(inform_shannon_re(q, p, 2)));
+
+    inform_dist_free(q);
+    inform_dist_free(p);
+}
+
+UNIT(RelativeEntropyUndefined)
+{
+    inform_dist *p = inform_dist_alloc(5);
+    inform_dist *q = inform_dist_alloc(5);
+    inform_dist_fill(p, 1, 1, 1, 1, 1);
+    inform_dist_fill(q, 1, 1, 1, 2, 0);
+
+    ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
+    ASSERT_FALSE(isnan(inform_shannon_re(q, p, 2)));
+
+    inform_dist_free(q);
+    inform_dist_free(p);
+}
+
+UNIT(RelativeEntropySameDist)
+{
+    inform_dist *p = inform_dist_alloc(20);
+    for (size_t i = 0; i < inform_dist_size(p); ++i)
+        inform_dist_set(p, i, inform_random_int(0, 100));
+    ASSERT_TRUE(isnan(inform_shannon_re(p, p, -1.0)));
+    ASSERT_TRUE(isnan(inform_shannon_re(p, p, -0.5)));
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_re(p, p, 0.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_re(p, p, 0.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_re(p, p, 1.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_re(p, p, 2.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_re(p, p, 3.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_re(p, p, 4.0), 1e-6);
+    inform_dist_free(p);
+}
+
+UNIT(RelativeEntropyDefined)
+{
+    inform_dist *p = inform_dist_alloc(3);
+    inform_dist *q = inform_dist_alloc(3);
+
+    inform_dist_fill(p, 1, 0, 0);
+    inform_dist_fill(q, 1, 1, 1);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        ASSERT_DBL_NEAR(log2(3)/log2(b), inform_shannon_re(p, q, b));
+    }
+
+    inform_dist_fill(p, 1, 1, 0);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        ASSERT_DBL_NEAR(log2(3.0/2.0)/log2(b), inform_shannon_re(p, q, b));
+    }
+
+    inform_dist_fill(p, 2, 2, 1);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        ASSERT_DBL_NEAR_TOL((4*log2(6./5.) + log2(3./5.))/(5 * log2(b)), inform_shannon_re(p, q, b), 5e-16);
+    }
+
+    inform_dist_fill(q, 1, 2, 2);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        ASSERT_DBL_NEAR(1.0/(5.0*log2(b)), inform_shannon_re(p, q, b));
+    }
+
+    inform_dist_fill(p, 1, 0, 1);
+    inform_dist_fill(q, 2, 1, 2);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        ASSERT_DBL_NEAR(log2(5.0/4.0)/log2(b), inform_shannon_re(p, q, b));
+    }
+
+    inform_dist_fill(p, 1, 0, 0);
+    inform_dist_fill(q, 4, 1, 0);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        ASSERT_DBL_NEAR(log2(5.0/4.0)/log2(b), inform_shannon_re(p, q, b));
+    }
+
+    inform_dist_fill(p, 1, 0, 0);
+    inform_dist_fill(q, 1, 4, 0);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        ASSERT_DBL_NEAR(log2(5.0)/log2(b), inform_shannon_re(p, q, b));
+    }
+
+    inform_dist_free(q);
+    inform_dist_free(p);
+}
+
 BEGIN_SUITE(Entropy)
     ADD_UNIT(ShannonInvalidDistribution)
     ADD_UNIT(ShannonDeltaFunction)
     ADD_UNIT(ShannonUniform)
     ADD_UNIT(ShannonNonUniform)
+
     ADD_UNIT(MutualInformationIndependent)
     ADD_UNIT(MutualInformationDependent)
+
     ADD_UNIT(SelfInformationInvalidDist)
     ADD_UNIT(SelfInformationImposibleEvent)
     ADD_UNIT(SelfInformationBase2)
     ADD_UNIT(SelfInformatoinBase3)
+
     ADD_UNIT(PointwiseMutualInformationIndependent)
     ADD_UNIT(PointwiseMutualInformationDependent)
+
+    ADD_UNIT(RelativeEntropyInvalidDistributions)
+    ADD_UNIT(RelativeEntropyIncompatibleSizes)
+    ADD_UNIT(RelativeEntropyUndefined)
+    ADD_UNIT(RelativeEntropySameDist)
+    ADD_UNIT(RelativeEntropyDefined)
 END_SUITE

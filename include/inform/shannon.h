@@ -130,6 +130,31 @@ EXPORT double inform_shannon_cmi(inform_dist const *joint,
     inform_dist const *marginal_xz, inform_dist const *marginal_yz,
     inform_dist const *marginal_z, double base);
 
+/**
+ * Compute the pointwise relative entropy between two distributions with equal
+ * support size at some event.
+ *
+ * @param[in] p     the posterior distribution
+ * @param[in] q     the prior distribution
+ * @param[in] event the local event
+ * @param[in] base  the logarithmic base
+ * @return the relative entropy between p and q.
+ */
+EXPORT double inform_shannon_pre(inform_dist const *p, inform_dist const *q,
+    size_t event, double base);
+
+/**
+ * Compute the relative entropy between two distributions with equal
+ * support size.
+ *
+ * @param[in] p     the posterior distribution
+ * @param[in] q     the prior distribution
+ * @param[in] base  the logarithmic base
+ * @return the relative entropy between p and q.
+ */
+EXPORT double inform_shannon_re(inform_dist const *p, inform_dist const *q,
+    double base);
+
 #ifdef __cplusplus
 }
 #endif
