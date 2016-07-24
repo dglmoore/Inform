@@ -1,8 +1,9 @@
 // Copyright 2016 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <inform/utilities.h>
 #include <float.h>
+#include <inform/dist.h>
+#include <inform/utilities.h>
 #include <unit.h>
 
 UNIT(RangeNullSeries)
@@ -543,6 +544,45 @@ UNIT(DecodeEncode)
     }
 }
 
+UNIT(RandomInt)
+{
+    for (int b = 2; b < 5; ++b)
+    {
+        inform_dist *dist = inform_dist_alloc(b);
+        for (size_t i = 0; i < 100000; ++i)
+        {
+            int x = inform_random_int(0,b);
+            ASSERT_TRUE(0 <= x && x < b);
+            inform_dist_tick(dist, x);
+        }
+        for (size_t i = 0; i < inform_dist_size(dist); ++i)
+        {
+            ASSERT_TRUE(inform_dist_get(dist, i) > 0);
+        }
+        inform_dist_free(dist);
+    }
+}
+
+UNIT(RandomIntMinMax)
+{
+    for (int b = 2; b < 5; ++b)
+    {
+        inform_dist *dist = inform_dist_alloc(b + 1);
+        for (size_t i = 0; i < 100000; ++i)
+        {
+            int x = inform_random_int(1,b + 1);
+            ASSERT_TRUE(1 <= x && x < b + 1);
+            inform_dist_tick(dist, x);
+        }
+        ASSERT_EQUAL(0, inform_dist_get(dist, 0));
+        for (size_t i = 1; i < inform_dist_size(dist); ++i)
+        {
+            ASSERT_TRUE(inform_dist_get(dist, i) > 0);
+        }
+        inform_dist_free(dist);
+    }
+}
+
 BEGIN_SUITE(Utilities)
     ADD_UNIT(RangeNullSeries)
     ADD_UNIT(RangeEmpty)
@@ -599,4 +639,7 @@ BEGIN_SUITE(Utilities)
     ADD_UNIT(DecodeBaseThree)
 
     ADD_UNIT(DecodeEncode)
+
+    ADD_UNIT(RandomInt)
+    ADD_UNIT(RandomIntMinMax)
 END_SUITE

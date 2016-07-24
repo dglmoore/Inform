@@ -3,19 +3,6 @@
 // license that can be found in the LICENSE file.
 #include "util.h"
 
-int* random_series(size_t size, int base)
-{
-    int *series = calloc(size, sizeof(int));
-    if (series != NULL)
-    {
-        for (size_t i = 0; i < size; ++i)
-        {
-            series[i] = rand() % base;
-        }
-    }
-    return series;
-}
-
 double average(double const *xs, size_t n)
 {
     double x = 0;

@@ -4,6 +4,7 @@
 #include <unit.h>
 
 #include <inform/shannon.h>
+#include <inform/utilities/random.h>
 
 #define inform_dist_fill_array(dist, array) \
     ASSERT_NOT_NULL(dist); \
@@ -304,7 +305,7 @@ UNIT(RelativeEntropySameDist)
 {
     inform_dist *p = inform_dist_alloc(20);
     for (size_t i = 0; i < inform_dist_size(p); ++i)
-        inform_dist_set(p, i, rand() % 100);
+        inform_dist_set(p, i, inform_random_int(0, 100));
     ASSERT_TRUE(isnan(inform_shannon_re(p, p, -1.0)));
     ASSERT_TRUE(isnan(inform_shannon_re(p, p, -0.5)));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_re(p, p, 0.0), 1e-6);
