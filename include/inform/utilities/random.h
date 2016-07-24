@@ -4,6 +4,7 @@
 #pragma once
 
 #include <inform/export.h>
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C"
