@@ -91,6 +91,18 @@ double inform_shannon_cmi(inform_dist const *joint,
         inform_shannon(marginal_z, base);
 }
 
+double inform_shannon_pre(inform_dist const *p, inform_dist const *q,
+    size_t event, double base)
+{
+    if (inform_dist_is_valid(p) && inform_dist_is_valid(q) && p->size == q->size)
+    {
+        double u = inform_dist_prob(p, event);
+        double v = inform_dist_prob(q, event);
+        return -log2(u/v) / log2(base);
+    }
+    return NAN;
+}
+
 double inform_shannon_re(inform_dist const *p, inform_dist const *q,
     double base)
 {
