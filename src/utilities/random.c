@@ -7,7 +7,7 @@
 
 void inform_random_seed()
 {
-    srand(time(NULL));
+    srand((unsigned int) time(NULL));
 }
 
 int inform_random_int(int a, int b)

@@ -103,7 +103,7 @@ inline static void run_unit_suite(struct unit_suite *suite)
 #define UNIT_MAIN() \
     int main() \
     { \
-        srand(time(NULL)); \
+        srand((unsigned int) time(NULL)); \
         int total = 0, num_ok = 0, num_failed = 0; \
         size_t n = sizeof(__unit_suites) / sizeof(struct unit_suite *); \
         size_t i; \
