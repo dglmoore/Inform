@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <float.h>
 #include <inform/utilities/binning.h>
+#include <math.h>
 
 double inform_range(double const *series, size_t n, double *min, double *max,
     inform_error *err)
