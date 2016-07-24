@@ -3,9 +3,7 @@
 // license that can be found in the LICENSE file.
 #include <assert.h>
 #include <float.h>
-#include <inform/utilities.h>
-#include <math.h>
-#include <string.h>
+#include <inform/utilities/binning.h>
 
 double inform_range(double const *series, size_t n, double *min, double *max,
     inform_error *err)
@@ -106,99 +104,4 @@ int inform_bin_bounds(double const *series, size_t n, double const *bounds,
     }
 
     return b + 1;
-}
-
-static int compare_ints(void const *a, void const *b)
-{
-    int x = *(int const*)a;
-    int y = *(int const*)b;
-    if (x < y) return -1;
-    if (y < x) return  1;
-    return 0;
-}
-
-int inform_coalesce(int const *series, size_t n, int *coal, inform_error *err)
-{
-    if (series == NULL)
-        INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, 0);
-    else if (n == 0)
-        INFORM_ERROR_RETURN(err, INFORM_ESHORTSERIES, 0);
-    else if (coal == NULL)
-        INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, 0);
-
-    int *tmp = malloc(n * sizeof(int));
-    if (tmp == NULL)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, 0);
-    }
-    memcpy(tmp, series, n * sizeof(int));
-    qsort(tmp, n, sizeof(int), compare_ints);
-    int b = 1;
-    for (size_t i = 1; i < n; ++i)
-    {
-        if (tmp[i] != tmp[i-1]) ++b;
-    }
-
-    int *map = malloc(b * sizeof(int));
-    if (map == NULL)
-    {
-        free(tmp);
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, 0);
-    }
-    map[0] = tmp[0];
-    for (size_t i = 1, j = 1; i < n; ++i)
-    {
-        if (tmp[i] != tmp[i-1]) map[j++] = tmp[i];
-    }
-    free(tmp);
-
-    for (size_t i = 0; i < n; ++i)
-    {
-        int *x = bsearch(series + i, map, b, sizeof(int), compare_ints);
-        if (x == NULL)
-        {
-            free(map);
-            INFORM_ERROR_RETURN(err, INFORM_EBIN, 0);
-        }
-        coal[i] = (int) (x - map);
-    }
-
-    free(map);
-    return b;
-}
-
-int32_t inform_encode(int const *state, size_t n, int b, inform_error *err)
-{
-    if (state == NULL || n == 0)
-        INFORM_ERROR_RETURN(err, INFORM_EARG, -1);
-    else if (b < 2)
-        INFORM_ERROR_RETURN(err, INFORM_EBASE, -1);
-    else if (n * log2(b) > 31)
-        INFORM_ERROR_RETURN(err, INFORM_EENCODE, -1);
-
-    int32_t encoding = 0;
-    for (int32_t i = 0; i < (int32_t) n; ++i)
-    {
-        if (b <= state[i])
-            INFORM_ERROR_RETURN(err, INFORM_EENCODE, -1);
-        encoding *= b;
-        encoding += state[i];
-    }
-    return encoding;
-}
-
-void inform_decode(int32_t encoding, int b, int *state, size_t n, inform_error *err)
-{
-    if (encoding < 0)
-        INFORM_ERROR_RETURN_VOID(err, INFORM_EARG);
-    else if (b < 2)
-        INFORM_ERROR_RETURN_VOID(err, INFORM_EBASE);
-    else if (state == NULL || n == 0)
-        INFORM_ERROR_RETURN_VOID(err, INFORM_EARG);
-
-    for (size_t i = 0; i < n; ++i, encoding /= b)
-        state[n - i - 1] = encoding % b;
-
-    if (encoding != 0)
-        INFORM_ERROR_RETURN_VOID(err, INFORM_EENCODE);
 }
