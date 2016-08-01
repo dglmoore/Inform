@@ -84,8 +84,6 @@ inline static void free_all(inform_dist **x, inform_dist **y, inform_dist **xy)
     inform_dist_free(*xy);
 }
 
-#include <stdio.h>
-
 double inform_mutual_info(int const *xs, int const *ys, size_t n, int bx,
     int by, double b, inform_error *err)
 {
