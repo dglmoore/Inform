@@ -11,6 +11,7 @@ IMPORT_SUITE(Distribution);
 IMPORT_SUITE(Entropy);
 IMPORT_SUITE(EntropyRate);
 IMPORT_SUITE(MutualInfo);
+IMPORT_SUITE(RelativeEntropy);
 IMPORT_SUITE(TransferEntropy);
 IMPORT_SUITE(Utilities);
 
@@ -23,6 +24,7 @@ BEGIN_REGISTRATION
     REGISTER(Entropy)
     REGISTER(EntropyRate)
     REGISTER(MutualInfo)
+    REGISTER(RelativeEntropy)
     REGISTER(TransferEntropy)
     REGISTER(Utilities)
 END_REGISTRATION
