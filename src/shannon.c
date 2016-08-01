@@ -98,7 +98,7 @@ double inform_shannon_pre(inform_dist const *p, inform_dist const *q,
     {
         double u = inform_dist_prob(p, event);
         double v = inform_dist_prob(q, event);
-        return -log2(u/v) / log2(base);
+        return log2(u/v) / log2(base);
     }
     return NAN;
 }
