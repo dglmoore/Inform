@@ -7,11 +7,12 @@ set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_V
 
 message(STATUS "inform version: ${${PROJECT_NAME}_VERSION}")
 
-add_definitions("-Wall -Wextra -Werror -Wno-unused-parameter -std=gnu1x")
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g")
 if (UNIX AND NOT APPLE)
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -pg")
+    add_definitions("-Wall -Wextra -Werror -Wno-unused-parameter -std=gnu1x")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -pg")
 elseif (APPLE)
+    add_definitions("-Wall -Wextra -Werror -Wno-unused-parameter -std=gnu1x")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g")
 	set(CMAKE_MACOSX_RPATH ON)
 endif()
 
