@@ -17,6 +17,13 @@ extern "C"
 EXPORT double inform_relative_entropy(int const *xs, int const *ys, size_t n,
     int b, double base, inform_error *err);
 
+/**
+ * Compute the pointwise relative entropy between two timeseries, each
+ * considered as a timeseries of samples from two distributions.
+ */
+EXPORT double *inform_local_relative_entropy(int const *xs, int const *ys,
+    size_t n, int b, double base, double *re, inform_error *err);
+
 #ifdef __cplusplus
 }
 #endif

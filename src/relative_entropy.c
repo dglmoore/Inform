@@ -87,3 +87,30 @@ double inform_relative_entropy(int const *xs, int const *ys, size_t n, int b,
 
     return re;
 }
+
+double *inform_local_relative_entropy(int const *xs, int const *ys, size_t n,
+    int b, double base, double *re, inform_error *err)
+{
+    if (check_arguments(xs, ys, n, b, err)) return NULL;
+
+    if (re == NULL)
+    {
+        re = malloc(n * sizeof(double));
+        if (re == NULL)
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+
+    inform_dist *x = NULL, *y = NULL;
+    if (allocate(b, &x, &y, err)) return NULL;
+
+    accumulate(xs, ys, n, x, y);
+
+    for (size_t i = 0; i < (size_t) b; ++i)
+    {
+        re[i] = inform_shannon_pre(x, y, i, base);
+    }
+
+    free_all(&x, &y);
+
+    return re;
+}
