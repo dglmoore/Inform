@@ -513,6 +513,63 @@ UNIT(LocalTransferEntropyEnsemble_Base2)
     }
 }
 
+UNIT(LocalTransferEntropyEnsemble2_Base2)
+{
+    {
+        double te[40];
+        int xseries[50] = {
+            1, 1, 1, 0, 0, 1, 1, 0, 1, 0,
+            0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0, 0, 1, 0, 0, 1,
+            0, 0, 1, 1, 1, 1, 1, 0, 0, 0,
+        };
+        int yseries[50] = {
+            0, 1, 0, 0, 0, 1, 0, 1, 1, 0,
+            0, 0, 0, 1, 1, 1, 0, 1, 0, 0,
+            1, 0, 1, 0, 1, 0, 0, 0, 1, 0,
+            0, 1, 1, 0, 1, 1, 1, 1, 1, 1,
+            0, 0, 1, 1, 0, 0, 0, 0, 0, 1,
+        };
+
+        ASSERT_NOT_NULL(inform_local_transfer_entropy2(xseries, xseries, 5, 10, 2, 2, te, NULL));
+        ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
+        ASSERT_NOT_NULL(inform_local_transfer_entropy2(yseries, xseries, 5, 10, 2, 2, te, NULL));
+        ASSERT_DBL_NEAR_TOL(0.306616562662, AVERAGE(te), 1e-6);
+        ASSERT_NOT_NULL(inform_local_transfer_entropy2(xseries, yseries, 5, 10, 2, 2, te, NULL));
+        ASSERT_DBL_NEAR_TOL(0.300000, AVERAGE(te), 1e-6);
+        ASSERT_NOT_NULL(inform_local_transfer_entropy2(yseries, yseries, 5, 10, 2, 2, te, NULL));
+        ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
+    }
+    {
+        double te[40];	
+        int xseries[50] = {
+	    0,1,0,1,0,0,1,1,1,1,
+	    0,1,0,1,1,1,0,0,1,0,
+	    1,1,1,1,0,0,1,1,1,1,
+	    1,0,0,0,0,0,0,0,1,0,
+	    0,1,1,1,1,1,0,1,1,1,
+        };
+        int yseries[50] = {
+            1,1,1,1,1,0,0,0,1,0,
+	    0,1,1,0,0,1,1,0,0,0,
+	    0,1,1,1,0,1,0,0,0,0,
+	    0,1,0,0,1,1,0,1,0,0,
+	    0,1,1,1,1,0,1,1,1,1,
+	};
+	
+
+        ASSERT_NOT_NULL(inform_local_transfer_entropy2(xseries, xseries, 5, 10, 2, 2, te, NULL));
+        ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
+        ASSERT_NOT_NULL(inform_local_transfer_entropy2(yseries, xseries, 5, 10, 2, 2, te, NULL));
+        ASSERT_DBL_NEAR_TOL(0.068872, AVERAGE(te), 1e-6);
+        ASSERT_NOT_NULL(inform_local_transfer_entropy2(xseries, yseries, 5, 10, 2, 2, te, NULL));
+        ASSERT_DBL_NEAR_TOL(0.262255, AVERAGE(te), 1e-6);
+        ASSERT_NOT_NULL(inform_local_transfer_entropy2(yseries, yseries, 5, 10, 2, 2, te, NULL));
+        ASSERT_DBL_NEAR_TOL(0.000000, AVERAGE(te), 1e-6);
+    }
+}
+
 BEGIN_SUITE(TransferEntropy)
     ADD_UNIT(TransferEntropyNULLSeries)
     ADD_UNIT(TransferEntropyNoInits)
@@ -535,4 +592,5 @@ BEGIN_SUITE(TransferEntropy)
     ADD_UNIT(LocalTransferEntropyAllocatesOutput)
     ADD_UNIT(LocalTransferEntropySingleSeries_Base2)
     ADD_UNIT(LocalTransferEntropyEnsemble_Base2)
+    ADD_UNIT(LocalTransferEntropyEnsemble2_Base2)
 END_SUITE

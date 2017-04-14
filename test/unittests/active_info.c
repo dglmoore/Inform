@@ -370,6 +370,36 @@ UNIT(LocalActiveInfoEnsemble)
     }
 }
 
+UNIT(LocalActiveInfoEnsemble2)
+{
+    {
+        double ai[12];
+        int series[16] = {
+            1,1,0,0,1,0,0,1,
+            0,0,0,1,0,0,0,1,
+        };
+        ASSERT_NOT_NULL(inform_local_active_info2(series, 2, 8, 2, 2, ai, NULL));
+        ASSERT_DBL_NEAR_TOL(0.3333333, AVERAGE(ai), 1e-6);
+    }
+
+    {
+        double ai[63];
+        int series[81] = {
+            1,0,0,0,0,0,0,0,0,
+            0,0,1,1,1,1,0,0,0,
+            1,0,0,0,0,0,0,1,1,
+            1,0,0,0,0,0,0,1,1,
+            0,0,0,0,0,1,1,0,0,
+            0,0,0,0,1,1,0,0,0,
+            1,1,1,0,0,0,0,1,1,
+            0,0,0,1,1,1,1,0,0,
+            0,0,0,0,0,0,1,1,0,
+        };
+        ASSERT_NOT_NULL(inform_local_active_info2(series, 9, 9, 2, 2, ai, NULL));
+        ASSERT_DBL_NEAR_TOL(0.495679, AVERAGE(ai), 1e-6);
+    }
+}
+
 UNIT(LocalActiveInfoEnsemble_Base4)
 {
     {
@@ -410,5 +440,6 @@ BEGIN_SUITE(ActiveInformation)
     ADD_UNIT(LocalActiveInfoSingleSeries_Base2)
     ADD_UNIT(LocalActiveInfoSingleSeries_Base4)
     ADD_UNIT(LocalActiveInfoEnsemble)
+    ADD_UNIT(LocalActiveInfoEnsemble2)
     ADD_UNIT(LocalActiveInfoEnsemble_Base4)
 END_SUITE
