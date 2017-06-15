@@ -31,7 +31,7 @@ All three major operating systems are now supported. Inform has been tested on t
 Wrappers in the following languages are currently under active development:
 - Python ([PyInform](https://github.com/elife-asu/pyinform))
 - Julia ([Inform.jl](https://github.com/elife-asu/Inform.jl))
-- Wolfram Language/Mathematica ([InformWolfram](https://github.com/dglmoore/InformWolfram))
+- Wolfram Language/Mathematica ([InformWolfram](https://github.com/elife-asu/InformWolfram))
 
 Inform is still under heavy development. As such, the API and the feature set are rapidly changing. Below are a few alternative projects that are currently more mature, more stable and provide more features:
 - [JIDT](https://github.com/jlizier/jidt)
@@ -42,3 +42,6 @@ Inform is still under heavy development. As such, the API and the feature set ar
 - Linux/OSX: [![Build Status](https://travis-ci.org/ELIFE-ASU/Inform.svg?branch=master)](https://travis-ci.org/ELIFE-ASU/Inform)
 - Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/7y015h6p7n0q7097/branch/master?svg=true)](https://ci.appveyor.com/project/dglmoore/inform-vx977)
 - Code Coverage: **Coming Soon**
+
+## Support
+This project is supported in part by a grant provided by the Templeton World Charity Foundation as part of the [Power Of Information Initiative](http://www.templetonworldcharity.org/what-we-fund/themes-of-interest/power-of-information).
