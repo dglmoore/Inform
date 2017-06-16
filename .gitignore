@@ -39,3 +39,6 @@ temp
 
 # distribution directories and files
 dist/inform-*
+
+# generated documentation
+docs/html
