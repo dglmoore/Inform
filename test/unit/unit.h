@@ -10,7 +10,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <string.h>
 
 struct unit
 {
@@ -101,19 +101,26 @@ inline static void run_unit_suite(struct unit_suite *suite)
 #define END_REGISTRATION NULL };
 
 #define UNIT_MAIN() \
-    int main() \
+    int main(int argc, char **argv) \
     { \
-        srand((unsigned int) time(NULL)); \
-        int total = 0, num_ok = 0, num_failed = 0; \
+        int total = 0, num_ok = 0, num_failed = 0, run = 0; \
         size_t n = sizeof(__unit_suites) / sizeof(struct unit_suite *); \
-        size_t i; \
+        size_t i, j; \
         for (i = 0; i < n; ++i) \
         { \
             if (__unit_suites[i] == NULL) break; \
-            run_unit_suite(__unit_suites[i]); \
-            total += __unit_suites[i]->total; \
-            num_ok += __unit_suites[i]->num_ok; \
-            num_failed += __unit_suites[i]->num_failed; \
+            run = (argc == 1); \
+            for (j = 1; !run && j < (size_t)argc; ++j) \
+            { \
+                run = strcmp(__unit_suites[i]->name, argv[j]) == 0; \
+            } \
+            if (run) \
+            { \
+                run_unit_suite(__unit_suites[i]); \
+                total += __unit_suites[i]->total; \
+                num_ok += __unit_suites[i]->num_ok; \
+                num_failed += __unit_suites[i]->num_failed; \
+            } \
         } \
         printf("RESULTS: %d tests (%d ok, %d failed)\n", total, num_ok, num_failed); \
         return num_failed; \
