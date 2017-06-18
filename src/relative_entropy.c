@@ -72,7 +72,7 @@ inline static void free_all(inform_dist **x, inform_dist **y)
 }
 
 double inform_relative_entropy(int const *xs, int const *ys, size_t n, int b,
-    double base, inform_error *err)
+    inform_error *err)
 {
     if (check_arguments(xs, ys, n, b, err)) return NAN;
 
@@ -81,7 +81,7 @@ double inform_relative_entropy(int const *xs, int const *ys, size_t n, int b,
 
     accumulate(xs, ys, n, x, y);
 
-    double re = inform_shannon_re(x, y, base);
+    double re = inform_shannon_re(x, y, 2.0);
 
     free_all(&x, &y);
 
@@ -89,7 +89,7 @@ double inform_relative_entropy(int const *xs, int const *ys, size_t n, int b,
 }
 
 double *inform_local_relative_entropy(int const *xs, int const *ys, size_t n,
-    int b, double base, double *re, inform_error *err)
+    int b, double *re, inform_error *err)
 {
     if (check_arguments(xs, ys, n, b, err)) return NULL;
 
@@ -107,7 +107,7 @@ double *inform_local_relative_entropy(int const *xs, int const *ys, size_t n,
 
     for (size_t i = 0; i < (size_t) b; ++i)
     {
-        re[i] = inform_shannon_pre(x, y, i, base);
+        re[i] = inform_shannon_pre(x, y, i, 2.0);
     }
 
     free_all(&x, &y);
