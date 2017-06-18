@@ -15,14 +15,14 @@ extern "C"
  * first as the condition.
  */
 EXPORT double inform_conditional_entropy(int const *xs, int const *ys,
-    size_t n, int bx, int by, double b, inform_error *err);
+    size_t n, int bx, int by, inform_error *err);
 
 /**
  * Compute the local conditional entropy between two timeseries, using the
  * first as the condition.
  */
 EXPORT double *inform_local_conditional_entropy(int const *xs, int const *ys,
-    size_t n, int bx, int by, double b, double *mi, inform_error *err);
+    size_t n, int bx, int by, double *mi, inform_error *err);
 
 #ifdef __cplusplus
 }

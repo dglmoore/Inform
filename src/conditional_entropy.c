@@ -76,7 +76,7 @@ inline static void free_all(inform_dist **x, inform_dist **xy)
 }
 
 double inform_conditional_entropy(int const *xs, int const *ys, size_t n,
-    int bx, int by, double b, inform_error *err)
+    int bx, int by, inform_error *err)
 {
     if (check_arguments(xs, ys, n, bx, by, err)) return NAN;
 
@@ -85,7 +85,7 @@ double inform_conditional_entropy(int const *xs, int const *ys, size_t n,
 
     accumulate(xs, ys, n, by, x, xy);
 
-    double ce = inform_shannon_ce(xy, x, (double) b);
+    double ce = inform_shannon_ce(xy, x, 2.0);
 
     free_all(&x, &xy);
 
@@ -93,7 +93,7 @@ double inform_conditional_entropy(int const *xs, int const *ys, size_t n,
 }
 
 double *inform_local_conditional_entropy(int const *xs, int const *ys,
-    size_t n, int bx, int by, double b, double *ce, inform_error *err)
+    size_t n, int bx, int by, double *ce, inform_error *err)
 {
     if (check_arguments(xs, ys, n, bx, by, err)) return NULL;
 
@@ -112,7 +112,7 @@ double *inform_local_conditional_entropy(int const *xs, int const *ys,
     for (size_t i = 0; i < n; ++i)
     {
         int z = xs[i]*by + ys[i];
-        ce[i] = inform_shannon_pce(xy, x, z, xs[i], (double) b);
+        ce[i] = inform_shannon_pce(xy, x, z, xs[i], 2.0);
     }
 
     free_all(&x, &xy);
