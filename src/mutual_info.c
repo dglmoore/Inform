@@ -85,7 +85,7 @@ inline static void free_all(inform_dist **x, inform_dist **y, inform_dist **xy)
 }
 
 double inform_mutual_info(int const *xs, int const *ys, size_t n, int bx,
-    int by, double b, inform_error *err)
+    int by, inform_error *err)
 {
     if (check_arguments(xs, ys, n, bx, by, err)) return NAN;
 
@@ -94,7 +94,7 @@ double inform_mutual_info(int const *xs, int const *ys, size_t n, int bx,
 
     accumulate(xs, ys, n, by, x, y, xy);
 
-    double mi = inform_shannon_mi(xy, x, y, (double) b);
+    double mi = inform_shannon_mi(xy, x, y, 2.0);
 
     free_all(&x, &y, &xy);
 
@@ -102,7 +102,7 @@ double inform_mutual_info(int const *xs, int const *ys, size_t n, int bx,
 }
 
 double *inform_local_mutual_info(int const *xs, int const *ys, size_t n, int bx,
-    int by, double b, double *mi, inform_error *err)
+    int by, double *mi, inform_error *err)
 {
     if (check_arguments(xs, ys, n, bx, by, err)) return NULL;
 
@@ -121,7 +121,7 @@ double *inform_local_mutual_info(int const *xs, int const *ys, size_t n, int bx,
     for (size_t i = 0; i < n; ++i)
     {
         int z = xs[i]*by + ys[i];
-        mi[i] = inform_shannon_pmi(xy, x, y, z, xs[i], ys[i], (double) b);
+        mi[i] = inform_shannon_pmi(xy, x, y, z, xs[i], ys[i], 2.0);
     }
 
     free_all(&x, &y, &xy);

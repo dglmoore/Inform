@@ -137,15 +137,15 @@ UNIT(EntropyRateSingleSeries_Base2)
 
 UNIT(EntropyRateSingleSeries_Base4)
 {
-    ASSERT_DBL_NEAR_TOL(0.285715,
+    ASSERT_DBL_NEAR_TOL(0.571428,
             inform_entropy_rate((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, NULL),
             1e-6);
 
-    ASSERT_DBL_NEAR_TOL(0.196778,
+    ASSERT_DBL_NEAR_TOL(0.393556,
             inform_entropy_rate((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, NULL),
             1e-6);
 
-    ASSERT_DBL_NEAR_TOL(0.257831,
+    ASSERT_DBL_NEAR_TOL(0.515662,
             inform_entropy_rate((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, NULL),
             1e-6);
 }
@@ -189,7 +189,7 @@ UNIT(EntropyRateEnsemble_Base4)
             0, 0, 0, 0, 1, 1, 0, 0, 0,
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
-        ASSERT_DBL_NEAR_TOL(0.272234,
+        ASSERT_DBL_NEAR_TOL(0.544468,
                 inform_entropy_rate(series, 4, 9, 4, 2, NULL),
                 1e-6);
     }
@@ -334,13 +334,13 @@ UNIT(LocalEntropyRateSingleSeries_Base4)
     double er[7];
 
     ASSERT_NOT_NULL(inform_local_entropy_rate((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, er, NULL));
-    ASSERT_DBL_NEAR_TOL(0.285715, AVERAGE(er), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.571428, AVERAGE(er), 1e-6);
 
     ASSERT_NOT_NULL(inform_local_entropy_rate((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, er, NULL));
-    ASSERT_DBL_NEAR_TOL(0.196778, AVERAGE(er), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.393556, AVERAGE(er), 1e-6);
 
     ASSERT_NOT_NULL(inform_local_entropy_rate((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, er, NULL));
-    ASSERT_DBL_NEAR_TOL(0.257831, AVERAGE(er), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.515662, AVERAGE(er), 1e-6);
 }
 
 UNIT(LocalEntropyRateEnsemble)
@@ -384,7 +384,7 @@ UNIT(LocalEntropyRateEnsemble_Base4)
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
         ASSERT_NOT_NULL(inform_local_entropy_rate(series, 4, 9, 4, 2, er, NULL));
-        ASSERT_DBL_NEAR_TOL(0.272234, AVERAGE(er), 1e-6);
+        ASSERT_DBL_NEAR_TOL(0.544468, AVERAGE(er), 1e-6);
     }
 }
 

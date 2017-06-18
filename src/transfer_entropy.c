@@ -143,10 +143,10 @@ double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
         accumulate_observations(node_y, node_x, m, b, k, &states, &histories, &sources, &predicates);
     }
 
-    double te = inform_shannon(&sources, (double) b) +
-        inform_shannon(&predicates, (double) b) -
-        inform_shannon(&states, (double) b) -
-        inform_shannon(&histories, (double) b);
+    double te = inform_shannon(&sources, 2.0) +
+        inform_shannon(&predicates, 2.0) -
+        inform_shannon(&states, 2.0) -
+        inform_shannon(&histories, 2.0);
 
     free(data);
 
@@ -226,7 +226,7 @@ double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
     for (size_t i = 0; i < N; ++i)
     {
         te[i] = inform_shannon_pcmi(&states, &sources, &predicates, &histories,
-            state[i], source[i], predicate[i], history[i], (double) b);
+            state[i], source[i], predicate[i], history[i], 2.0);
     }
 
     free(predicate);
@@ -352,7 +352,7 @@ double *inform_local_transfer_entropy2(int const *node_y, int const *node_x,
 	{
 	    te[i+h*(m-k)] = inform_shannon_pcmi(&states, &sources, &predicates, &histories,
 						state[h], source[h], predicate[h], history[h],
-						(double) b);
+						2.0);
 	}
 	
 	memset(data, 0, total_size * sizeof(uint32_t));		

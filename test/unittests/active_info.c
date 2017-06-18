@@ -135,15 +135,15 @@ UNIT(ActiveInfoSingleSeries_Base2)
 
 UNIT(ActiveInfoSingleSeries_Base4)
 {
-    ASSERT_DBL_NEAR_TOL(0.635471,
+    ASSERT_DBL_NEAR_TOL(1.270942,
             inform_active_info((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, NULL),
             1e-6);
 
-    ASSERT_DBL_NEAR_TOL(0.635471,
+    ASSERT_DBL_NEAR_TOL(1.270942,
             inform_active_info((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, NULL),
             1e-6);
 
-    ASSERT_DBL_NEAR_TOL(0.234783,
+    ASSERT_DBL_NEAR_TOL(0.469566,
             inform_active_info((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, NULL),
             1e-6);
 }
@@ -187,7 +187,7 @@ UNIT(ActiveInfoEnsemble_Base4)
             0, 0, 0, 0, 1, 1, 0, 0, 0,
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
-        ASSERT_DBL_NEAR_TOL(0.662146,
+        ASSERT_DBL_NEAR_TOL(1.324292,
                 inform_active_info(series, 4, 9, 4, 2, NULL),
                 1e-6);
     }
@@ -331,13 +331,13 @@ UNIT(LocalActiveInfoSingleSeries_Base4)
 {
     double ai[7];
     ASSERT_NOT_NULL(inform_local_active_info((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, ai, NULL));
-    ASSERT_DBL_NEAR_TOL(0.635471, AVERAGE(ai), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.270942, AVERAGE(ai), 1e-6);
 
     ASSERT_NOT_NULL(inform_local_active_info((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, ai, NULL));
-    ASSERT_DBL_NEAR_TOL(0.635471, AVERAGE(ai), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.270942, AVERAGE(ai), 1e-6);
 
     ASSERT_NOT_NULL(inform_local_active_info((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, ai, NULL));
-    ASSERT_DBL_NEAR_TOL(0.234783, AVERAGE(ai), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.469566, AVERAGE(ai), 1e-6);
 }
 
 UNIT(LocalActiveInfoEnsemble)
@@ -411,7 +411,7 @@ UNIT(LocalActiveInfoEnsemble_Base4)
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
         ASSERT_NOT_NULL(inform_local_active_info(series, 4, 9, 4, 2, ai, NULL));
-        ASSERT_DBL_NEAR_TOL(0.662146, AVERAGE(ai), 1e-6);
+        ASSERT_DBL_NEAR_TOL(1.324292, AVERAGE(ai), 1e-6);
     }
 }
 

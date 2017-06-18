@@ -122,7 +122,7 @@ double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k
         accumulate_observations(series, m, b, k, &states, &histories, &futures);
     }
 
-    double ai = inform_shannon_mi(&states, &histories, &futures, (double) b);
+    double ai = inform_shannon_mi(&states, &histories, &futures, 2.0);
 
     free(data);
 
@@ -191,7 +191,7 @@ double *inform_local_active_info(int const *series, size_t n, size_t m,
     for (size_t i = 0; i < N; ++i)
     {
         ai[i] = inform_shannon_pmi(&states, &histories, &futures, state[i],
-            history[i], future[i], (double) b);
+            history[i], future[i], 2.0);
     }
 
     free(future);
@@ -297,7 +297,7 @@ double *inform_local_active_info2(int const *series, size_t n, size_t m,
 	for (size_t h = 0; h < n; ++h)
 	{
 	    ai[i+h*(m-k)] = inform_shannon_pmi(&states, &histories, &futures, state[h],
-                history[h], future[h], (double) b);
+                history[h], future[h], 2.0);
 	}
 	
 	memset(data, 0, total_size * sizeof(uint32_t));		

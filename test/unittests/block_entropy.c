@@ -135,15 +135,15 @@ UNIT(BlockEntropySingleSeries_Base2)
 
 UNIT(BlockEntropySingleSeries_Base4)
 {
-    ASSERT_DBL_NEAR_TOL(1.250000,
+    ASSERT_DBL_NEAR_TOL(2.50000,
             inform_block_entropy((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, NULL),
             1e-6);
 
-    ASSERT_DBL_NEAR_TOL(1.202820,
+    ASSERT_DBL_NEAR_TOL(2.40564,
             inform_block_entropy((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, NULL),
             1e-6);
 
-    ASSERT_DBL_NEAR_TOL(0.649397,
+    ASSERT_DBL_NEAR_TOL(1.298794,
             inform_block_entropy((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, NULL),
             1e-6);
 }
@@ -187,7 +187,7 @@ UNIT(BlockEntropyEnsemble_Base4)
             0, 0, 0, 0, 1, 1, 0, 0, 0,
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
-        ASSERT_DBL_NEAR_TOL(1.505488,
+        ASSERT_DBL_NEAR_TOL(3.010976,
                 inform_block_entropy(series, 4, 9, 4, 2, NULL),
                 1e-6);
     }
@@ -331,13 +331,13 @@ UNIT(LocalBlockEntropySingleSeries_Base4)
 {
     double be[8];
     ASSERT_NOT_NULL(inform_local_block_entropy((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, be, NULL));
-    ASSERT_DBL_NEAR_TOL(1.250000, AVERAGE(be), 1e-6);
+    ASSERT_DBL_NEAR_TOL(2.5, AVERAGE(be), 1e-6);
 
     ASSERT_NOT_NULL(inform_local_block_entropy((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, be, NULL));
-    ASSERT_DBL_NEAR_TOL(1.202820, AVERAGE(be), 1e-6);
+    ASSERT_DBL_NEAR_TOL(2.40564, AVERAGE(be), 1e-6);
 
     ASSERT_NOT_NULL(inform_local_block_entropy((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, be, NULL));
-    ASSERT_DBL_NEAR_TOL(0.649397, AVERAGE(be), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.298794, AVERAGE(be), 1e-6);
 }
 
 UNIT(LocalBlockEntropyEnsemble)
@@ -381,7 +381,7 @@ UNIT(LocalBlockEntropyEnsemble_Base4)
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
         ASSERT_NOT_NULL(inform_local_block_entropy(series, 4, 9, 4, 2, be, NULL));
-        ASSERT_DBL_NEAR_TOL(1.505488, AVERAGE(be), 1e-6);
+        ASSERT_DBL_NEAR_TOL(3.010976, AVERAGE(be), 1e-6);
     }
 }
 
