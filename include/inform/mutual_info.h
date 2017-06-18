@@ -14,13 +14,13 @@ extern "C"
  * Compute the mutual information between two timeseries
  */
 EXPORT double inform_mutual_info(int const *xs, int const *ys, size_t n,
-    int bx, int by, double b, inform_error *err);
+    int bx, int by, inform_error *err);
 
 /**
  * Compute the local mutual information between two timeseries
  */
 EXPORT double *inform_local_mutual_info(int const *xs, int const *ys, size_t n,
-    int bx, int by, double b, double *mi, inform_error *err);
+    int bx, int by, double *mi, inform_error *err);
 
 #ifdef __cplusplus
 }
