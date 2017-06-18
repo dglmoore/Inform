@@ -20,3 +20,7 @@ analysis of complex system.
 
 In addition to the core components, a small collection of utilities are also
 provided.
+
+:leveloffset: 1
+
+include::getting-started.txt[]
