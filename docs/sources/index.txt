@@ -2,7 +2,7 @@
 Douglas G. Moore <doug@dglmoore.com>
 v0.0.5, June 2017
 :toc2:
-:toclevels: 3
+:toclevels: 2
 :source-highlighter: prettify
 
 Inform is a cross-platform C library designed for performing information 
@@ -24,3 +24,5 @@ provided.
 :leveloffset: 1
 
 include::getting-started.txt[]
+
+include::distributions.txt[]
