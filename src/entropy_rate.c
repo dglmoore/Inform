@@ -118,7 +118,7 @@ double inform_entropy_rate(int const *series, size_t n, size_t m, int b,
         accumulate_observations(series, m, b, k, &states, &histories);
     }
 
-    double er = inform_shannon_ce(&states, &histories, (double) b);
+    double er = inform_shannon_ce(&states, &histories, 2.0);
 
     free(data);
 
@@ -177,7 +177,7 @@ double *inform_local_entropy_rate(int const *series, size_t n, size_t m, int b,
 
     for (size_t i = 0; i < N; ++i)
     {
-        er[i] = inform_shannon_pce(&states, &histories, state[i], history[i], (double) b);
+        er[i] = inform_shannon_pce(&states, &histories, state[i], history[i], 2.0);
     }
 
     free(history);
