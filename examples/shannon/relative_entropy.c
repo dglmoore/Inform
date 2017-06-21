@@ -21,10 +21,8 @@ int main()
         inform_dist_tick(q, (((((rand() % 6) % 5) % 4) % 3) % 2));
     }
 
-    // Base-2:  ~0.368494
-    printf("%lf\n", inform_shannon_re(q, p, 2.0));
-    // Base-10: ~0.449499
-    printf("%lf\n", inform_shannon_re(p, q, 2.0));
+    printf("%lf\n", inform_shannon_re(q, p, 2.0)); // ~ 0.368494
+    printf("%lf\n", inform_shannon_re(p, q, 2.0)); // ~ 0.449499
 
     inform_dist_free(q);
     inform_dist_free(p);
