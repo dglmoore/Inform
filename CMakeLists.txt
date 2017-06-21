@@ -38,3 +38,8 @@ install(DIRECTORY include/ DESTINATION include)
 
 enable_testing()
 add_subdirectory(test)
+
+if (BUILD_EXAMPLES)
+    message(STATUS "Including Examples")
+    add_subdirectory(examples)
+endif()
