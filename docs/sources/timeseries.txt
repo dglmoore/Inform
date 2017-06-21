@@ -1,0 +1,71 @@
+= Time Series Measures
+The link:index.html#_empirical_distributions[Emperical Distributions] and
+link:index.html#_shannon_information_measures[Shannon Information Measures] come
+together to make information measures on time series almost trivial to
+implement. Every such measure amounts to constructing distributions and applying
+and information measure.
+
+== Notation
+Throughout this section, we will denote random variables as
+latexmath:[X,Y,\ldots], and let latexmath:[x_i, y_i, \ldots] represent the
+latexmath:[i]-th time step of a time series drawn from a random variable. Many
+of the measures consider latexmath:[k]-histories (a.k.a latexmath:[k]-blocks)
+of the time series, e.g.
+latexmath:[x_i^{(k)} = \{x_{i-k+1}, x_{i-k+2}, \ldots, x_i\}].
+
+For the sake of conciseness, when denoting probability distributions, we will
+only make the random variable explicit in situations where the notation is
+ambiguous. Generally, we will write latexmath:[p(x_i)], latexmath:[p(x_i^{(k)})]
+and latexmath:[p(x_i^{(k)}, x_{i+1})] to denote the emperical probability of
+observing the latexmath:[x_i] state, the latexmath:[x_i^{(k)}]
+latexmath:[k]-history, and the joint probability of observing
+latexmath:[\left(x_i^{(k)}, x_{i+1}\right)], respectively.
+
+*Please report any notational ambiguities as an
+https://github.com/elife-asu/inform/issues[issue].*
+
+== Subtle Details
+
+== Active Information
+
+=== Examples
+
+=== API Documentation
+
+== Block Entropy
+
+=== Examples
+
+=== API Documentation
+
+== Conditional Entropy
+
+=== Examples
+
+=== API Documentation
+
+== Entropy Rate
+
+=== Examples
+
+=== API Documentation
+
+== Mutual Information
+
+=== Examples
+
+=== API Documentation
+
+== Relative Entropy
+
+=== Examples
+
+=== API Documentation
+
+== Transfer Entropy
+
+=== Examples
+
+=== API Documentation
+
+== References

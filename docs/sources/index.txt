@@ -4,6 +4,7 @@ v0.0.5, June 2017
 :toc2:
 :toclevels: 3
 :source-highlighter: prettify
+:stem:
 
 Inform is a cross-platform C library designed for performing information 
 analysis of complex system.
@@ -28,3 +29,5 @@ include::getting-started.txt[]
 include::distributions.txt[]
 
 include::shannon.txt[]
+
+include::timeseries.txt[]
