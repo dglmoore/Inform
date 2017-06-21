@@ -14,25 +14,14 @@ have yet been made.
 
 [source,c]
 ----
-inform_dist *dist = inform_dist_alloc(5);
-assert(dist != NULL);
-assert(inform_dist_is_valid(dist) == 0);
-assert(inform_dist_size(dist) == 5);
-assert(inform_dist_counts(dist) == 0);
-inform_dist_free(dist);
+include::../../examples/dist/alloc.c[]
 ----
 
 Alternatively, you can construct a distribution from an array of observations
 counts:
 [source,c]
 ----
-int observations[7] = {0, 0, 1, 2, 1, 0, 0};
-inform_dist *dist = inform_dist_create(observations, 7);
-assert(dist != NULL);
-assert(inform_dist_is_valid(dist) == 1);
-assert(inform_dist_size(dist) == 7);
-assert(inform_dist_counts(dist) == 4);
-inform_dist_free(dist);
+include::../../examples/dist/create.c[]
 ----
 
 === Example 2: Making Observations
@@ -41,27 +30,13 @@ There are two methods for doing so. The first allows the user to directly set
 the observation count for a particular event:
 [source,c]
 ----
-inform_dist *dist = inform_dist_alloc(5);
-for (int i = 0; i < 5; ++i)
-{
-    int x = inform_dist_set(dist, i, i*i);
-    assert(x == i * i);
-    assert(inform_dist_get(dist, i) == i * i);
-}
-inform_dist_free(dist);
+include::../../examples/dist/getset.c[]
 ----
 The second method is to make _incremental_ changes to the distribution. This is
 useful when the observations are being made from a time series:
 [source,c]
 ----
-int observations[] = {1,0,1,2,2,1,2,3,2,2};
-inform_dist *dist = inform_dist_alloc(4);
-for (size_t i = 0; i < 10; ++i)
-{
-    inform_dist_tick(dist, observations[i]);
-}
-// dist ~~ {1, 3, 5, 1} (one 0, three 1's, five 2's and one 3)
-inform_dist_free(dist);
+include::../../examples/dist/tick.c[]
 ----
 
 === Example 3: Probabilities
@@ -70,22 +45,14 @@ in the previous examples, there are multiple ways of doing this. The first is to
 ask for the probability of a given event:
 [source,c]
 ----
-int counts[4] = {3,0,1,2};
-inform_dist *dist = inform_dist_create(counts, 4);
-// beware of floating-point comparisons: some of these will fail
-assert(inform_dist_prob(dist, 0) == 0.5);
-assert(inform_dist_prob(dist, 1) == 0.0);
-assert(inform_dist_prob(dist, 2) == 0.1666);
-assert(infrom_dist_prob(dist, 3) == 0.3333);
+include::../../examples/dist/prob.c[]
 ----
 
 Sometimes, though, it is nice to be able to just dump the probabilities out to
 an array:
 [source,c]
 ----
-double probs[4];
-inform_dist_dump(dist, probs, 4);
-// probs == {0.5, 0.0, 0.1666, 0.3333}
+include::../../examples/dist/dump.c[]
 ----
 
 === Example 4: Shannon Entropy
@@ -94,91 +61,14 @@ example, we will compute the shannon entropy of a time series of observed
 events.
 [source,c]
 ----
-#include <inform/dist.h>
-#include <math.h>
-#include <stdio.h>
-
-#define N 10
-int main()
-{
-    int obs[N] = {1, 0, 1, 2, 2, 1, 2, 3, 2, 2};
-    int max_event = -1;
-
-    // Find the max event
-    for (size_t i = 0; i < N; ++i)
-    {
-        max_event = (obs[i] > max_event) ? obs[i] : max_event;
-    }
-
-    // Construct the distribution
-    inform_dist *dist = inform_dist_alloc(max_event + 1);
-    assert(dist);
-
-    // Make observations
-    for (size_t i = 0; i < N; ++i)
-    {
-        inform_dist_tick(dist, obs[i]);
-    }
-
-    // Get the probabilities
-    double *probs = malloc((max_event + 1) * sizeof(double));
-    assert(probs);
-    inform_dist_dump(dist, probs, max_event + 1);
-
-    // Compute the entropy
-    double entropy = 0.0;
-    for (size_t i = 0; i < max_event + 1; ++i)
-    {
-        entropy -= probs[i] * log2(probs[i]);
-    }
-    printf("%lf\n", entropy); // 1.68547529723
-
-    // Clean up
-    free(probs);
-    inform_dist_free(dist);
-}
+include::../../examples/dist/manual_entropy.c[]
 ----
 
 Of course, *Inform* provides a function to compute the entropy so you don't
 have to!
 [source,c]
 ----
-#include <inform/dist.h>
-#include <inform/shannon.h>
-#include <math.h>
-#include <stdio.h>
-
-#define N 10
-int main()
-{
-    int obs[N] = {1, 0, 1, 2, 2, 1, 2, 3, 2, 2};
-    int max_event = -1;
-
-    // Find the max event
-    for (size_t i = 0; i < N; ++i)
-    {
-        max_event = (obs[i] > max_event) ? obs[i] : max_event;
-    }
-
-    // Construct the distribution
-    inform_dist *dist = inform_dist_alloc(max_event + 1);
-    assert(dist);
-
-    // Make observations
-    for (size_t i = 0; i < N; ++i)
-    {
-        inform_dist_tick(dist, obs[i]);
-    }
-
-    // Compute the entropy
-    double base = 2.0;
-    double entropy = inform_shannon_entropy(dist, base);
-    printf("%lf\n", entropy); // 1.68547529723
-
-    // Clean up
-    free(probs);
-    inform_dist_free(dist);
-}
+include::../../examples/dist/shannon_entropy.c[]
 ----
 
 == API Documentation
