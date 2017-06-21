@@ -13,31 +13,7 @@ Shannon entropy of a distributions. Let’s try generating a random distribution
 and see what the entropy looks like?
 [source,c]
 ----
-#include <assert.h>
-#include <inform/dist.h>
-#include <inform/shannon.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-#define B 10
-#define N 10000
-
-int main()
-{
-    srand(time(NULL));
-    inform_dist *d = inform_dist_alloc(B);
-    assert(d);
-    for (size_t i = 0; i < N; ++i)
-    {
-        inform_dist_tick(d, rand() % B);
-    }
-
-    printf("%ld\n", inform_shannon_entropy(d,  2.0)); // 3.32137023165359
-    printf("%ld\n", inform_shannon_entropy(d, 10.0)); // 0.9998320664331565
-
-    inform_free(d);
-}
+include::../../examples/entropy.c[]
 ----
 This is exactly what you should expect; the pseudo-random number generate does a
 decent job producing integers in a uniform fashion.
@@ -47,41 +23,7 @@ How correlated are consecutive integers? Let's give
 link:index.html#inform_shannon_mi[mutual information] a try.
 [source,c]
 ----
-#include <assert.h>
-#include <inform/dist.h>
-#include <inform/shannon.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-#define B 10
-#define N 10000
-
-int main()
-{
-    srand(time(NULL));
-    inform_dist *joint = inform_dist_alloc(B * B);
-    inform_dist *prev = inform_dist_alloc(B);
-    inform_dist *next = inform_dist_alloc(B);
-    assert(joint && prev && next);
-
-    int p = rand() % B, n = 0, j = 0;
-    for (size_t i = 0; i < N; ++i)
-    {
-        n = rand() % B;
-        inform_dist_tick(prev, p);
-        inform_dist_tick(next, n);
-        inform_dist_tick(joint, 10*p + n);
-        p = n;
-    }
-
-    printf("%ld\n", inform_shannon_mi(d,  2.0)); // -1.7763568394002505e-15
-    printf("%ld\n", inform_shannon_mi(d, 10.0)); // -6.661338147750939e-16
-
-    inform_free(next);
-    inform_free(prev);
-    inform_free(joint);
-}
+include::../../examples/mutual_information.c[]
 ----
 Due to the subtlties of floating-point computation we don’t get zero. Really,
 though the mutual information is zero.
@@ -91,42 +33,7 @@ Okay. Now let’s generate some binary sequences. The first will be roughly
 uniform, but the second will be biased toward `0`.
 [source,c]
 ----
-#include <inform/dist.h>
-#include <inform/shannon.h>
-#include <math.h>
-#include <stdio.h>
-
-#define N 10
-int main()
-{
-    int obs[N] = {1, 0, 1, 2, 2, 1, 2, 3, 2, 2};
-    int max_event = -1;
-
-    // Find the max event
-    for (size_t i = 0; i < N; ++i)
-    {
-        max_event = (obs[i] > max_event) ? obs[i] : max_event;
-    }
-
-    // Construct the distribution
-    inform_dist *dist = inform_dist_alloc(max_event + 1);
-    assert(dist);
-
-    // Make observations
-    for (size_t i = 0; i < N; ++i)
-    {
-        inform_dist_tick(dist, obs[i]);
-    }
-
-    // Compute the entropy
-    double base = 2.0;
-    double entropy = inform_shannon_entropy(dist, base);
-    printf("%lf\n", entropy); // 1.68547529723
-
-    // Clean up
-    free(probs);
-    inform_dist_free(dist);
-}
+include::../../examples/relative_entropy.c[]
 ----
 
 == API Documentation
