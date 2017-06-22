@@ -31,3 +31,5 @@ include::distributions.txt[]
 include::shannon.txt[]
 
 include::timeseries.txt[]
+
+include::utilities.txt[]
