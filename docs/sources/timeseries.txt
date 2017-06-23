@@ -82,6 +82,30 @@ prefers the initial conditions to be handled, but at the moment the user has to
 make it happen manually.
 
 == Active Information
+Active information (AI) was introduced in <<Lizier2012>> to quantify information
+storage in distributed computation. Active information is defined in terms of a
+temporally local variant
+[latexmath]
+++++
+a_{X,i}(k,b) = \log_b \frac{p(x_i^{(k)}, x_{i+1})}{p(x_i^{(k)})p(x_{i+1})}
+++++
+where the probabilities are constructed empirically from the entire time series.
+From the local variant, the temporally global active information as
+[latexmath]
+++++
+A_X(k,b) = \langle a_{X_i}(k,b) \rangle_i = \sum_{x_i^{(k)}, x_{i+1}} p(x_i^{(k)}, x_{i+1}) \log_b \frac{p(x_i^{(k)}, x_{i+1})}{p(x_i^{(k)})p(x_{i+1})}
+++++
+Strictly speaking, the local and average active information are defined as
+[latexmath]
+++++
+a_{X,i}(b) = \lim_{k \rightarrow \infty} a_{X,i}(k,b)
+\qquad
+\textrm{and}
+\qquad
+A_X(b) = \lim_{k \rightarrow \infty} A_X(k,b),
+++++
+but we do not provide limiting functionality in this library
+(https://github.com/elife-asu/inform/issues/24[yet!]).
 
 === Examples
 
@@ -124,3 +148,9 @@ make it happen manually.
 === API Documentation
 
 == References
+
+[bibliography]
+- [[[Lizier2012]]] J.T. Lizier, M. Prokopenko and A.Y. Zomaya,
+  http://dx.doi.org/10.1016/j.ins.2012.04.016["Local measures of information
+  storage in complex distributed computation] Information Sciences, vol. 208,
+  pp. 39-54, 2012.
