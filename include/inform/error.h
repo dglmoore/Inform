@@ -33,6 +33,7 @@ typedef enum
     INFORM_EDIST        = 12, /// invalid distribution
     INFORM_EBIN         = 13, /// invalid binning
     INFORM_EENCODE      = 14, /// cannot encode state
+    INFORM_ETPMROW      = 15, /// all zero row in transition probability matrix
 } inform_error;
 
 /// set an error as pointed to by ERR
