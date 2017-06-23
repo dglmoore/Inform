@@ -583,6 +583,140 @@ UNIT(RandomIntMinMax)
     }
 }
 
+UNIT(TPMNullSeries)
+{
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_tpm(NULL, 1, 10, 2, NULL, &err));
+    ASSERT_TRUE(inform_failed(&err));
+}
+
+UNIT(TPMNoInits)
+{
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_tpm((int[6]){0,1,0,1,1,0}, 0, 6, 2, NULL, &err));
+    ASSERT_TRUE(inform_failed(&err));
+}
+
+UNIT(TPMShortSeries)
+{
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_tpm((int[6]){0,1,0,1,1,0}, 6, 1, 2, NULL, &err));
+    ASSERT_TRUE(inform_failed(&err));
+}
+
+UNIT(TPMInvalidBase)
+{
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_tpm((int[6]){0,1,0,1,1,0}, 2, 3, 1, NULL, &err));
+    ASSERT_TRUE(inform_failed(&err));
+}
+
+UNIT(TPMInvalidState)
+{
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_tpm((int[6]){0,-1,0,1,1,0}, 2, 3, 2, NULL, &err));
+    ASSERT_TRUE(inform_failed(&err));
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_tpm((int[6]){0,1,0,1,2,0}, 2, 3, 2, NULL, &err));
+    ASSERT_TRUE(inform_failed(&err));
+}
+
+UNIT(TPMAllocates)
+{
+    inform_error err = INFORM_SUCCESS;
+    double expected[4] = {0.000000, 1.000000, 0.666667, 0.333333};
+    double *tpm = inform_tpm((int[6]){0,1,0,1,1,0}, 2, 3, 2, NULL, &err);
+    ASSERT_TRUE(inform_succeeded(&err));
+    ASSERT_NOT_NULL(tpm);
+    for (size_t i = 0; i < 4; ++i)
+    {
+        ASSERT_DBL_NEAR_TOL(expected[i], tpm[i], 1e-6);
+    }
+    free(tpm);
+}
+
+UNIT(TPMNoAllocation)
+{
+    inform_error err = INFORM_SUCCESS;
+    double expected[4] = {0.000000, 1.000000, 0.666667, 0.333333};
+    double got[4];
+    uint64_t before = (uint64_t)got;
+    double *tpm = inform_tpm((int[6]){0,1,0,1,1,0}, 2, 3, 2, got, &err);
+    uint64_t after = (uint64_t)tpm;
+    ASSERT_TRUE(inform_succeeded(&err));
+    ASSERT_EQUAL_U(after, before);
+    for (size_t i = 0; i < 4; ++i)
+    {
+        ASSERT_DBL_NEAR_TOL(expected[i], got[i], 1e-6);
+    }
+}
+
+UNIT(TPMZeroRow)
+{
+    inform_error err = INFORM_SUCCESS;
+    double expected[4] = {0.000000, 0.000000, 0.250000, 0.750000};
+    double got[4];
+    inform_tpm((int[6]){1,1,1,1,1,0}, 2, 3, 2, got, &err);
+    ASSERT_EQUAL(INFORM_ETPMROW, err);
+    for (size_t i = 0; i < 4; ++i)
+    {
+        ASSERT_DBL_NEAR_TOL(expected[i], got[i], 1e-6);
+    }
+}
+
+UNIT(TPMBase2)
+{
+    inform_error err;
+    double got[4];
+    {
+        err = INFORM_SUCCESS;
+        double expected[4] = {0.250000, 0.750000, 0.400000, 0.600000};
+        inform_tpm((int[10]){0,0,1,1,0,1,0,1,1,1}, 1, 10, 2, got, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        for (size_t i = 0; i < 4; ++i)
+            ASSERT_DBL_NEAR_TOL(expected[i], got[i], 1e-6);
+    }
+    {
+        err = INFORM_SUCCESS;
+        double expected[4] = {0.333333, 0.666667, 0.400000, 0.600000};
+        inform_tpm((int[10]){0,0,1,1,0,1,0,1,1,1}, 2, 5, 2, got, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        for (size_t i = 0; i < 4; ++i)
+            ASSERT_DBL_NEAR_TOL(expected[i], got[i], 1e-6);
+    }
+}
+
+UNIT(TPMBase3)
+{
+    inform_error err;
+    double got[9];
+    {
+        err = INFORM_SUCCESS;
+        double expected[9] = {
+            0.333333, 0.666667, 0.000000,
+            0.250000, 0.250000, 0.500000,
+            0.000000, 0.500000, 0.500000,
+        };
+        inform_tpm((int[10]){0,1,2,2,1,1,0,0,1,2}, 1, 10, 3, got, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        for (size_t i = 0; i < 9; ++i)
+            ASSERT_DBL_NEAR_TOL(expected[i], got[i], 1e-6);
+    }
+    {
+        err = INFORM_SUCCESS;
+        double expected[9] = {
+            0.333333, 0.666667, 0.000000,
+            0.333333, 0.000000, 0.666667,
+            0.000000, 0.500000, 0.500000,
+        };
+        inform_tpm((int[10]){0,1,2,2,1,1,0,0,1,2}, 2, 5, 3, got, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        for (size_t i = 0; i < 9; ++i)
+            ASSERT_DBL_NEAR_TOL(expected[i], got[i], 1e-6);
+    }
+}
+
 BEGIN_SUITE(Utilities)
     ADD_UNIT(RangeNullSeries)
     ADD_UNIT(RangeEmpty)
@@ -642,4 +776,15 @@ BEGIN_SUITE(Utilities)
 
     ADD_UNIT(RandomInt)
     ADD_UNIT(RandomIntMinMax)
+
+    ADD_UNIT(TPMNullSeries)
+    ADD_UNIT(TPMNoInits)
+    ADD_UNIT(TPMShortSeries)
+    ADD_UNIT(TPMInvalidBase)
+    ADD_UNIT(TPMInvalidState)
+    ADD_UNIT(TPMAllocates)
+    ADD_UNIT(TPMNoAllocation)
+    ADD_UNIT(TPMZeroRow)
+    ADD_UNIT(TPMBase2)
+    ADD_UNIT(TPMBase3)
 END_SUITE
