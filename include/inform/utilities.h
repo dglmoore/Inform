@@ -7,3 +7,4 @@
 #include <inform/utilities/coalesce.h>
 #include <inform/utilities/encoding.h>
 #include <inform/utilities/random.h>
+#include <inform/utilities/tpm.h>
