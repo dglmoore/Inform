@@ -26,6 +26,61 @@ https://github.com/elife-asu/inform/issues[issue].*
 
 == Subtle Details
 
+*Inform* takes several liberties in the way in which the time series measures
+are implemented.
+
+=== The Base: States and Logarithms
+The word "base" has two different meanings in the context of the information
+measures on time series. It could refer to the base of the time series itself,
+that is the number of unique states in the time series. For example, the time
+series latexmath:[\{0,2,1,0,0\}] has a base of latexmath:[3]. On the other
+hand, it could refer to the base of the logarithm used in computing the
+information content of the emipirical distributions. The problem is that these
+two meanings clash. The base of the time series affects the range of values the
+measure can produce, and the base of the logarithm represents a rescaling of
+those values.
+
+The following measures use one of two conventions. The measures of information
+dynamics (e.g. Active Information, Entropy Rate and Transfer Entropy) take as an
+argument the base of the state and use that as the base of the logarithm. The
+result is that the time-averaged values of those measures are in the unit range.
+An exception to this rule is the block entropy. It two uses this convention, but
+its value will not be in the unit range unless the block size latexmath:[k] is
+latexmath:[1] or the specified base is latexmath:[2^k] (or you could just divide
+by latexmath:[k]). The second convention is to take both the base of the time
+series and the base of the logarithm. This is about as unambiguous as it gets.
+This approach is used for the measures that do not make explicit use of a
+history length (or block size), e.g. Mutual Information, Conditional Entropy,
+etc.... Coming releases may revise the handling of the bases, but until then
+each function's documentation will specify how the base is used.
+
+Coming releases may revise the handling of the bases, but until then each
+function's documentation will specify how the base is used.
+
+=== Multiple Initial Conditions
+PyInform tries to provide handling of multiple initial conditions. The "proper"
+way to handle initial conditions is a bit contested. One completely reasonable
+approach is to apply the information measures to each initial condition’s time
+series independently and then average. One can think of this approach as
+conditioning the measure on the inital condition. The second approach is to
+independently use all of the initial conditions to construct the various
+probability distributions. You can think of this approach as rolling the
+uncertainty of the initial condition into the measure.
+footnote:[There is actually at least three ways to handle multiple initial
+conditions, but the third method is related to the first described in the text
+by the addition of the entropy of the distribution over initial conditions. In
+this approach, the initial condition is considered as a random variable.]
+
+The current implementation takes the second approach. The accpeted time series
+can be up to 2-D with each row representing the time series for a different
+initial condition. We chose to take the second approach because the "measure
+then average" method can still be done with the current implimentation. For an
+example of this, see the example section of Active Information.
+
+Subsequent releases may provide a mechanism for specifying a how the user
+prefers the initial conditions to be handled, but at the moment the user has to
+make it happen manually.
+
 == Active Information
 
 === Examples
