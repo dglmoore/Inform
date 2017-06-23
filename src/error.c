@@ -37,6 +37,7 @@ char const *inform_strerror(inform_error const *err)
         case INFORM_EDIST:        return "invalid distribution encountered";
         case INFORM_EBIN:         return "invalid binning";
         case INFORM_EENCODE:      return "encoding/decoding failed";
+        case INFORM_ETPMROW:      return "all zero row in TPM";
         default:                  return "unrecognized error";
     }
 }
