@@ -15,13 +15,16 @@ static void accumulate_observations(int const* series, size_t n, int b,
         history *= b;
         history += series[i];
     }
+
     for (size_t i = kpast; i < kpast + kfuture; ++i)
     {
         r *= b;
         future *= b;
         future += series[i];
     }
-    for (size_t i = kpast + kfuture; i < n; ++i)
+
+    size_t i = kpast + kfuture;
+    do
     {
         state = history * r + future;
 
@@ -31,13 +34,7 @@ static void accumulate_observations(int const* series, size_t n, int b,
 
         history = history * b - series[i - kpast - kfuture]*q + series[i - kfuture];
         future = future * b - series[i - kfuture]*r + series[i];
-    }
-
-    state = history * r + future;
-
-    states->histogram[state]++;
-    histories->histogram[history]++;
-    futures->histogram[future]++;
+    } while (++i <= n);
 }
 
 static void accumulate_local_observations(int const* series, size_t n, int b,
@@ -52,6 +49,7 @@ static void accumulate_local_observations(int const* series, size_t n, int b,
         history[0] *= b;
         history[0] += series[i];
     }
+    
     future[0] = 0;
     int r = 1;
     for (size_t i = kpast; i < kpast + kfuture; ++i)
@@ -60,25 +58,23 @@ static void accumulate_local_observations(int const* series, size_t n, int b,
         future[0] *= b;
         future[0] += series[i];
     }
-    size_t l = 0;
-    for (size_t i = kpast + kfuture; i < n; ++i)
+
+    size_t i = kpast + kfuture;
+    do
     {
-        l = i - kpast - kfuture;
+        size_t l = i - kpast - kfuture;
         state[l] = history[l] * r + future[l];
 
         states->histogram[state[l]]++;
         histories->histogram[history[l]]++;
         futures->histogram[future[l]]++;
 
-        history[l + 1] = history[l] * b - series[l]*q + series[i - kfuture];
-        future[l + 1] = future[l] * b - series[i - kfuture]*r + series[i];
-    }
-    l = n - kpast - kfuture;
-    state[l] = history[l] * r + future[l];
-
-    states->histogram[state[l]]++;
-    histories->histogram[history[l]]++;
-    futures->histogram[future[l]]++;
+        if (i != n)
+        {
+            history[l + 1] = history[l] * b - series[l]*q + series[i - kfuture];
+            future[l + 1] = future[l] * b - series[i - kfuture]*r + series[i];
+        }
+    } while (++i <= n);
 }
 
 static bool check_arguments(int const *series, size_t n, size_t m, int b,
