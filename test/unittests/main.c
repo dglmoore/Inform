@@ -10,6 +10,7 @@ IMPORT_SUITE(ConditionalEntropy);
 IMPORT_SUITE(Distribution);
 IMPORT_SUITE(Entropy);
 IMPORT_SUITE(EntropyRate);
+IMPORT_SUITE(ExcessEntropy);
 IMPORT_SUITE(MutualInfo);
 IMPORT_SUITE(PredictiveInformation);
 IMPORT_SUITE(RelativeEntropy);
@@ -24,6 +25,7 @@ BEGIN_REGISTRATION
     REGISTER(Distribution)
     REGISTER(Entropy)
     REGISTER(EntropyRate)
+    REGISTER(ExcessEntropy)
     REGISTER(MutualInfo)
     REGISTER(PredictiveInformation)
     REGISTER(RelativeEntropy)
