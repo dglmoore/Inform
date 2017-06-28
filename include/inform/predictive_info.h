@@ -33,7 +33,8 @@ EXPORT double inform_predictive_info(int const *series, size_t n, size_t m,
  * @param[in] m       the number of time steps in each time series
  * @param[in] b       the base or number of distinct states at each time step
  * @param[in] kpast   the history length
- * @param[out] ai     the future length
+ * @param[in] kfuture the future length
+ * @param[out] pi     the local predictive information
  * @param[out] err    an error structure
  * @return a pointer to the local predictive information array
  */
