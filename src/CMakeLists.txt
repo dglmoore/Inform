@@ -5,6 +5,7 @@ set(${PROJECT_NAME}_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/dist.c
     ${CMAKE_CURRENT_SOURCE_DIR}/entropy_rate.c
     ${CMAKE_CURRENT_SOURCE_DIR}/error.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/excess_entropy.c
     ${CMAKE_CURRENT_SOURCE_DIR}/mutual_info.c
     ${CMAKE_CURRENT_SOURCE_DIR}/predictive_info.c
     ${CMAKE_CURRENT_SOURCE_DIR}/relative_entropy.c
