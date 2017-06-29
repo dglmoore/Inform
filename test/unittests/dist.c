@@ -268,6 +268,37 @@ UNIT(Dup)
     inform_dist_free(dist);
 }
 
+UNIT(Create)
+{
+    ASSERT_NULL(inform_dist_create(NULL, 0));
+    ASSERT_NULL(inform_dist_create(NULL, 1));
+    ASSERT_NULL(inform_dist_create((uint32_t[3]){3,4,5}, 0));
+
+    inform_dist *dist = inform_dist_create((uint32_t[3]){3,4,5}, 1);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(1, inform_dist_size(dist));
+    ASSERT_EQUAL(3, inform_dist_counts(dist));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 0));
+    inform_dist_free(dist);
+
+    dist = inform_dist_create((uint32_t[3]){3,4,5}, 2);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(2, inform_dist_size(dist));
+    ASSERT_EQUAL(7, inform_dist_counts(dist));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(4, inform_dist_get(dist, 1));
+    inform_dist_free(dist);
+
+    dist = inform_dist_create((uint32_t[3]){3,4,5}, 3);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(3, inform_dist_size(dist));
+    ASSERT_EQUAL(12, inform_dist_counts(dist));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(4, inform_dist_get(dist, 1));
+    ASSERT_EQUAL(5, inform_dist_get(dist, 2));
+    inform_dist_free(dist);
+}
+
 UNIT(Infer)
 {
     ASSERT_NULL(inform_dist_infer(NULL, 0));
@@ -421,6 +452,7 @@ BEGIN_SUITE(Distribution)
     ADD_UNIT(CopyResize)
     ADD_UNIT(DupNull)
     ADD_UNIT(Dup)
+    ADD_UNIT(Create)
     ADD_UNIT(Infer)
     ADD_UNIT(Tick)
     ADD_UNIT(Prob)
