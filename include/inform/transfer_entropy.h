@@ -41,10 +41,6 @@ EXPORT double inform_transfer_entropy(int const *series_y, int const *series_x,
 EXPORT double *inform_local_transfer_entropy(int const *series_y, int const *series_x,
     size_t n, size_t m, int b, size_t k, double *te, inform_error *err);
 
-#ifdef __cplusplus
-}
-#endif
-
 /**
  * Compute the local transfer entropy from one time series to another
  *
