@@ -151,7 +151,7 @@ inform_dist* inform_dist_dup(inform_dist const *dist)
 inform_dist* inform_dist_create(uint32_t const *data, size_t n)
 {
     // if the requested support size is zero, return NULL
-    if (n == 0)
+    if (data == NULL || n == 0)
     {
         return NULL;
     }
