@@ -258,8 +258,8 @@ EXPORT size_t inform_dist_dump(inform_dist const *dist, double *probs, size_t n)
  * events to that point will be returned.
  *
  * @param[in,out] dist the distribution
- * @param[in] events the events to observe
- * @param[in] n the number of events provided
+ * @param[in] events   the events to observe
+ * @param[in] n        the number of events provided
  * @return the number of valid observations
  */
 EXPORT size_t inform_dist_accumulate(inform_dist *dist, int const *events,

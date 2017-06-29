@@ -296,5 +296,21 @@ size_t inform_dist_dump(inform_dist const *dist, double *probs, size_t n)
 
 size_t inform_dist_accumulate(inform_dist *dist, int const *events, size_t n)
 {
-    return 0;
+    // if the distribution is invalid or no events were provided
+    if (dist == NULL || events == NULL || dist->size == 0)
+    {
+        return 0;
+    }
+    // loop over the events and add them to the distribution
+    size_t const size = dist->size;
+    size_t i = 0;
+    while (i < n)
+    {
+        if (*events >= size) break;
+        dist->histogram[*events] += 1;
+        dist->counts += 1;
+        ++events;
+        ++i;
+    }
+    return i;
 }
