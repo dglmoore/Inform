@@ -10,6 +10,7 @@ set(${PROJECT_NAME}_UNITTEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/mutual_info.c
     ${CMAKE_CURRENT_SOURCE_DIR}/predictive_info.c
     ${CMAKE_CURRENT_SOURCE_DIR}/relative_entropy.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/separable_info.c
     ${CMAKE_CURRENT_SOURCE_DIR}/shannon.c
     ${CMAKE_CURRENT_SOURCE_DIR}/transfer_entropy.c
     ${CMAKE_CURRENT_SOURCE_DIR}/util.c

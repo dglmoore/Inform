@@ -14,6 +14,7 @@ IMPORT_SUITE(ExcessEntropy);
 IMPORT_SUITE(MutualInfo);
 IMPORT_SUITE(PredictiveInformation);
 IMPORT_SUITE(RelativeEntropy);
+IMPORT_SUITE(SeparableInformation);
 IMPORT_SUITE(TransferEntropy);
 IMPORT_SUITE(Utilities);
 
@@ -29,6 +30,7 @@ BEGIN_REGISTRATION
     REGISTER(MutualInfo)
     REGISTER(PredictiveInformation)
     REGISTER(RelativeEntropy)
+    REGISTER(SeparableInformation)
     REGISTER(TransferEntropy)
     REGISTER(Utilities)
 END_REGISTRATION
