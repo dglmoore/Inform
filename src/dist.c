@@ -187,7 +187,32 @@ inform_dist* inform_dist_create(uint32_t const *data, size_t n)
 
 inform_dist* inform_dist_infer(int const *events, size_t n)
 {
-    return NULL;
+    // if no events are observed, return NULL
+    if (events == NULL || n == 0) return NULL;
+
+    // infer the support
+    int b = -1, event = 0;
+    for (size_t i = 0; i < n; ++i)
+    {
+        event = events[i];
+        if (event < 0) break;
+        if (event > b) b = event;
+    }
+    if (b < 0) return NULL;
+    // the base is one greater than the largest observed event
+    b += 1;
+    // allocate the distribution
+    inform_dist *dist = inform_dist_alloc(b);
+    // accumulate the observations
+    if (dist != NULL)
+    {
+        if (inform_dist_accumulate(dist, events, n) != n)
+        {
+            inform_dist_free(dist);
+            dist = NULL;
+        }
+    }
+    return dist;
 }
 
 void inform_dist_free(inform_dist *dist)
