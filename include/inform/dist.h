@@ -128,6 +128,14 @@ EXPORT inform_dist* inform_dist_dup(inform_dist const *dist);
  */
 EXPORT inform_dist* inform_dist_create(uint32_t const *data, size_t n);
 /**
+ * Infer a distribution from a collection of observed events.
+ *
+ * @param[in] events   the events to observe
+ * @param[in] n        the number of events provided
+ * @return the new distribution
+ */
+EXPORT inform_dist* inform_dist_infer(int const *events, size_t n);
+/**
  * Free all dynamically allocated memory associated with a distribution.
  *
  * @param[in] dist the distribution to free

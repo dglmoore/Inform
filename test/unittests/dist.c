@@ -268,6 +268,38 @@ UNIT(Dup)
     inform_dist_free(dist);
 }
 
+UNIT(Infer)
+{
+    ASSERT_NULL(inform_dist_infer(NULL, 0));
+    ASSERT_NULL(inform_dist_infer(NULL, 1));
+    ASSERT_NULL(inform_dist_infer((int[3]){0,0,1}, 0));
+    ASSERT_NULL(inform_dist_infer((int[3]){0,-1,2}, 3));
+
+    inform_dist *dist = inform_dist_infer((int[4]){0,1,1,1}, 4);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(2, inform_dist_size(dist));
+    ASSERT_EQUAL(4, inform_dist_counts(dist));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 1));
+    inform_dist_free(dist);
+
+    dist = inform_dist_infer((int[8]){1,1,0,2,2,1,2,0}, 8);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(3, inform_dist_size(dist));
+    ASSERT_EQUAL(8, inform_dist_counts(dist));
+    ASSERT_EQUAL(2, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 1));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 2));
+    inform_dist_free(dist);
+
+    dist = inform_dist_infer((int[5]){0,0,0,0,0}, 5);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(1, inform_dist_size(dist));
+    ASSERT_EQUAL(5, inform_dist_counts(dist));
+    ASSERT_EQUAL(5, inform_dist_get(dist, 0));
+    inform_dist_free(dist);
+}
+
 UNIT(Tick)
 {
     inform_dist *dist = inform_dist_alloc(3);
@@ -389,6 +421,7 @@ BEGIN_SUITE(Distribution)
     ADD_UNIT(CopyResize)
     ADD_UNIT(DupNull)
     ADD_UNIT(Dup)
+    ADD_UNIT(Infer)
     ADD_UNIT(Tick)
     ADD_UNIT(Prob)
     ADD_UNIT(Dump)
