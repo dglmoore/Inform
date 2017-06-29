@@ -293,3 +293,8 @@ size_t inform_dist_dump(inform_dist const *dist, double *probs, size_t n)
     }
     return (int) n;
 }
+
+size_t inform_dist_accumulate(inform_dist *dist, int const *events, size_t n)
+{
+    return 0;
+}

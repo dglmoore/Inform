@@ -340,6 +340,37 @@ UNIT(Dump)
     inform_dist_free(dist);
 }
 
+UNIT(Accumulate)
+{
+    inform_dist *dist = NULL;
+    ASSERT_EQUAL(0, inform_dist_accumulate(dist, (int[4]){0, 0, 1, 0}, 4));
+
+    dist = inform_dist_alloc(2);
+    ASSERT_NOT_NULL(dist);
+
+    ASSERT_EQUAL_U(0, inform_dist_accumulate(dist, NULL, 0));
+    ASSERT_EQUAL_U(0, inform_dist_accumulate(dist, NULL, 1));
+
+    ASSERT_EQUAL_U(0, inform_dist_accumulate(dist, (int[5]){0,0,1,1,0}, 0));
+
+    ASSERT_EQUAL_U(5, inform_dist_accumulate(dist, (int[5]){0,0,1,1,0}, 5));
+    ASSERT_EQUAL(5, inform_dist_counts(dist));
+    
+    ASSERT_EQUAL_U(3, inform_dist_accumulate(dist, (int[3]){0,1,0}, 3));
+    ASSERT_EQUAL(8, inform_dist_counts(dist));
+    
+    ASSERT_EQUAL(5, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 1));
+
+    ASSERT_EQUAL(0, inform_dist_accumulate(dist, (int[2]){-1, 2}, 2));
+    ASSERT_EQUAL(1, inform_dist_accumulate(dist, (int[2]){1, 2}, 2));
+    ASSERT_EQUAL(5, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(4, inform_dist_get(dist, 1));
+    ASSERT_EQUAL(9, inform_dist_counts(dist));
+
+    inform_dist_free(dist);
+}
+
 BEGIN_SUITE(Distribution)
     ADD_UNIT(AllocZero)
     ADD_UNIT(AllocOne)
@@ -361,4 +392,5 @@ BEGIN_SUITE(Distribution)
     ADD_UNIT(Tick)
     ADD_UNIT(Prob)
     ADD_UNIT(Dump)
+    ADD_UNIT(Accumulate)
 END_SUITE
