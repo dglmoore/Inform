@@ -277,6 +277,20 @@ inform_dist* inform_dist_infer(int const *events, size_t n)
     return dist;
 }
 
+inform_dist* inform_dist_uniform(size_t n)
+{
+    // construct a distribution of the desired size
+    inform_dist *dist = inform_dist_alloc(n);
+    if (dist != NULL)
+    {
+        // set the counts to the number of states
+        dist->counts = n;
+        // set the count for each state to 1
+        for (size_t i = 0; i < n; ++i) dist->histogram[i] = 1;
+    }
+    return dist;
+}
+
 void inform_dist_free(inform_dist *dist)
 {
     if (dist != NULL)

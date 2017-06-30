@@ -146,6 +146,12 @@ EXPORT inform_dist* inform_dist_infer(int const *events, size_t n);
 EXPORT inform_dist* inform_dist_approximate(double const *probs, size_t n,
     double tol);
 /**
+ * Create a uniform distribution of a given size.
+ * @param[in] n the size of the distribution
+ * @return the new distribution
+ */
+EXPORT inform_dist* inform_dist_uniform(size_t n);
+/**
  * Free all dynamically allocated memory associated with a distribution.
  *
  * @param[in] dist the distribution to free
