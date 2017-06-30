@@ -195,7 +195,11 @@ inform_dist* inform_dist_infer(int const *events, size_t n)
     for (size_t i = 0; i < n; ++i)
     {
         event = events[i];
-        if (event < 0) break;
+        if (event < 0)
+        {
+            b = -2;
+            break;
+        }
         if (event > b) b = event;
     }
     if (b < 0) return NULL;
@@ -332,11 +336,11 @@ size_t inform_dist_accumulate(inform_dist *dist, int const *events, size_t n)
         return 0;
     }
     // loop over the events and add them to the distribution
-    size_t const size = dist->size;
+    int const size = (int)dist->size;
     size_t i = 0;
     while (i < n)
     {
-        if (*events >= size) break;
+        if (size <= *events || *events < 0) break;
         dist->histogram[*events] += 1;
         dist->counts += 1;
         ++events;
