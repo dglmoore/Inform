@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 #include <inform/dist.h>
 #include <string.h>
+#include <math.h>
 
 inform_dist* inform_dist_alloc(size_t n)
 {
@@ -183,6 +184,63 @@ inform_dist* inform_dist_create(uint32_t const *data, size_t n)
     }
     // return the (potentially NULL) distribution
     return dist;
+}
+
+static inline int gcd(uint32_t const *data, size_t n)
+{
+    if (n == 0)
+    {
+        return 1;
+    }
+    uint32_t x, temp, gcd = data[0];
+    for (size_t i = 1; i < n; ++i)
+    {
+        x = data[i];
+        while (x != 0)
+        {
+            temp = x;
+            x = gcd % x;
+            gcd = temp;
+        }
+    }
+    return gcd;
+}
+
+inform_dist* inform_dist_approximate(double const *probs, size_t n, double tol)
+{
+    if (probs == NULL || n == 0)
+    {
+        return NULL;
+    }
+    tol = fabs(tol);
+    // check the validity of the probability distribution
+    double diff = 1.0;
+    for (size_t i = 0; i < n; ++i)
+    {
+        diff -= probs[i];
+        if (probs[i] < 0.0) return NULL;
+    }
+    if (fabs(diff) > (double)n * tol)
+    {
+        return NULL;
+    }
+    // determine the number of counts
+    uint32_t *counts = malloc(n * sizeof(int));
+    if (counts == NULL)
+    {
+        return NULL;
+    }
+    for (size_t i = 0; i < n; ++i)
+    {
+        counts[i] = (uint32_t)(probs[i] / tol);
+    }
+    int g = gcd(counts, n);
+    for (size_t i = 0; i < n; ++i)
+    {
+        counts[i] /= g;
+    }
+    // create the distribution
+    return inform_dist_create(counts, n);
 }
 
 inform_dist* inform_dist_infer(int const *events, size_t n)

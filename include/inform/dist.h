@@ -136,6 +136,16 @@ EXPORT inform_dist* inform_dist_create(uint32_t const *data, size_t n);
  */
 EXPORT inform_dist* inform_dist_infer(int const *events, size_t n);
 /**
+ * Approximate a given probability distribution to a given tolerance.
+ *
+ * @param[in] probs the probabilities
+ * @param[in] n     the number of probabilities
+ * @param[in] tol   the acceptable tolerance
+ * @return the new distribution
+ */
+EXPORT inform_dist* inform_dist_approximate(double const *probs, size_t n,
+    double tol);
+/**
  * Free all dynamically allocated memory associated with a distribution.
  *
  * @param[in] dist the distribution to free

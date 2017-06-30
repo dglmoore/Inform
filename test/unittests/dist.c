@@ -331,6 +331,81 @@ UNIT(Infer)
     inform_dist_free(dist);
 }
 
+UNIT(Approximate)
+{
+    ASSERT_NULL(inform_dist_approximate(NULL, 0, 1e-6));
+    ASSERT_NULL(inform_dist_approximate(NULL, 1, 1e-6));
+    ASSERT_NULL(inform_dist_approximate((double[3]){0.5,0.2,0.3}, 0, 1e-6));
+    ASSERT_NULL(inform_dist_approximate((double[3]){0.5,0.2,0.3}, 1, 1e-6));
+    ASSERT_NULL(inform_dist_approximate((double[3]){0.5,0.2,0.3}, 2, 1e-6));
+
+    ASSERT_NULL(inform_dist_approximate((double[1]){0.5}, 1, 1e-6));
+    ASSERT_NULL(inform_dist_approximate((double[2]){0.5, 0.6}, 2, 1e-6));
+    ASSERT_NULL(inform_dist_approximate((double[2]){0.5, 0.5+3e-6}, 2, 1e-6));
+
+    inform_dist *dist = NULL;
+
+    dist = inform_dist_approximate((double[3]){0.5,0.2,0.3}, 3, 1e-3);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(3, inform_dist_size(dist));
+    ASSERT_EQUAL(10, inform_dist_counts(dist));
+    ASSERT_EQUAL(5, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(2, inform_dist_get(dist, 1));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 2));
+    inform_dist_free(dist);
+
+    dist = inform_dist_approximate((double[3]){0.25,0.25,0.5}, 3, 1e-3);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(3, inform_dist_size(dist));
+    ASSERT_EQUAL(4, inform_dist_counts(dist));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 1));
+    ASSERT_EQUAL(2, inform_dist_get(dist, 2));
+    inform_dist_free(dist);
+
+    dist = inform_dist_approximate((double[2]){1./3, 2./3}, 2, 1e-3);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(2, inform_dist_size(dist));
+    ASSERT_EQUAL(3, inform_dist_counts(dist));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(2, inform_dist_get(dist, 1));
+    inform_dist_free(dist);
+
+    {
+        double expected[4] = {1./3, 1./3, 1./6, 1./6};
+        double got[4];
+        dist = inform_dist_approximate(expected, 4, 1e-3);
+        ASSERT_TRUE(inform_dist_is_valid(dist));
+        ASSERT_EQUAL_U(4, inform_dist_size(dist));
+        ASSERT_EQUAL(998, inform_dist_counts(dist));
+        ASSERT_EQUAL(333, inform_dist_get(dist, 0));
+        ASSERT_EQUAL(333, inform_dist_get(dist, 1));
+        ASSERT_EQUAL(166, inform_dist_get(dist, 2));
+        ASSERT_EQUAL(166, inform_dist_get(dist, 3));
+        inform_dist_dump(dist, got, 4);
+        for (size_t i = 0; i < 4; ++i)
+            ASSERT_DBL_NEAR_TOL(expected[i], got[i], 1e-3);
+        inform_dist_free(dist);
+    }
+
+    {
+        double expected[4] = {1./7, 2./7, 1./3, 10./42};
+        double got[4];
+        dist = inform_dist_approximate(expected, 4, 1e-3);
+        ASSERT_TRUE(inform_dist_is_valid(dist));
+        ASSERT_EQUAL_U(4, inform_dist_size(dist));
+        ASSERT_EQUAL(998, inform_dist_counts(dist));
+        ASSERT_EQUAL(142, inform_dist_get(dist, 0));
+        ASSERT_EQUAL(285, inform_dist_get(dist, 1));
+        ASSERT_EQUAL(333, inform_dist_get(dist, 2));
+        ASSERT_EQUAL(238, inform_dist_get(dist, 3));
+        inform_dist_dump(dist, got, 4);
+        for (size_t i = 0; i < 4; ++i)
+            ASSERT_DBL_NEAR_TOL(expected[i], got[i], 1e-3);
+        inform_dist_free(dist);
+    }
+}
+
 UNIT(Tick)
 {
     inform_dist *dist = inform_dist_alloc(3);
@@ -454,6 +529,7 @@ BEGIN_SUITE(Distribution)
     ADD_UNIT(Dup)
     ADD_UNIT(Create)
     ADD_UNIT(Infer)
+    ADD_UNIT(Approximate)
     ADD_UNIT(Tick)
     ADD_UNIT(Prob)
     ADD_UNIT(Dump)
