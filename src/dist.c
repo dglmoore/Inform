@@ -277,6 +277,11 @@ inform_dist* inform_dist_infer(int const *events, size_t n)
     return dist;
 }
 
+inform_dist* inform_dist_uniform(size_t n)
+{
+    return NULL;
+}
+
 void inform_dist_free(inform_dist *dist)
 {
     if (dist != NULL)
