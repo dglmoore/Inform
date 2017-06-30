@@ -185,6 +185,11 @@ inform_dist* inform_dist_create(uint32_t const *data, size_t n)
     return dist;
 }
 
+inform_dist* inform_dist_approximate(double const *probs, size_t n, double tol)
+{
+    return NULL;
+}
+
 inform_dist* inform_dist_infer(int const *events, size_t n)
 {
     // if no events are observed, return NULL
