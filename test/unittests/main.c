@@ -7,6 +7,7 @@ IMPORT_SUITE(ActiveInformation);
 IMPORT_SUITE(BlockEntropy);
 IMPORT_SUITE(Canary);
 IMPORT_SUITE(ConditionalEntropy);
+IMPORT_SUITE(CrossEntropy);
 IMPORT_SUITE(Distribution);
 IMPORT_SUITE(EffectiveInformation);
 IMPORT_SUITE(Entropy);
@@ -24,6 +25,7 @@ BEGIN_REGISTRATION
     REGISTER(BlockEntropy)
     REGISTER(Canary)
     REGISTER(ConditionalEntropy)
+    REGISTER(CrossEntropy)
     REGISTER(Distribution)
     REGISTER(EffectiveInformation)
     REGISTER(Entropy)

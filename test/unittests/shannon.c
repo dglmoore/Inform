@@ -372,6 +372,142 @@ UNIT(RelativeEntropyDefined)
     inform_dist_free(p);
 }
 
+UNIT(CrossEntropyInvalidDistributions)
+{
+    inform_dist *p = NULL, *q = NULL;
+    ASSERT_TRUE(isnan(inform_shannon_cross(p, q, 2)));
+
+    p = inform_dist_alloc(5);
+    ASSERT_TRUE(isnan(inform_shannon_cross(p, q, 2)));
+    ASSERT_TRUE(isnan(inform_shannon_cross(q, p, 2)));
+
+    inform_dist_tick(p, 0);
+    ASSERT_TRUE(isnan(inform_shannon_cross(p, q, 2)));
+    ASSERT_TRUE(isnan(inform_shannon_cross(q, p, 2)));
+
+    q = inform_dist_alloc(5);
+    ASSERT_TRUE(isnan(inform_shannon_cross(p, q, 2)));
+    ASSERT_TRUE(isnan(inform_shannon_cross(q, p, 2)));
+
+    inform_dist_free(q);
+    inform_dist_free(p);
+}
+
+UNIT(CrossEntropyIncompatibleSizes)
+{
+    inform_dist *p = inform_dist_alloc(5);
+    inform_dist *q = inform_dist_alloc(4);
+
+    inform_dist_tick(p, 0);
+    inform_dist_tick(q, 1);
+
+    ASSERT_TRUE(isnan(inform_shannon_cross(p, q, 2)));
+    ASSERT_TRUE(isnan(inform_shannon_cross(q, p, 2)));
+
+    inform_dist_free(q);
+    inform_dist_free(p);
+}
+
+UNIT(CrossEntropyUndefined)
+{
+    inform_dist *p = inform_dist_alloc(5);
+    inform_dist *q = inform_dist_alloc(5);
+    inform_dist_fill(p, 1, 1, 1, 1, 1);
+    inform_dist_fill(q, 1, 1, 1, 2, 0);
+
+    ASSERT_TRUE(isinf(inform_shannon_cross(p, q, 2)));
+    ASSERT_FALSE(isnan(inform_shannon_cross(q, p, 2)));
+    ASSERT_FALSE(isinf(inform_shannon_cross(q, p, 2)));
+
+    inform_dist_free(q);
+    inform_dist_free(p);
+}
+
+UNIT(CrossEntropySameDist)
+{
+    inform_dist *p = inform_dist_alloc(20);
+    for (size_t i = 0; i < inform_dist_size(p); ++i)
+        inform_dist_set(p, i, inform_random_int(0, 100));
+    ASSERT_TRUE(isnan(inform_shannon_cross(p, p, -1.0)));
+    ASSERT_TRUE(isnan(inform_shannon_cross(p, p, -0.5)));
+    ASSERT_DBL_NEAR_TOL(inform_shannon(p, 0.0), inform_shannon_cross(p, p, 0.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(inform_shannon(p, 0.5), inform_shannon_cross(p, p, 0.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(inform_shannon(p, 1.5), inform_shannon_cross(p, p, 1.5), 1e-6);
+    ASSERT_DBL_NEAR_TOL(inform_shannon(p, 2.0), inform_shannon_cross(p, p, 2.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(inform_shannon(p, 3.0), inform_shannon_cross(p, p, 3.0), 1e-6);
+    ASSERT_DBL_NEAR_TOL(inform_shannon(p, 4.0), inform_shannon_cross(p, p, 4.0), 1e-6);
+    inform_dist_free(p);
+}
+
+UNIT(CrossEntropyDefined)
+{
+    inform_dist *p = inform_dist_alloc(3);
+    inform_dist *q = inform_dist_alloc(3);
+
+    inform_dist_fill(p, 1, 0, 0);
+    inform_dist_fill(q, 2, 1, 1);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        double got = inform_shannon_cross(p, q, b);
+        ASSERT_FALSE(isnan(got));
+        ASSERT_DBL_NEAR(1/log2(b), got);
+    }
+
+    inform_dist_fill(p, 1, 1, 0);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        double got = inform_shannon_cross(p, q, b);
+        ASSERT_FALSE(isnan(got));
+        ASSERT_DBL_NEAR(3/(2*log2(b)), got);
+    }
+
+    inform_dist_fill(p, 2, 2, 1);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        double got = inform_shannon_cross(p, q, b);
+        ASSERT_FALSE(isnan(got));
+        ASSERT_DBL_NEAR(8/(5*log2(b)), got);
+    }
+
+    inform_dist_fill(q, 1, 2, 2);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        double got = inform_shannon_cross(p, q, b);
+        ASSERT_FALSE(isnan(got));
+        ASSERT_DBL_NEAR(((5*log2(5)-3)/(5*log2(b))), got);
+    }
+
+    inform_dist_fill(p, 1, 0, 1);
+    inform_dist_fill(q, 2, 1, 2);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        double got = inform_shannon_cross(p, q, b);
+        ASSERT_FALSE(isnan(got));
+        ASSERT_DBL_NEAR((log2(5)-1)/log2(b), got);
+    }
+
+    inform_dist_fill(p, 1, 0, 0);
+    inform_dist_fill(q, 4, 1, 0);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        double got = inform_shannon_cross(p, q, b);
+        ASSERT_FALSE(isnan(got));
+        ASSERT_DBL_NEAR((log2(5)-2)/log2(b), got);
+    }
+
+    inform_dist_fill(p, 1, 0, 0);
+    inform_dist_fill(q, 1, 4, 0);
+    for (double b = 0.0; b <= 4.0; b += 0.5)
+    {
+        double got = inform_shannon_cross(p, q, b);
+        ASSERT_FALSE(isnan(got));
+        ASSERT_DBL_NEAR(log2(5.0)/log2(b), got);
+    }
+
+    inform_dist_free(q);
+    inform_dist_free(p);
+}
+
 BEGIN_SUITE(Entropy)
     ADD_UNIT(ShannonInvalidDistribution)
     ADD_UNIT(ShannonDeltaFunction)
@@ -394,4 +530,10 @@ BEGIN_SUITE(Entropy)
     ADD_UNIT(RelativeEntropyUndefined)
     ADD_UNIT(RelativeEntropySameDist)
     ADD_UNIT(RelativeEntropyDefined)
+
+    ADD_UNIT(CrossEntropyInvalidDistributions)
+    ADD_UNIT(CrossEntropyIncompatibleSizes)
+    ADD_UNIT(CrossEntropyUndefined)
+    ADD_UNIT(CrossEntropySameDist)
+    ADD_UNIT(CrossEntropyDefined)
 END_SUITE

@@ -155,6 +155,18 @@ EXPORT double inform_shannon_pre(inform_dist const *p, inform_dist const *q,
 EXPORT double inform_shannon_re(inform_dist const *p, inform_dist const *q,
     double base);
 
+/**
+ * Compute the cross entropy between two distributions with equal
+ * support size.
+ *
+ * @param[in] p     the "true" distribution
+ * @param[in] q     the "unnatural" distribution
+ * @param[in] base  the logarithmic base
+ * @return the cross entropy between p and q.
+ */
+EXPORT double inform_shannon_cross(inform_dist const *p, inform_dist const *q,
+    double base);
+
 #ifdef __cplusplus
 }
 #endif

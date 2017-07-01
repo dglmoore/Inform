@@ -126,3 +126,23 @@ double inform_shannon_re(inform_dist const *p, inform_dist const *q,
     }
     return NAN;
 }
+
+double inform_shannon_cross(inform_dist const *p, inform_dist const *q,
+    double base)
+{
+    if (inform_dist_is_valid(p) && inform_dist_is_valid(q) && p->size == q->size)
+    {
+        double ce = 0.;
+        for (size_t i = 0; i < p->size; ++i)
+        {
+            if (p->histogram[i] != 0 || q->histogram[i] != 0)
+            {
+                double u = (double) p->histogram[i] / p->counts;
+                double v = (double) q->histogram[i] / q->counts;
+                ce -= u * log2(v);
+            }
+        }
+        return ce / log2(base);
+    }
+    return NAN;
+}
