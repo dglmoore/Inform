@@ -126,3 +126,9 @@ double inform_shannon_re(inform_dist const *p, inform_dist const *q,
     }
     return NAN;
 }
+
+double inform_shannon_cross(inform_dist const *p, inform_dist const *q,
+    double base)
+{
+    return NAN;
+}
