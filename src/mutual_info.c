@@ -106,7 +106,8 @@ double *inform_local_mutual_info(int const *xs, int const *ys, size_t n, int bx,
 {
     if (check_arguments(xs, ys, n, bx, by, err)) return NULL;
 
-    if (mi == NULL)
+    bool allocate_mi = (mi == NULL);
+    if (allocate_mi)
     {
         mi = malloc(n * sizeof(double));
         if (mi == NULL)
@@ -114,7 +115,11 @@ double *inform_local_mutual_info(int const *xs, int const *ys, size_t n, int bx,
     }
 
     inform_dist *x = NULL, *y = NULL, *xy = NULL;
-    if (allocate(bx, by, &x, &y, &xy, err)) return NULL;
+    if (allocate(bx, by, &x, &y, &xy, err))
+    {
+        if (allocate_mi) free(mi);
+        return NULL;
+    }
 
     accumulate(xs, ys, n, by, x, y, xy);
 
