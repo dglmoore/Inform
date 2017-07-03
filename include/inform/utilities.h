@@ -4,6 +4,7 @@
 #pragma once
 
 #include <inform/utilities/binning.h>
+#include <inform/utilities/black_boxing.h>
 #include <inform/utilities/coalesce.h>
 #include <inform/utilities/encoding.h>
 #include <inform/utilities/random.h>

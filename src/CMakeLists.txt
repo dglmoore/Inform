@@ -15,6 +15,7 @@ set(${PROJECT_NAME}_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/shannon.c
     ${CMAKE_CURRENT_SOURCE_DIR}/transfer_entropy.c
     ${CMAKE_CURRENT_SOURCE_DIR}/utilities/binning.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/utilities/black_boxing.c
     ${CMAKE_CURRENT_SOURCE_DIR}/utilities/coalesce.c
     ${CMAKE_CURRENT_SOURCE_DIR}/utilities/encoding.c
     ${CMAKE_CURRENT_SOURCE_DIR}/utilities/random.c
