@@ -883,7 +883,7 @@ UNIT(BlackBoxSingleSeries)
         int series[8] = {0,1,1,0,1,1,0,0};
         int expect[6] = {3,6,5,3,6,4};
         inform_black_box(series, 1, 1, 8, (int[]){2}, (size_t[]){3}, NULL, box, &err);
-        for (size_t i = 0; i < 7; ++i)
+        for (size_t i = 0; i < 6; ++i)
             ASSERT_EQUAL(expect[i], box[i]);
     }
     {
@@ -907,7 +907,7 @@ UNIT(BlackBoxSingleSeries)
         int series[8] = {0,1,1,0,1,1,0,0};
         int expect[6] = {3,6,5,3,6,4};
         inform_black_box(series, 1, 1, 8, (int[]){2}, NULL, (size_t[]){2}, box, &err);
-        for (size_t i = 0; i < 7; ++i)
+        for (size_t i = 0; i < 6; ++i)
             ASSERT_EQUAL(expect[i], box[i]);
     }
     {
@@ -915,7 +915,7 @@ UNIT(BlackBoxSingleSeries)
         int series[8] = {0,1,1,0,1,1,0,0};
         int expect[6] = {3,6,5,3,6,4};
         inform_black_box(series, 1, 1, 8, (int[]){2}, (size_t[]){1}, (size_t[]){2}, box, &err);
-        for (size_t i = 0; i < 7; ++i)
+        for (size_t i = 0; i < 6; ++i)
             ASSERT_EQUAL(expect[i], box[i]);
     }
     {
@@ -923,7 +923,7 @@ UNIT(BlackBoxSingleSeries)
         int series[8] = {0,1,2,0,1,1,0,2};
         int expect[6] = {5,15,19,4,12,11};
         inform_black_box(series, 1, 1, 8, (int[]){3}, (size_t[]){1}, (size_t[]){2}, box, &err);
-        for (size_t i = 0; i < 7; ++i)
+        for (size_t i = 0; i < 6; ++i)
             ASSERT_EQUAL(expect[i], box[i]);
     }
 }
