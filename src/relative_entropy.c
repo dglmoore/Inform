@@ -93,7 +93,8 @@ double *inform_local_relative_entropy(int const *xs, int const *ys, size_t n,
 {
     if (check_arguments(xs, ys, n, b, err)) return NULL;
 
-    if (re == NULL)
+    bool allocate_re = (re == NULL);
+    if (allocate_re)
     {
         re = malloc(n * sizeof(double));
         if (re == NULL)
@@ -101,7 +102,11 @@ double *inform_local_relative_entropy(int const *xs, int const *ys, size_t n,
     }
 
     inform_dist *x = NULL, *y = NULL;
-    if (allocate(b, &x, &y, err)) return NULL;
+    if (allocate(b, &x, &y, err))
+    {
+        if (allocate_re) free(re);
+        return NULL;
+    }
 
     accumulate(xs, ys, n, x, y);
 
