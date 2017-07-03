@@ -124,7 +124,8 @@ double *inform_local_block_entropy(int const *series, size_t n, size_t m, int b,
 
     size_t const N = n * (m - k + 1);
 
-    if (be == NULL)
+    bool allocate_be = (be == NULL);
+    if (allocate_be)
     {
         be = malloc(N * sizeof(double));
         if (be == NULL)
@@ -138,6 +139,7 @@ double *inform_local_block_entropy(int const *series, size_t n, size_t m, int b,
     uint32_t *data = calloc(states_size, sizeof(uint32_t));
     if (data == NULL)
     {
+        if (allocate_be) free(be);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
@@ -146,6 +148,8 @@ double *inform_local_block_entropy(int const *series, size_t n, size_t m, int b,
     int *state = malloc(N * sizeof(int));
     if (state == NULL)
     {
+        if (allocate_be) free(be);
+        free(data);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 

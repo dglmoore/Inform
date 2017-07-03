@@ -97,7 +97,8 @@ double *inform_local_conditional_entropy(int const *xs, int const *ys,
 {
     if (check_arguments(xs, ys, n, bx, by, err)) return NULL;
 
-    if (ce == NULL)
+    bool allocate_ce = (ce == NULL);
+    if (allocate_ce)
     {
         ce = malloc(n * sizeof(double));
         if (ce == NULL)
@@ -105,7 +106,11 @@ double *inform_local_conditional_entropy(int const *xs, int const *ys,
     }
 
     inform_dist *x = NULL, *xy = NULL;
-    if (allocate(bx, by, &x, &xy, err)) return NULL;
+    if (allocate(bx, by, &x, &xy, err))
+    {
+        if (allocate_ce) free(ce);
+        return NULL;
+    }
 
     accumulate(xs, ys, n, by, x, xy);
 

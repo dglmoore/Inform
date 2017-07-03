@@ -160,7 +160,8 @@ double *inform_local_predictive_info(int const *series, size_t n, size_t m,
 
     size_t const N = n * (m - kpast - kfuture + 1);
 
-    if (pi == NULL)
+    bool allocate_pi = (pi == NULL);
+    if (allocate_pi)
     {
         pi = malloc(N * sizeof(double));
         if (pi == NULL)
@@ -174,34 +175,27 @@ double *inform_local_predictive_info(int const *series, size_t n, size_t m,
     size_t const states_size = histories_size * futures_size;
     size_t const total_size = states_size + histories_size + futures_size;
 
-    uint32_t *data = calloc(total_size, sizeof(uint32_t));
-    if (data == NULL)
+    uint32_t *histogram_data = calloc(total_size, sizeof(uint32_t));
+    if (histogram_data == NULL)
     {
+        if (allocate_pi) free(pi);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
-    inform_dist states    = { data, states_size, N };
-    inform_dist histories = { data + states_size, histories_size, N };
-    inform_dist futures   = { data + states_size + histories_size, futures_size, N };
+    inform_dist states    = { histogram_data, states_size, N };
+    inform_dist histories = { histogram_data + states_size, histories_size, N };
+    inform_dist futures   = { histogram_data + states_size + histories_size, futures_size, N };
 
-    int *state = malloc(N * sizeof(int));
-    if (state == NULL)
+    int *state_data = malloc(3 * N * sizeof(int));
+    if (state_data == NULL)
     {
+        if (allocate_pi) free(pi);
+        free(histogram_data);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
-    int *history = malloc(N * sizeof(int));
-    if (history == NULL)
-    {
-        free(state);
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
-    }
-    int *future  = malloc(N * sizeof(int));
-    if (future == NULL)
-    {
-        free(state);
-        free(history);
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
-    }
+    int *state   = state_data;
+    int *history = state + N;
+    int *future  = history + N;
 
     int const *series_ptr = series;
     int *state_ptr = state, *history_ptr = history, *future_ptr = future;
@@ -221,10 +215,8 @@ double *inform_local_predictive_info(int const *series, size_t n, size_t m,
             history[i], future[i], 2.0);
     }
 
-    free(future);
-    free(history);
-    free(state);
-    free(data);
+    free(state_data);
+    free(histogram_data);
 
     return pi;
 }

@@ -160,7 +160,8 @@ double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
 
     size_t const N = n * (m - k);
 
-    if (te == NULL)
+    bool allocate_te = (te == NULL);
+    if (allocate_te)
     {
         te = malloc(N * sizeof(double));
         if (te == NULL)
@@ -176,37 +177,28 @@ double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
     size_t const predicates_size = b*q;
     size_t const total_size = states_size + histories_size + sources_size + predicates_size;
 
-    uint32_t *data = calloc(total_size, sizeof(uint32_t));
-    if (data == NULL)
+    uint32_t *histogram_data = calloc(total_size, sizeof(uint32_t));
+    if (histogram_data == NULL)
     {
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
-    inform_dist states     = { data, states_size, N };
-    inform_dist histories  = { data + states_size, histories_size, N };
-    inform_dist sources    = { data + states_size + histories_size, sources_size, N };
-    inform_dist predicates = { data + states_size + histories_size + sources_size, predicates_size, N };
+    inform_dist states     = { histogram_data, states_size, N };
+    inform_dist histories  = { histogram_data + states_size, histories_size, N };
+    inform_dist sources    = { histogram_data + states_size + histories_size, sources_size, N };
+    inform_dist predicates = { histogram_data + states_size + histories_size + sources_size, predicates_size, N };
 
-    int *state      = malloc(N * sizeof(int));
-    if (state == NULL)
+    int *state_data = malloc(4 * N * sizeof(int));
+    if (state_data == NULL)
     {
+        if (allocate_te) free(te);
+        free(histogram_data);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
-    int *history    = malloc(N * sizeof(int));
-    if (history == NULL)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
-    }
-    int *source     = malloc(N * sizeof(int));
-    if (source == NULL)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
-    }
-    int *predicate  = malloc(N * sizeof(int));
-    if (predicate == NULL)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
-    }
+    int *state     = state_data;
+    int *history   = state + N;
+    int *source    = history + N;
+    int *predicate = source + N;
 
     int const *node_y_ptr = node_y, *node_x_ptr = node_x;
     int *state_ptr = state, *source_ptr = source, *history_ptr = history, *predicate_ptr = predicate;
@@ -229,11 +221,8 @@ double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
             state[i], source[i], predicate[i], history[i], 2.0);
     }
 
-    free(predicate);
-    free(source);
-    free(history);
-    free(state);
-    free(data);
+    free(state_data);
+    free(histogram_data);
 
     return te;
 }
@@ -293,7 +282,8 @@ double *inform_local_transfer_entropy2(int const *node_y, int const *node_x,
 
     size_t const N = n * (m - k);
 
-    if (te == NULL)
+    bool allocate_te = (te == NULL);
+    if (allocate_te)
     {
         te = malloc(N * sizeof(double));
         if (te == NULL)
@@ -309,38 +299,28 @@ double *inform_local_transfer_entropy2(int const *node_y, int const *node_x,
     size_t const predicates_size = b*q;
     size_t const total_size = states_size + histories_size + sources_size + predicates_size;
 
-    uint32_t *data = calloc(total_size, sizeof(uint32_t));
-    if (data == NULL)
+    uint32_t *histogram_data = calloc(total_size, sizeof(uint32_t));
+    if (histogram_data == NULL)
     {
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
-    inform_dist states     = { data, states_size, n };
-    inform_dist histories  = { data + states_size, histories_size, n };
-    inform_dist sources    = { data + states_size + histories_size, sources_size, n };
-    inform_dist predicates = { data + states_size + histories_size + sources_size, predicates_size, n };
+    inform_dist states     = { histogram_data, states_size, n };
+    inform_dist histories  = { histogram_data + states_size, histories_size, n };
+    inform_dist sources    = { histogram_data + states_size + histories_size, sources_size, n };
+    inform_dist predicates = { histogram_data + states_size + histories_size + sources_size, predicates_size, n };
 
-    int *state      = malloc(n * sizeof(int));
-    if (state == NULL)
+    int *state_data = malloc(4 * n * sizeof(int));
+    if (state_data == NULL)
     {
+        if (allocate_te) free(te);
+        free(histogram_data);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
-    int *history    = malloc(n * sizeof(int));
-    if (history == NULL)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
-    }
-    int *source     = malloc(n * sizeof(int));
-    if (source == NULL)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
-    }
-    int *predicate  = malloc(n * sizeof(int));
-    if (predicate == NULL)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
-    }
-
+    int *state     = state_data;
+    int *history   = state + n;
+    int *source    = history + n;
+    int *predicate = source + n;
 
     for (size_t i = 0; i < m-k; ++i)
     {
@@ -348,21 +328,18 @@ double *inform_local_transfer_entropy2(int const *node_y, int const *node_x,
             &histories, &sources, &predicates, state, history,
             source, predicate);
 		
-	for (size_t h = 0; h < n; ++h)
-	{
-	    te[i+h*(m-k)] = inform_shannon_pcmi(&states, &sources, &predicates, &histories,
-						state[h], source[h], predicate[h], history[h],
-						2.0);
-	}
-	
-	memset(data, 0, total_size * sizeof(uint32_t));		
+        for (size_t h = 0; h < n; ++h)
+        {
+            te[i+h*(m-k)] = inform_shannon_pcmi(&states, &sources, &predicates,
+                            &histories, state[h], source[h], predicate[h],
+                            history[h], 2.0);
+        }
+        
+        memset(histogram_data, 0, total_size * sizeof(uint32_t));		
     }    
     
-    free(predicate);
-    free(source);
-    free(history);
-    free(state);
-    free(data);
+    free(state_data);
+    free(histogram_data);
 
     return te;
 }
