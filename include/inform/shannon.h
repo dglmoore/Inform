@@ -4,3 +4,4 @@
 #pragma once
 
 #include <inform/shannon/univariate.h>
+#include <inform/shannon/multivariate.h>

@@ -10,13 +10,14 @@ IMPORT_SUITE(ConditionalEntropy);
 IMPORT_SUITE(CrossEntropy);
 IMPORT_SUITE(Distribution);
 IMPORT_SUITE(EffectiveInformation);
-IMPORT_SUITE(Entropy);
 IMPORT_SUITE(EntropyRate);
 IMPORT_SUITE(ExcessEntropy);
 IMPORT_SUITE(MutualInfo);
 IMPORT_SUITE(PredictiveInformation);
 IMPORT_SUITE(RelativeEntropy);
 IMPORT_SUITE(SeparableInformation);
+IMPORT_SUITE(ShannonMulti);
+IMPORT_SUITE(ShannonUni);
 IMPORT_SUITE(TransferEntropy);
 IMPORT_SUITE(Utilities);
 
@@ -28,13 +29,14 @@ BEGIN_REGISTRATION
     REGISTER(CrossEntropy)
     REGISTER(Distribution)
     REGISTER(EffectiveInformation)
-    REGISTER(Entropy)
     REGISTER(EntropyRate)
     REGISTER(ExcessEntropy)
     REGISTER(MutualInfo)
     REGISTER(PredictiveInformation)
     REGISTER(RelativeEntropy)
     REGISTER(SeparableInformation)
+    REGISTER(ShannonMulti)
+    REGISTER(ShannonUni)
     REGISTER(TransferEntropy)
     REGISTER(Utilities)
 END_REGISTRATION
