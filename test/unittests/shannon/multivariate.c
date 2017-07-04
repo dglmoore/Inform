@@ -39,17 +39,17 @@ UNIT(ShannonMultiPointwiseMutualInformationIndependent)
             {
                 ASSERT_DBL_NEAR_TOL(0.000000,
                     inform_shannon_multi_pmi(dist,
-                        (inform_dist*[3]){xs, ys, zs}, 3,
+                        (inform_dist const *[3]){xs, ys, zs}, 3,
                         k+12*(j+12*i), (size_t[3]){i, j, k}, 0.5),
                     1e-6);
                 ASSERT_DBL_NEAR_TOL(0.000000,
                     inform_shannon_multi_pmi(dist,
-                        (inform_dist*[3]){xs, ys, zs}, 3,
+                        (inform_dist const *[3]){xs, ys, zs}, 3,
                         k+12*(j+12*i), (size_t[3]){i, j, k}, 2),
                     1e-6);
                 ASSERT_DBL_NEAR_TOL(0.000000,
                     inform_shannon_multi_pmi(dist,
-                        (inform_dist*[3]){xs, ys, zs}, 3,
+                        (inform_dist const *[3]){xs, ys, zs}, 3,
                         k+12*(j+12*i), (size_t[3]){i, j, k}, 3),
                     1e-6);
             }
@@ -76,7 +76,7 @@ UNIT(ShannonMultiPointwiseMutualInformationDependent)
     inform_dist *zs = inform_dist_alloc(2);
     inform_dist_fill(zs, 40, 60);
 
-    inform_dist *marginals[3] = {xs, ys, zs};
+    inform_dist const *marginals[3] = {xs, ys, zs};
 
     ASSERT_DBL_NEAR_TOL(-1.000000,
         inform_shannon_multi_pmi(dist, marginals, 3, 0, (size_t[]){0, 0, 0}, 2), 1e-6);
@@ -125,7 +125,7 @@ UNIT(ShannonMultiMutualInformationIndependent)
         }
     }
 
-    inform_dist *marginals[] = {xs, ys, zs};
+    inform_dist const *marginals[] = {xs, ys, zs};
     ASSERT_DBL_NEAR_TOL(0.0, inform_shannon_multi_mi(dist, marginals, 3, 0.5), 1e-10);
     ASSERT_DBL_NEAR_TOL(0.0, inform_shannon_multi_mi(dist, marginals, 3, 2), 1e-10);
     ASSERT_DBL_NEAR_TOL(0.0, inform_shannon_multi_mi(dist, marginals, 3, 3), 1e-10);
@@ -150,7 +150,7 @@ UNIT(ShannonMultiMutualInformationDependent)
     inform_dist *zs = inform_dist_alloc(2);
     inform_dist_fill(zs, 40, 60);
 
-    inform_dist *marginals[3] = {xs, ys, zs};
+    inform_dist const *marginals[3] = {xs, ys, zs};
     ASSERT_DBL_NEAR_TOL(0.214170, inform_shannon_multi_mi(dist, marginals, 3, 2), 1e-6);
 
     inform_dist_free(zs);
