@@ -4,132 +4,178 @@
 #include <inform/mutual_info.h>
 #include <inform/shannon.h>
 
-static bool check_arguments(int const *xs, int const *ys, size_t n, int bx,
-    int by, inform_error *err)
+static bool check_arguments(int const *series, size_t l, size_t n, int const *b,
+    inform_error *err)
 {
-    if (xs == NULL)
+    if (series == NULL)
     {
         INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
     }
-    else if (ys == NULL)
+    else if (l < 2)
     {
-        INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
+        INFORM_ERROR_RETURN(err, INFORM_ENOSOURCES, true);
     }
     else if (n < 1)
     {
         INFORM_ERROR_RETURN(err, INFORM_ESHORTSERIES, true);
     }
-    else if (bx < 2)
+    for (size_t i = 0; i < l; ++i)
     {
-        INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
-    }
-    else if (by < 2)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
-    }
-    for (size_t i = 0; i < n; ++i)
-    {
-        if (xs[i] < 0 || ys[i] < 0)
+        if (b[i] < 2)
         {
-            INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
+            INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
         }
-        else if (bx <= xs[i] || by <= ys[i])
+        for (size_t j = 0; j < n; ++j)
         {
-            INFORM_ERROR_RETURN(err, INFORM_EBADSTATE, true);
+            if (series[j + n * i] < 0)
+            {
+                INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
+            }
+            else if (b[i] <= series[j + n * i])
+            {
+                INFORM_ERROR_RETURN(err, INFORM_EBADSTATE, true);
+            }
         }
     }
     return false;
 }
 
-inline static bool allocate(int bx, int by, inform_dist **x, inform_dist **y,
-    inform_dist **xy, inform_error *err)
+inline static bool allocate(int const *b, size_t l, inform_dist **joint,
+    inform_dist **marginals, inform_error *err)
 {
-    if ((*x = inform_dist_alloc(bx)) == NULL)
+    size_t joint_support = 1;
+    for (size_t i = 0; i < l; ++i)
     {
+        joint_support *= b[i];
+        if ((marginals[i] = inform_dist_alloc(b[i])) == NULL)
+        {
+            for (size_t j = 0; j < i; ++j)
+            {
+                inform_dist_free(marginals[j]);
+            }
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, true);
+        }
+    }
+    if ((*joint = inform_dist_alloc(joint_support)) == NULL)
+    {
+        for (size_t i = 0; i < l; ++i)
+        {
+            inform_dist_free(marginals[i]);
+        }
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, true);
     }
-    if ((*y = inform_dist_alloc(by)) == NULL)
-    {
-        inform_dist_free(*x);
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, true);
-    }
-    if ((*xy = inform_dist_alloc(bx * by)) == NULL)
-    {
-        inform_dist_free(*y);
-        inform_dist_free(*x);
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, true);
-    }
+
     return false;
 }
 
-inline static void accumulate(int const *xs, int const *ys, size_t n, int by,
-    inform_dist *x, inform_dist *y, inform_dist *xy)
+inline static void accumulate(int const *series, size_t l, size_t n,
+    int const *b, inform_dist *joint, inform_dist **marginals)
 {
-    x->counts = n;
-    y->counts = n;
-    xy->counts = n;
+    joint->counts = n;
+    for (size_t i = 0; i < l; ++i)
+    {
+        marginals[i]->counts = n;
+    }
 
     for (size_t i = 0; i < n; ++i)
     {
-        x->histogram[xs[i]]++;
-        y->histogram[ys[i]]++;
-        xy->histogram[xs[i]*by + ys[i]]++;
+        size_t joint_event = 0;
+        for (size_t j = 0; j < l; ++j)
+        {
+            joint_event = joint_event * b[j] + series[i + n * j];
+            marginals[j]->histogram[series[i + n * j]]++;
+        }
+        joint->histogram[joint_event]++;
     }
 }
 
-inline static void free_all(inform_dist **x, inform_dist **y, inform_dist **xy)
+inline static void free_all(inform_dist **joint, inform_dist **marginals,
+    size_t l)
 {
-    inform_dist_free(*x);
-    inform_dist_free(*y);
-    inform_dist_free(*xy);
+    inform_dist_free(*joint);
+    for (size_t i = 0; i < l; ++i)
+    {
+        inform_dist_free(marginals[i]);
+    }
+    free(marginals);
 }
 
-double inform_mutual_info(int const *xs, int const *ys, size_t n, int bx,
-    int by, inform_error *err)
+double inform_mutual_info(int const *series, size_t l, size_t n, int const *b,
+    inform_error *err)
 {
-    if (check_arguments(xs, ys, n, bx, by, err)) return NAN;
+    if (check_arguments(series, l, n, b, err)) return NAN;
 
-    inform_dist *x = NULL, *y = NULL, *xy = NULL;
-    if (allocate(bx, by, &x, &y, &xy, err)) return NAN;
+    inform_dist **marginals = malloc(l * sizeof(inform_dist*));
+    if (marginals == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NAN);
+    }
+    inform_dist *joint = NULL;
+    if (allocate(b, l, &joint, marginals, err))
+    {
+        free(marginals);
+        return NAN;
+    }
 
-    accumulate(xs, ys, n, by, x, y, xy);
+    accumulate(series, l, n, b, joint, marginals);
 
-    double mi = inform_shannon_mi(xy, x, y, 2.0);
+    double mi = inform_shannon_multi_mi(joint, (inform_dist const **)marginals, l, 2.0);
 
-    free_all(&x, &y, &xy);
+    free_all(&joint, marginals, l);
 
     return mi;
 }
 
-double *inform_local_mutual_info(int const *xs, int const *ys, size_t n, int bx,
-    int by, double *mi, inform_error *err)
+double *inform_local_mutual_info(int const *series, size_t l, size_t n,
+    int const *b, double *mi, inform_error *err)
 {
-    if (check_arguments(xs, ys, n, bx, by, err)) return NULL;
+    if (check_arguments(series, l, n, b, err)) return NULL;
 
     bool allocate_mi = (mi == NULL);
     if (allocate_mi)
     {
         mi = malloc(n * sizeof(double));
         if (mi == NULL)
+        {
             INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
     }
 
-    inform_dist *x = NULL, *y = NULL, *xy = NULL;
-    if (allocate(bx, by, &x, &y, &xy, err))
+    inform_dist **marginals = malloc(l * sizeof(inform_dist*));
+    if (marginals == NULL)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    inform_dist *joint = NULL;
+    if (allocate(b, l, &joint, marginals, err))
     {
         if (allocate_mi) free(mi);
+        free(marginals);
         return NULL;
     }
 
-    accumulate(xs, ys, n, by, x, y, xy);
+    accumulate(series, l, n, b, joint, marginals);
 
+    size_t *marginal_events = malloc(l * sizeof(size_t));
+    if (marginal_events == NULL)
+    {
+        if (allocate_mi) free(mi);
+        free_all(&joint, marginals, l);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
     for (size_t i = 0; i < n; ++i)
     {
-        int z = xs[i]*by + ys[i];
-        mi[i] = inform_shannon_pmi(xy, x, y, z, xs[i], ys[i], 2.0);
+        size_t joint_event = 0;
+        for (size_t j = 0; j < l; ++j)
+        {
+            marginal_events[j] = series[i + n * j];
+            joint_event = joint_event * b[j] + marginal_events[j];
+        }
+        mi[i] = inform_shannon_multi_pmi(joint, (inform_dist const **)marginals, l, joint_event,
+                    (size_t const *)marginal_events, 2.0);
     }
 
-    free_all(&x, &y, &xy);
+    free_all(&joint, marginals, l);
 
     return mi;
 }

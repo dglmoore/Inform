@@ -3,20 +3,11 @@
 // license that can be found in the LICENSE file.
 #include <unit.h>
 
-#include <inform/shannon.h>
+#include <inform/shannon/univariate.h>
 #include <inform/utilities/random.h>
+#include "../util.h"
 
-#define inform_dist_fill_array(dist, array) \
-    ASSERT_NOT_NULL(dist); \
-    ASSERT_EQUAL(sizeof(array)/sizeof(int), inform_dist_size(dist)); \
-    for (size_t i = 0; i < inform_dist_size(dist); ++i) \
-    { \
-        inform_dist_set(dist, i, array[i]); \
-    }
-
-#define inform_dist_fill(dist, ...) inform_dist_fill_array(dist, ((int[]){__VA_ARGS__}))
-
-UNIT(ShannonInvalidDistribution)
+UNIT(ShannonUniInvalidDistribution)
 {
     inform_dist *dist = NULL;
     ASSERT_TRUE(isnan(inform_shannon(dist, 2)));
@@ -26,7 +17,7 @@ UNIT(ShannonInvalidDistribution)
     inform_dist_free(dist);
 }
 
-UNIT(ShannonDeltaFunction)
+UNIT(ShannonUniDeltaFunction)
 {
     inform_dist *dist = inform_dist_alloc(5);
     inform_dist_fill(dist, 0, 1, 0, 0, 0);
@@ -41,7 +32,7 @@ UNIT(ShannonDeltaFunction)
     inform_dist_free(dist);
 }
 
-UNIT(ShannonUniform)
+UNIT(ShannonUniUniform)
 {
     inform_dist *dist = inform_dist_alloc(5);
     inform_dist_fill(dist, 1, 1, 1, 1, 1);
@@ -57,7 +48,7 @@ UNIT(ShannonUniform)
     inform_dist_free(dist);
 }
 
-UNIT(ShannonNonUniform)
+UNIT(ShannonUniNonUniform)
 {
     inform_dist *dist = inform_dist_alloc(2);
     inform_dist_fill(dist, 2, 1);
@@ -98,7 +89,7 @@ UNIT(ShannonNonUniform)
     inform_dist_free(dist);
 }
 
-UNIT(MutualInformationIndependent)
+UNIT(ShannonUniMutualInformationIndependent)
 {
 
     inform_dist *xs = inform_dist_alloc(12);
@@ -129,7 +120,7 @@ UNIT(MutualInformationIndependent)
     inform_dist_free(xs);
 }
 
-UNIT(MutualInformationDependent)
+UNIT(ShannonUniMutualInformationDependent)
 {
     inform_dist *dist = inform_dist_alloc(4);
     inform_dist_fill(dist, 10, 70, 15, 5);
@@ -153,13 +144,13 @@ UNIT(MutualInformationDependent)
     inform_dist_free(dist);
 }
 
-UNIT(SelfInformationInvalidDist)
+UNIT(ShannonUniSelfInformationInvalidDist)
 {
     inform_dist *dist = NULL;
     ASSERT_TRUE(isnan(inform_shannon_si(dist, 0, 2)));
 }
 
-UNIT(SelfInformationImposibleEvent)
+UNIT(ShannonUniSelfInformationImposibleEvent)
 {
     inform_dist *dist = inform_dist_alloc(2);
     inform_dist_fill(dist, 1, 0);
@@ -168,7 +159,7 @@ UNIT(SelfInformationImposibleEvent)
     inform_dist_free(dist);
 }
 
-UNIT(SelfInformationBase2)
+UNIT(ShannonUniSelfInformationBase2)
 {
     inform_dist *dist = inform_dist_alloc(2);
     inform_dist_fill(dist, 1, 1);
@@ -186,7 +177,7 @@ UNIT(SelfInformationBase2)
     inform_dist_free(dist);
 }
 
-UNIT(SelfInformatoinBase3)
+UNIT(ShannonUniSelfInformationBase3)
 {
     inform_dist *dist = inform_dist_alloc(3);
     inform_dist_fill(dist, 1, 2, 3);
@@ -196,7 +187,7 @@ UNIT(SelfInformatoinBase3)
     inform_dist_free(dist);
 }
 
-UNIT(PointwiseMutualInformationIndependent)
+UNIT(ShannonUniPointwiseMutualInformationIndependent)
 {
 
     inform_dist *xs = inform_dist_alloc(12);
@@ -230,7 +221,7 @@ UNIT(PointwiseMutualInformationIndependent)
     inform_dist_free(xs);
 }
 
-UNIT(PointwiseMutualInformationDependent)
+UNIT(ShannonUniPointwiseMutualInformationDependent)
 {
     inform_dist *dist = inform_dist_alloc(4);
     inform_dist_fill(dist, 10, 70, 15, 5);
@@ -251,7 +242,7 @@ UNIT(PointwiseMutualInformationDependent)
     inform_dist_free(dist);
 }
 
-UNIT(RelativeEntropyInvalidDistributions)
+UNIT(ShannonUniRelativeEntropyInvalidDistributions)
 {
     inform_dist *p = NULL, *q = NULL;
     ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
@@ -272,7 +263,7 @@ UNIT(RelativeEntropyInvalidDistributions)
     inform_dist_free(p);
 }
 
-UNIT(RelativeEntropyIncompatibleSizes)
+UNIT(ShannonUniRelativeEntropyIncompatibleSizes)
 {
     inform_dist *p = inform_dist_alloc(5);
     inform_dist *q = inform_dist_alloc(4);
@@ -287,7 +278,7 @@ UNIT(RelativeEntropyIncompatibleSizes)
     inform_dist_free(p);
 }
 
-UNIT(RelativeEntropyUndefined)
+UNIT(ShannonUniRelativeEntropyUndefined)
 {
     inform_dist *p = inform_dist_alloc(5);
     inform_dist *q = inform_dist_alloc(5);
@@ -301,7 +292,7 @@ UNIT(RelativeEntropyUndefined)
     inform_dist_free(p);
 }
 
-UNIT(RelativeEntropySameDist)
+UNIT(ShannonUniRelativeEntropySameDist)
 {
     inform_dist *p = inform_dist_alloc(20);
     for (size_t i = 0; i < inform_dist_size(p); ++i)
@@ -317,7 +308,7 @@ UNIT(RelativeEntropySameDist)
     inform_dist_free(p);
 }
 
-UNIT(RelativeEntropyDefined)
+UNIT(ShannonUniRelativeEntropyDefined)
 {
     inform_dist *p = inform_dist_alloc(3);
     inform_dist *q = inform_dist_alloc(3);
@@ -372,7 +363,7 @@ UNIT(RelativeEntropyDefined)
     inform_dist_free(p);
 }
 
-UNIT(CrossEntropyInvalidDistributions)
+UNIT(ShannonUniCrossEntropyInvalidDistributions)
 {
     inform_dist *p = NULL, *q = NULL;
     ASSERT_TRUE(isnan(inform_shannon_cross(p, q, 2)));
@@ -393,7 +384,7 @@ UNIT(CrossEntropyInvalidDistributions)
     inform_dist_free(p);
 }
 
-UNIT(CrossEntropyIncompatibleSizes)
+UNIT(ShannonUniCrossEntropyIncompatibleSizes)
 {
     inform_dist *p = inform_dist_alloc(5);
     inform_dist *q = inform_dist_alloc(4);
@@ -408,7 +399,7 @@ UNIT(CrossEntropyIncompatibleSizes)
     inform_dist_free(p);
 }
 
-UNIT(CrossEntropyUndefined)
+UNIT(ShannonUniCrossEntropyUndefined)
 {
     inform_dist *p = inform_dist_alloc(5);
     inform_dist *q = inform_dist_alloc(5);
@@ -423,7 +414,7 @@ UNIT(CrossEntropyUndefined)
     inform_dist_free(p);
 }
 
-UNIT(CrossEntropySameDist)
+UNIT(ShannonUniCrossEntropySameDist)
 {
     inform_dist *p = inform_dist_alloc(20);
     for (size_t i = 0; i < inform_dist_size(p); ++i)
@@ -439,7 +430,7 @@ UNIT(CrossEntropySameDist)
     inform_dist_free(p);
 }
 
-UNIT(CrossEntropyDefined)
+UNIT(ShannonUniCrossEntropyDefined)
 {
     inform_dist *p = inform_dist_alloc(3);
     inform_dist *q = inform_dist_alloc(3);
@@ -508,32 +499,32 @@ UNIT(CrossEntropyDefined)
     inform_dist_free(p);
 }
 
-BEGIN_SUITE(Entropy)
-    ADD_UNIT(ShannonInvalidDistribution)
-    ADD_UNIT(ShannonDeltaFunction)
-    ADD_UNIT(ShannonUniform)
-    ADD_UNIT(ShannonNonUniform)
+BEGIN_SUITE(ShannonUni)
+    ADD_UNIT(ShannonUniInvalidDistribution)
+    ADD_UNIT(ShannonUniDeltaFunction)
+    ADD_UNIT(ShannonUniUniform)
+    ADD_UNIT(ShannonUniNonUniform)
 
-    ADD_UNIT(MutualInformationIndependent)
-    ADD_UNIT(MutualInformationDependent)
+    ADD_UNIT(ShannonUniMutualInformationIndependent)
+    ADD_UNIT(ShannonUniMutualInformationDependent)
 
-    ADD_UNIT(SelfInformationInvalidDist)
-    ADD_UNIT(SelfInformationImposibleEvent)
-    ADD_UNIT(SelfInformationBase2)
-    ADD_UNIT(SelfInformatoinBase3)
+    ADD_UNIT(ShannonUniSelfInformationInvalidDist)
+    ADD_UNIT(ShannonUniSelfInformationImposibleEvent)
+    ADD_UNIT(ShannonUniSelfInformationBase2)
+    ADD_UNIT(ShannonUniSelfInformationBase3)
 
-    ADD_UNIT(PointwiseMutualInformationIndependent)
-    ADD_UNIT(PointwiseMutualInformationDependent)
+    ADD_UNIT(ShannonUniPointwiseMutualInformationIndependent)
+    ADD_UNIT(ShannonUniPointwiseMutualInformationDependent)
 
-    ADD_UNIT(RelativeEntropyInvalidDistributions)
-    ADD_UNIT(RelativeEntropyIncompatibleSizes)
-    ADD_UNIT(RelativeEntropyUndefined)
-    ADD_UNIT(RelativeEntropySameDist)
-    ADD_UNIT(RelativeEntropyDefined)
+    ADD_UNIT(ShannonUniRelativeEntropyInvalidDistributions)
+    ADD_UNIT(ShannonUniRelativeEntropyIncompatibleSizes)
+    ADD_UNIT(ShannonUniRelativeEntropyUndefined)
+    ADD_UNIT(ShannonUniRelativeEntropySameDist)
+    ADD_UNIT(ShannonUniRelativeEntropyDefined)
 
-    ADD_UNIT(CrossEntropyInvalidDistributions)
-    ADD_UNIT(CrossEntropyIncompatibleSizes)
-    ADD_UNIT(CrossEntropyUndefined)
-    ADD_UNIT(CrossEntropySameDist)
-    ADD_UNIT(CrossEntropyDefined)
+    ADD_UNIT(ShannonUniCrossEntropyInvalidDistributions)
+    ADD_UNIT(ShannonUniCrossEntropyIncompatibleSizes)
+    ADD_UNIT(ShannonUniCrossEntropyUndefined)
+    ADD_UNIT(ShannonUniCrossEntropySameDist)
+    ADD_UNIT(ShannonUniCrossEntropyDefined)
 END_SUITE

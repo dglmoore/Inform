@@ -1,7 +1,8 @@
 // Copyright 2016-2017 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <inform/shannon.h>
+#include <inform/shannon/univariate.h>
+#include <inform/shannon/multivariate.h>
 #include <inform/error.h>
 
 double inform_shannon_si(inform_dist const *dist, size_t event, double base)
@@ -44,20 +45,20 @@ double inform_shannon_pmi(inform_dist const *joint,
     inform_dist const * marginal_x, inform_dist const *marginal_y,
     size_t event_joint, size_t event_x, size_t event_y, double base)
 {
-    return inform_shannon_si(marginal_x, event_x, base) +
-        inform_shannon_si(marginal_y, event_y, base) -
-        inform_shannon_si(joint, event_joint, base);
+    return inform_shannon_multi_pmi(joint,
+        (inform_dist const*[2]){marginal_x, marginal_y}, 2, event_joint,
+        (size_t const[2]){event_x, event_y}, base);
 }
 
 double inform_shannon_mi(inform_dist const *joint,
     inform_dist const *marginal_x, inform_dist const *marginal_y, double base)
 {
-    return inform_shannon(marginal_x, base) + inform_shannon(marginal_y, base)
-        - inform_shannon(joint, base);
+    return inform_shannon_multi_mi(joint,
+        (inform_dist const*[2]){marginal_x, marginal_y}, 2, base);
 }
 
 double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
-    size_t event_joint,size_t event_marginal, double base)
+    size_t event_joint, size_t event_marginal, double base)
 {
     return inform_shannon_si(joint, event_joint, base) -
         inform_shannon_si(marginal, event_marginal, base);
