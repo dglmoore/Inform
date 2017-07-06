@@ -28,10 +28,10 @@ double inform_shannon_multi_mi(inform_dist const *joint,
     {
         return 0.0;
     }
-    double pmi = -inform_shannon(joint, base);
+    double pmi = -inform_shannon_entropy(joint, base);
     for (size_t i = 0; i < n; ++i)
     {
-        pmi += inform_shannon(marginals[i], base);
+        pmi += inform_shannon_entropy(marginals[i], base);
     }
     return pmi;
 }

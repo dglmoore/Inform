@@ -14,7 +14,7 @@ double inform_shannon_si(inform_dist const *dist, size_t event, double base)
     return NAN;
 }
 
-double inform_shannon(inform_dist const *dist, double base)
+double inform_shannon_entropy(inform_dist const *dist, double base)
 {
     // ensure that the distribution is valid
     if (inform_dist_is_valid(dist))
@@ -67,7 +67,8 @@ double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
 double inform_shannon_ce(inform_dist const *joint, inform_dist const *marginal,
     double base)
 {
-    return inform_shannon(joint, base) - inform_shannon(marginal, base);
+    return inform_shannon_entropy(joint, base) -
+        inform_shannon_entropy(marginal, base);
 }
 
 double inform_shannon_pcmi(inform_dist const *joint,
@@ -86,10 +87,10 @@ double inform_shannon_cmi(inform_dist const *joint,
     inform_dist const *marginal_xz, inform_dist const *marginal_yz,
     inform_dist const *marginal_z, double base)
 {
-    return inform_shannon(marginal_xz, base) +
-        inform_shannon(marginal_yz, base) -
-        inform_shannon(joint, base) -
-        inform_shannon(marginal_z, base);
+    return inform_shannon_entropy(marginal_xz, base) +
+        inform_shannon_entropy(marginal_yz, base) -
+        inform_shannon_entropy(joint, base) -
+        inform_shannon_entropy(marginal_z, base);
 }
 
 double inform_shannon_pre(inform_dist const *p, inform_dist const *q,

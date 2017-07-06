@@ -110,7 +110,7 @@ double inform_block_entropy(int const *series, size_t n, size_t m, int b,
         accumulate_observations(series, m, b, k, &states);
     }
 
-    double be = inform_shannon(&states, 2.0);
+    double be = inform_shannon_entropy(&states, 2.0);
 
     free(data);
 
