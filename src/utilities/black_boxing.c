@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 #include <inform/error.h>
 #include <string.h>
+#include <math.h>
 
 static bool check_arguments(int const *series, size_t l, size_t n, size_t m,
     int const *b, size_t const *r, size_t const *s, inform_error *err)
@@ -51,12 +52,39 @@ static bool check_arguments(int const *series, size_t l, size_t n, size_t m,
             }
         }
     }
-    for (size_t i = 0; i < l; ++i)
+    double bits = 0.0;
+    if (r != NULL)
     {
-        if (b[i] < 2)
+        for (size_t i = 0; i < l; ++i)
         {
-            INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
+            if (b[i] < 2)
+            {
+                INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
+            }
+            bits += r[i] * log2(b[i]);
         }
+    }
+    else
+    {
+        for (size_t i = 0; i < l; ++i)
+        {
+            if (b[i] < 2)
+            {
+                INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
+            }
+            bits += log2(b[i]);
+        }
+    }
+    if (s != NULL)
+    {
+        for (size_t i = 0; i < l; ++i)
+        {
+            bits += s[i] * log2(b[i]);
+        }
+    }
+    if (bits > 30.0)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EENCODE, true);
     }
     for (size_t i = 0; i < l; ++i)
     {
