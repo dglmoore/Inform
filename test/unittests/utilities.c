@@ -843,6 +843,59 @@ UNIT(BlackBoxHistoryFutureTooLong)
     ASSERT_EQUAL(INFORM_EKLONG, err);
 }
 
+UNIT(BlackBoxEncodingError)
+{
+    inform_error err = INFORM_SUCCESS;
+    {
+        int series[32] = {0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,
+                          0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1};
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_black_box(series, 1, 1, 32, (int[]){2},
+            (size_t[]){31}, NULL, NULL, &err));
+        ASSERT_EQUAL(INFORM_EENCODE, err);
+    }
+    {
+        int series[32] = {0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,
+                          0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1};
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_black_box(series, 1, 1, 32, (int[]){4},
+            (size_t[]){16}, NULL, NULL, &err));
+        ASSERT_EQUAL(INFORM_EENCODE, err);
+    }
+    {
+        int series[32] = {0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,
+                          0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1};
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_black_box(series, 1, 1, 32, (int[]){4},
+            (size_t[]){29}, (size_t[]){2}, NULL, &err));
+        ASSERT_EQUAL(INFORM_EENCODE, err);
+    }
+    {
+        int series[38] = {0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,0,
+                          0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,0};
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_black_box(series, 2, 1, 16, (int[]){2,2},
+            (size_t[]){15, 16}, NULL, NULL, &err));
+        ASSERT_EQUAL(INFORM_EENCODE, err);
+    }
+    {
+        int series[38] = {0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,0,
+                          0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,0};
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_black_box(series, 2, 1, 16, (int[]){2,4},
+            (size_t[]){15, 8}, NULL, NULL, &err));
+        ASSERT_EQUAL(INFORM_EENCODE, err);
+    }
+    {
+        int series[38] = {0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,0,
+                          0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0,0};
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_black_box(series, 2, 1, 16, (int[]){2,3},
+            (size_t[]){10, 5}, (size_t[]){4,6}, NULL, &err));
+        ASSERT_EQUAL(INFORM_EENCODE, err);
+    }
+}
+
 UNIT(BlackBoxAllocates)
 {
     inform_error err = INFORM_SUCCESS;
@@ -1343,6 +1396,7 @@ BEGIN_SUITE(Utilities)
     ADD_UNIT(BlackBoxInvalidState)
     ADD_UNIT(BlackBoxInvalidHistory)
     ADD_UNIT(BlackBoxHistoryFutureTooLong)
+    ADD_UNIT(BlackBoxEncodingError)
     ADD_UNIT(BlackBoxAllocates)
     ADD_UNIT(BlackBoxSingleSeries)
     ADD_UNIT(BlackBoxSingleSeriesEnsemble)
