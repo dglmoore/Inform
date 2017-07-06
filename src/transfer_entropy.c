@@ -143,10 +143,10 @@ double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
         accumulate_observations(node_y, node_x, m, b, k, &states, &histories, &sources, &predicates);
     }
 
-    double te = inform_shannon(&sources, 2.0) +
-        inform_shannon(&predicates, 2.0) -
-        inform_shannon(&states, 2.0) -
-        inform_shannon(&histories, 2.0);
+    double te = inform_shannon_entropy(&sources, 2.0) +
+        inform_shannon_entropy(&predicates, 2.0) -
+        inform_shannon_entropy(&states, 2.0) -
+        inform_shannon_entropy(&histories, 2.0);
 
     free(data);
 

@@ -33,7 +33,7 @@ EXPORT double inform_shannon_si(inform_dist const *dist, size_t event, double ba
  * @param[in] base the logarithmic base
  * @return the shannon information
  */
-EXPORT double inform_shannon(inform_dist const *dist, double base);
+EXPORT double inform_shannon_entropy(inform_dist const *dist, double base);
 
 /**
  * Compute the pointwise mutual information of an combination of events
