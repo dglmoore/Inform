@@ -6,30 +6,33 @@
 #include <string.h>
 
 static void accumulate_observations(int const *series_y, int const *series_x,
-     size_t n, int b, size_t k, inform_dist *states,
+     size_t n, size_t m, int b, size_t k, inform_dist *states,
      inform_dist *histories, inform_dist *sources, inform_dist *predicates)
 {
-    int history = 0, q = 1, y_state, future, state, source, predicate;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i, series_y += m, series_x += m)
     {
-        q *= b;
-        history *= b;
-        history += series_x[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        y_state   = series_y[i-1];
-        future    = series_x[i];
-        state     = (history * b + future) * b + y_state;
-        source    = history * b + y_state;
-        predicate = history * b + future;
+        int history = 0, q = 1, y_state, future, state, source, predicate;
+        for (size_t j = 0; j < k; ++j)
+        {
+            q *= b;
+            history *= b;
+            history += series_x[j];
+        }
+        for (size_t j = k; j < m; ++j)
+        {
+            y_state   = series_y[j-1];
+            future    = series_x[j];
+            state     = (history * b + future) * b + y_state;
+            source    = history * b + y_state;
+            predicate = history * b + future;
 
-        states->histogram[state]++;
-        histories->histogram[history]++;
-        sources->histogram[source]++;
-        predicates->histogram[predicate]++;
+            states->histogram[state]++;
+            histories->histogram[history]++;
+            sources->histogram[source]++;
+            predicates->histogram[predicate]++;
 
-        history = predicate - series_x[i - k]*q;
+            history = predicate - series_x[j - k]*q;
+        }
     }
 }
 
@@ -138,10 +141,8 @@ double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
     inform_dist sources    = { data + states_size + histories_size, sources_size, N };
     inform_dist predicates = { data + states_size + histories_size + sources_size, predicates_size, N };
 
-    for (size_t i = 0; i < n; ++i, node_x += m, node_y += m)
-    {
-        accumulate_observations(node_y, node_x, m, b, k, &states, &histories, &sources, &predicates);
-    }
+    accumulate_observations(node_y, node_x, n, m, b, k, &states, &histories,
+        &sources, &predicates);
 
     double te = inform_shannon_entropy(&sources, 2.0) +
         inform_shannon_entropy(&predicates, 2.0) -
