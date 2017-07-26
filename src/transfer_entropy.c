@@ -37,37 +37,46 @@ static void accumulate_observations(int const *series_y, int const *series_x,
 }
 
 static void accumulate_local_observations(int const *series_y,
-    int const *series_x, size_t n, int b, size_t k,
+    int const *series_x, size_t n, size_t m, int b, size_t k,
     inform_dist *states, inform_dist *histories, inform_dist *sources,
     inform_dist *predicates, int *state, int *history,
     int *source, int *predicate)
 {
-    history[0] = 0;
-    int q = 1;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
-        q *= b;
-        history[0] *= b;
-        history[0] += series_x[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        size_t l = i - k;
-        int y_state   = series_y[i-1];
-        int future    = series_x[i];
-        predicate[l]  = history[l] * b + future;
-        state[l]      = predicate[l] * b + y_state;
-        source[l]     = history[l] * b + y_state;
-
-        states->histogram[state[l]]++;
-        histories->histogram[history[l]]++;
-        sources->histogram[source[l]]++;
-        predicates->histogram[predicate[l]]++;
-
-        if (i + 1 != n)
+        history[0] = 0;
+        int q = 1;
+        for (size_t j = 0; j < k; ++j)
         {
-            history[l + 1] = predicate[l] - series_x[l]*q;
+            q *= b;
+            history[0] *= b;
+            history[0] += series_x[j];
         }
+        for (size_t j = k; j < m; ++j)
+        {
+            size_t l = j - k;
+            int y_state   = series_y[j-1];
+            int future    = series_x[j];
+            predicate[l]  = history[l] * b + future;
+            state[l]      = predicate[l] * b + y_state;
+            source[l]     = history[l] * b + y_state;
+
+            states->histogram[state[l]]++;
+            histories->histogram[history[l]]++;
+            sources->histogram[source[l]]++;
+            predicates->histogram[predicate[l]]++;
+
+            if (j + 1 != m)
+            {
+                history[l + 1] = predicate[l] - series_x[l]*q;
+            }
+        }
+        series_y += m;
+        series_x += m;
+        state += (m - k);
+        history += (m - k);
+        source += (m - k);
+        predicate += (m - k);
     }
 }
 
@@ -201,20 +210,8 @@ double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
     int *source    = history + N;
     int *predicate = source + N;
 
-    int const *node_y_ptr = node_y, *node_x_ptr = node_x;
-    int *state_ptr = state, *source_ptr = source, *history_ptr = history, *predicate_ptr = predicate;
-    for (size_t i = 0; i < n; ++i)
-    {
-        accumulate_local_observations(node_y_ptr, node_x_ptr, m, b, k, &states,
-            &histories, &sources, &predicates, state_ptr, history_ptr,
-            source_ptr, predicate_ptr);
-        node_y_ptr += m;
-        node_x_ptr += m;
-        state_ptr += (m - k);
-        history_ptr += (m - k);
-        source_ptr += (m - k);
-        predicate_ptr += (m - k);
-    }
+    accumulate_local_observations(node_y, node_x, n, m, b, k, &states,
+        &histories, &sources, &predicates, state, history, source, predicate);
 
     for (size_t i = 0; i < N; ++i)
     {
