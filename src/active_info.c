@@ -182,10 +182,13 @@ double *inform_local_active_info(int const *series, size_t n, size_t m, int b,
     accumulate_local_observations(series, n, m, b, k, &states, &histories,
         &futures, state, history, future);
 
+    double r, s, t;
     for (size_t i = 0; i < N; ++i)
     {
-        ai[i] = inform_shannon_pmi(&states, &histories, &futures, state[i],
-            history[i], future[i], 2.0);
+        r = states.histogram[state[i]];
+        s = histories.histogram[history[i]];
+        t = futures.histogram[future[i]];
+        ai[i] = log2((r * N) / (s * t));
     }
 
     free(state_data);
