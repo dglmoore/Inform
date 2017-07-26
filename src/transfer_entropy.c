@@ -213,10 +213,14 @@ double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
     accumulate_local_observations(node_y, node_x, n, m, b, k, &states,
         &histories, &sources, &predicates, state, history, source, predicate);
 
+    double r, s, t, u;
     for (size_t i = 0; i < N; ++i)
     {
-        te[i] = inform_shannon_pcmi(&states, &sources, &predicates, &histories,
-            state[i], source[i], predicate[i], history[i], 2.0);
+        r = states.histogram[state[i]];
+        s = sources.histogram[source[i]];
+        t = predicates.histogram[predicate[i]];
+        u = histories.histogram[history[i]];
+        te[i] = log2((r*u)/(s*t));
     }
 
     free(state_data);
