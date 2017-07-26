@@ -32,30 +32,37 @@ static void accumulate_observations(int const* series, size_t n, size_t m,
     }
 }
 
-static void accumulate_local_observations(int const* series, size_t n, int b,
-    size_t k, inform_dist *states, inform_dist *histories, inform_dist *futures,
-    int *state, int *history, int *future)
+static void accumulate_local_observations(int const* series, size_t n, size_t m,
+    int b, size_t k, inform_dist *states, inform_dist *histories,
+    inform_dist *futures, int *state, int *history, int *future)
 {
-    history[0] = 0;
-    int q = 1;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
-        q *= b;
-        history[0] *= b;
-        history[0] += series[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        size_t l = i - k;
-        future[l] = series[i];
-        state[l] = history[l] * b + future[l];
+        history[0] = 0;
+        int q = 1;
+        for (size_t j = 0; j < k; ++j)
+        {
+            q *= b;
+            history[0] *= b;
+            history[0] += series[j];
+        }
+        for (size_t j = k; j < m; ++j)
+        {
+            size_t l = j - k;
+            future[l] = series[j];
+            state[l] = history[l] * b + future[l];
 
-        states->histogram[state[l]]++;
-        histories->histogram[history[l]]++;
-        futures->histogram[future[l]]++;
+            states->histogram[state[l]]++;
+            histories->histogram[history[l]]++;
+            futures->histogram[future[l]]++;
 
-        if (i + 1 != n)
-            history[l + 1] = state[l] - series[l]*q;
+            if (j + 1 != m)
+                history[l + 1] = state[l] - series[l]*q;
+        }
+        series += m;
+        state += (m - k);
+        history += (m - k);
+        future += (m - k);
     }
 }
 
@@ -172,17 +179,8 @@ double *inform_local_active_info(int const *series, size_t n, size_t m, int b,
     int *history = state + N;
     int *future  = history + N;
 
-    int const *series_ptr = series;
-    int *state_ptr = state, *history_ptr = history, *future_ptr = future;
-    for (size_t i = 0; i < n; ++i)
-    {
-        accumulate_local_observations(series_ptr, m, b, k, &states, &histories,
-            &futures, state_ptr, history_ptr, future_ptr);
-        series_ptr += m;
-        state_ptr += (m - k);
-        history_ptr += (m - k);
-        future_ptr += (m - k);
-    }
+    accumulate_local_observations(series, n, m, b, k, &states, &histories,
+        &futures, state, history, future);
 
     for (size_t i = 0; i < N; ++i)
     {
