@@ -176,9 +176,12 @@ double *inform_local_entropy_rate(int const *series, size_t n, size_t m, int b,
     accumulate_local_observations(series, n, m, b, k, &states, &histories,
         state, history);
 
+    double s, h;
     for (size_t i = 0; i < N; ++i)
     {
-        er[i] = inform_shannon_pce(&states, &histories, state[i], history[i], 2.0);
+        s = states.histogram[state[i]];
+        h = histories.histogram[history[i]];
+        er[i] = log2(h/s);
     }
 
     free(state_data);
