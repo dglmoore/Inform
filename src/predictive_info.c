@@ -40,44 +40,52 @@ static void accumulate_observations(int const* series, size_t n, size_t m,
     }
 }
 
-static void accumulate_local_observations(int const* series, size_t n, int b,
-    size_t kpast, size_t kfuture, inform_dist *states, inform_dist *histories,
-    inform_dist *futures, int *state, int *history, int *future)
+static void accumulate_local_observations(int const* series, size_t n, size_t m,
+    int b, size_t kpast, size_t kfuture, inform_dist *states,
+    inform_dist *histories, inform_dist *futures, int *state, int *history,
+    int *future)
 {
-    history[0] = 0;
-    int q = 1;
-    for (size_t i = 0; i < kpast; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
-        q *= b;
-        history[0] *= b;
-        history[0] += series[i];
-    }
-    
-    future[0] = 0;
-    int r = 1;
-    for (size_t i = kpast; i < kpast + kfuture; ++i)
-    {
-        r *= b;
-        future[0] *= b;
-        future[0] += series[i];
-    }
-
-    size_t i = kpast + kfuture;
-    do
-    {
-        size_t l = i - kpast - kfuture;
-        state[l] = history[l] * r + future[l];
-
-        states->histogram[state[l]]++;
-        histories->histogram[history[l]]++;
-        futures->histogram[future[l]]++;
-
-        if (i != n)
+        history[0] = 0;
+        int q = 1;
+        for (size_t j = 0; j < kpast; ++j)
         {
-            history[l + 1] = history[l] * b - series[l]*q + series[i - kfuture];
-            future[l + 1] = future[l] * b - series[i - kfuture]*r + series[i];
+            q *= b;
+            history[0] *= b;
+            history[0] += series[j];
         }
-    } while (++i <= n);
+        
+        future[0] = 0;
+        int r = 1;
+        for (size_t j = kpast; j < kpast + kfuture; ++j)
+        {
+            r *= b;
+            future[0] *= b;
+            future[0] += series[j];
+        }
+
+        size_t j = kpast + kfuture;
+        do
+        {
+            size_t l = j - kpast - kfuture;
+            state[l] = history[l] * r + future[l];
+
+            states->histogram[state[l]]++;
+            histories->histogram[history[l]]++;
+            futures->histogram[future[l]]++;
+
+            if (j != m)
+            {
+                history[l + 1] = history[l] * b - series[l]*q + series[j - kfuture];
+                future[l + 1] = future[l] * b - series[j - kfuture]*r + series[j];
+            }
+        } while (++j <= m);
+        series += m;
+        state += (m - kpast - kfuture + 1);
+        history += (m - kpast - kfuture + 1);
+        future += (m - kpast - kfuture + 1);
+    }
 }
 
 static bool check_arguments(int const *series, size_t n, size_t m, int b,
@@ -197,17 +205,8 @@ double *inform_local_predictive_info(int const *series, size_t n, size_t m,
     int *history = state + N;
     int *future  = history + N;
 
-    int const *series_ptr = series;
-    int *state_ptr = state, *history_ptr = history, *future_ptr = future;
-    for (size_t i = 0; i < n; ++i)
-    {
-        accumulate_local_observations(series_ptr, m, b, kpast, kfuture, &states,
-            &histories, &futures, state_ptr, history_ptr, future_ptr);
-        series_ptr += m;
-        state_ptr += (m - kpast - kfuture + 1);
-        history_ptr += (m - kpast - kfuture + 1);
-        future_ptr += (m - kpast - kfuture + 1);
-    }
+    accumulate_local_observations(series, n, m, b, kpast, kfuture, &states,
+        &histories, &futures, state, history, future);
 
     for (size_t i = 0; i < N; ++i)
     {
