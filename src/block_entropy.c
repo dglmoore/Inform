@@ -4,22 +4,25 @@
 #include <inform/block_entropy.h>
 #include <inform/shannon.h>
 
-static void accumulate_observations(int const* series, size_t n, int b,
-    size_t k, inform_dist *states)
+static void accumulate_observations(int const* series, size_t n, size_t m,
+    int b, size_t k, inform_dist *states)
 {
     k -= 1;
-    int history = 0, q = 1, state;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i, series += m)
     {
-        q *= b;
-        history *= b;
-        history += series[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        state  = history * b + series[i];
-        states->histogram[state]++;
-        history = state - series[i - k]*q;
+        int history = 0, q = 1, state;
+        for (size_t j = 0; j < k; ++j)
+        {
+            q *= b;
+            history *= b;
+            history += series[j];
+        }
+        for (size_t j = k; j < m; ++j)
+        {
+            state  = history * b + series[j];
+            states->histogram[state]++;
+            history = state - series[j - k]*q;
+        }
     }
 }
 
@@ -105,10 +108,7 @@ double inform_block_entropy(int const *series, size_t n, size_t m, int b,
 
     inform_dist states = { data, states_size, N };
 
-    for (size_t i = 0; i < n; ++i, series += m)
-    {
-        accumulate_observations(series, m, b, k, &states);
-    }
+    accumulate_observations(series, n, m, b, k, &states);
 
     double be = inform_shannon_entropy(&states, 2.0);
 
