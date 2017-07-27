@@ -4,25 +4,28 @@
 #include <inform/entropy_rate.h>
 #include <inform/shannon.h>
 
-static void accumulate_observations(int const* series, size_t n,
+static void accumulate_observations(int const* series, size_t n, size_t m,
     int b, size_t k, inform_dist *states, inform_dist *histories)
 {
-    int history = 0, q = 1, state, future;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i, series += m)
     {
-        q *= b;
-        history *= b;
-        history += series[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        future = series[i];
-        state  = history * b + future;
+        int history = 0, q = 1, state, future;
+        for (size_t j = 0; j < k; ++j)
+        {
+            q *= b;
+            history *= b;
+            history += series[j];
+        }
+        for (size_t j = k; j < m; ++j)
+        {
+            future = series[j];
+            state  = history * b + future;
 
-        states->histogram[state]++;
-        histories->histogram[history]++;
+            states->histogram[state]++;
+            histories->histogram[history]++;
 
-        history = state - series[i - k]*q;
+            history = state - series[j - k]*q;
+        }
     }
 }
 
@@ -113,10 +116,7 @@ double inform_entropy_rate(int const *series, size_t n, size_t m, int b,
     inform_dist states    = { data, states_size, N };
     inform_dist histories = { data + states_size, histories_size, N };
 
-    for (size_t i = 0; i < n; ++i, series += m)
-    {
-        accumulate_observations(series, m, b, k, &states, &histories);
-    }
+    accumulate_observations(series, n, m, b, k, &states, &histories);
 
     double er = inform_shannon_ce(&states, &histories, 2.0);
 
