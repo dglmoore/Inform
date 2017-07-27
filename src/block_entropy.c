@@ -26,27 +26,31 @@ static void accumulate_observations(int const* series, size_t n, size_t m,
     }
 }
 
-static void accumulate_local_observations(int const* series, size_t n, int b,
-    size_t k, inform_dist *states, int *state)
+static void accumulate_local_observations(int const* series, size_t n, size_t m,
+    int b, size_t k, inform_dist *states, int *state)
 {
     k -= 1;
-    int history = 0;
-    int q = 1;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
-        q *= b;
-        history *= b;
-        history += series[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        size_t l = i - k;
-        state[l] = history * b + series[i];
+        int history = 0, q = 1;
+        for (size_t j = 0; j < k; ++j)
+        {
+            q *= b;
+            history *= b;
+            history += series[j];
+        }
+        for (size_t j = k; j < m; ++j)
+        {
+            size_t l = j - k;
+            state[l] = history * b + series[j];
 
-        states->histogram[state[l]]++;
+            states->histogram[state[l]]++;
 
-        if (i + 1 != n)
-            history = state[l] - series[l]*q;
+            if (j + 1 != m)
+                history = state[l] - series[l]*q;
+        }
+        series += m;
+        state += (m - k);
     }
 }
 
@@ -153,14 +157,7 @@ double *inform_local_block_entropy(int const *series, size_t n, size_t m, int b,
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
-    int const *series_ptr = series;
-    int *state_ptr = state;
-    for (size_t i = 0; i < n; ++i)
-    {
-        accumulate_local_observations(series_ptr, m, b, k, &states, state_ptr);
-        series_ptr += m;
-        state_ptr += (m - k + 1);
-    }
+    accumulate_local_observations(series, n, m, b, k, &states, state);
 
     for (size_t i = 0; i < N; ++i)
     {
