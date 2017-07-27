@@ -159,9 +159,11 @@ double *inform_local_block_entropy(int const *series, size_t n, size_t m, int b,
 
     accumulate_local_observations(series, n, m, b, k, &states, state);
 
+    double s;
     for (size_t i = 0; i < N; ++i)
     {
-        be[i] = inform_shannon_si(&states, state[i], 2.0);
+        s = states.histogram[state[i]];
+        be[i] = -log2(s/N);
     }
 
     free(state);
