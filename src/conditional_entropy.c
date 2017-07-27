@@ -114,10 +114,13 @@ double *inform_local_conditional_entropy(int const *xs, int const *ys,
 
     accumulate(xs, ys, n, by, x, xy);
 
+    double s, m;
     for (size_t i = 0; i < n; ++i)
     {
         int z = xs[i]*by + ys[i];
-        ce[i] = inform_shannon_pce(xy, x, z, xs[i], 2.0);
+        s = xy->histogram[z];
+        m = x->histogram[xs[i]];
+        ce[i] = log2(m/s);
     }
 
     free_all(&x, &xy);
