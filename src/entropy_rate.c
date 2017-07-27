@@ -29,30 +29,36 @@ static void accumulate_observations(int const* series, size_t n, size_t m,
     }
 }
 
-static void accumulate_local_observations(int const* series, size_t n,
+static void accumulate_local_observations(int const* series, size_t n, size_t m,
     int b, size_t k, inform_dist *states, inform_dist *histories,
     int *state, int *history)
 {
-    int q = 1;
-    history[0] = 0;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
-        q *= b;
-        history[0] *= b;
-        history[0] += series[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        size_t l = i - k;
-        state[l]  = history[l] * b + series[i];
-
-        states->histogram[state[l]]++;
-        histories->histogram[history[l]]++;
-
-        if (i + 1 != n)
+        int q = 1;
+        history[0] = 0;
+        for (size_t j = 0; j < k; ++j)
         {
-            history[l + 1] = state[l] - series[l]*q;
+            q *= b;
+            history[0] *= b;
+            history[0] += series[j];
         }
+        for (size_t j = k; j < m; ++j)
+        {
+            size_t l = j - k;
+            state[l]  = history[l] * b + series[j];
+
+            states->histogram[state[l]]++;
+            histories->histogram[history[l]]++;
+
+            if (j + 1 != m)
+            {
+                history[l + 1] = state[l] - series[l]*q;
+            }
+        }
+        series += m;
+        state += (m - k);
+        history += (m - k);
     }
 }
 
@@ -167,15 +173,8 @@ double *inform_local_entropy_rate(int const *series, size_t n, size_t m, int b,
     int *state = state_data;
     int *history = state + N;
 
-    int const *series_ptr = series;
-    int *state_ptr = state, *history_ptr = history;
-    for (size_t i = 0; i < n; ++i)
-    {
-        accumulate_local_observations(series_ptr, m, b, k, &states, &histories, state_ptr, history_ptr);
-        series_ptr += m;
-        state_ptr += (m - k);
-        history_ptr += (m - k);
-    }
+    accumulate_local_observations(series, n, m, b, k, &states, &histories,
+        state, history);
 
     for (size_t i = 0; i < N; ++i)
     {
