@@ -208,10 +208,13 @@ double *inform_local_predictive_info(int const *series, size_t n, size_t m,
     accumulate_local_observations(series, n, m, b, kpast, kfuture, &states,
         &histories, &futures, state, history, future);
 
+    double s, h, f;
     for (size_t i = 0; i < N; ++i)
     {
-        pi[i] = inform_shannon_pmi(&states, &histories, &futures, state[i],
-            history[i], future[i], 2.0);
+        s = states.histogram[state[i]];
+        h = histories.histogram[history[i]];
+        f = futures.histogram[future[i]];
+        pi[i] = log2((s * N) / (h * f));
     }
 
     free(state_data);
