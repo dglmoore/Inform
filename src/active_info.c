@@ -5,54 +5,64 @@
 #include <inform/shannon.h>
 #include <string.h>
 
-
-static void accumulate_observations(int const* series, size_t n, int b,
-    size_t k, inform_dist *states, inform_dist *histories, inform_dist *futures)
+static void accumulate_observations(int const* series, size_t n, size_t m,
+    int b, size_t k, inform_dist *states, inform_dist *histories,
+    inform_dist *futures)
 {
-    int history = 0, q = 1, state, future;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i, series += m)
     {
-        q *= b;
-        history *= b;
-        history += series[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        future = series[i];
-        state  = history * b + future;
+        int history = 0, q = 1, state, future;
+        for (size_t j = 0; j < k; ++j)
+        {
+            q *= b;
+            history *= b;
+            history += series[j];
+        }
+        for (size_t j = k; j < m; ++j)
+        {
+            future = series[j];
+            state  = history * b + future;
 
-        states->histogram[state]++;
-        histories->histogram[history]++;
-        futures->histogram[future]++;
+            states->histogram[state]++;
+            histories->histogram[history]++;
+            futures->histogram[future]++;
 
-        history = state - series[i - k]*q;
+            history = state - series[j - k]*q;
+        }
     }
 }
 
-static void accumulate_local_observations(int const* series, size_t n, int b,
-    size_t k, inform_dist *states, inform_dist *histories, inform_dist *futures,
-    int *state, int *history, int *future)
+static void accumulate_local_observations(int const* series, size_t n, size_t m,
+    int b, size_t k, inform_dist *states, inform_dist *histories,
+    inform_dist *futures, int *state, int *history, int *future)
 {
-    history[0] = 0;
-    int q = 1;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
-        q *= b;
-        history[0] *= b;
-        history[0] += series[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        size_t l = i - k;
-        future[l] = series[i];
-        state[l] = history[l] * b + future[l];
+        history[0] = 0;
+        int q = 1;
+        for (size_t j = 0; j < k; ++j)
+        {
+            q *= b;
+            history[0] *= b;
+            history[0] += series[j];
+        }
+        for (size_t j = k; j < m; ++j)
+        {
+            size_t l = j - k;
+            future[l] = series[j];
+            state[l] = history[l] * b + future[l];
 
-        states->histogram[state[l]]++;
-        histories->histogram[history[l]]++;
-        futures->histogram[future[l]]++;
+            states->histogram[state[l]]++;
+            histories->histogram[history[l]]++;
+            futures->histogram[future[l]]++;
 
-        if (i + 1 != n)
-            history[l + 1] = state[l] - series[l]*q;
+            if (j + 1 != m)
+                history[l + 1] = state[l] - series[l]*q;
+        }
+        series += m;
+        state += (m - k);
+        history += (m - k);
+        future += (m - k);
     }
 }
 
@@ -117,10 +127,7 @@ double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k
     inform_dist histories = { data + states_size, histories_size, N };
     inform_dist futures   = { data + states_size + histories_size, futures_size, N };
 
-    for (size_t i = 0; i < n; ++i, series += m)
-    {
-        accumulate_observations(series, m, b, k, &states, &histories, &futures);
-    }
+    accumulate_observations(series, n, m, b, k, &states, &histories, &futures);
 
     double ai = inform_shannon_mi(&states, &histories, &futures, 2.0);
 
@@ -172,22 +179,16 @@ double *inform_local_active_info(int const *series, size_t n, size_t m, int b,
     int *history = state + N;
     int *future  = history + N;
 
-    int const *series_ptr = series;
-    int *state_ptr = state, *history_ptr = history, *future_ptr = future;
-    for (size_t i = 0; i < n; ++i)
-    {
-        accumulate_local_observations(series_ptr, m, b, k, &states, &histories,
-            &futures, state_ptr, history_ptr, future_ptr);
-        series_ptr += m;
-        state_ptr += (m - k);
-        history_ptr += (m - k);
-        future_ptr += (m - k);
-    }
+    accumulate_local_observations(series, n, m, b, k, &states, &histories,
+        &futures, state, history, future);
 
+    double r, s, t;
     for (size_t i = 0; i < N; ++i)
     {
-        ai[i] = inform_shannon_pmi(&states, &histories, &futures, state[i],
-            history[i], future[i], 2.0);
+        r = states.histogram[state[i]];
+        s = histories.histogram[history[i]];
+        t = futures.histogram[future[i]];
+        ai[i] = log2((r * N) / (s * t));
     }
 
     free(state_data);
