@@ -1422,6 +1422,27 @@ UNIT(PartitionsNext4)
     free(parts);
 }
 
+static size_t bell_number(size_t n)
+{
+    size_t bell_number = 0;
+    size_t *partitioning = inform_first_partitioning(n);
+    do
+    {
+        ++bell_number;
+    } while (inform_next_partitioning(partitioning, n));
+    free(partitioning);
+    return bell_number;
+}
+
+UNIT(PartitionsBellNumbers)
+{
+    size_t const bell_numbers[11] = {
+        1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975, 678570,
+    };
+    for (size_t i = 1; i <= 11; ++i)
+        ASSERT_EQUAL_U(bell_numbers[i-1], bell_number(i));
+}
+
 BEGIN_SUITE(Utilities)
     ADD_UNIT(RangeNullSeries)
     ADD_UNIT(RangeEmpty)
@@ -1514,4 +1535,5 @@ BEGIN_SUITE(Utilities)
     ADD_UNIT(PartitionsNext2)
     ADD_UNIT(PartitionsNext3)
     ADD_UNIT(PartitionsNext4)
+    ADD_UNIT(PartitionsBellNumbers)
 END_SUITE
