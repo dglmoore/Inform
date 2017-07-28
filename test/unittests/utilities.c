@@ -1350,7 +1350,7 @@ UNIT(PartitionsNext2)
     size_t *parts = inform_first_partitioning(size);
     ASSERT_NOT_NULL(parts);
 
-    ASSERT_EQUAL_U(1, inform_next_partitioning(parts, size));
+    ASSERT_EQUAL_U(2, inform_next_partitioning(parts, size));
     size_t const expected[] = {0,1};
     for (size_t i = 0; i < size; ++i)
         ASSERT_EQUAL_U(expected[i], parts[i]);
@@ -1364,6 +1364,7 @@ UNIT(PartitionsNext3)
     size_t *parts = inform_first_partitioning(size);
     ASSERT_NOT_NULL(parts);
 
+    size_t const expected_size[4] = {2,2,2,3};
     size_t const *expected[] = {
         (size_t[]){0,0,1},
         (size_t[]){0,1,0},
@@ -1374,7 +1375,7 @@ UNIT(PartitionsNext3)
     size_t i = 0, n = 0;
     while ((n = inform_next_partitioning(parts, size)) && i < 4)
     {
-        ASSERT_EQUAL_U(1, n);
+        ASSERT_EQUAL_U(expected_size[i], n);
         for (size_t j = 0; j < size; ++j)
             ASSERT_EQUAL_U(expected[i][j], parts[j]);
         ++i;
@@ -1390,6 +1391,7 @@ UNIT(PartitionsNext4)
     size_t *parts = inform_first_partitioning(size);
     ASSERT_NOT_NULL(parts);
 
+    size_t const expected_size[14] = {2,2,2,3,2,2,3,2,2,3,3,3,3,4};
     size_t const *expected[] = {
         (size_t[]){0,0,0,1},
         (size_t[]){0,0,1,0},
@@ -1410,7 +1412,7 @@ UNIT(PartitionsNext4)
     size_t i = 0, n = 0;
     while ((n = inform_next_partitioning(parts, size)) && i < 14)
     {
-        ASSERT_EQUAL_U(1, n);
+        ASSERT_EQUAL_U(expected_size[i], n);
         for (size_t j = 0; j < size; ++j)
             ASSERT_EQUAL_U(expected[i][j], parts[j]);
         ++i;

@@ -12,6 +12,7 @@ size_t *inform_first_partitioning(size_t size)
 
 size_t inform_next_partitioning(size_t *xs, size_t size)
 {
+    size_t n = 0;
     if (size > 1)
     {
         size_t *first = xs;
@@ -29,11 +30,15 @@ size_t inform_next_partitioning(size_t *xs, size_t size)
                         {
                             *kt = 0;
                         }
-                        return 1;
+                        for (size_t i = 0; i < size; ++i)
+                        {
+                            n = (xs[i]+1 > n) ? xs[i]+1 : n;
+                        }
+                        return n;
                     }
                 }
             }
         }
     }
-    return 0;
+    return n;
 }
