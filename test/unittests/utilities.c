@@ -1326,10 +1326,98 @@ UNIT(PartitionsFirst)
         ASSERT_NOT_NULL((parts = inform_first_partitioning(n)));
         for (size_t i = 0; i < n; ++i)
         {
-            ASSERT_EQUAL(0, parts[i]);
+            ASSERT_EQUAL_U(0, parts[i]);
         }
         free(parts);
     }
+}
+
+UNIT(PartitionsNext1)
+{
+    size_t const size = 1;
+    size_t *parts = inform_first_partitioning(size);
+    ASSERT_NOT_NULL(parts);
+    ASSERT_EQUAL_U(0, parts[0]);
+
+    ASSERT_EQUAL_U(0, inform_next_partitioning(parts, size));
+
+    free(parts);
+}
+
+UNIT(PartitionsNext2)
+{
+    size_t const size = 2;
+    size_t *parts = inform_first_partitioning(size);
+    ASSERT_NOT_NULL(parts);
+
+    ASSERT_EQUAL_U(1, inform_next_partitioning(parts, size));
+    size_t const expected[] = {0,1};
+    for (size_t i = 0; i < size; ++i)
+        ASSERT_EQUAL_U(expected[i], parts[i]);
+
+    free(parts);
+}
+
+UNIT(PartitionsNext3)
+{
+    size_t const size = 3;
+    size_t *parts = inform_first_partitioning(size);
+    ASSERT_NOT_NULL(parts);
+
+    size_t const *expected[] = {
+        (size_t[]){0,0,1},
+        (size_t[]){0,1,0},
+        (size_t[]){0,1,1},
+        (size_t[]){0,1,2},
+    };
+
+    size_t i = 0, n = 0;
+    while ((n = inform_next_partitioning(parts, size)) && i < 4)
+    {
+        ASSERT_EQUAL_U(1, n);
+        for (size_t j = 0; j < size; ++j)
+            ASSERT_EQUAL_U(expected[i][j], parts[j]);
+        ++i;
+    }
+    ASSERT_EQUAL_U(0, inform_next_partitioning(parts, size));
+
+    free(parts);
+}
+
+UNIT(PartitionsNext4)
+{
+    size_t const size = 4;
+    size_t *parts = inform_first_partitioning(size);
+    ASSERT_NOT_NULL(parts);
+
+    size_t const *expected[] = {
+        (size_t[]){0,0,0,1},
+        (size_t[]){0,0,1,0},
+        (size_t[]){0,0,1,1},
+        (size_t[]){0,0,1,2},
+        (size_t[]){0,1,0,0},
+        (size_t[]){0,1,0,1},
+        (size_t[]){0,1,0,2},
+        (size_t[]){0,1,1,0},
+        (size_t[]){0,1,1,1},
+        (size_t[]){0,1,1,2},
+        (size_t[]){0,1,2,0},
+        (size_t[]){0,1,2,1},
+        (size_t[]){0,1,2,2},
+        (size_t[]){0,1,2,3},
+    };
+
+    size_t i = 0, n = 0;
+    while ((n = inform_next_partitioning(parts, size)) && i < 14)
+    {
+        ASSERT_EQUAL_U(1, n);
+        for (size_t j = 0; j < size; ++j)
+            ASSERT_EQUAL_U(expected[i][j], parts[j]);
+        ++i;
+    }
+    ASSERT_EQUAL_U(0, inform_next_partitioning(parts, size));
+
+    free(parts);
 }
 
 BEGIN_SUITE(Utilities)
@@ -1420,4 +1508,8 @@ BEGIN_SUITE(Utilities)
     ADD_UNIT(BlackBoxMultipleSeriesEnsemble)
 
     ADD_UNIT(PartitionsFirst)
+    ADD_UNIT(PartitionsNext1)
+    ADD_UNIT(PartitionsNext2)
+    ADD_UNIT(PartitionsNext3)
+    ADD_UNIT(PartitionsNext4)
 END_SUITE

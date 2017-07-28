@@ -21,6 +21,15 @@ extern "C"
  */
 EXPORT size_t *inform_first_partitioning(size_t size);
 
+/**
+ * Compute the next partition in place
+ *
+ * @param[in,out] xs the current partition
+ * @param[in] size   the number of elements
+ * @return the number of partitions
+ */
+EXPORT size_t inform_next_partitioning(size_t *xs, size_t size);
+
 #ifdef __cplusplus
 }
 #endif
