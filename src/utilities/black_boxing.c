@@ -5,6 +5,8 @@
 #include <string.h>
 #include <math.h>
 
+#include <stdio.h>
+
 static bool check_arguments(int const *series, size_t l, size_t n, size_t m,
     int const *b, size_t const *r, size_t const *s, inform_error *err)
 {
@@ -222,5 +224,132 @@ int* inform_black_box(int const *series, size_t l, size_t n, size_t m,
         box = NULL;
     }
     free(data);
+    return box;
+}
+
+static int compare_ints(void const *x, void const *y)
+{
+    int a = *(int const *)x;
+    int b = *(int const *)y;
+    return (a < b) ? -1 : (a > b) ? 1 : 0;
+}
+
+int *inform_black_box_parts(int *series, size_t l, size_t n, size_t m,
+    int const *b, size_t const *parts, size_t nparts, int *box,
+    inform_error *err)
+{
+    if (check_arguments(series, l, n, m, b, NULL, NULL, err))
+    {
+        return NULL;
+    }
+    if (parts == NULL || nparts < 1)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EPARTS, NULL);
+    }
+    else
+    {
+        size_t *sorted_parts = malloc(l * sizeof(size_t));
+        memcpy(sorted_parts, parts, l * sizeof(size_t));
+        qsort(sorted_parts, l, sizeof(size_t), compare_ints);
+        if (sorted_parts[0] != 0)
+        {
+            free(sorted_parts);
+            INFORM_ERROR_RETURN(err, INFORM_EPARTS, NULL);
+        }
+        for (size_t i = 1; i < l; ++i)
+        {
+            int x = (int)(sorted_parts[i] - sorted_parts[i-1]);
+            if (x != 0 && x != 1)
+            {
+                free(sorted_parts);
+                INFORM_ERROR_RETURN(err, INFORM_EPARTS, NULL);
+            }
+        }
+        if (sorted_parts[l-1] + 1 != nparts)
+        {
+            free(sorted_parts);
+            INFORM_ERROR_RETURN(err, INFORM_EPARTS, NULL);
+        }
+        free(sorted_parts);
+    }
+
+    int allocate = (box == NULL);
+    if (allocate)
+    {
+        box = malloc(nparts * (1 + n * m) * sizeof(int));
+        if (box == NULL)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
+    }
+
+    int *bases = box;
+    int *partitioned = bases + nparts;
+    if (nparts == l)
+    {
+        memcpy(partitioned, series, l * n * m * sizeof(int));
+        int *bases = box;
+        for (size_t i = 0; i < l; ++i) bases[i] = b[i];
+    }
+    else
+    {
+        size_t *members = malloc(l * sizeof(size_t));
+        if (members == NULL)
+        {
+            if (allocate) free(box);
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
+        for (size_t i = 0; i < l; ++i) members[i] = -1;
+
+        for (size_t i = 0; i < nparts; ++i)
+        {
+            size_t k = 0;
+            for (size_t j = 0; j < l; ++j)
+            {
+                if (parts[j] == i)
+                {
+                    members[k++] = j;
+                }
+            }
+
+            if (k == 1)
+            {
+                memcpy(partitioned + n*m*i, series + n*m*members[0], n*m*sizeof(int));
+                bases[i] = b[members[0]];
+            }
+            else
+            {
+                int *subbases = malloc(k * (1 + n * m) * sizeof(int));
+                int *subseries = subbases + k;
+                if (subseries == NULL)
+                {
+                    free(members);
+                    if (allocate) free(box);
+                    INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+                }
+                bases[i] = 1;
+                for (size_t j = 0; j < k; ++j)
+                {
+                    subbases[j] = b[members[j]];
+                    bases[i] *= subbases[j];
+                    for (size_t p = 0; p < n * m; ++p)
+                    {
+                        subseries[p + n*m*j] = series[p + n*m*members[j]];
+                    }
+                }
+                inform_black_box(subseries, k, n, m, subbases, NULL, NULL,
+                    partitioned + n*m*i, err);
+                free(subbases);
+                if (inform_failed(err))
+                {
+                    free(members);
+                    if (allocate) free(box);
+                    return NULL;
+                }
+            }
+            for (size_t i = 0; i < l; ++i) members[i] = -1;
+        }
+        free(members);
+    }
     return box;
 }
