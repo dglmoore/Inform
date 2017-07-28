@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 #include <unit.h>
 
-#include <inform/shannon/univariate.h>
+#include <inform/shannon.h>
 #include <inform/utilities/random.h>
 #include "../util.h"
 
