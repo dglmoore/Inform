@@ -1316,6 +1316,22 @@ UNIT(BlackBoxMultipleSeriesEnsemble)
     }
 }
 
+UNIT(PartitionsFirst)
+{
+    size_t *parts = NULL;
+    ASSERT_NULL((parts = inform_first_partitioning(0)));
+
+    for (size_t n = 1; n < 5; ++n)
+    {
+        ASSERT_NOT_NULL((parts = inform_first_partitioning(n)));
+        for (size_t i = 0; i < n; ++i)
+        {
+            ASSERT_EQUAL(0, parts[i]);
+        }
+        free(parts);
+    }
+}
+
 BEGIN_SUITE(Utilities)
     ADD_UNIT(RangeNullSeries)
     ADD_UNIT(RangeEmpty)
@@ -1402,4 +1418,6 @@ BEGIN_SUITE(Utilities)
     ADD_UNIT(BlackBoxSingleSeriesEnsemble)
     ADD_UNIT(BlackBoxMultipleSeries)
     ADD_UNIT(BlackBoxMultipleSeriesEnsemble)
+
+    ADD_UNIT(PartitionsFirst)
 END_SUITE
