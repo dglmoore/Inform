@@ -156,23 +156,23 @@ double *inform_local_mutual_info(int const *series, size_t l, size_t n,
 
     accumulate(series, l, n, b, joint, marginals);
 
-    size_t *marginal_events = malloc(l * sizeof(size_t));
-    if (marginal_events == NULL)
-    {
-        if (allocate_mi) free(mi);
-        free_all(&joint, marginals, l);
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
-    }
+    double norm = 1;
+    for (size_t i = 0; i < l; ++i) norm *= marginals[i]->counts;
+    norm /= joint->counts;
+
+    double j, m;
     for (size_t i = 0; i < n; ++i)
     {
+        m = 1;
         size_t joint_event = 0;
         for (size_t j = 0; j < l; ++j)
         {
-            marginal_events[j] = series[i + n * j];
-            joint_event = joint_event * b[j] + marginal_events[j];
+            int marginal_event = series[i + n * j];
+            m *= marginals[j]->histogram[marginal_event];
+            joint_event = joint_event * b[j] + marginal_event;
         }
-        mi[i] = inform_shannon_multi_pmi(joint, (inform_dist const **)marginals, l, joint_event,
-                    (size_t const *)marginal_events, 2.0);
+        j = joint->histogram[joint_event];
+        mi[i] = log2((j * norm) / m);
     }
 
     free_all(&joint, marginals, l);

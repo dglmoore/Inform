@@ -110,9 +110,12 @@ double *inform_local_relative_entropy(int const *xs, int const *ys, size_t n,
 
     accumulate(xs, ys, n, x, y);
 
+    double p, q;
     for (size_t i = 0; i < (size_t) b; ++i)
     {
-        re[i] = inform_shannon_pre(x, y, i, 2.0);
+        p = x->histogram[i];
+        q = y->histogram[i];
+        re[i] = log2(p / q);
     }
 
     free_all(&x, &y);

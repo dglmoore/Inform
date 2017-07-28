@@ -4,52 +4,61 @@
 #include <inform/entropy_rate.h>
 #include <inform/shannon.h>
 
-static void accumulate_observations(int const* series, size_t n,
+static void accumulate_observations(int const* series, size_t n, size_t m,
     int b, size_t k, inform_dist *states, inform_dist *histories)
 {
-    int history = 0, q = 1, state, future;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i, series += m)
     {
-        q *= b;
-        history *= b;
-        history += series[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        future = series[i];
-        state  = history * b + future;
+        int history = 0, q = 1, state, future;
+        for (size_t j = 0; j < k; ++j)
+        {
+            q *= b;
+            history *= b;
+            history += series[j];
+        }
+        for (size_t j = k; j < m; ++j)
+        {
+            future = series[j];
+            state  = history * b + future;
 
-        states->histogram[state]++;
-        histories->histogram[history]++;
+            states->histogram[state]++;
+            histories->histogram[history]++;
 
-        history = state - series[i - k]*q;
+            history = state - series[j - k]*q;
+        }
     }
 }
 
-static void accumulate_local_observations(int const* series, size_t n,
+static void accumulate_local_observations(int const* series, size_t n, size_t m,
     int b, size_t k, inform_dist *states, inform_dist *histories,
     int *state, int *history)
 {
-    int q = 1;
-    history[0] = 0;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
-        q *= b;
-        history[0] *= b;
-        history[0] += series[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        size_t l = i - k;
-        state[l]  = history[l] * b + series[i];
-
-        states->histogram[state[l]]++;
-        histories->histogram[history[l]]++;
-
-        if (i + 1 != n)
+        int q = 1;
+        history[0] = 0;
+        for (size_t j = 0; j < k; ++j)
         {
-            history[l + 1] = state[l] - series[l]*q;
+            q *= b;
+            history[0] *= b;
+            history[0] += series[j];
         }
+        for (size_t j = k; j < m; ++j)
+        {
+            size_t l = j - k;
+            state[l]  = history[l] * b + series[j];
+
+            states->histogram[state[l]]++;
+            histories->histogram[history[l]]++;
+
+            if (j + 1 != m)
+            {
+                history[l + 1] = state[l] - series[l]*q;
+            }
+        }
+        series += m;
+        state += (m - k);
+        history += (m - k);
     }
 }
 
@@ -113,10 +122,7 @@ double inform_entropy_rate(int const *series, size_t n, size_t m, int b,
     inform_dist states    = { data, states_size, N };
     inform_dist histories = { data + states_size, histories_size, N };
 
-    for (size_t i = 0; i < n; ++i, series += m)
-    {
-        accumulate_observations(series, m, b, k, &states, &histories);
-    }
+    accumulate_observations(series, n, m, b, k, &states, &histories);
 
     double er = inform_shannon_ce(&states, &histories, 2.0);
 
@@ -167,19 +173,15 @@ double *inform_local_entropy_rate(int const *series, size_t n, size_t m, int b,
     int *state = state_data;
     int *history = state + N;
 
-    int const *series_ptr = series;
-    int *state_ptr = state, *history_ptr = history;
-    for (size_t i = 0; i < n; ++i)
-    {
-        accumulate_local_observations(series_ptr, m, b, k, &states, &histories, state_ptr, history_ptr);
-        series_ptr += m;
-        state_ptr += (m - k);
-        history_ptr += (m - k);
-    }
+    accumulate_local_observations(series, n, m, b, k, &states, &histories,
+        state, history);
 
+    double s, h;
     for (size_t i = 0; i < N; ++i)
     {
-        er[i] = inform_shannon_pce(&states, &histories, state[i], history[i], 2.0);
+        s = states.histogram[state[i]];
+        h = histories.histogram[history[i]];
+        er[i] = log2(h/s);
     }
 
     free(state_data);
