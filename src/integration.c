@@ -95,6 +95,7 @@ double *inform_integration_evidence(int const *series, size_t l, size_t n,
             minimum[i] = min(minimum[i], lmi[i]);
             maximum[i] = max(maximum[i], lmi[i]);
         }
+        free(partitioned);
     }
     free(parts);
     free(lmi);
