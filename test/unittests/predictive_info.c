@@ -9,7 +9,7 @@
 UNIT(PredictiveInfoSeriesNULLSeries)
 {
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_predictive_info(NULL, 1, 3, 2, 2, 2, &err)));
+    ASSERT_NAN(inform_predictive_info(NULL, 1, 3, 2, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 }
@@ -18,7 +18,7 @@ UNIT(PredictiveInfoSeriesNoInits)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_predictive_info(series, 0, 3, 2, 2, 2, &err)));
+    ASSERT_NAN(inform_predictive_info(series, 0, 3, 2, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENOINITS, err);
 }
@@ -31,7 +31,7 @@ UNIT(PredictiveInfoSeriesTooShort)
     for (size_t i = 0; i < 2; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_predictive_info(series, 1, i, 2, 2, 2, &err)));
+        ASSERT_NAN(inform_predictive_info(series, 1, i, 2, 2, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
     }
@@ -41,7 +41,7 @@ UNIT(PredictiveInfoZeroHistory)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_predictive_info(series, 1, 2, 2, 0, 2, &err)));
+    ASSERT_NAN(inform_predictive_info(series, 1, 2, 2, 0, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EKZERO, err);
 }
@@ -50,7 +50,7 @@ UNIT(PredictiveInfoZeroFuture)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_predictive_info(series, 1, 2, 2, 2, 0, &err)));
+    ASSERT_NAN(inform_predictive_info(series, 1, 2, 2, 2, 0, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EKZERO, err);
 }
@@ -66,14 +66,14 @@ UNIT(PredictiveInfoKTooLong)
             if (i + j >= 3)
             {
                 err = INFORM_SUCCESS;
-                ASSERT_TRUE(isnan(inform_predictive_info(series, 1, 3, 2, i, j, &err)));
+                ASSERT_NAN(inform_predictive_info(series, 1, 3, 2, i, j, &err));
                 ASSERT_TRUE(inform_failed(&err));
                 ASSERT_EQUAL(INFORM_EKLONG, err);
             }
             else
             {
                 err = INFORM_SUCCESS;
-                ASSERT_FALSE(isnan(inform_predictive_info(series, 1, 3, 2, i, j, &err)));
+                ASSERT_NOT_NAN(inform_predictive_info(series, 1, 3, 2, i, j, &err));
                 ASSERT_TRUE(inform_succeeded(&err)); 
             }
         }
@@ -87,7 +87,7 @@ UNIT(PredictiveInfoInvalidBase)
     for (int i = 0; i < 2; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_predictive_info(series, 1, 2, i, 2, 2, &err)));
+        ASSERT_NAN(inform_predictive_info(series, 1, 2, i, 2, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBASE, err);
     }
@@ -97,7 +97,7 @@ UNIT(PredictiveInfoNegativeState)
 {
     int const series[] = {-1,1,0,0,1,0,0,1};
     inform_error err;
-    ASSERT_TRUE(isnan(inform_predictive_info(series, 1, 8, 3, 2, 2, &err)));
+    ASSERT_NAN(inform_predictive_info(series, 1, 8, 3, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENEGSTATE, err);
 }
@@ -106,7 +106,7 @@ UNIT(PredictiveInfoBadState)
 {
     int const series[] = {1,2,0,0,1,0,0,1};
     inform_error err;
-    ASSERT_TRUE(isnan(inform_predictive_info(series, 1, 8, 2, 2, 2, &err)));
+    ASSERT_NAN(inform_predictive_info(series, 1, 8, 2, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EBADSTATE, err);
 }

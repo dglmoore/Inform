@@ -9,12 +9,12 @@
 UNIT(ConditionalEntropyNULLSeries)
 {
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_conditional_entropy(NULL, NULL, 3, 2, 2, &err)));
+    ASSERT_NAN(inform_conditional_entropy(NULL, NULL, 3, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 
     err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_conditional_entropy((int[]){0,0,1}, NULL, 3, 2, 2, &err)));
+    ASSERT_NAN(inform_conditional_entropy((int[]){0,0,1}, NULL, 3, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 }
@@ -23,7 +23,7 @@ UNIT(ConditionalEntropySeriesTooShort)
 {
     int const xs[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_conditional_entropy(xs, xs, 0, 2, 2, &err)));
+    ASSERT_NAN(inform_conditional_entropy(xs, xs, 0, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
 }
@@ -35,12 +35,12 @@ UNIT(ConditionalEntropyInvalidBase)
     for (int i = 0; i < 2; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_conditional_entropy(xs, xs, 8, i, 2, &err)));
+        ASSERT_NAN(inform_conditional_entropy(xs, xs, 8, i, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBASE, err);
 
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_conditional_entropy(xs, xs, 8, 2, i, &err)));
+        ASSERT_NAN(inform_conditional_entropy(xs, xs, 8, 2, i, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBASE, err);
     }
@@ -51,12 +51,12 @@ UNIT(ConditionalEntropyNegativeState)
     int const xs[] = {1,1,0,0,-1,0,0,1};
     int const ys[] = {1,1,0,0, 1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_conditional_entropy(xs, ys, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_conditional_entropy(xs, ys, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENEGSTATE, err);
 
     err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_conditional_entropy(ys, xs, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_conditional_entropy(ys, xs, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENEGSTATE, err);
 }
@@ -66,12 +66,12 @@ UNIT(ConditionalEntropyBadState)
     int const xs[] = {1,2,0,0,1,0,0,1};
     int const ys[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_conditional_entropy(xs, ys, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_conditional_entropy(xs, ys, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EBADSTATE, err);
 
     err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_conditional_entropy(xs, ys, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_conditional_entropy(xs, ys, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EBADSTATE, err);
 }

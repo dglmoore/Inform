@@ -9,7 +9,7 @@
 UNIT(MutualInfoNULLSeries)
 {
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_mutual_info(NULL, 1, 3, (int[]){2,2}, &err)));
+    ASSERT_NAN(inform_mutual_info(NULL, 1, 3, (int[]){2,2}, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 }
@@ -17,7 +17,7 @@ UNIT(MutualInfoNULLSeries)
 UNIT(MutualInfoTooFewSeries)
 {
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_mutual_info((int[]){1,0,1}, 1, 3, (int[]){2,2}, &err)));
+    ASSERT_NAN(inform_mutual_info((int[]){1,0,1}, 1, 3, (int[]){2,2}, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENOSOURCES, err);
 }
@@ -26,7 +26,7 @@ UNIT(MutualInfoSeriesTooShort)
 {
     int const xs[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_mutual_info(xs, 2, 0, (int[]){2,2}, &err)));
+    ASSERT_NAN(inform_mutual_info(xs, 2, 0, (int[]){2,2}, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
 }
@@ -38,12 +38,12 @@ UNIT(MutualInfoInvalidBase)
     for (int i = 0; i < 2; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_mutual_info(xs, 2, 4, (int[]){i,2}, &err)));
+        ASSERT_NAN(inform_mutual_info(xs, 2, 4, (int[]){i,2}, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBASE, err);
 
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_mutual_info(xs, 2, 4, (int[]){2,i}, &err)));
+        ASSERT_NAN(inform_mutual_info(xs, 2, 4, (int[]){2,i}, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBASE, err);
     }
@@ -54,14 +54,14 @@ UNIT(MutualInfoNegativeState)
     {
         int const xs[] = {1,1,0,0,-1,0,0,1,1,1,0,0,1,0,0,1};
         inform_error err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_mutual_info(xs, 2, 8, (int[]){2,2}, &err)));
+        ASSERT_NAN(inform_mutual_info(xs, 2, 8, (int[]){2,2}, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_ENEGSTATE, err);
     }
     {
         int const xs[] = {1,1,0,0,1,0,0,1,1,1,0,0,-1,0,0,1};
         inform_error err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_mutual_info(xs, 2, 8, (int[]){2,2}, &err)));
+        ASSERT_NAN(inform_mutual_info(xs, 2, 8, (int[]){2,2}, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_ENEGSTATE, err);
     }
@@ -72,14 +72,14 @@ UNIT(MutualInfoBadState)
     {
         int const xs[] = {1,2,0,0,1,0,0,1,1,1,0,0,1,0,0,1};
         inform_error err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_mutual_info(xs, 2, 8, (int[]){2,2}, &err)));
+        ASSERT_NAN(inform_mutual_info(xs, 2, 8, (int[]){2,2}, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBADSTATE, err);
     }
     {
         int const xs[] = {1,1,0,0,1,0,0,1,1,1,0,2,1,0,0,1};
         inform_error err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_mutual_info(xs, 2, 8, (int[]){2,2}, &err)));
+        ASSERT_NAN(inform_mutual_info(xs, 2, 8, (int[]){2,2}, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBADSTATE, err);
     }

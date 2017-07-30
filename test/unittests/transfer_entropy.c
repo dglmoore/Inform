@@ -11,12 +11,12 @@ UNIT(TransferEntropyNULLSeries)
     int const series[] = {1,1,0,0,1,0,0,1};
 
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_transfer_entropy(NULL, series, 1, 3, 2, 2, &err)));
+    ASSERT_NAN(inform_transfer_entropy(NULL, series, 1, 3, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 
     err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_transfer_entropy(series, NULL, 1, 3, 2, 2, &err)));
+    ASSERT_NAN(inform_transfer_entropy(series, NULL, 1, 3, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 }
@@ -25,7 +25,7 @@ UNIT(TransferEntropyNoInits)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_transfer_entropy(series, series, 0, 3, 2, 2, &err)));
+    ASSERT_NAN(inform_transfer_entropy(series, series, 0, 3, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENOINITS, err);
 }
@@ -38,7 +38,7 @@ UNIT(TransferEntropySeriesTooShort)
     for (size_t i = 0; i < 2; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_transfer_entropy(series, series, 1, i, 2, 2, &err)));
+        ASSERT_NAN(inform_transfer_entropy(series, series, 1, i, 2, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
     }
@@ -51,7 +51,7 @@ UNIT(TransferEntropyHistoryTooLong)
     for (size_t i = 2; i < 4; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_transfer_entropy(series, series, 1, 2, 2, i, &err)));
+        ASSERT_NAN(inform_transfer_entropy(series, series, 1, 2, 2, i, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EKLONG, err);
     }
@@ -61,7 +61,7 @@ UNIT(TransferEntropyZeroHistory)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_transfer_entropy(series, series, 1, 2, 2, 0, &err)));
+    ASSERT_NAN(inform_transfer_entropy(series, series, 1, 2, 2, 0, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EKZERO, err);
 }
@@ -73,7 +73,7 @@ UNIT(TransferEntropyInvalidBase)
     for (int i = 0; i < 2; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_transfer_entropy(series, series, 1, 2, i, 2, &err)));
+        ASSERT_NAN(inform_transfer_entropy(series, series, 1, 2, i, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBASE, err);
     }
@@ -85,12 +85,12 @@ UNIT(TransferEntropyNegativeState)
     int const seriesB[] = {-1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
 
-    ASSERT_TRUE(isnan(inform_transfer_entropy(seriesA, seriesB, 1, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_transfer_entropy(seriesA, seriesB, 1, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENEGSTATE, err);
 
     err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_transfer_entropy(seriesB, seriesA, 1, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_transfer_entropy(seriesB, seriesA, 1, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENEGSTATE, err);
 }
@@ -101,12 +101,12 @@ UNIT(TransferEntropyBadState)
     int const seriesB[] = {2,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
 
-    ASSERT_TRUE(isnan(inform_transfer_entropy(seriesA, seriesB, 1, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_transfer_entropy(seriesA, seriesB, 1, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EBADSTATE, err);
 
     err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_transfer_entropy(seriesB, seriesA, 1, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_transfer_entropy(seriesB, seriesA, 1, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EBADSTATE, err);
 }

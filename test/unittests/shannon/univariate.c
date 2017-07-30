@@ -10,10 +10,10 @@
 UNIT(ShannonUniInvalidDistribution)
 {
     inform_dist *dist = NULL;
-    ASSERT_TRUE(isnan(inform_shannon_entropy(dist, 2)));
+    ASSERT_NAN(inform_shannon_entropy(dist, 2));
 
     dist = inform_dist_alloc(5);
-    ASSERT_TRUE(isnan(inform_shannon_entropy(dist, 2)));
+    ASSERT_NAN(inform_shannon_entropy(dist, 2));
     inform_dist_free(dist);
 }
 
@@ -21,8 +21,8 @@ UNIT(ShannonUniDeltaFunction)
 {
     inform_dist *dist = inform_dist_alloc(5);
     inform_dist_fill(dist, 0, 1, 0, 0, 0);
-    ASSERT_TRUE(isnan(inform_shannon_entropy(dist, -1.0)));
-    ASSERT_TRUE(isnan(inform_shannon_entropy(dist, -0.5)));
+    ASSERT_NAN(inform_shannon_entropy(dist, -1.0));
+    ASSERT_NAN(inform_shannon_entropy(dist, -0.5));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_entropy(dist, 0.0), 1e-6);
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_entropy(dist, 0.5), 1e-6);
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_entropy(dist, 1.5), 1e-6);
@@ -37,8 +37,8 @@ UNIT(ShannonUniUniform)
     inform_dist *dist = inform_dist_alloc(5);
     inform_dist_fill(dist, 1, 1, 1, 1, 1);
 
-    ASSERT_TRUE(isnan(inform_shannon_entropy(dist, -1.0)));
-    ASSERT_TRUE(isnan(inform_shannon_entropy(dist, -0.5)));
+    ASSERT_NAN(inform_shannon_entropy(dist, -1.0));
+    ASSERT_NAN(inform_shannon_entropy(dist, -0.5));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_entropy(dist, 0.0), 1e-6);
     ASSERT_DBL_NEAR_TOL(-2.321928, inform_shannon_entropy(dist, 0.5), 1e-6);
     ASSERT_DBL_NEAR_TOL(3.969362, inform_shannon_entropy(dist, 1.5), 1e-6);
@@ -53,8 +53,8 @@ UNIT(ShannonUniNonUniform)
     inform_dist *dist = inform_dist_alloc(2);
     inform_dist_fill(dist, 2, 1);
 
-    ASSERT_TRUE(isnan(inform_shannon_entropy(dist, -1.0)));
-    ASSERT_TRUE(isnan(inform_shannon_entropy(dist, -0.5)));
+    ASSERT_NAN(inform_shannon_entropy(dist, -1.0));
+    ASSERT_NAN(inform_shannon_entropy(dist, -0.5));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_entropy(dist, 0.0), 1e-6);
     ASSERT_DBL_NEAR_TOL(-0.918295, inform_shannon_entropy(dist, 0.5), 1e-6);
     ASSERT_DBL_NEAR_TOL(1.569837, inform_shannon_entropy(dist, 1.5), 1e-6);
@@ -65,8 +65,8 @@ UNIT(ShannonUniNonUniform)
     dist = inform_dist_realloc(dist, 3);
     inform_dist_fill(dist, 1, 1, 0);
 
-    ASSERT_TRUE(isnan(inform_shannon_entropy(dist, -1.0)));
-    ASSERT_TRUE(isnan(inform_shannon_entropy(dist, -0.5)));
+    ASSERT_NAN(inform_shannon_entropy(dist, -1.0));
+    ASSERT_NAN(inform_shannon_entropy(dist, -0.5));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_entropy(dist, 0.0), 1e-6);
     ASSERT_DBL_NEAR_TOL(-1.000000, inform_shannon_entropy(dist, 0.5), 1e-6);
     ASSERT_DBL_NEAR_TOL(1.709511, inform_shannon_entropy(dist, 1.5), 1e-6);
@@ -77,8 +77,8 @@ UNIT(ShannonUniNonUniform)
     inform_dist_fill(dist, 2, 2, 1);
     ASSERT_DBL_NEAR_TOL(1.521928, inform_shannon_entropy(dist, 2), 1e-6);
 
-    ASSERT_TRUE(isnan(inform_shannon_entropy(dist, -1.0)));
-    ASSERT_TRUE(isnan(inform_shannon_entropy(dist, -0.5)));
+    ASSERT_NAN(inform_shannon_entropy(dist, -1.0));
+    ASSERT_NAN(inform_shannon_entropy(dist, -0.5));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_entropy(dist, 0.0), 1e-6);
     ASSERT_DBL_NEAR_TOL(-1.521928, inform_shannon_entropy(dist, 0.5), 1e-6);
     ASSERT_DBL_NEAR_TOL(2.601753, inform_shannon_entropy(dist, 1.5), 1e-6);
@@ -107,8 +107,8 @@ UNIT(ShannonUniMutualInformationIndependent)
                     inform_dist_get(xs, i) * inform_dist_get(ys, j));
         }
     }
-    ASSERT_TRUE(isnan(inform_shannon_mi(dist, xs, ys, -1.0)));
-    ASSERT_TRUE(isnan(inform_shannon_mi(dist, xs, ys, -0.5)));
+    ASSERT_NAN(inform_shannon_mi(dist, xs, ys, -1.0));
+    ASSERT_NAN(inform_shannon_mi(dist, xs, ys, -0.5));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_mi(dist, xs, ys, 0.0), 1e-6);
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_mi(dist, xs, ys, 0.5), 1e-6);
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_mi(dist, xs, ys, 1.5), 1e-6);
@@ -131,8 +131,8 @@ UNIT(ShannonUniMutualInformationDependent)
     inform_dist *ys = inform_dist_alloc(2);
     inform_dist_fill(ys, 25, 75);
 
-    ASSERT_TRUE(isnan(inform_shannon_mi(dist, xs, ys, -1.0)));
-    ASSERT_TRUE(isnan(inform_shannon_mi(dist, xs, ys, -0.5)));
+    ASSERT_NAN(inform_shannon_mi(dist, xs, ys, -1.0));
+    ASSERT_NAN(inform_shannon_mi(dist, xs, ys, -0.5));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_mi(dist, xs, ys, 0.0), 1e-6);
     ASSERT_DBL_NEAR_TOL(-0.214171, inform_shannon_mi(dist, xs, ys, 0.5), 1e-6);
     ASSERT_DBL_NEAR_TOL(0.366128, inform_shannon_mi(dist, xs, ys, 1.5), 1e-6);
@@ -147,15 +147,15 @@ UNIT(ShannonUniMutualInformationDependent)
 UNIT(ShannonUniSelfInformationInvalidDist)
 {
     inform_dist *dist = NULL;
-    ASSERT_TRUE(isnan(inform_shannon_si(dist, 0, 2)));
+    ASSERT_NAN(inform_shannon_si(dist, 0, 2));
 }
 
 UNIT(ShannonUniSelfInformationImposibleEvent)
 {
     inform_dist *dist = inform_dist_alloc(2);
     inform_dist_fill(dist, 1, 0);
-    ASSERT_FALSE(isinf(inform_shannon_si(dist, 0, 2)));
-    ASSERT_TRUE(isinf(inform_shannon_si(dist, 2, 2)));
+    ASSERT_NOT_INF(inform_shannon_si(dist, 0, 2));
+    ASSERT_INF(inform_shannon_si(dist, 2, 2));
     inform_dist_free(dist);
 }
 
@@ -172,7 +172,7 @@ UNIT(ShannonUniSelfInformationBase2)
 
     inform_dist_fill(dist, 2, 0);
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_si(dist, 0, 2), 1e-6);
-    ASSERT_TRUE(isinf(inform_shannon_si(dist, 1, 2)));
+    ASSERT_INF(inform_shannon_si(dist, 1, 2));
 
     inform_dist_free(dist);
 }
@@ -245,19 +245,19 @@ UNIT(ShannonUniPointwiseMutualInformationDependent)
 UNIT(ShannonUniRelativeEntropyInvalidDistributions)
 {
     inform_dist *p = NULL, *q = NULL;
-    ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
+    ASSERT_NAN(inform_shannon_re(p, q, 2));
 
     p = inform_dist_alloc(5);
-    ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
-    ASSERT_TRUE(isnan(inform_shannon_re(q, p, 2)));
+    ASSERT_NAN(inform_shannon_re(p, q, 2));
+    ASSERT_NAN(inform_shannon_re(q, p, 2));
 
     inform_dist_tick(p, 0);
-    ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
-    ASSERT_TRUE(isnan(inform_shannon_re(q, p, 2)));
+    ASSERT_NAN(inform_shannon_re(p, q, 2));
+    ASSERT_NAN(inform_shannon_re(q, p, 2));
 
     q = inform_dist_alloc(5);
-    ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
-    ASSERT_TRUE(isnan(inform_shannon_re(q, p, 2)));
+    ASSERT_NAN(inform_shannon_re(p, q, 2));
+    ASSERT_NAN(inform_shannon_re(q, p, 2));
 
     inform_dist_free(q);
     inform_dist_free(p);
@@ -271,8 +271,8 @@ UNIT(ShannonUniRelativeEntropyIncompatibleSizes)
     inform_dist_tick(p, 0);
     inform_dist_tick(q, 1);
 
-    ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
-    ASSERT_TRUE(isnan(inform_shannon_re(q, p, 2)));
+    ASSERT_NAN(inform_shannon_re(p, q, 2));
+    ASSERT_NAN(inform_shannon_re(q, p, 2));
 
     inform_dist_free(q);
     inform_dist_free(p);
@@ -285,8 +285,8 @@ UNIT(ShannonUniRelativeEntropyUndefined)
     inform_dist_fill(p, 1, 1, 1, 1, 1);
     inform_dist_fill(q, 1, 1, 1, 2, 0);
 
-    ASSERT_TRUE(isnan(inform_shannon_re(p, q, 2)));
-    ASSERT_FALSE(isnan(inform_shannon_re(q, p, 2)));
+    ASSERT_NAN(inform_shannon_re(p, q, 2));
+    ASSERT_NOT_NAN(inform_shannon_re(q, p, 2));
 
     inform_dist_free(q);
     inform_dist_free(p);
@@ -297,8 +297,8 @@ UNIT(ShannonUniRelativeEntropySameDist)
     inform_dist *p = inform_dist_alloc(20);
     for (size_t i = 0; i < inform_dist_size(p); ++i)
         inform_dist_set(p, i, inform_random_int(0, 100));
-    ASSERT_TRUE(isnan(inform_shannon_re(p, p, -1.0)));
-    ASSERT_TRUE(isnan(inform_shannon_re(p, p, -0.5)));
+    ASSERT_NAN(inform_shannon_re(p, p, -1.0));
+    ASSERT_NAN(inform_shannon_re(p, p, -0.5));
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_re(p, p, 0.0), 1e-6);
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_re(p, p, 0.5), 1e-6);
     ASSERT_DBL_NEAR_TOL(0.000000, inform_shannon_re(p, p, 1.5), 1e-6);
@@ -366,19 +366,19 @@ UNIT(ShannonUniRelativeEntropyDefined)
 UNIT(ShannonUniCrossEntropyInvalidDistributions)
 {
     inform_dist *p = NULL, *q = NULL;
-    ASSERT_TRUE(isnan(inform_shannon_cross(p, q, 2)));
+    ASSERT_NAN(inform_shannon_cross(p, q, 2));
 
     p = inform_dist_alloc(5);
-    ASSERT_TRUE(isnan(inform_shannon_cross(p, q, 2)));
-    ASSERT_TRUE(isnan(inform_shannon_cross(q, p, 2)));
+    ASSERT_NAN(inform_shannon_cross(p, q, 2));
+    ASSERT_NAN(inform_shannon_cross(q, p, 2));
 
     inform_dist_tick(p, 0);
-    ASSERT_TRUE(isnan(inform_shannon_cross(p, q, 2)));
-    ASSERT_TRUE(isnan(inform_shannon_cross(q, p, 2)));
+    ASSERT_NAN(inform_shannon_cross(p, q, 2));
+    ASSERT_NAN(inform_shannon_cross(q, p, 2));
 
     q = inform_dist_alloc(5);
-    ASSERT_TRUE(isnan(inform_shannon_cross(p, q, 2)));
-    ASSERT_TRUE(isnan(inform_shannon_cross(q, p, 2)));
+    ASSERT_NAN(inform_shannon_cross(p, q, 2));
+    ASSERT_NAN(inform_shannon_cross(q, p, 2));
 
     inform_dist_free(q);
     inform_dist_free(p);
@@ -392,8 +392,8 @@ UNIT(ShannonUniCrossEntropyIncompatibleSizes)
     inform_dist_tick(p, 0);
     inform_dist_tick(q, 1);
 
-    ASSERT_TRUE(isnan(inform_shannon_cross(p, q, 2)));
-    ASSERT_TRUE(isnan(inform_shannon_cross(q, p, 2)));
+    ASSERT_NAN(inform_shannon_cross(p, q, 2));
+    ASSERT_NAN(inform_shannon_cross(q, p, 2));
 
     inform_dist_free(q);
     inform_dist_free(p);
@@ -406,9 +406,9 @@ UNIT(ShannonUniCrossEntropyUndefined)
     inform_dist_fill(p, 1, 1, 1, 1, 1);
     inform_dist_fill(q, 1, 1, 1, 2, 0);
 
-    ASSERT_TRUE(isinf(inform_shannon_cross(p, q, 2)));
-    ASSERT_FALSE(isnan(inform_shannon_cross(q, p, 2)));
-    ASSERT_FALSE(isinf(inform_shannon_cross(q, p, 2)));
+    ASSERT_INF(inform_shannon_cross(p, q, 2));
+    ASSERT_NOT_NAN(inform_shannon_cross(q, p, 2));
+    ASSERT_NOT_INF(inform_shannon_cross(q, p, 2));
 
     inform_dist_free(q);
     inform_dist_free(p);
@@ -419,8 +419,8 @@ UNIT(ShannonUniCrossEntropySameDist)
     inform_dist *p = inform_dist_alloc(20);
     for (size_t i = 0; i < inform_dist_size(p); ++i)
         inform_dist_set(p, i, inform_random_int(0, 100));
-    ASSERT_TRUE(isnan(inform_shannon_cross(p, p, -1.0)));
-    ASSERT_TRUE(isnan(inform_shannon_cross(p, p, -0.5)));
+    ASSERT_NAN(inform_shannon_cross(p, p, -1.0));
+    ASSERT_NAN(inform_shannon_cross(p, p, -0.5));
     ASSERT_DBL_NEAR_TOL(inform_shannon_entropy(p, 0.0), inform_shannon_cross(p, p, 0.0), 1e-6);
     ASSERT_DBL_NEAR_TOL(inform_shannon_entropy(p, 0.5), inform_shannon_cross(p, p, 0.5), 1e-6);
     ASSERT_DBL_NEAR_TOL(inform_shannon_entropy(p, 1.5), inform_shannon_cross(p, p, 1.5), 1e-6);
@@ -440,7 +440,7 @@ UNIT(ShannonUniCrossEntropyDefined)
     for (double b = 0.0; b <= 4.0; b += 0.5)
     {
         double got = inform_shannon_cross(p, q, b);
-        ASSERT_FALSE(isnan(got));
+        ASSERT_NOT_NAN(got);
         ASSERT_DBL_NEAR(1/log2(b), got);
     }
 
@@ -448,7 +448,7 @@ UNIT(ShannonUniCrossEntropyDefined)
     for (double b = 0.0; b <= 4.0; b += 0.5)
     {
         double got = inform_shannon_cross(p, q, b);
-        ASSERT_FALSE(isnan(got));
+        ASSERT_NOT_NAN(got);
         ASSERT_DBL_NEAR(3/(2*log2(b)), got);
     }
 
@@ -456,7 +456,7 @@ UNIT(ShannonUniCrossEntropyDefined)
     for (double b = 0.0; b <= 4.0; b += 0.5)
     {
         double got = inform_shannon_cross(p, q, b);
-        ASSERT_FALSE(isnan(got));
+        ASSERT_NOT_NAN(got);
         ASSERT_DBL_NEAR(8/(5*log2(b)), got);
     }
 
@@ -464,7 +464,7 @@ UNIT(ShannonUniCrossEntropyDefined)
     for (double b = 0.0; b <= 4.0; b += 0.5)
     {
         double got = inform_shannon_cross(p, q, b);
-        ASSERT_FALSE(isnan(got));
+        ASSERT_NOT_NAN(got);
         ASSERT_DBL_NEAR(((5*log2(5)-3)/(5*log2(b))), got);
     }
 
@@ -473,7 +473,7 @@ UNIT(ShannonUniCrossEntropyDefined)
     for (double b = 0.0; b <= 4.0; b += 0.5)
     {
         double got = inform_shannon_cross(p, q, b);
-        ASSERT_FALSE(isnan(got));
+        ASSERT_NOT_NAN(got);
         ASSERT_DBL_NEAR((log2(5)-1)/log2(b), got);
     }
 
@@ -482,7 +482,7 @@ UNIT(ShannonUniCrossEntropyDefined)
     for (double b = 0.0; b <= 4.0; b += 0.5)
     {
         double got = inform_shannon_cross(p, q, b);
-        ASSERT_FALSE(isnan(got));
+        ASSERT_NOT_NAN(got);
         ASSERT_DBL_NEAR((log2(5)-2)/log2(b), got);
     }
 
@@ -491,7 +491,7 @@ UNIT(ShannonUniCrossEntropyDefined)
     for (double b = 0.0; b <= 4.0; b += 0.5)
     {
         double got = inform_shannon_cross(p, q, b);
-        ASSERT_FALSE(isnan(got));
+        ASSERT_NOT_NAN(got);
         ASSERT_DBL_NEAR(log2(5.0)/log2(b), got);
     }
 

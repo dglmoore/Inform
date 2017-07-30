@@ -9,7 +9,7 @@
 UNIT(EffectiveInfoNullTPM)
 {
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_effective_info(NULL, NULL, 0, &err)));
+    ASSERT_NAN(inform_effective_info(NULL, NULL, 0, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETPM, err);
 }
@@ -18,7 +18,7 @@ UNIT(EffectiveInfoZeroSize)
 {
     double tpm[4] = {0.0, 1.0, 0.0, 0.0};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_effective_info(tpm, NULL, 0, &err)));
+    ASSERT_NAN(inform_effective_info(tpm, NULL, 0, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ESIZE, err);
 }
@@ -27,7 +27,7 @@ UNIT(EffectiveInfoZeroRowTPM)
 {
     double tpm[4] = {0.0, 1.0, 0.0, 0.0};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_effective_info(tpm, NULL, 2, &err)));
+    ASSERT_NAN(inform_effective_info(tpm, NULL, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETPM, err);
 }
@@ -36,7 +36,7 @@ UNIT(EffectiveInfoNegativeProbabilitiesTPM)
 {
     double tpm[4] = {-0.5, 1.0, 0.5, 0.5};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_effective_info(tpm, NULL, 2, &err)));
+    ASSERT_NAN(inform_effective_info(tpm, NULL, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETPM, err);
 }
@@ -46,13 +46,13 @@ UNIT(EffectiveInfoUnNormalizedRowTPM)
     inform_error err = INFORM_SUCCESS;
     {
         double tpm[4] = {0.5, 0.5, 0.5, 0.25};
-        ASSERT_TRUE(isnan(inform_effective_info(tpm, NULL, 2, &err)));
+        ASSERT_NAN(inform_effective_info(tpm, NULL, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_ETPM, err);
     }
     {
         double tpm[4] = {0.5, 0.5, 0.5, 0.75};
-        ASSERT_TRUE(isnan(inform_effective_info(tpm, NULL, 2, &err)));
+        ASSERT_NAN(inform_effective_info(tpm, NULL, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_ETPM, err);
     }
@@ -63,7 +63,7 @@ UNIT(EffectiveInfoZeroIntervention)
     double tpm[4] = {0.25, 0.75, 0.3, 0.7};
     double inter[2] = {0.0, 0.0};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_effective_info(tpm, inter, 2, &err)));
+    ASSERT_NAN(inform_effective_info(tpm, inter, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EDIST, err);
 }
@@ -73,7 +73,7 @@ UNIT(EffectiveInfoNegativeProbabilitiesIntervention)
     double tpm[4] = {0.25, 0.75, 0.3, 0.7};
     double inter[2] = {0.0, -0.2};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_effective_info(tpm, inter, 2, &err)));
+    ASSERT_NAN(inform_effective_info(tpm, inter, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EDIST, err);
 }
@@ -84,13 +84,13 @@ UNIT(EffectiveInfoUnNormalizedIntervention)
     double tpm[4] = {0.25, 0.75, 0.3, 0.7};
     {
         double inter[2] = {0.5, 0.25};
-        ASSERT_TRUE(isnan(inform_effective_info(tpm, inter, 2, &err)));
+        ASSERT_NAN(inform_effective_info(tpm, inter, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EDIST, err);
     }
     {
         double inter[2] = {0.5, 0.75};
-        ASSERT_TRUE(isnan(inform_effective_info(tpm, inter, 2, &err)));
+        ASSERT_NAN(inform_effective_info(tpm, inter, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EDIST, err);
     }
