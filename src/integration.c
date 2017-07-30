@@ -59,8 +59,8 @@ double *inform_integration_evidence(int const *series, size_t l, size_t n,
             err);
         for (size_t i = 0; i < n; ++i)
         {
-            minimum[i] = min(minimum[i], lmi[i]);
-            maximum[i] = max(maximum[i], lmi[i]);
+            minimum[i] = MIN(minimum[i], lmi[i]);
+            maximum[i] = MAX(maximum[i], lmi[i]);
         }
     }
     free(parts);
