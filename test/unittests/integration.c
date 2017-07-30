@@ -302,7 +302,7 @@ UNIT(IntegrationEvidenceSynchronized)
     free(series);
 }
 
-UNIT(IntegrationEvidencePartsNULLSeries)
+UNIT(IntegrationEvidencePartNULLSeries)
 {
     inform_error err = INFORM_SUCCESS;
     ASSERT_NULL(inform_integration_evidence_part(NULL, 1, 3, NULL, NULL, 0,
@@ -311,7 +311,7 @@ UNIT(IntegrationEvidencePartsNULLSeries)
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 }
 
-UNIT(IntegrationEvidencePartsTooFewSeries)
+UNIT(IntegrationEvidencePartTooFewSeries)
 {
     inform_error err = INFORM_SUCCESS;
     int series[] = {1,1,0,1,0,1};
@@ -327,7 +327,7 @@ UNIT(IntegrationEvidencePartsTooFewSeries)
     ASSERT_EQUAL(INFORM_ENOSOURCES, err);
 }
 
-UNIT(IntegrationEvidencePartsShortSeries)
+UNIT(IntegrationEvidencePartShortSeries)
 {
     inform_error err = INFORM_SUCCESS;
     int series[] = {1,1,0,1,0,1};
@@ -337,7 +337,7 @@ UNIT(IntegrationEvidencePartsShortSeries)
     ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
 }
 
-UNIT(IntegrationEvidencePartsInvalidBase)
+UNIT(IntegrationEvidencePartInvalidBase)
 {
     inform_error err = INFORM_SUCCESS;
     int series[] = {1,1,0,1,0,1};
@@ -377,7 +377,7 @@ UNIT(IntegrationEvidencePartsInvalidBase)
     ASSERT_EQUAL(INFORM_EBASE, err);
 }
 
-UNIT(IntegrationEvidencePartsNegativeState)
+UNIT(IntegrationEvidencePartNegativeState)
 {
     inform_error err;
     {
@@ -398,7 +398,7 @@ UNIT(IntegrationEvidencePartsNegativeState)
     }
 }
 
-UNIT(IntegrationEvidencePartsBadState)
+UNIT(IntegrationEvidencePartBadState)
 {
     inform_error err;
     {
@@ -419,7 +419,7 @@ UNIT(IntegrationEvidencePartsBadState)
     }
 }
 
-UNIT(IntegrationEvidencePartsInvalidPartitioning)
+UNIT(IntegrationEvidencePartInvalidPartitioning)
 {
     inform_error err;
     int series[] = {1,1,0,1,0,1};
@@ -464,7 +464,7 @@ UNIT(IntegrationEvidencePartsInvalidPartitioning)
     }
 }
 
-UNIT(IntegrationEvidencePartsAllocates)
+UNIT(IntegrationEvidencePartAllocates)
 {
     inform_error err = INFORM_SUCCESS;
     int series[] = {1,1,0,1,0,1};
@@ -475,7 +475,7 @@ UNIT(IntegrationEvidencePartsAllocates)
     free(evidence);
 }
 
-UNIT(IntegrationEvidencePartsTwoSeries)
+UNIT(IntegrationEvidencePartTwoSeries)
 {
     inform_error err = INFORM_SUCCESS;
     double evidence[3];
@@ -525,7 +525,7 @@ UNIT(IntegrationEvidencePartsTwoSeries)
     }
 }
 
-UNIT(IntegrationEvidencePartsThreeSeriesFinest)
+UNIT(IntegrationEvidencePartThreeSeriesFinest)
 {
     inform_error err = INFORM_SUCCESS;
     double evidence[6];
@@ -592,7 +592,7 @@ UNIT(IntegrationEvidencePartsThreeSeriesFinest)
     }
 }
 
-UNIT(IntegrationEvidencePartsThreeSeries)
+UNIT(IntegrationEvidencePartThreeSeries)
 {
     inform_error err = INFORM_SUCCESS;
     double evidence[3];
@@ -634,7 +634,7 @@ UNIT(IntegrationEvidencePartsThreeSeries)
     }
 }
 
-UNIT(IntegrationEvidencePartsSynchronizedFinest)
+UNIT(IntegrationEvidencePartSynchronizedFinest)
 {
     srand(1879);
     inform_error err = INFORM_SUCCESS;
@@ -690,7 +690,7 @@ UNIT(IntegrationEvidencePartsSynchronizedFinest)
     free(series);
 }
 
-UNIT(IntegrationEvidencePartsSynchronized)
+UNIT(IntegrationEvidencePartSynchronized)
 {
     srand(1879);
     inform_error err = INFORM_SUCCESS;
@@ -753,22 +753,24 @@ BEGIN_SUITE(Integration)
     ADD_UNIT(IntegrationEvidenceTooFewSeries)
     ADD_UNIT(IntegrationEvidenceShortSeries)
     ADD_UNIT(IntegrationEvidenceNegativeState)
+    ADD_UNIT(IntegrationEvidenceInvalidBase)
     ADD_UNIT(IntegrationEvidenceBadState)
     ADD_UNIT(IntegrationEvidenceAllocates)
     ADD_UNIT(IntegrationEvidenceTwoSeries)
     ADD_UNIT(IntegrationEvidenceThreeSeries)
     ADD_UNIT(IntegrationEvidenceSynchronized)
 
-    ADD_UNIT(IntegrationEvidencePartsNULLSeries)
-    ADD_UNIT(IntegrationEvidencePartsTooFewSeries)
-    ADD_UNIT(IntegrationEvidencePartsShortSeries)
-    ADD_UNIT(IntegrationEvidencePartsNegativeState)
-    ADD_UNIT(IntegrationEvidencePartsBadState)
-    ADD_UNIT(IntegrationEvidencePartsInvalidPartitioning)
-    ADD_UNIT(IntegrationEvidencePartsAllocates)
-    ADD_UNIT(IntegrationEvidencePartsTwoSeries)
-    ADD_UNIT(IntegrationEvidencePartsThreeSeriesFinest)
-    ADD_UNIT(IntegrationEvidencePartsThreeSeries)
-    ADD_UNIT(IntegrationEvidencePartsSynchronizedFinest)
-    ADD_UNIT(IntegrationEvidencePartsSynchronized)
+    ADD_UNIT(IntegrationEvidencePartNULLSeries)
+    ADD_UNIT(IntegrationEvidencePartTooFewSeries)
+    ADD_UNIT(IntegrationEvidencePartShortSeries)
+    ADD_UNIT(IntegrationEvidencePartNegativeState)
+    ADD_UNIT(IntegrationEvidencePartInvalidBase)
+    ADD_UNIT(IntegrationEvidencePartBadState)
+    ADD_UNIT(IntegrationEvidencePartInvalidPartitioning)
+    ADD_UNIT(IntegrationEvidencePartAllocates)
+    ADD_UNIT(IntegrationEvidencePartTwoSeries)
+    ADD_UNIT(IntegrationEvidencePartThreeSeriesFinest)
+    ADD_UNIT(IntegrationEvidencePartThreeSeries)
+    ADD_UNIT(IntegrationEvidencePartSynchronizedFinest)
+    ADD_UNIT(IntegrationEvidencePartSynchronized)
 END_SUITE
