@@ -170,6 +170,10 @@ inline static void assert_dbl_near(double exp, double real, double tol, char con
 #define ASSERT_DBL_NEAR_TOL(exp, real, tol) assert_dbl_near(exp, real, tol, __FILE__, __LINE__)
 #define ASSERT_DBL_NEAR(exp, real) assert_dbl_near(exp, real, DBL_EPSILON, __FILE__, __LINE__)
 
+inline static void assert_dbl_array_near(double *exp, double *real, size_t n, double tol, char const *caller, int line);
+#define ASSERT_DBL_ARRAY_NEAR_TOL(exp, real, n, tol) assert_dbl_array_near(exp, real, n, tol, __FILE__, __LINE__)
+#define ASSERT_DBL_ARRAY_NEAR(exp, real, n) assert_dbl_array_near(exp, real, n, DBL_EPSILON, __FILE__, __LINE__)
+
 inline static void assert_equal(intmax_t exp, intmax_t real, char const *caller, int line)
 {
     if (exp != real)
@@ -280,5 +284,13 @@ inline static void assert_dbl_near(double exp, double real, double tol, char con
     if (absdiff > tol)
     {
         unit_error("%s:%d expected %0.3e, got %0.3e (diff %0.3e, tol %0.3e)", caller, line, exp, real, diff, tol);
+    }
+}
+
+inline static void assert_dbl_array_near(double *exp, double *real, size_t n, double tol, char const *caller, int line)
+{
+    for (size_t i = 0; i < n; ++i)
+    {
+        assert_dbl_near(exp[i], real[i], tol, caller, line);
     }
 }
