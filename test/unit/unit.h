@@ -160,6 +160,12 @@ inline static void assert_not_nan(double real, char const *caller, int line);
 inline static void assert_nan(double real, char const *caller, int line);
 #define ASSERT_NAN(real) assert_nan(real, __FILE__, __LINE__);
 
+inline static void assert_not_inf(double real, char const *caller, int line);
+#define ASSERT_NOT_INF(real) assert_not_inf(real, __FILE__, __LINE__);
+
+inline static void assert_inf(double real, char const *caller, int line);
+#define ASSERT_INF(real) assert_inf(real, __FILE__, __LINE__);
+
 inline static void assert_dbl_near(double exp, double real, double tol, char const *caller, int line);
 #define ASSERT_DBL_NEAR_TOL(exp, real, tol) assert_dbl_near(exp, real, tol, __FILE__, __LINE__)
 #define ASSERT_DBL_NEAR(exp, real) assert_dbl_near(exp, real, DBL_EPSILON, __FILE__, __LINE__)
@@ -212,6 +218,22 @@ inline static void assert_not_null(void *real, const char *caller, int line)
     }
 }
 
+inline static void assert_not_inf(double real, char const *caller, int line)
+{
+    if (isinf(real))
+    {
+        unit_error("%s: %d unexpected INFINITY", caller, line);
+    }
+}
+
+inline static void assert_inf(double real, char const *caller, int line)
+{
+    if (!isinf(real))
+    {
+        unit_error("%s: %d expected INFINITY, got %0.3e", real, caller, line);
+    }
+}
+
 inline static void assert_not_nan(double real, char const *caller, int line)
 {
     if (isnan(real))
@@ -236,11 +258,21 @@ inline static void assert_dbl_near(double exp, double real, double tol, char con
         {
             unit_error("%s:%d expected NAN, got %0.3e", caller, line, real);
         }
-        return;
     }
     else if (isnan(real))
     {
         unit_error("%s:%d expected %0.3e, got NAN", caller, line, exp);
+    }
+    if (isinf(exp))
+    {
+        if (!isinf(real))
+        {
+            unit_error("%s:%d expected INFINITY, got %0.3e", caller, line, real);
+        }
+    }
+    else if (isinf(real))
+    {
+        unit_error("%s:%d expected %0.3e, got INFINITY", caller, line, exp);
     }
     double diff = exp - real;
     tol += DBL_EPSILON;
