@@ -12,13 +12,13 @@ UNIT(SeparableInformationNULLSeries)
 
     inform_error err = INFORM_SUCCESS;
     double si = inform_separable_info(NULL, series, 1, 1, 8, 2, 2, &err);
-    ASSERT_TRUE(isnan(si));
+    ASSERT_NAN(si);
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 
     err = INFORM_SUCCESS;
     si = inform_separable_info(series, NULL, 1, 1, 8, 2, 2, &err);
-    ASSERT_TRUE(isnan(si));
+    ASSERT_NAN(si);
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 }
@@ -29,7 +29,7 @@ UNIT(SeparableInformationNoSources)
 
     inform_error err = INFORM_SUCCESS;
     double si = inform_separable_info(series, series, 0, 1, 8, 2, 2, &err);
-    ASSERT_TRUE(isnan(si));
+    ASSERT_NAN(si);
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENOSOURCES, err);
 }
@@ -40,7 +40,7 @@ UNIT(SeparableInformationNoInits)
 
     inform_error err = INFORM_SUCCESS;
     double si = inform_separable_info(series, series, 1, 0, 8, 2, 2, &err);
-    ASSERT_TRUE(isnan(si));
+    ASSERT_NAN(si);
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENOINITS, err);
 }
@@ -53,7 +53,7 @@ UNIT(SeparableInformationSeriesTooShort)
     {
         err = INFORM_SUCCESS;
         double si = inform_separable_info(series, series, 1, 1, i, 2, 2, &err);
-        ASSERT_TRUE(isnan(si));
+        ASSERT_NAN(si);
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
     }
@@ -67,7 +67,7 @@ UNIT(SeparableInformationHistoryTooLong)
     {
         err = INFORM_SUCCESS;
         double si = inform_separable_info(series, series, 1, 1, 2, 2, i, &err);
-        ASSERT_TRUE(isnan(si));
+        ASSERT_NAN(si);
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EKLONG, err);
     }
@@ -78,7 +78,7 @@ UNIT(SeparableInformationZeroHistory)
     int const series[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
     double si = inform_separable_info(series, series, 1, 1, 2, 2, 0, &err);
-    ASSERT_TRUE(isnan(si));
+    ASSERT_NAN(si);
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EKZERO, err);
 }
@@ -91,7 +91,7 @@ UNIT(SeparableInformationInvalidBase)
     {
         err = INFORM_SUCCESS;
         double si = inform_separable_info(series, series, 1, 1, 2, i, 2, &err);
-        ASSERT_TRUE(isnan(si));
+        ASSERT_NAN(si);
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBASE, err);
     }
@@ -104,13 +104,13 @@ UNIT(SeparableInformationNegativeState)
     inform_error err = INFORM_SUCCESS;
 
     double si = inform_separable_info(seriesA, seriesB, 1, 1, 8, 2, 2, &err);
-    ASSERT_TRUE(isnan(si));
+    ASSERT_NAN(si);
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENEGSTATE, err);
 
     err = INFORM_SUCCESS;
     si = inform_separable_info(seriesB, seriesA, 1, 1, 8, 2, 2, &err);
-    ASSERT_TRUE(isnan(si));
+    ASSERT_NAN(si);
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENEGSTATE, err);
 }
@@ -122,13 +122,13 @@ UNIT(SeparableInformationBadState)
     inform_error err = INFORM_SUCCESS;
 
     double si = inform_separable_info(seriesA, seriesB, 1, 1, 8, 2, 2, &err);
-    ASSERT_TRUE(isnan(si));
+    ASSERT_NAN(si);
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EBADSTATE, err);
 
     err = INFORM_SUCCESS;
     si = inform_separable_info(seriesB, seriesA, 1, 1, 8, 2, 2, &err);
-    ASSERT_TRUE(isnan(si));
+    ASSERT_NAN(si);
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EBADSTATE, err);
 }

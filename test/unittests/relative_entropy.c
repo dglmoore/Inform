@@ -9,12 +9,12 @@
 UNIT(RelativeEntropyNULLSeries)
 {
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_relative_entropy(NULL, NULL, 3, 2, &err)));
+    ASSERT_NAN(inform_relative_entropy(NULL, NULL, 3, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 
     err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_relative_entropy((int[]){0,0,1}, NULL, 3, 2, &err)));
+    ASSERT_NAN(inform_relative_entropy((int[]){0,0,1}, NULL, 3, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 }
@@ -23,7 +23,7 @@ UNIT(RelativeEntropySeriesTooShort)
 {
     int const xs[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_relative_entropy(xs, xs, 0, 2, &err)));
+    ASSERT_NAN(inform_relative_entropy(xs, xs, 0, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
 }
@@ -35,7 +35,7 @@ UNIT(RelativeEntropyInvalidBase)
     for (int i = 0; i < 2; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_relative_entropy(xs, xs, 8, i, &err)));
+        ASSERT_NAN(inform_relative_entropy(xs, xs, 8, i, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBASE, err);
     }
@@ -46,12 +46,12 @@ UNIT(RelativeEntropyNegativeState)
     int const xs[] = {1,1,0,0,-1,0,0,1};
     int const ys[] = {1,1,0,0, 1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_relative_entropy(xs, ys, 8, 2, &err)));
+    ASSERT_NAN(inform_relative_entropy(xs, ys, 8, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENEGSTATE, err);
 
     err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_relative_entropy(ys, xs, 8, 2, &err)));
+    ASSERT_NAN(inform_relative_entropy(ys, xs, 8, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENEGSTATE, err);
 }
@@ -61,12 +61,12 @@ UNIT(RelativeEntropyBadState)
     int const xs[] = {1,2,0,0,1,0,0,1};
     int const ys[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_relative_entropy(xs, ys, 8, 2, &err)));
+    ASSERT_NAN(inform_relative_entropy(xs, ys, 8, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EBADSTATE, err);
 
     err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_relative_entropy(xs, ys, 8, 2, &err)));
+    ASSERT_NAN(inform_relative_entropy(xs, ys, 8, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EBADSTATE, err);
 }
@@ -107,8 +107,8 @@ UNIT(RelativeEntropy)
         (int[]){1,1,1,0,0,0,1,1,1}, 9, 2, &err), 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
-    ASSERT_TRUE(isnan(inform_relative_entropy((int[]){0,1,0,1,0,1,0,1},
-        (int[]){0,2,0,2,0,2,0,2}, 8, 3, &err)));
+    ASSERT_NAN(inform_relative_entropy((int[]){0,1,0,1,0,1,0,1},
+        (int[]){0,2,0,2,0,2,0,2}, 8, 3, &err));
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     ASSERT_DBL_NEAR_TOL(0.584963,
@@ -116,8 +116,8 @@ UNIT(RelativeEntropy)
             (int[]){0,0,0,0,1,1,1,1,2,2,2,2}, 12, 3, &err), 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
-    ASSERT_TRUE(isnan(inform_relative_entropy((int[]){0,0,1,1,2,1,1,0,0},
-        (int[]){0,0,0,1,1,1,0,0,0}, 9, 3, &err)));
+    ASSERT_NAN(inform_relative_entropy((int[]){0,0,1,1,2,1,1,0,0},
+        (int[]){0,0,0,1,1,1,0,0,0}, 9, 3, &err));
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     ASSERT_DBL_NEAR_TOL(0.000000, inform_relative_entropy((int[]){0,1,0,0,1,0,0,1,0},
@@ -210,34 +210,6 @@ UNIT(LocalRelativeEntropyAllocatesOutput)
     free(re);
 }
 
-bool dbl_near_tol_arrays(double const *xs, double const *ys, size_t n, double tol)
-{
-    for (size_t i = 0; i < n; ++i)
-    {
-        if (isnan(xs[i]) && isnan(ys[i]))
-        {
-            continue;
-        }
-        else if (isinf(xs[i]) && isinf(ys[i]))
-        {
-            continue;
-        }
-        else if (isnan(xs[i]) || isnan(ys[i]))
-        {
-            return false;
-        }
-        else if (isinf(xs[i]) || isinf(ys[i]))
-        {
-            return false;
-        }
-        else if (fabs(xs[i] - ys[i]) > tol)
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
 UNIT(LocalRelativeEntropy)
 {
     inform_error err = INFORM_SUCCESS;
@@ -245,55 +217,55 @@ UNIT(LocalRelativeEntropy)
     double re_3[3];
 
     inform_local_relative_entropy((int[]){0,0,1,1,1,1,0,0,0}, (int[]){1,0,0,1,0,0,1,0,0}, 9, 2, re_2, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){-0.263034, 0.415037}, re_2, 2, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){-0.263034, 0.415037}), re_2, 2, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     inform_local_relative_entropy((int[]){1,0,0,1,0,0,1,0,0}, (int[]){0,0,1,1,1,1,0,0,0}, 9, 2, re_2, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){0.263034, -0.415037}, re_2, 2, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){0.263034, -0.415037}), re_2, 2, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     inform_local_relative_entropy((int[]){0,0,0,0,1,1,1,1}, (int[]){1,1,1,1,0,0,0,0}, 8, 2, re_2, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){0.000000, 0.000000}, re_2, 2, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){0.000000, 0.000000}), re_2, 2, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     inform_local_relative_entropy((int[]){0,0,1,1,1,1,0,0,0}, (int[]){1,1,0,0,0,0,1,1,1}, 9, 2, re_2, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){0.321928, -0.321928}, re_2, 2, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){0.321928, -0.321928}), re_2, 2, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     inform_local_relative_entropy((int[]){1,1,0,1,0,1,1,1,0}, (int[]){1,1,0,0,0,1,0,1,1}, 9, 2, re_2, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){-0.415037, 0.263034}, re_2, 2, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){-0.415037, 0.263034}), re_2, 2, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     inform_local_relative_entropy((int[]){0,0,0,0,0,0,0,0,0}, (int[]){1,1,1,0,0,0,1,1,1}, 9, 2, re_2, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){1.584963, -INFINITY}, re_2, 2, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){1.584963, -INFINITY}), re_2, 2, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     inform_local_relative_entropy((int[]){1,1,1,1,0,0,0,0,1}, (int[]){1,1,1,0,0,0,1,1,1}, 9, 2, re_2, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){0.415037, -0.263034}, re_2, 2, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){0.415037, -0.263034}), re_2, 2, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     inform_local_relative_entropy((int[]){1,1,0,0,1,1,0,0,1}, (int[]){1,1,1,0,0,0,1,1,1}, 9, 2, re_2, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){0.415037, -0.263034}, re_2, 2, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){0.415037, -0.263034}), re_2, 2, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     inform_local_relative_entropy((int[]){0,1,0,1,0,1,0,1}, (int[]){0,2,0,2,0,2,0,2}, 8, 3, re_3, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){0.000000, INFINITY, -INFINITY}, re_3, 3, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){0.000000, INFINITY, -INFINITY}), re_3, 3, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     inform_local_relative_entropy((int[]){0,0,0,0,0,0,1,1,1,1,1,1}, (int[]){0,0,0,0,1,1,1,1,2,2,2,2}, 12, 3, re_3, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){0.584963, 0.584963, -INFINITY}, re_3, 3, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){0.584963, 0.584963, -INFINITY}), re_3, 3, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     inform_local_relative_entropy((int[]){0,0,1,1,2,1,1,0,0}, (int[]){0,0,0,1,1,1,0,0,0}, 9, 3, re_3, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){-0.584963, 0.415037, INFINITY}, re_3, 3, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){-0.584963, 0.415037, INFINITY}), re_3, 3, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     inform_local_relative_entropy((int[]){0,1,0,0,1,0,0,1,0}, (int[]){1,0,0,1,0,0,1,0,0}, 9, 2, re_2, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){0.000000, 0.000000, -INFINITY}, re_2, 2, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){0.000000, 0.000000, -INFINITY}), re_2, 2, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 
     inform_local_relative_entropy((int[]){1,0,0,1,0,0,1,0}, (int[]){2,0,1,2,0,1,2,0}, 8, 3, re_3, &err);
-    ASSERT_TRUE(dbl_near_tol_arrays((double[]){0.736966, 0.584963, -INFINITY}, re_3, 3, 1e-6));
+    ASSERT_DBL_ARRAY_NEAR_TOL(((double[]){0.736966, 0.584963, -INFINITY}), re_3, 3, 1e-6);
     ASSERT_EQUAL(INFORM_SUCCESS, err);
 }
 

@@ -9,7 +9,7 @@
 UNIT(EntropyRateNULLSeries)
 {
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_entropy_rate(NULL, 1, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_entropy_rate(NULL, 1, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 }
@@ -18,7 +18,7 @@ UNIT(EntropyRateNoInits)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_entropy_rate(series, 0, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_entropy_rate(series, 0, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENOINITS, err);
 }
@@ -31,7 +31,7 @@ UNIT(EntropyRateSeriesTooShort)
     for (size_t i = 0; i < 2; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, i, 2, 2, &err)));
+        ASSERT_NAN(inform_entropy_rate(series, 1, i, 2, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
     }
@@ -44,7 +44,7 @@ UNIT(EntropyRateInvalidBase)
     
     for (int i = 0; i < 2; ++i)
     {
-        ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, i, 2, &err)));
+        ASSERT_NAN(inform_entropy_rate(series, 1, 2, i, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBASE, err);
     }
@@ -55,7 +55,7 @@ UNIT(EntropyRateZeroHistory)
     int const series[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
     
-    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, 2, 0, &err)));
+    ASSERT_NAN(inform_entropy_rate(series, 1, 2, 2, 0, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EKZERO, err);
 }
@@ -68,7 +68,7 @@ UNIT(EntropyRateHistoryTooLong)
     for (size_t i = 2; i < 4; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, 2, i, &err)));
+        ASSERT_NAN(inform_entropy_rate(series, 1, 2, 2, i, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EKLONG, err);
     }
@@ -78,7 +78,7 @@ UNIT(EntropyRateNegativeState)
 {
     int const series[] = {-1,1,0,0,1,0,0,1};
     inform_error err;
-    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 8, 3, 2, &err)));
+    ASSERT_NAN(inform_entropy_rate(series, 1, 8, 3, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENEGSTATE, err);
 }
@@ -87,7 +87,7 @@ UNIT(EntropyRateBadState)
 {
     int const series[] = {1,2,0,0,1,0,0,1};
     inform_error err;
-    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_entropy_rate(series, 1, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EBADSTATE, err);
 }
