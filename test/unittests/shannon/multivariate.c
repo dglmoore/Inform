@@ -37,20 +37,22 @@ UNIT(ShannonMultiPointwiseMutualInformationIndependent)
         {
             for (size_t k = 0; k < inform_dist_size(zs); ++k)
             {
-                ASSERT_DBL_NEAR_TOL(0.000000,
+                size_t joint_event = k+12*(j+12*i);
+                double expect = inform_dist_prob(dist, joint_event) ? 0 : NAN;
+                ASSERT_DBL_NEAR_TOL(expect,
                     inform_shannon_multi_pmi(dist,
                         (inform_dist const *[3]){xs, ys, zs}, 3,
-                        k+12*(j+12*i), (size_t[3]){i, j, k}, 0.5),
+                        joint_event, (size_t[3]){i, j, k}, 0.5),
                     1e-6);
-                ASSERT_DBL_NEAR_TOL(0.000000,
+                ASSERT_DBL_NEAR_TOL(expect,
                     inform_shannon_multi_pmi(dist,
                         (inform_dist const *[3]){xs, ys, zs}, 3,
-                        k+12*(j+12*i), (size_t[3]){i, j, k}, 2),
+                        joint_event, (size_t[3]){i, j, k}, 2),
                     1e-6);
-                ASSERT_DBL_NEAR_TOL(0.000000,
+                ASSERT_DBL_NEAR_TOL(expect,
                     inform_shannon_multi_pmi(dist,
                         (inform_dist const *[3]){xs, ys, zs}, 3,
-                        k+12*(j+12*i), (size_t[3]){i, j, k}, 3),
+                        joint_event, (size_t[3]){i, j, k}, 3),
                     1e-6);
             }
         }
