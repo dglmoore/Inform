@@ -773,15 +773,17 @@ UNIT(BlackBoxBadBase)
 
 UNIT(BlackBoxNegativeState)
 {
-    inform_error err = INFORM_SUCCESS;
+    inform_error err;
     {
+        err = INFORM_SUCCESS;
         int series[] = {0,-1,1,1,0,1};
         ASSERT_NULL(inform_black_box(series, 2, 1, 3, (int[]){2,2}, NULL, NULL,
             NULL, &err));
         ASSERT_EQUAL(INFORM_ENEGSTATE, err);
     }
     {
-        int series[] = {0,01,1,1,0,-1};
+        err = INFORM_SUCCESS;
+        int series[] = {0,1,1,1,0,-1};
         ASSERT_NULL(inform_black_box(series, 2, 1, 3, (int[]){2,2}, NULL, NULL,
             NULL, &err));
         ASSERT_EQUAL(INFORM_ENEGSTATE, err);
@@ -1316,6 +1318,367 @@ UNIT(BlackBoxMultipleSeriesEnsemble)
     }
 }
 
+UNIT(BlackBoxPartsNullSeries)
+{
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_black_box_parts(NULL, 0, 0, NULL, NULL, 0, NULL, &err));
+    ASSERT_EQUAL(INFORM_ETIMESERIES, err);
+}
+
+UNIT(BlackBoxPartsEmptySeries)
+{
+    inform_error err = INFORM_SUCCESS;
+    int series[] = {0,1,1,1,0};
+    ASSERT_NULL(inform_black_box_parts(series, 0, 0, NULL, NULL, 0, NULL, &err));
+    ASSERT_EQUAL(INFORM_ENOSOURCES, err);
+}
+
+UNIT(BlackBoxPartsBadBase)
+{
+    inform_error err = INFORM_SUCCESS;
+    int series[] = {0,1,1,1,0,1};
+    ASSERT_NULL(inform_black_box_parts(series, 2, 3, NULL, NULL, 0, NULL,
+        &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_black_box_parts(series, 2, 3, (int[]){0,0}, NULL, 0,
+        NULL, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_black_box_parts(series, 2, 3, (int[]){1,1}, NULL, 0,
+        NULL, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_black_box_parts(series, 2, 3, (int[]){-1,1}, NULL, 0,
+        NULL, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+}
+
+UNIT(BlackBoxPartsNegativeState)
+{
+    inform_error err;
+    {
+        err = INFORM_SUCCESS;
+        int series[] = {0,-1,1,1,0,1};
+        ASSERT_NULL(inform_black_box_parts(series, 2, 3, (int[]){2,2}, NULL, 0,
+            NULL, &err));
+        ASSERT_EQUAL(INFORM_ENEGSTATE, err);
+    }
+    {
+        err = INFORM_SUCCESS;
+        int series[] = {0,1,1,1,0,-1};
+        ASSERT_NULL(inform_black_box_parts(series, 2, 3, (int[]){2,2}, NULL, 0,
+            NULL, &err));
+        ASSERT_EQUAL(INFORM_ENEGSTATE, err);
+    }
+}
+
+UNIT(BlackBoxPartsShortParts)
+{
+    inform_error err = INFORM_SUCCESS;
+    int series[] = {0,1,1,1,0,1};
+    size_t parts[] = {0,1};
+ 
+    ASSERT_NULL(inform_black_box_parts(series, 2, 3, (int[]){2,2}, NULL, 0,
+        NULL, &err));
+    ASSERT_EQUAL(INFORM_EPARTS, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_black_box_parts(series, 2, 3, (int[]){2,2}, parts, 0,
+        NULL, &err));
+    ASSERT_EQUAL(INFORM_EPARTS, err);
+}
+
+UNIT(BlackBoxPartsInvalid)
+{
+    inform_error err = INFORM_SUCCESS;
+    int series[] = {0,1,1,1,0,1};
+    {
+        size_t parts[] = {1,1};
+        ASSERT_NULL(inform_black_box_parts(series, 2, 3, (int[]){2,2}, parts, 1,
+            NULL, &err));
+        ASSERT_EQUAL(INFORM_EPARTS, err);
+    }
+    {
+        size_t parts[] = {2,0};
+        ASSERT_NULL(inform_black_box_parts(series, 2, 3, (int[]){2,2}, parts, 2,
+            NULL, &err));
+        ASSERT_EQUAL(INFORM_EPARTS, err);
+    }
+    {
+        size_t parts[] = {0,1};
+        ASSERT_NULL(inform_black_box_parts(series, 2, 3, (int[]){2,2}, parts, 3,
+            NULL, &err));
+        ASSERT_EQUAL(INFORM_EPARTS, err);
+    }
+    {
+        size_t parts[] = {0,1};
+        ASSERT_NULL(inform_black_box_parts(series, 2, 3, (int[]){2,2}, parts, 1,
+            NULL, &err));
+        ASSERT_EQUAL(INFORM_EPARTS, err);
+    }
+}
+
+UNIT(BlackBoxPartsOnePartition)
+{
+    {
+        inform_error err = INFORM_SUCCESS;
+        int series[] = {0,1,1,1,0,1};
+        int expected[3], got[4];
+        inform_black_box(series, 2, 1, 3, (int[]){2,2}, NULL, NULL, expected, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        inform_black_box_parts(series, 2, 3, (int[]){2,2}, (size_t[]){0,0}, 1,
+            got, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        for (size_t i = 0; i < 3; ++i)
+        {
+            ASSERT_EQUAL(expected[i], got[i]);
+        }
+        ASSERT_EQUAL(4, got[3]);
+    }
+    {
+        inform_error err = INFORM_SUCCESS;
+        int series[] = {0,1,1,1,0,1,0,0,1};
+        int expected[3], got[4];
+        inform_black_box(series, 3, 1, 3, (int[]){2,2,2}, NULL, NULL, expected, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        inform_black_box_parts(series, 3, 3, (int[]){2,2,2}, (size_t[]){0,0,0},
+            1, got, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        for (size_t i = 0; i < 3; ++i)
+        {
+            ASSERT_EQUAL(expected[i], got[i]);
+        }
+        ASSERT_EQUAL(8, got[3]);
+    }
+}
+
+UNIT(BlackBoxPartsTwoPartitions)
+{
+    {
+        inform_error err = INFORM_SUCCESS;
+        int series[] = {0,1,1,1,0,1};
+        int got[8];
+        inform_black_box_parts(series, 2, 3, (int[]){2,2}, (size_t[]){0,1}, 2,
+            got, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        for (size_t i = 0; i < 6; ++i)
+        {
+            ASSERT_EQUAL(series[i], got[i]);
+        }
+        ASSERT_EQUAL(2, got[6]);
+        ASSERT_EQUAL(2, got[7]);
+    }
+    {
+        inform_error err = INFORM_SUCCESS;
+        int series[] = {0,1,1,1,0,1,0,0,1};
+        int expected[3], got[8];
+        inform_black_box(series, 2, 1, 3, (int[]){2,2}, NULL, NULL, expected, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        inform_black_box_parts(series, 3, 3, (int[]){2,2,2}, (size_t[]){0,0,1},
+            2, got, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        for (size_t i = 0; i < 3; ++i)
+        {
+            ASSERT_EQUAL(expected[i], got[i]);
+        }
+        for (size_t i = 0; i < 3; ++i)
+        {
+            ASSERT_EQUAL(series[i+6], got[i+3]);
+        }
+        ASSERT_EQUAL(4, got[6]);
+        ASSERT_EQUAL(2, got[7]);
+    }
+    {
+        inform_error err = INFORM_SUCCESS;
+        int series[] = {0,1,1,1,0,1,0,0,1};
+        int subseries[] = {0,1,1,0,0,1};
+        int expected[3], got[8];
+        inform_black_box(subseries, 2, 1, 3, (int[]){2,2}, NULL, NULL, expected, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        inform_black_box_parts(series, 3, 3, (int[]){2,2,2}, (size_t[]){0,1,0},
+            2, got, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        for (size_t i = 0; i < 3; ++i)
+        {
+            ASSERT_EQUAL(expected[i], got[i]);
+        }
+        for (size_t i = 0; i < 3; ++i)
+        {
+            ASSERT_EQUAL(series[i+3], got[i+3]);
+        }
+        ASSERT_EQUAL(4, got[6]);
+        ASSERT_EQUAL(2, got[7]);
+    }
+    {
+        inform_error err = INFORM_SUCCESS;
+        int series[] = {0,1,1,1,0,1,0,0,1};
+        int expected[3], got[8];
+        inform_black_box(series + 3, 2, 1, 3, (int[]){2,2}, NULL, NULL, expected, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        inform_black_box_parts(series, 3, 3, (int[]){2,2,2}, (size_t[]){0,1,1},
+            2, got, &err);
+        ASSERT_TRUE(inform_succeeded(&err));
+        for (size_t i = 0; i < 3; ++i)
+        {
+            ASSERT_EQUAL(series[i], got[i]);
+        }
+        for (size_t i = 0; i < 3; ++i)
+        {
+            ASSERT_EQUAL(expected[i], got[i+3]);
+        }
+        ASSERT_EQUAL(2, got[6]);
+        ASSERT_EQUAL(4, got[7]);
+    }
+}
+
+UNIT(BlackBoxPartsThreePartitions)
+{
+    inform_error err = INFORM_SUCCESS;
+    int series[] = {0,1,1,1,0,1,0,0,1};
+    int got[12];
+    inform_black_box_parts(series, 3, 3, (int[]){2,2,2}, (size_t[]){0,1,2}, 3,
+        got, &err);
+    ASSERT_TRUE(inform_succeeded(&err));
+    for (size_t i = 0; i < 9; ++i)
+    {
+        ASSERT_EQUAL(series[i], got[i]);
+    }
+    ASSERT_EQUAL(2, got[9]);
+    ASSERT_EQUAL(2, got[10]);
+    ASSERT_EQUAL(2, got[11]);
+}
+
+UNIT(PartitionsFirst)
+{
+    size_t *parts = NULL;
+    ASSERT_NULL((parts = inform_first_partitioning(0)));
+
+    for (size_t n = 1; n < 5; ++n)
+    {
+        ASSERT_NOT_NULL((parts = inform_first_partitioning(n)));
+        for (size_t i = 0; i < n; ++i)
+        {
+            ASSERT_EQUAL_U(0, parts[i]);
+        }
+        free(parts);
+    }
+}
+
+UNIT(PartitionsNext1)
+{
+    size_t const size = 1;
+    size_t *parts = inform_first_partitioning(size);
+    ASSERT_NOT_NULL(parts);
+    ASSERT_EQUAL_U(0, parts[0]);
+
+    ASSERT_EQUAL_U(0, inform_next_partitioning(parts, size));
+
+    free(parts);
+}
+
+UNIT(PartitionsNext2)
+{
+    size_t const size = 2;
+    size_t *parts = inform_first_partitioning(size);
+    ASSERT_NOT_NULL(parts);
+
+    ASSERT_EQUAL_U(2, inform_next_partitioning(parts, size));
+    size_t const expected[] = {0,1};
+    for (size_t i = 0; i < size; ++i)
+        ASSERT_EQUAL_U(expected[i], parts[i]);
+
+    free(parts);
+}
+
+UNIT(PartitionsNext3)
+{
+    size_t const size = 3;
+    size_t *parts = inform_first_partitioning(size);
+    ASSERT_NOT_NULL(parts);
+
+    size_t const expected_size[4] = {2,2,2,3};
+    size_t const *expected[] = {
+        (size_t[]){0,0,1},
+        (size_t[]){0,1,0},
+        (size_t[]){0,1,1},
+        (size_t[]){0,1,2},
+    };
+
+    size_t i = 0, n = 0;
+    while ((n = inform_next_partitioning(parts, size)) && i < 4)
+    {
+        ASSERT_EQUAL_U(expected_size[i], n);
+        for (size_t j = 0; j < size; ++j)
+            ASSERT_EQUAL_U(expected[i][j], parts[j]);
+        ++i;
+    }
+    ASSERT_EQUAL_U(0, inform_next_partitioning(parts, size));
+
+    free(parts);
+}
+
+UNIT(PartitionsNext4)
+{
+    size_t const size = 4;
+    size_t *parts = inform_first_partitioning(size);
+    ASSERT_NOT_NULL(parts);
+
+    size_t const expected_size[14] = {2,2,2,3,2,2,3,2,2,3,3,3,3,4};
+    size_t const *expected[] = {
+        (size_t[]){0,0,0,1},
+        (size_t[]){0,0,1,0},
+        (size_t[]){0,0,1,1},
+        (size_t[]){0,0,1,2},
+        (size_t[]){0,1,0,0},
+        (size_t[]){0,1,0,1},
+        (size_t[]){0,1,0,2},
+        (size_t[]){0,1,1,0},
+        (size_t[]){0,1,1,1},
+        (size_t[]){0,1,1,2},
+        (size_t[]){0,1,2,0},
+        (size_t[]){0,1,2,1},
+        (size_t[]){0,1,2,2},
+        (size_t[]){0,1,2,3},
+    };
+
+    size_t i = 0, n = 0;
+    while ((n = inform_next_partitioning(parts, size)) && i < 14)
+    {
+        ASSERT_EQUAL_U(expected_size[i], n);
+        for (size_t j = 0; j < size; ++j)
+            ASSERT_EQUAL_U(expected[i][j], parts[j]);
+        ++i;
+    }
+    ASSERT_EQUAL_U(0, inform_next_partitioning(parts, size));
+
+    free(parts);
+}
+
+static size_t bell_number(size_t n)
+{
+    size_t bell_number = 0;
+    size_t *partitioning = inform_first_partitioning(n);
+    do
+    {
+        ++bell_number;
+    } while (inform_next_partitioning(partitioning, n));
+    free(partitioning);
+    return bell_number;
+}
+
+UNIT(PartitionsBellNumbers)
+{
+    size_t const bell_numbers[11] = {
+        1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975, 678570,
+    };
+    for (size_t i = 1; i <= 11; ++i)
+        ASSERT_EQUAL_U(bell_numbers[i-1], bell_number(i));
+}
+
 BEGIN_SUITE(Utilities)
     ADD_UNIT(RangeNullSeries)
     ADD_UNIT(RangeEmpty)
@@ -1402,4 +1765,21 @@ BEGIN_SUITE(Utilities)
     ADD_UNIT(BlackBoxSingleSeriesEnsemble)
     ADD_UNIT(BlackBoxMultipleSeries)
     ADD_UNIT(BlackBoxMultipleSeriesEnsemble)
+
+    ADD_UNIT(BlackBoxPartsNullSeries)
+    ADD_UNIT(BlackBoxPartsEmptySeries)
+    ADD_UNIT(BlackBoxPartsBadBase)
+    ADD_UNIT(BlackBoxPartsNegativeState)
+    ADD_UNIT(BlackBoxPartsShortParts)
+    ADD_UNIT(BlackBoxPartsInvalid)
+    ADD_UNIT(BlackBoxPartsOnePartition)
+    ADD_UNIT(BlackBoxPartsTwoPartitions)
+    ADD_UNIT(BlackBoxPartsThreePartitions)
+
+    ADD_UNIT(PartitionsFirst)
+    ADD_UNIT(PartitionsNext1)
+    ADD_UNIT(PartitionsNext2)
+    ADD_UNIT(PartitionsNext3)
+    ADD_UNIT(PartitionsNext4)
+    ADD_UNIT(PartitionsBellNumbers)
 END_SUITE

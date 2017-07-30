@@ -8,6 +8,7 @@ set(${PROJECT_NAME}_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/entropy_rate.c
     ${CMAKE_CURRENT_SOURCE_DIR}/error.c
     ${CMAKE_CURRENT_SOURCE_DIR}/excess_entropy.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/integration.c
     ${CMAKE_CURRENT_SOURCE_DIR}/mutual_info.c
     ${CMAKE_CURRENT_SOURCE_DIR}/predictive_info.c
     ${CMAKE_CURRENT_SOURCE_DIR}/relative_entropy.c
@@ -18,6 +19,7 @@ set(${PROJECT_NAME}_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/utilities/black_boxing.c
     ${CMAKE_CURRENT_SOURCE_DIR}/utilities/coalesce.c
     ${CMAKE_CURRENT_SOURCE_DIR}/utilities/encoding.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/utilities/partitions.c
     ${CMAKE_CURRENT_SOURCE_DIR}/utilities/random.c
     ${CMAKE_CURRENT_SOURCE_DIR}/utilities/tpm.c
     PARENT_SCOPE)

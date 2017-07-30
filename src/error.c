@@ -41,6 +41,7 @@ char const *inform_strerror(inform_error const *err)
         case INFORM_ETPM:         return "invalid TPM";
         case INFORM_ETPMROW:      return "all zero row in TPM";
         case INFORM_ESIZE:        return "invalid size";
+        case INFORM_EPARTS:       return "invalid partitioning";
         default:                  return "unrecognized error";
     }
 }

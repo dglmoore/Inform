@@ -36,7 +36,8 @@ typedef enum
     INFORM_EENCODE      = 15, /// cannot encode state
     INFORM_ETPM         = 16, /// invalid TPM
     INFORM_ETPMROW      = 17, /// all zero row in transition probability matrix
-    INFORM_ESIZE        = 18, /// invalid size
+    INFORM_ESIZE        = 18, /// invalid size,
+    INFORM_EPARTS       = 19, /// invalid partitioning
 } inform_error;
 
 /// set an error as pointed to by ERR
