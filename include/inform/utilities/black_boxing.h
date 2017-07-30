@@ -38,8 +38,7 @@ EXPORT int *inform_black_box(int const *series, size_t l, size_t n, size_t m,
  * 
  * @param[in] series  the time series
  * @param[in] l       the number of time series
- * @param[in] n       the number of initial conditions per time series
- * @param[in] m       the number of time steps per initial condition
+ * @param[in] n       the number of time steps per time series
  * @param[in] b       the base of each time series
  * @param[in] parts   the partitioning array
  * @param[in] nparts  the number of partitions
@@ -47,7 +46,7 @@ EXPORT int *inform_black_box(int const *series, size_t l, size_t n, size_t m,
  * @param[in,out] err an error code
  * @return the black boxed time series
  */
-EXPORT int *inform_black_box_parts(int *series, size_t l, size_t n, size_t m,
+EXPORT int *inform_black_box_parts(int const *series, size_t l, size_t n,
     int const *b, size_t const *parts, size_t nparts, int *box,
     inform_error *err);
 

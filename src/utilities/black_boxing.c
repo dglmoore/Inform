@@ -234,11 +234,10 @@ static int compare_ints(void const *x, void const *y)
     return (a < b) ? -1 : (a > b) ? 1 : 0;
 }
 
-int *inform_black_box_parts(int *series, size_t l, size_t n, size_t m,
-    int const *b, size_t const *parts, size_t nparts, int *box,
-    inform_error *err)
+int *inform_black_box_parts(int const *series, size_t l, size_t n, int const *b,
+    size_t const *parts, size_t nparts, int *box, inform_error *err)
 {
-    if (check_arguments(series, l, n, m, b, NULL, NULL, err))
+    if (check_arguments(series, l, 1, n, b, NULL, NULL, err))
     {
         return NULL;
     }
@@ -276,19 +275,18 @@ int *inform_black_box_parts(int *series, size_t l, size_t n, size_t m,
     int allocate = (box == NULL);
     if (allocate)
     {
-        box = malloc(nparts * (1 + n * m) * sizeof(int));
+        box = malloc(nparts * (1 + n) * sizeof(int));
         if (box == NULL)
         {
             INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
         }
     }
 
-    int *bases = box;
-    int *partitioned = bases + nparts;
+    int *partitioned = box;
+    int *bases = partitioned + nparts * n;
     if (nparts == l)
     {
-        memcpy(partitioned, series, l * n * m * sizeof(int));
-        int *bases = box;
+        memcpy(partitioned, series, l * n * sizeof(int));
         for (size_t i = 0; i < l; ++i) bases[i] = b[i];
     }
     else
@@ -314,12 +312,12 @@ int *inform_black_box_parts(int *series, size_t l, size_t n, size_t m,
 
             if (k == 1)
             {
-                memcpy(partitioned + n*m*i, series + n*m*members[0], n*m*sizeof(int));
+                memcpy(partitioned + n*i, series + n*members[0], n*sizeof(int));
                 bases[i] = b[members[0]];
             }
             else
             {
-                int *subbases = malloc(k * (1 + n * m) * sizeof(int));
+                int *subbases = malloc(k * (1 + n) * sizeof(int));
                 int *subseries = subbases + k;
                 if (subseries == NULL)
                 {
@@ -332,13 +330,13 @@ int *inform_black_box_parts(int *series, size_t l, size_t n, size_t m,
                 {
                     subbases[j] = b[members[j]];
                     bases[i] *= subbases[j];
-                    for (size_t p = 0; p < n * m; ++p)
+                    for (size_t p = 0; p < n; ++p)
                     {
-                        subseries[p + n*m*j] = series[p + n*m*members[j]];
+                        subseries[p + n*j] = series[p + n*members[j]];
                     }
                 }
-                inform_black_box(subseries, k, n, m, subbases, NULL, NULL,
-                    partitioned + n*m*i, err);
+                inform_black_box(subseries, k, 1, n, subbases, NULL, NULL,
+                    partitioned + n*i, err);
                 free(subbases);
                 if (inform_failed(err))
                 {
