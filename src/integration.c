@@ -55,26 +55,13 @@ double *inform_integration_evidence(int const *series, size_t l, size_t n,
     size_t nparts = 1;
     while ((nparts = inform_next_partitioning(parts, l)))
     {
-        int *partitioned = inform_black_box_parts(series, l, n, b, parts,
-            nparts, NULL, err);
-        if (inform_failed(err))
-        {
-            free(partitioned);
-            break;
-        }
-        inform_local_mutual_info(partitioned, nparts, n, partitioned + nparts*n,
-            lmi, err);
-        if (inform_failed(err))
-        {
-            free(partitioned);
-            break;
-        }
+        inform_integration_evidence_part(series, l, n, b, parts, nparts, lmi,
+            err);
         for (size_t i = 0; i < n; ++i)
         {
             minimum[i] = min(minimum[i], lmi[i]);
             maximum[i] = max(maximum[i], lmi[i]);
         }
-        free(partitioned);
     }
     free(parts);
     free(lmi);
@@ -88,5 +75,52 @@ double *inform_integration_evidence(int const *series, size_t l, size_t n,
         return NULL;
     }
 
+    return evidence;
+}
+
+double *inform_integration_evidence_part(int const *series, size_t l, size_t n,
+    int const *b, size_t const *parts, size_t nparts, double *evidence,
+    inform_error *err)
+{
+    if (check_arguments(series, l, err))
+    {
+        return NULL;
+    }
+    int allocate_evidence = (evidence == NULL);
+    if (allocate_evidence)
+    {
+        evidence = malloc(2 * n * sizeof(double));
+        if (evidence == NULL)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
+    }
+    size_t *partitioning = (size_t *)parts;
+    int allocate_parts = (partitioning == NULL);
+    if (allocate_parts)
+    {
+        partitioning = malloc(l * sizeof(size_t));
+        if (partitioning == NULL)
+        {
+            if (allocate_evidence) free(evidence);
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
+        for (size_t i = 0; i < l; ++i) partitioning[i] = i;
+        nparts = l;
+    }
+    int *partitioned = inform_black_box_parts(series, l, n, b, partitioning,
+        nparts, NULL, err);
+    if (inform_succeeded(err))
+    {
+        inform_local_mutual_info(partitioned, nparts, n, partitioned + nparts*n,
+            evidence, err);
+    }
+    free(partitioned);
+    if (allocate_parts) free(partitioning);
+    if (inform_failed(err))
+    {
+        if (allocate_evidence) free(evidence);
+        return NULL;
+    }
     return evidence;
 }
