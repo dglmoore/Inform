@@ -6,8 +6,7 @@
 #include <inform/utilities.h>
 #include <math.h>
 
-static bool check_arguments(int const *series, size_t l, size_t n, int const *b,
-    inform_error *err)
+static bool check_arguments(int const *series, size_t l, inform_error *err)
 {
     if (series == NULL)
     {
@@ -17,35 +16,15 @@ static bool check_arguments(int const *series, size_t l, size_t n, int const *b,
     {
         INFORM_ERROR_RETURN(err, INFORM_ENOSOURCES, true);
     }
-    else if (n < 1)
-    {
-        INFORM_ERROR_RETURN(err, INFORM_ESHORTSERIES, true);
-    }
-    for (size_t i = 0; i < l; ++i)
-    {
-        if (b[i] < 2)
-        {
-            INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
-        }
-        for (size_t j = 0; j < n; ++j)
-        {
-            if (series[j + n*i] < 0)
-            {
-                INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
-            }
-            else if (b[i] <= series[j + n*i])
-            {
-                INFORM_ERROR_RETURN(err, INFORM_EBADSTATE, true);
-            }
-        }
-    }
+    // All other checks will be caught by inform_black_box_parts or
+    // inform_local_mutual_info
     return false;
 }
 
 double *inform_integration_evidence(int const *series, size_t l, size_t n,
     int const *b, double *evidence, inform_error *err)
 {
-    if (check_arguments(series, l, n, b, err))
+    if (check_arguments(series, l, err))
     {
         return NULL;
     }
@@ -100,10 +79,13 @@ double *inform_integration_evidence(int const *series, size_t l, size_t n,
     free(parts);
     free(lmi);
     
-    if (inform_failed(err) && allocate)
+    if (inform_failed(err))
     {
-        free(evidence);
-        evidence = NULL;
+        if (allocate)
+        {
+            free(evidence);
+        }
+        return NULL;
     }
 
     return evidence;
