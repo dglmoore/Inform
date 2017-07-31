@@ -5,25 +5,25 @@
 #include <inform/transfer_entropy.h>
 #include <string.h>
 
-static void accumulate_observations(int const *series_y, int const *series_x,
-     size_t n, size_t m, int b, size_t k, inform_dist *states,
-     inform_dist *histories, inform_dist *sources, inform_dist *predicates)
+static void accumulate_observations(int const *src, int const *dst, size_t n,
+    size_t m, int b, size_t k, inform_dist *states, inform_dist *histories,
+    inform_dist *sources, inform_dist *predicates)
 {
-    for (size_t i = 0; i < n; ++i, series_y += m, series_x += m)
+    for (size_t i = 0; i < n; ++i, src += m, dst += m)
     {
-        int history = 0, q = 1, y_state, future, state, source, predicate;
+        int history = 0, q = 1, src_state, future, state, source, predicate;
         for (size_t j = 0; j < k; ++j)
         {
             q *= b;
             history *= b;
-            history += series_x[j];
+            history += dst[j];
         }
         for (size_t j = k; j < m; ++j)
         {
-            y_state   = series_y[j-1];
-            future    = series_x[j];
-            state     = (history * b + future) * b + y_state;
-            source    = history * b + y_state;
+            src_state = src[j-1];
+            future    = dst[j];
+            state     = (history * b + future) * b + src_state;
+            source    = history * b + src_state;
             predicate = history * b + future;
 
             states->histogram[state]++;
@@ -31,16 +31,15 @@ static void accumulate_observations(int const *series_y, int const *series_x,
             sources->histogram[source]++;
             predicates->histogram[predicate]++;
 
-            history = predicate - series_x[j - k]*q;
+            history = predicate - dst[j - k]*q;
         }
     }
 }
 
-static void accumulate_local_observations(int const *series_y,
-    int const *series_x, size_t n, size_t m, int b, size_t k,
-    inform_dist *states, inform_dist *histories, inform_dist *sources,
-    inform_dist *predicates, int *state, int *history,
-    int *source, int *predicate)
+static void accumulate_local_observations(int const *src, int const *dst,
+    size_t n, size_t m, int b, size_t k, inform_dist *states,
+    inform_dist *histories, inform_dist *sources, inform_dist *predicates,
+    int *state, int *history, int *source, int *predicate)
 {
     for (size_t i = 0; i < n; ++i)
     {
@@ -50,16 +49,16 @@ static void accumulate_local_observations(int const *series_y,
         {
             q *= b;
             history[0] *= b;
-            history[0] += series_x[j];
+            history[0] += dst[j];
         }
         for (size_t j = k; j < m; ++j)
         {
             size_t l = j - k;
-            int y_state   = series_y[j-1];
-            int future    = series_x[j];
+            int src_state = src[j-1];
+            int future    = dst[j];
             predicate[l]  = history[l] * b + future;
-            state[l]      = predicate[l] * b + y_state;
-            source[l]     = history[l] * b + y_state;
+            state[l]      = predicate[l] * b + src_state;
+            source[l]     = history[l] * b + src_state;
 
             states->histogram[state[l]]++;
             histories->histogram[history[l]]++;
@@ -68,11 +67,11 @@ static void accumulate_local_observations(int const *series_y,
 
             if (j + 1 != m)
             {
-                history[l + 1] = predicate[l] - series_x[l]*q;
+                history[l + 1] = predicate[l] - dst[l]*q;
             }
         }
-        series_y += m;
-        series_x += m;
+        src += m;
+        dst += m;
         state += (m - k);
         history += (m - k);
         source += (m - k);
@@ -80,14 +79,14 @@ static void accumulate_local_observations(int const *series_y,
     }
 }
 
-static bool check_arguments(int const *node_y, int const *node_x,
-    size_t n, size_t m, int b, size_t k, inform_error *err)
+static bool check_arguments(int const *src, int const *dst, size_t n, size_t m,
+    int b, size_t k, inform_error *err)
 {
-    if (node_y == NULL)
+    if (src == NULL)
     {
         INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
     }
-    else if (node_x == NULL)
+    else if (dst == NULL)
     {
         INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
     }
@@ -113,11 +112,11 @@ static bool check_arguments(int const *node_y, int const *node_x,
     }
     for (size_t i = 0; i < n * m; ++i)
     {
-        if (b <= node_y[i] || b <= node_x[i])
+        if (b <= src[i] || b <= dst[i])
         {
             INFORM_ERROR_RETURN(err, INFORM_EBADSTATE, true);
         }
-        else if (node_y[i] < 0 || node_x[i] < 0)
+        else if (src[i] < 0 || dst[i] < 0)
         {
             INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
         }
@@ -125,10 +124,10 @@ static bool check_arguments(int const *node_y, int const *node_x,
     return false;
 }
 
-double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
+double inform_transfer_entropy(int const *src, int const *dst, size_t n,
     size_t m, int b, size_t k, inform_error *err)
 {
-    if (check_arguments(node_y, node_x, n, m, b, k, err)) return NAN;
+    if (check_arguments(src, dst, n, m, b, k, err)) return NAN;
 
     size_t const N = n * (m - k);
 
@@ -150,8 +149,8 @@ double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
     inform_dist sources    = { data + states_size + histories_size, sources_size, N };
     inform_dist predicates = { data + states_size + histories_size + sources_size, predicates_size, N };
 
-    accumulate_observations(node_y, node_x, n, m, b, k, &states, &histories,
-        &sources, &predicates);
+    accumulate_observations(src, dst, n, m, b, k, &states, &histories, &sources,
+        &predicates);
 
     double te = inform_shannon_entropy(&sources, 2.0) +
         inform_shannon_entropy(&predicates, 2.0) -
@@ -163,10 +162,10 @@ double inform_transfer_entropy(int const *node_y, int const *node_x, size_t n,
     return te;
 }
 
-double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
-    size_t n, size_t m, int b, size_t k, double *te, inform_error *err)
+double *inform_local_transfer_entropy(int const *src, int const *dst, size_t n,
+    size_t m, int b, size_t k, double *te, inform_error *err)
 {
-    if (check_arguments(node_y, node_x, n, m, b, k, err)) return NULL;
+    if (check_arguments(src, dst, n, m, b, k, err)) return NULL;
 
     size_t const N = n * (m - k);
 
@@ -210,7 +209,7 @@ double *inform_local_transfer_entropy(int const *node_y, int const *node_x,
     int *source    = history + N;
     int *predicate = source + N;
 
-    accumulate_local_observations(node_y, node_x, n, m, b, k, &states,
+    accumulate_local_observations(src, dst, n, m, b, k, &states,
         &histories, &sources, &predicates, state, history, source, predicate);
 
     double r, s, t, u;
