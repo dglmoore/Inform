@@ -15,6 +15,8 @@ extern "C"
  *
  * @param[in] src  the ensemble of the source node
  * @param[in] dst  the ensemble of the destination node
+ * @param[in] back the collection of background nodes
+ * @param[in] l    the number of background nodes
  * @param[in] n    the number initial conditions
  * @param[in] m    the number of time steps in each time series
  * @param[in] b    the base or number of distinct states at each time step
@@ -22,8 +24,9 @@ extern "C"
  * @param[out] err an error structure
  * @return the transfer entropy of the ensemble
  */
-EXPORT double inform_transfer_entropy(int const *src, int const *dst, size_t n,
-    size_t m, int b, size_t k, inform_error *err);
+EXPORT double inform_transfer_entropy(int const *src, int const *dst,
+    int const *back, size_t l, size_t n, size_t m, int b, size_t k,
+    inform_error *err);
 
 /**
  * Compute the local transfer entropy from one time series to another

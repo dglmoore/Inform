@@ -15,7 +15,7 @@ double inform_separable_info(int const *srcs, int const *dest, size_t l,
 
     for (size_t i = 0; i < l; ++i, srcs += n*m)
     {
-        si += inform_transfer_entropy(srcs, dest, n, m, b, k, err);
+        si += inform_transfer_entropy(srcs, dest, NULL, 0, n, m, b, k, err);
         if (inform_failed(err)) return NAN;
     }
 

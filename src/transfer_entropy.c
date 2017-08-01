@@ -5,13 +5,15 @@
 #include <inform/transfer_entropy.h>
 #include <string.h>
 
-static void accumulate_observations(int const *src, int const *dst, size_t n,
-    size_t m, int b, size_t k, inform_dist *states, inform_dist *histories,
-    inform_dist *sources, inform_dist *predicates)
+static void accumulate_observations(int const *src, int const *dst,
+    int const *back, size_t l, size_t n, size_t m, int b, size_t k,
+    inform_dist *states, inform_dist *histories, inform_dist *sources,
+    inform_dist *predicates)
 {
     for (size_t i = 0; i < n; ++i, src += m, dst += m)
     {
-        int history = 0, q = 1, src_state, future, state, source, predicate;
+        int src_state, future, state, source, predicate, back_state;
+        int history = 0, q = 1;
         for (size_t j = 0; j < k; ++j)
         {
             q *= b;
@@ -20,6 +22,13 @@ static void accumulate_observations(int const *src, int const *dst, size_t n,
         }
         for (size_t j = k; j < m; ++j)
         {
+            back_state = 0;
+            for (size_t u = 0; u < l; ++u)
+            {
+                back_state = b * back_state + back[j+n*(i+m*u)-1];
+            }
+            history += back_state * q;
+
             src_state = src[j-1];
             future    = dst[j];
             state     = (history * b + future) * b + src_state;
@@ -31,7 +40,7 @@ static void accumulate_observations(int const *src, int const *dst, size_t n,
             sources->histogram[source]++;
             predicates->histogram[predicate]++;
 
-            history = predicate - dst[j - k]*q;
+            history = predicate - (dst[j - k] + back_state * b) * q;
         }
     }
 }
@@ -79,8 +88,8 @@ static void accumulate_local_observations(int const *src, int const *dst,
     }
 }
 
-static bool check_arguments(int const *src, int const *dst, size_t n, size_t m,
-    int b, size_t k, inform_error *err)
+static bool check_arguments(int const *src, int const *dst, int const *back, 
+    size_t l, size_t n, size_t m, int b, size_t k, inform_error *err)
 {
     if (src == NULL)
     {
@@ -89,6 +98,10 @@ static bool check_arguments(int const *src, int const *dst, size_t n, size_t m,
     else if (dst == NULL)
     {
         INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
+    }
+    else if (back == NULL && l != 0)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOSOURCES, true);
     }
     else if (n < 1)
     {
@@ -121,21 +134,39 @@ static bool check_arguments(int const *src, int const *dst, size_t n, size_t m,
             INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
         }
     }
+    if (back != NULL)
+    {
+        for (size_t i = 0; i < l; ++i)
+        {
+            for (size_t j = 0; j < n * m; ++j)
+            {
+                if (b <= back[j + n*m*i])
+                {
+                    INFORM_ERROR_RETURN(err, INFORM_EBADSTATE, true);
+                }
+                else if (back[j + n*m*i] < 0)
+                {
+                    INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
+                }
+            }
+        }
+    }
     return false;
 }
 
-double inform_transfer_entropy(int const *src, int const *dst, size_t n,
-    size_t m, int b, size_t k, inform_error *err)
+double inform_transfer_entropy(int const *src, int const *dst, int const *back,
+    size_t l, size_t n, size_t m, int b, size_t k, inform_error *err)
 {
-    if (check_arguments(src, dst, n, m, b, k, err)) return NAN;
+    if (check_arguments(src, dst, back, l, n, m, b, k, err)) return NAN;
 
     size_t const N = n * (m - k);
 
     size_t const q = (size_t) pow((double) b, (double) k);
-    size_t const states_size     = b*b*q;
-    size_t const histories_size  = q;
-    size_t const sources_size    = b*q;
-    size_t const predicates_size = b*q;
+    size_t const r = (size_t) pow((double) b, (double) l);
+    size_t const states_size     = b*b*q*r;
+    size_t const histories_size  = q*r;
+    size_t const sources_size    = b*q*r;
+    size_t const predicates_size = b*q*r;
     size_t const total_size = states_size + histories_size + sources_size + predicates_size;
 
     uint32_t *data = calloc(total_size, sizeof(uint32_t));
@@ -149,8 +180,8 @@ double inform_transfer_entropy(int const *src, int const *dst, size_t n,
     inform_dist sources    = { data + states_size + histories_size, sources_size, N };
     inform_dist predicates = { data + states_size + histories_size + sources_size, predicates_size, N };
 
-    accumulate_observations(src, dst, n, m, b, k, &states, &histories, &sources,
-        &predicates);
+    accumulate_observations(src, dst, back, l, n, m, b, k, &states, &histories,
+        &sources, &predicates);
 
     double te = inform_shannon_entropy(&sources, 2.0) +
         inform_shannon_entropy(&predicates, 2.0) -
@@ -165,12 +196,12 @@ double inform_transfer_entropy(int const *src, int const *dst, size_t n,
 double *inform_local_transfer_entropy(int const *src, int const *dst, size_t n,
     size_t m, int b, size_t k, double *te, inform_error *err)
 {
-    if (check_arguments(src, dst, n, m, b, k, err)) return NULL;
+    if (check_arguments(src, dst, NULL, 0, n, m, b, k, err)) return NULL;
 
     size_t const N = n * (m - k);
 
-    bool allocate_te = (te == NULL);
-    if (allocate_te)
+    bool allocate = (te == NULL);
+    if (allocate)
     {
         te = malloc(N * sizeof(double));
         if (te == NULL)
@@ -200,7 +231,7 @@ double *inform_local_transfer_entropy(int const *src, int const *dst, size_t n,
     int *state_data = malloc(4 * N * sizeof(int));
     if (state_data == NULL)
     {
-        if (allocate_te) free(te);
+        if (allocate) free(te);
         free(histogram_data);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
