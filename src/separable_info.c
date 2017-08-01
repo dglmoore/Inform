@@ -47,7 +47,7 @@ double *inform_local_separable_info(int const *srcs, int const *dest,
 
     for (size_t i = 0; i < l; ++i, srcs += n*m)
     {
-        inform_local_transfer_entropy(srcs, dest, n, m, b, k, te, err);
+        inform_local_transfer_entropy(srcs, dest, NULL, 0, n, m, b, k, te, err);
         if (inform_failed(err))
         {
             free(te);

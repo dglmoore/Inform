@@ -31,9 +31,9 @@ static void accumulate_observations(int const *src, int const *dst,
 
             src_state = src[j-1];
             future    = dst[j];
-            state     = (history * b + future) * b + src_state;
             source    = history * b + src_state;
             predicate = history * b + future;
+            state     = predicate * b + src_state;
 
             states->histogram[state]++;
             histories->histogram[history]++;
@@ -46,9 +46,10 @@ static void accumulate_observations(int const *src, int const *dst,
 }
 
 static void accumulate_local_observations(int const *src, int const *dst,
-    size_t n, size_t m, int b, size_t k, inform_dist *states,
-    inform_dist *histories, inform_dist *sources, inform_dist *predicates,
-    int *state, int *history, int *source, int *predicate)
+    int const *back, size_t l, size_t n, size_t m, int b, size_t k,
+    inform_dist *states, inform_dist *histories, inform_dist *sources,
+    inform_dist *predicates, int *state, int *history, int *source,
+    int *predicate)
 {
     for (size_t i = 0; i < n; ++i)
     {
@@ -62,21 +63,27 @@ static void accumulate_local_observations(int const *src, int const *dst,
         }
         for (size_t j = k; j < m; ++j)
         {
-            size_t l = j - k;
+            size_t z = j - k;
+            int back_state = 0;
+            for (size_t u = 0; u < l; ++u)
+            {
+                back_state = b * back_state + back[j+n*(i+m*u)-1];
+            }
+            history[z] += back_state * q;
             int src_state = src[j-1];
             int future    = dst[j];
-            predicate[l]  = history[l] * b + future;
-            state[l]      = predicate[l] * b + src_state;
-            source[l]     = history[l] * b + src_state;
+            predicate[z]  = history[z] * b + future;
+            state[z]      = predicate[z] * b + src_state;
+            source[z]     = history[z] * b + src_state;
 
-            states->histogram[state[l]]++;
-            histories->histogram[history[l]]++;
-            sources->histogram[source[l]]++;
-            predicates->histogram[predicate[l]]++;
+            states->histogram[state[z]]++;
+            histories->histogram[history[z]]++;
+            sources->histogram[source[z]]++;
+            predicates->histogram[predicate[z]]++;
 
             if (j + 1 != m)
             {
-                history[l + 1] = predicate[l] - dst[l]*q;
+                history[z + 1] = predicate[z] - (dst[z] + back_state * b) * q;
             }
         }
         src += m;
@@ -193,10 +200,11 @@ double inform_transfer_entropy(int const *src, int const *dst, int const *back,
     return te;
 }
 
-double *inform_local_transfer_entropy(int const *src, int const *dst, size_t n,
-    size_t m, int b, size_t k, double *te, inform_error *err)
+double *inform_local_transfer_entropy(int const *src, int const *dst,
+    int const *back, size_t l, size_t n, size_t m, int b, size_t k, double *te,
+    inform_error *err)
 {
-    if (check_arguments(src, dst, NULL, 0, n, m, b, k, err)) return NULL;
+    if (check_arguments(src, dst, back, l, n, m, b, k, err)) return NULL;
 
     size_t const N = n * (m - k);
 
@@ -211,10 +219,11 @@ double *inform_local_transfer_entropy(int const *src, int const *dst, size_t n,
     }
 
     size_t const q = (size_t) pow((double) b, (double) k);
-    size_t const states_size     = b*b*q;
-    size_t const histories_size  = q;
-    size_t const sources_size    = b*q;
-    size_t const predicates_size = b*q;
+    size_t const r = (size_t) pow((double) b, (double) l);
+    size_t const states_size     = b*b*q*r;
+    size_t const histories_size  = q*r;
+    size_t const sources_size    = b*q*r;
+    size_t const predicates_size = b*q*r;
     size_t const total_size = states_size + histories_size + sources_size + predicates_size;
 
     uint32_t *histogram_data = calloc(total_size, sizeof(uint32_t));
@@ -240,17 +249,17 @@ double *inform_local_transfer_entropy(int const *src, int const *dst, size_t n,
     int *source    = history + N;
     int *predicate = source + N;
 
-    accumulate_local_observations(src, dst, n, m, b, k, &states,
+    accumulate_local_observations(src, dst, back, l, n, m, b, k, &states,
         &histories, &sources, &predicates, state, history, source, predicate);
 
-    double r, s, t, u;
+    double s, t, u, v;
     for (size_t i = 0; i < N; ++i)
     {
-        r = states.histogram[state[i]];
-        s = sources.histogram[source[i]];
-        t = predicates.histogram[predicate[i]];
-        u = histories.histogram[history[i]];
-        te[i] = log2((r*u)/(s*t));
+        s = states.histogram[state[i]];
+        t = sources.histogram[source[i]];
+        u = predicates.histogram[predicate[i]];
+        v = histories.histogram[history[i]];
+        te[i] = log2((s*v)/(t*u));
     }
 
     free(state_data);

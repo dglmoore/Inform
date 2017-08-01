@@ -33,6 +33,8 @@ EXPORT double inform_transfer_entropy(int const *src, int const *dst,
  *
  * @param[in] src  the ensemble of the source node
  * @param[in] dst  the ensemble of the target node
+ * @param[in] back the collection of background nodes
+ * @param[in] l    the number of background nodes
  * @param[in] n    the number initial conditions
  * @param[in] m    the number of time steps in each time series
  * @param[in] b    the base or number of distinct states at each time step
@@ -42,7 +44,8 @@ EXPORT double inform_transfer_entropy(int const *src, int const *dst,
  * @return a pointer to the transfer entropy array
  */
 EXPORT double *inform_local_transfer_entropy(int const *src, int const *dst,
-    size_t n, size_t m, int b, size_t k, double *te, inform_error *err);
+    int const *back, size_t l, size_t n, size_t m, int b, size_t k, double *te,
+    inform_error *err);
 
 #ifdef __cplusplus
 }
