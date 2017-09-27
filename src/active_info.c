@@ -129,11 +129,36 @@ double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k
 
     accumulate_observations(series, n, m, b, k, &states, &histories, &futures);
 
-    double ai = inform_shannon_mi(&states, &histories, &futures, 2.0);
+    double ai = 0.0;
+    int state;
+    double n_state, n_history, n_future;
+    for (int history = 0; history < (int) histories_size; ++history)
+    {
+        n_history = histories.histogram[history];
+        if (n_history == 0)
+        {
+            continue;
+        }
+        for (int future = 0; future < b; ++future)
+        {
+            n_future = futures.histogram[future];
+            if (n_future == 0)
+            {
+                continue;
+            }
+            state = history * b + future;
+            n_state = states.histogram[state];
+            if (n_state == 0)
+            {
+                continue;
+            }
+            ai += n_state * log2((N * n_state) / (n_history * n_future));
+        }
+    }
 
     free(data);
 
-    return ai;
+    return ai / N;
 }
 
 double *inform_local_active_info(int const *series, size_t n, size_t m, int b,
