@@ -190,14 +190,47 @@ double inform_transfer_entropy(int const *src, int const *dst, int const *back,
     accumulate_observations(src, dst, back, l, n, m, b, k, &states, &histories,
         &sources, &predicates);
 
-    double te = inform_shannon_entropy(&sources, 2.0) +
-        inform_shannon_entropy(&predicates, 2.0) -
-        inform_shannon_entropy(&states, 2.0) -
-        inform_shannon_entropy(&histories, 2.0);
+
+    double te = 0.0;
+    int predicate, source, state;
+    double n_state, n_source, n_predicate, n_history;
+    for (int history = 0; history < (int) histories_size; ++history)
+    {
+        n_history = histories.histogram[history];
+        if (n_history == 0)
+        {
+            continue;
+        }
+        for (int future = 0; future < b; ++future)
+        {
+            predicate = history * b + future;
+            n_predicate = predicates.histogram[predicate];
+            if (n_predicate == 0)
+            {
+                continue;
+            }
+            for (int src_state = 0; src_state < b; ++src_state)
+            {
+                source = history * b + src_state;
+                n_source = sources.histogram[source];
+                if (n_source == 0)
+                {
+                    continue;
+                }
+                state = predicate * b + src_state;
+                n_state = states.histogram[state];
+                if (n_state == 0)
+                {
+                    continue;
+                }
+                te += n_state * log2((n_state * n_history) / (n_source * n_predicate));
+            }
+        }
+    }
 
     free(data);
 
-    return te;
+    return te / N;
 }
 
 double *inform_local_transfer_entropy(int const *src, int const *dst,
