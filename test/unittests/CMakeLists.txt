@@ -8,6 +8,7 @@ set(${PROJECT_NAME}_UNITTEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/effective_info.c
     ${CMAKE_CURRENT_SOURCE_DIR}/entropy_rate.c
     ${CMAKE_CURRENT_SOURCE_DIR}/excess_entropy.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/information_flow.c
     ${CMAKE_CURRENT_SOURCE_DIR}/integration.c
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/mutual_info.c
