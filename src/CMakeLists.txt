@@ -12,6 +12,7 @@ set(${PROJECT_NAME}_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/information_flow.c
     ${CMAKE_CURRENT_SOURCE_DIR}/integration.c
     ${CMAKE_CURRENT_SOURCE_DIR}/mutual_info.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/pid.c
     ${CMAKE_CURRENT_SOURCE_DIR}/predictive_info.c
     ${CMAKE_CURRENT_SOURCE_DIR}/relative_entropy.c
     ${CMAKE_CURRENT_SOURCE_DIR}/separable_info.c

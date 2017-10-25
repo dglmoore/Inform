@@ -15,6 +15,7 @@ IMPORT_SUITE(ExcessEntropy);
 IMPORT_SUITE(InformationFlow);
 IMPORT_SUITE(Integration);
 IMPORT_SUITE(MutualInfo);
+IMPORT_SUITE(PID);
 IMPORT_SUITE(PredictiveInformation);
 IMPORT_SUITE(RelativeEntropy);
 IMPORT_SUITE(SeparableInformation);
@@ -36,6 +37,7 @@ BEGIN_REGISTRATION
     REGISTER(InformationFlow)
     REGISTER(Integration)
     REGISTER(MutualInfo)
+    REGISTER(PID)
     REGISTER(PredictiveInformation)
     REGISTER(RelativeEntropy)
     REGISTER(SeparableInformation)
