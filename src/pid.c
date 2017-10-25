@@ -86,3 +86,61 @@ pid_source **pid_sources(size_t n)
     srcs = gvector_shrink(srcs);
     return srcs;
 }
+
+static bool name_below(size_t const *xs, size_t const *ys)
+{
+    size_t const m = gvector_len(xs);
+    size_t const n = gvector_len(ys);
+
+    bool is_below = true;
+    for (size_t const *y = ys; y < ys + n && is_below; ++y)
+    {
+        bool is_valid = false;
+        for (size_t const *x = xs; x < xs + m && !is_valid; ++x)
+        {
+            if ((*x & *y) == *x)
+            {
+                is_valid = true;
+            }
+        }
+        if (!is_valid)
+        {
+            is_below = false;
+        }
+    }
+    return is_below;
+}
+
+static bool below(pid_source const *a, pid_source const *b)
+{
+    return name_below(a->name, b->name);
+}
+
+void pid_toposort(pid_source **srcs)
+{
+    size_t const n = gvector_len(srcs);
+    size_t u = 0, v = 0;
+    while (v < n - 1)
+    {
+        u = v;
+        for (size_t i = u; i < n; ++i)
+        {
+            bool is_bottom = true;
+            for (size_t j = u; j < n; ++j)
+            {
+                if (i != j && below(srcs[j], srcs[i]))
+                {
+                    is_bottom = false;
+                    break;
+                }
+            }
+            if (is_bottom)
+            {
+                pid_source *tmp = srcs[v];
+                srcs[v] = srcs[i];
+                srcs[i] = tmp;
+                v += 1;
+            }
+        }
+    }
+}

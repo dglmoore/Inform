@@ -22,6 +22,8 @@ void pid_source_free(pid_source *src);
 
 pid_source **pid_sources(size_t n);
 
+void pid_toposort(pid_source **srcs);
+
 #ifdef __cplusplus
 }
 #endif
