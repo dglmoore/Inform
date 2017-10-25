@@ -10,6 +10,18 @@ extern "C"
 {
 #endif
 
+typedef struct pid_source
+{
+    size_t *name;
+    struct pid_source **above;
+    struct pid_source **below;
+    size_t size, n_above, n_below;
+} pid_source;
+
+void pid_source_free(pid_source *src);
+
+pid_source **pid_sources(size_t n);
+
 #ifdef __cplusplus
 }
 #endif
