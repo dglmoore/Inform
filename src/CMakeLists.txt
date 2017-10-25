@@ -1,4 +1,5 @@
 set(${PROJECT_NAME}_SOURCES
+    ${${PROJECT_NAME}_SOURCES}
     ${CMAKE_CURRENT_SOURCE_DIR}/active_info.c
     ${CMAKE_CURRENT_SOURCE_DIR}/block_entropy.c
     ${CMAKE_CURRENT_SOURCE_DIR}/conditional_entropy.c

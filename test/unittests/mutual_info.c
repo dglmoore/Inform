@@ -4,7 +4,7 @@
 #include "util.h"
 #include <inform/mutual_info.h>
 #include <math.h>
-#include <unit.h>
+#include <ginger/unit.h>
 
 UNIT(MutualInfoNULLSeries)
 {

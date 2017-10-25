@@ -4,7 +4,7 @@
 #include "util.h"
 #include <inform/transfer_entropy.h>
 #include <math.h>
-#include <unit.h>
+#include <ginger/unit.h>
 
 UNIT(TransferEntropyNULLSeries)
 {

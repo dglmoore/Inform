@@ -4,7 +4,7 @@
 #include "util.h"
 #include <inform/separable_info.h>
 #include <math.h>
-#include <unit.h>
+#include <ginger/unit.h>
 
 UNIT(SeparableInformationNULLSeries)
 {
