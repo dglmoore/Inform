@@ -4,7 +4,7 @@
 #include "util.h"
 #include <inform/conditional_entropy.h>
 #include <math.h>
-#include <unit.h>
+#include <ginger/unit.h>
 
 UNIT(ConditionalEntropyNULLSeries)
 {

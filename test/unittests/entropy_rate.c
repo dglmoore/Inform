@@ -4,7 +4,7 @@
 #include "util.h"
 #include <inform/entropy_rate.h>
 #include <math.h>
-#include <unit.h>
+#include <ginger/unit.h>
 
 UNIT(EntropyRateNULLSeries)
 {

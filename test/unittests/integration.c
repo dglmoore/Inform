@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 #include <inform/integration.h>
 #include <inform/utilities/random.h>
-#include <unit.h>
+#include <ginger/unit.h>
 
 UNIT(IntegrationEvidenceNULLSeries)
 {
