@@ -24,6 +24,18 @@ pid_source **pid_sources(size_t n);
 
 void pid_toposort(pid_source **srcs);
 
+typedef struct pid_lattice
+{
+    pid_source **sources;
+    pid_source *top;
+    pid_source *bottom;
+    size_t size;
+} pid_lattice;
+
+void pid_lattice_free(pid_lattice *l);
+
+pid_lattice *pid_hasse(size_t n);
+
 #ifdef __cplusplus
 }
 #endif

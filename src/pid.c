@@ -4,7 +4,7 @@
 #include <ginger/vector.h>
 #include <inform/pid.h>
 
-pid_source *pid_source_alloc(size_t *name)
+static pid_source *pid_source_alloc(size_t *name)
 {
     pid_source *src = malloc(sizeof(pid_source));
     if (src)
@@ -143,4 +143,85 @@ void pid_toposort(pid_source **srcs)
             }
         }
     }
+}
+
+static pid_lattice *pid_lattice_alloc()
+{
+    pid_lattice *l = malloc(sizeof(pid_lattice));
+    if (l)
+    {
+        l->sources = NULL;
+        l->top = NULL;
+        l->bottom = NULL;
+    }
+    return l;
+}
+
+void pid_lattice_free(pid_lattice *l)
+{
+    if (l)
+    {
+        for (size_t i = 0; i < gvector_len(l->sources); ++i)
+        {
+            pid_source_free(l->sources[i]);
+        }
+        gvector_free(l->sources);
+        l->sources = NULL;
+        l->top = NULL;
+        l->bottom = NULL;
+        free(l);
+    }
+}
+
+static pid_lattice *build_hasse(pid_source **srcs)
+{
+    size_t const n = gvector_len(srcs);
+    if (n == 0)
+    {
+        return NULL;
+    }
+
+    pid_lattice *l = pid_lattice_alloc();
+    if (l)
+    {
+        for (size_t i = 0; i < n; ++i)
+        {
+            for (size_t j = i + 1; j < n; ++j)
+            {
+                if (below(srcs[i], srcs[j]))
+                {
+                    bool stop = false;
+                    for (size_t k = 0; k < gvector_len(srcs[i]->above); ++k)
+                    {
+                        pid_source *x = srcs[i]->above[k];
+                        if (below(x, srcs[j]))
+                        {
+                            stop = true;
+                            break;
+                        }
+                    }
+                    if (stop)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        gvector_push(srcs[i]->above, srcs[j]);
+                        gvector_push(srcs[j]->below, srcs[i]);
+                    }
+                }
+            }
+        }
+        l->sources = srcs;
+        l->bottom = srcs[0];
+        l->top = srcs[n-1];
+    }
+    return l;
+}
+
+pid_lattice *pid_hasse(size_t n)
+{
+    pid_source **srcs = pid_sources(n);
+    pid_toposort(srcs);
+    return build_hasse(srcs);
 }
