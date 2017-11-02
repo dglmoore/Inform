@@ -42,13 +42,20 @@ do { \
     } \
 } while(0);
 
-#define TestPIDHasse(EXP, N, M) \
+#define TestPIDHasse(EXP, N, M, Q) \
 do { \
     pid_lattice *l = pid_hasse((N)); \
     ASSERT_NOT_NULL(l); \
     ASSERT_NOT_NULL(l->sources); \
     ASSERT_EQUAL_U((M), gvector_len(l->sources)); \
-    COMPARE_SOURCES((EXP), l->sources); \
+    if (EXP != NULL) { \
+        COMPARE_SOURCES((EXP), l->sources); \
+    } \
+    size_t n = 0; \
+    for (size_t i = 0; i < (M); ++i) { \
+        n += gvector_len(l->sources[i]->above); \
+    } \
+    ASSERT_EQUAL((Q), n); \
     pid_lattice_free(l); \
 } while (0);
 
@@ -142,12 +149,12 @@ UNIT(PIDHasseOrder)
 {
     {
         size_t expected[1][2] = { {1,1} };
-        TestPIDHasse(expected, 1, 1);
+        TestPIDHasse(expected, 1, 1, 0);
     }
 
     {
         size_t expected[4][3] = { {2,1,2}, {1,1,0}, {1,2,0}, {1,3,0} };
-        TestPIDHasse(expected, 2, 4);
+        TestPIDHasse(expected, 2, 4, 4);
     }
 
     {
@@ -156,7 +163,7 @@ UNIT(PIDHasseOrder)
             {2,3,4,0}, {1,2,0,0}, {3,3,5,6}, {1,1,0,0}, {1,4,0,0}, {2,3,6,0},
             {2,3,5,0}, {2,5,6,0}, {1,5,0,0}, {1,3,0,0}, {1,6,0,0}, {1,7,0,0},
         };
-        TestPIDHasse(expected, 3, 18);
+        TestPIDHasse(expected, 3, 18, 30);
     }
 
     {
@@ -205,7 +212,7 @@ UNIT(PIDHasseOrder)
             {1,14,0,0,0,0,0},   {1,15,0,0,0,0,0}
         };
 
-        TestPIDHasse(expected, 4, 166);
+        TestPIDHasse(expected, 4, 166, 452);
     }
 }
 
