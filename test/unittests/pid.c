@@ -82,6 +82,8 @@ UNIT(PIDSources)
 
     COMPARE_SOURCES(expected, srcs);
 
+
+    for (size_t i = 0; i < gvector_len(srcs); ++i) pid_source_free(srcs[i]);
     gvector_free(srcs);
 }
 
@@ -142,6 +144,7 @@ UNIT(PIDToposort)
 
     COMPARE_SOURCES(expected, srcs);
 
+    for (size_t i = 0; i < gvector_len(srcs); ++i) pid_source_free(srcs[i]);
     gvector_free(srcs);
 }
 

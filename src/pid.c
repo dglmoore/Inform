@@ -10,7 +10,7 @@ static pid_source *pid_source_alloc(size_t *name)
     if (src)
     {
         src->name = gvector_shrink(name);
-        src->size = gvector_len(name);
+        src->size = gvector_len(src->name);
 
         src->below = NULL;
 
@@ -64,8 +64,14 @@ static pid_source **pid_sources_rec(size_t i, size_t m, size_t *c, pid_source **
             }
         }
         gvector_push(c, i);
+
+        size_t *d = gvector_dup(c);
         gvector_push(srcs, pid_source_alloc(c));
-        return pid_sources_rec(i + 1, m, gvector_dup(c), srcs);
+        return pid_sources_rec(i + 1, m, d, srcs);
+    }
+    else
+    {
+        gvector_free(c);
     }
 
     return srcs;
@@ -80,8 +86,9 @@ pid_source **pid_sources(size_t n)
         size_t *c = gvector_alloc(1, 1, sizeof(size_t));
         c[0] = i;
 
+        size_t *d = gvector_dup(c);
         gvector_push(srcs, pid_source_alloc(c));
-        srcs = pid_sources_rec(i + 1, m, gvector_dup(c), srcs);
+        srcs = pid_sources_rec(i + 1, m, d, srcs);
     }
     srcs = gvector_shrink(srcs);
     return srcs;
