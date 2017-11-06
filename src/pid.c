@@ -26,7 +26,8 @@ static inform_pid_source *inform_pid_source_alloc(size_t *name)
     inform_pid_source *src = malloc(sizeof(inform_pid_source));
     if (src)
     {
-        src->name = gvector_shrink(name);
+        src->name = gvector_dup(name);
+        src->name = gvector_shrink(src->name);
         src->size = gvector_len(src->name);
 
         src->below = NULL;
@@ -74,10 +75,8 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
             }
         }
         gvector_push(c, i);
-
-        size_t *d = gvector_dup(c);
         gvector_push(srcs, inform_pid_source_alloc(c));
-        return sources_rec(i + 1, m, d, srcs);
+        return sources_rec(i + 1, m, c, srcs);
     }
     else
     {
@@ -96,9 +95,8 @@ static inform_pid_source **inform_pid_sources(size_t n)
         size_t *c = gvector_alloc(1, 1, sizeof(size_t));
         c[0] = i;
 
-        size_t *d = gvector_dup(c);
         gvector_push(srcs, inform_pid_source_alloc(c));
-        srcs = sources_rec(i + 1, m, d, srcs);
+        srcs = sources_rec(i + 1, m, c, srcs);
     }
     srcs = gvector_shrink(srcs);
     return srcs;
