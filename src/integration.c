@@ -55,8 +55,11 @@ double *inform_integration_evidence(int const *series, size_t l, size_t n,
     size_t nparts = 1;
     while ((nparts = inform_next_partitioning(parts, l)))
     {
-        inform_integration_evidence_part(series, l, n, b, parts, nparts, lmi,
-            err);
+        inform_integration_evidence_part(series, l, n, b, parts, nparts, lmi, err);
+        if (inform_failed(err))
+        {
+            break;
+        }
         for (size_t i = 0; i < n; ++i)
         {
             minimum[i] = MIN(minimum[i], lmi[i]);
