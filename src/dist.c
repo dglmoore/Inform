@@ -240,7 +240,9 @@ inform_dist* inform_dist_approximate(double const *probs, size_t n, double tol)
         counts[i] /= g;
     }
     // create the distribution
-    return inform_dist_create(counts, n);
+    inform_dist *dist = inform_dist_create(counts, n);
+    free(counts);
+    return dist;
 }
 
 inform_dist* inform_dist_infer(int const *events, size_t n)

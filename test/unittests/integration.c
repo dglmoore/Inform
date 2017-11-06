@@ -299,7 +299,9 @@ UNIT(IntegrationEvidenceSynchronized)
         }
         free(row);
     }
+    free(bases);
     free(series);
+    free(evidence);
 }
 
 UNIT(IntegrationEvidencePartNULLSeries)
@@ -687,7 +689,9 @@ UNIT(IntegrationEvidencePartSynchronizedFinest)
         }
         free(row);
     }
+    free(bases);
     free(series);
+    free(evidence);
 }
 
 UNIT(IntegrationEvidencePartSynchronized)
@@ -745,7 +749,9 @@ UNIT(IntegrationEvidencePartSynchronized)
         }
         free(row);
     }
+    free(bases);
     free(series);
+    free(evidence);
 }
 
 BEGIN_SUITE(Integration)
