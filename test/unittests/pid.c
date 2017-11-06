@@ -1,35 +1,10 @@
 // Copyright 2016-2017 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <inform/pid.h>
 #include <ginger/unit.h>
 #include <ginger/vector.h>
-
-#define TestPIDSources(N,M) \
-{ \
-    pid_source **srcs = pid_sources((N)); \
-    ASSERT_NOT_NULL(srcs); \
-    ASSERT_EQUAL_U((M), gvector_cap(srcs)); \
-    ASSERT_EQUAL_U((M), gvector_len(srcs)); \
-    for (size_t i = 0; i < gvector_len(srcs); ++i) \
-    { \
-        ASSERT_NOT_NULL(srcs[i]); \
-        ASSERT_NOT_NULL(srcs[i]->name); \
-        ASSERT_EQUAL_U(gvector_len(srcs[i]->name), gvector_cap(srcs[i]->name)); \
- \
-        ASSERT_NOT_NULL(srcs[i]->above); \
-        ASSERT_EQUAL_U(0, gvector_len(srcs[i]->above)); \
- \
-        ASSERT_NOT_NULL(srcs[i]->below); \
-        ASSERT_EQUAL_U(0, gvector_len(srcs[i]->below)); \
-    } \
- \
-    for (size_t i = 0; i < gvector_len(srcs); ++i) \
-    { \
-        pid_source_free(srcs[i]); \
-    } \
-    gvector_free(srcs); \
-}
+#include <inform/pid.h>
+#include <inform/utilities/random.h>
 
 #define COMPARE_SOURCES(EXP, SRCS) \
 do { \
@@ -44,7 +19,13 @@ do { \
 
 #define TestPIDHasse(EXP, N, M, Q) \
 do { \
-    pid_lattice *l = pid_hasse((N)); \
+    int data[10*(N+1)], base[(N)]; \
+    for (size_t i = 0; i < 10*(N+1); ++i) data[i] = 1; \
+    for (size_t i = 0; i < (N); ++i) base[i] = 2;\
+\
+    inform_error err = INFORM_SUCCESS; \
+    inform_pid_lattice *l = inform_pid(data, data+10, (N), 10, 2, base, &err); \
+    ASSERT_TRUE(inform_succeeded(&err)); \
     ASSERT_NOT_NULL(l); \
     ASSERT_NOT_NULL(l->sources); \
     ASSERT_EQUAL_U((M), gvector_len(l->sources)); \
@@ -56,97 +37,8 @@ do { \
         n += gvector_len(l->sources[i]->above); \
     } \
     ASSERT_EQUAL((Q), n); \
-    pid_lattice_free(l); \
+    inform_pid_lattice_free(l); \
 } while (0);
-
-
-UNIT(PIDSources)
-{
-    TestPIDSources(1,1);
-    TestPIDSources(2,4);
-    TestPIDSources(3,18);
-    TestPIDSources(4,166);
-    TestPIDSources(5,7579);
-
-    size_t expected[18][4] = {
-        {1,1,0,0}, {2,1,6,0}, {2,1,4,0}, {2,1,2,0},
-        {3,1,2,4}, {1,2,0,0}, {2,2,5,0}, {2,2,4,0},
-        {1,3,0,0}, {2,3,6,0}, {2,3,5,0}, {3,3,5,6},
-        {2,3,4,0}, {1,4,0,0}, {1,5,0,0}, {2,5,6,0},
-        {1,6,0,0}, {1,7,0,0}
-    };
-
-    pid_source **srcs = pid_sources(3);
-    ASSERT_NOT_NULL(srcs);
-    ASSERT_EQUAL_U(18, gvector_len(srcs));
-
-    COMPARE_SOURCES(expected, srcs);
-
-
-    for (size_t i = 0; i < gvector_len(srcs); ++i) pid_source_free(srcs[i]);
-    gvector_free(srcs);
-}
-
-UNIT(PIDToposort)
-{
-    size_t expected[166][7] = {
-        {4,1,2,4,8,0,0},    {3,1,4,8,0,0,0},    {3,1,2,8,0,0,0},   {3,1,2,4,0,0,0},
-        {3,2,4,8,0,0,0},    {3,1,6,8,0,0,0},    {3,1,4,10,0,0,0},  {3,1,2,12,0,0,0},
-        {3,2,5,8,0,0,0},    {3,2,4,9,0,0,0},    {3,3,4,8,0,0,0},   {2,1,4,0,0,0,0},
-        {2,1,2,0,0,0,0},    {2,2,8,0,0,0,0},    {4,2,5,9,12,0,0},  {2,2,4,0,0,0,0},
-        {4,1,6,10,12,0,0},  {4,3,5,6,8,0,0},    {4,3,4,9,10,0,0},  {2,1,8,0,0,0,0},
-        {2,4,8,0,0,0,0},    {3,2,9,12,0,0,0},   {3,2,5,12,0,0,0},  {3,2,5,9,0,0,0},
-        {3,1,6,10,0,0,0},   {3,1,6,12,0,0,0},   {3,1,10,12,0,0,0}, {3,3,6,8,0,0,0},
-        {3,3,5,8,0,0,0},    {6,3,5,6,9,10,12},  {3,3,4,10,0,0,0},  {3,3,4,9,0,0,0},
-        {3,4,9,10,0,0,0},   {3,5,6,8,0,0,0},    {2,3,8,0,0,0,0},   {5,3,6,9,10,12,0},
-        {2,2,12,0,0,0,0},   {5,3,5,9,10,12,0},  {2,1,6,0,0,0,0},   {5,3,5,6,10,12,0},
-        {5,3,5,6,9,12,0},   {5,3,5,6,9,10,0},   {2,1,10,0,0,0,0},  {2,3,4,0,0,0,0},
-        {2,2,5,0,0,0,0},    {2,1,12,0,0,0,0},   {2,4,10,0,0,0,0},  {2,4,9,0,0,0,0},
-        {2,2,9,0,0,0,0},    {2,5,8,0,0,0,0},    {5,5,6,9,10,12,0}, {2,6,8,0,0,0,0},
-        {4,3,6,10,12,0,0},  {4,3,6,9,12,0,0},   {4,3,6,9,10,0,0},  {4,3,5,10,12,0,0},
-        {4,3,5,9,12,0,0},   {4,3,5,9,10,0,0},   {4,3,5,6,12,0,0},  {4,3,5,6,10,0,0},
-        {4,3,5,6,9,0,0},    {2,1,14,0,0,0,0},   {4,3,9,10,12,0,0}, {2,4,11,0,0,0,0},
-        {2,2,13,0,0,0,0},   {4,5,9,10,12,0,0},  {4,5,6,10,12,0,0}, {4,5,6,9,12,0,0},
-        {4,5,6,9,10,0,0},   {4,6,9,10,12,0,0},  {2,7,8,0,0,0,0},   {3,3,5,12,0,0,0},
-        {3,3,10,12,0,0,0},  {3,3,5,10,0,0,0},   {3,3,9,12,0,0,0},  {3,3,9,10,0,0,0},
-        {3,3,6,9,0,0,0},    {1,1,0,0,0,0,0},    {1,2,0,0,0,0,0},   {1,4,0,0,0,0,0},
-        {4,3,5,9,14,0,0},   {3,5,10,12,0,0,0},  {3,5,9,12,0,0,0},  {3,5,9,10,0,0,0},
-        {3,3,6,12,0,0,0},   {4,5,6,11,12,0,0},  {3,5,6,10,0,0,0},  {3,5,6,9,0,0,0},
-        {3,6,10,12,0,0,0},  {3,6,9,12,0,0,0},   {3,6,9,10,0,0,0},  {3,3,5,6,0,0,0},
-        {4,3,6,10,13,0,0},  {4,7,9,10,12,0,0},  {1,8,0,0,0,0,0},   {2,5,10,0,0,0,0},
-        {3,3,9,14,0,0,0},   {3,5,9,14,0,0,0},   {3,3,10,13,0,0,0}, {3,3,5,9,0,0,0},
-        {3,5,6,12,0,0,0},   {3,5,6,11,0,0,0},   {3,3,6,13,0,0,0},  {2,3,12,0,0,0,0},
-        {3,3,6,10,0,0,0},   {3,6,11,12,0,0,0},  {3,6,10,13,0,0,0}, {3,3,5,14,0,0,0},
-        {2,6,9,0,0,0,0},    {3,7,10,12,0,0,0},  {3,7,9,12,0,0,0},  {3,7,9,10,0,0,0},
-        {3,5,11,12,0,0,0},  {3,9,10,12,0,0,0},  {2,6,12,0,0,0,0},  {3,6,11,13,0,0,0},
-        {2,6,10,0,0,0,0},   {2,3,6,0,0,0,0},    {3,3,13,14,0,0,0}, {2,5,12,0,0,0,0},
-        {3,7,11,12,0,0,0},  {3,7,10,13,0,0,0},  {2,5,9,0,0,0,0},   {3,7,9,14,0,0,0},
-        {2,5,6,0,0,0,0},    {2,3,10,0,0,0,0},   {3,5,11,14,0,0,0}, {2,3,5,0,0,0,0},
-        {2,3,9,0,0,0,0},    {2,9,12,0,0,0,0},   {2,9,10,0,0,0,0},  {2,10,12,0,0,0,0},
-        {2,7,12,0,0,0,0},   {4,7,11,13,14,0,0}, {2,7,10,0,0,0,0},  {2,3,14,0,0,0,0},
-        {2,6,11,0,0,0,0},   {2,7,9,0,0,0,0},    {2,6,13,0,0,0,0},  {2,5,14,0,0,0,0},
-        {2,3,13,0,0,0,0},   {2,5,11,0,0,0,0},   {2,9,14,0,0,0,0},  {2,10,13,0,0,0,0},
-        {2,11,12,0,0,0,0},  {1,6,0,0,0,0,0},    {1,9,0,0,0,0,0},   {3,7,11,14,0,0,0},
-        {1,3,0,0,0,0,0},    {1,10,0,0,0,0,0},   {1,5,0,0,0,0,0},   {3,7,13,14,0,0,0},
-        {3,11,13,14,0,0,0}, {3,7,11,13,0,0,0},  {1,12,0,0,0,0,0},  {2,7,13,0,0,0,0},
-        {2,11,14,0,0,0,0},  {2,11,13,0,0,0,0},  {2,7,11,0,0,0,0},  {2,7,14,0,0,0,0},
-        {2,13,14,0,0,0,0},  {1,11,0,0,0,0,0},   {1,13,0,0,0,0,0},  {1,7,0,0,0,0,0},
-        {1,14,0,0,0,0,0},   {1,15,0,0,0,0,0}
-    };
-
-    pid_source **srcs = pid_sources(4);
-    ASSERT_NOT_NULL(srcs);
-    ASSERT_EQUAL_U(166, gvector_len(srcs));
-
-    pid_toposort(srcs);
-    ASSERT_NOT_NULL(srcs);
-    ASSERT_EQUAL_U(166, gvector_len(srcs));
-
-    COMPARE_SOURCES(expected, srcs);
-
-    for (size_t i = 0; i < gvector_len(srcs); ++i) pid_source_free(srcs[i]);
-    gvector_free(srcs);
-}
 
 UNIT(PIDHasseOrder)
 {
@@ -219,8 +111,191 @@ UNIT(PIDHasseOrder)
     }
 }
 
+UNIT(PIDXOR)
+{
+    double const imin[4] = { 0., 0., 0., 1. };
+    double const pi[4]   = { 0., 0., 0., 1. };
+
+    int const data[12] = {0,1,1,0, 0,1,0,1, 0,0,1,1};
+
+    inform_error err = INFORM_SUCCESS;
+    inform_pid_lattice *l = inform_pid(data, data+4, 2, 4, 2, (int[]){2,2}, &err);
+
+    ASSERT_EQUAL(INFORM_SUCCESS, err);
+    ASSERT_NOT_NULL(l);
+    for (size_t i = 0; i < l->size; ++i)
+    {
+        ASSERT_DBL_NEAR(imin[i], l->sources[i]->imin);
+        ASSERT_DBL_NEAR(pi[i], l->sources[i]->pi);
+    }
+
+    inform_pid_lattice_free(l);
+}
+
+UNIT(PIDAND)
+{
+    double const x = 1.5 - 0.75 * log2(3);
+    double const imin[4] = { x, x, x, x + 0.5 };
+    double const pi[4]   = { x, 0., 0., 0.5 };
+
+    int const data[12] = {0,0,0,1, 0,1,0,1, 0,0,1,1};
+
+    inform_error err = INFORM_SUCCESS;
+    inform_pid_lattice *l = inform_pid(data, data+4, 2, 4, 2, (int[]){2,2}, &err);
+
+    ASSERT_EQUAL(INFORM_SUCCESS, err);
+    ASSERT_NOT_NULL(l);
+    for (size_t i = 0; i < l->size; ++i)
+    {
+        ASSERT_DBL_NEAR(imin[i], l->sources[i]->imin);
+        ASSERT_DBL_NEAR(pi[i], l->sources[i]->pi);
+    }
+
+    inform_pid_lattice_free(l);
+}
+
+UNIT(PIDOR)
+{
+    double const x = 1.5 - 0.75 * log2(3);
+    double const imin[4] = { x, x, x, x + 0.5 };
+    double const pi[4]   = { x, 0., 0., 0.5 };
+
+    int const data[12] = {0,1,1,1, 0,1,0,1, 0,0,1,1};
+
+    inform_error err = INFORM_SUCCESS;
+    inform_pid_lattice *l = inform_pid(data, data+4, 2, 4, 2, (int[]){2,2}, &err);
+
+    ASSERT_EQUAL(INFORM_SUCCESS, err);
+    ASSERT_NOT_NULL(l);
+    for (size_t i = 0; i < l->size; ++i)
+    {
+        ASSERT_DBL_NEAR(imin[i], l->sources[i]->imin);
+        ASSERT_DBL_NEAR(pi[i], l->sources[i]->pi);
+    }
+
+    inform_pid_lattice_free(l);
+}
+
+UNIT(PIDStochastic)
+{
+    double const imin[4] = { 0.001317, 0.011000, 0.001317, 0.012888 };
+    double const pi[4]   = { 0.001317, 0.009683, 0.000000, 0.001887 };
+
+    int const data[60] = {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,
+                          0,0,0,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,
+                          0,1,1,0,0,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1};
+
+    inform_error err = INFORM_SUCCESS;
+    inform_pid_lattice *l = inform_pid(data, data+20, 2, 20, 2, (int[]){2,2}, &err);
+
+    ASSERT_EQUAL(INFORM_SUCCESS, err);
+    ASSERT_NOT_NULL(l);
+    for (size_t i = 0; i < l->size; ++i)
+    {
+        ASSERT_DBL_NEAR_TOL(imin[i], l->sources[i]->imin, 1e-6);
+        ASSERT_DBL_NEAR_TOL(pi[i], l->sources[i]->pi, 1e-6);
+    }
+
+    inform_pid_lattice_free(l);
+}
+
+UNIT(PIDWilliamsBeer4a)
+{
+    double const x = log2(3.0) - 1, y = 1/3.;
+    double const imin[4] = { x, x + y, x + y, x + 1 };
+    double const pi[4]   = { x, y, y, y };
+
+    int const data[9] = {0,1,2, 0,0,1, 0,1,0};
+
+    inform_error err = INFORM_SUCCESS;
+    inform_pid_lattice *l = inform_pid(data, data+3, 2, 3, 3, (int[]){2,2}, &err);
+
+    ASSERT_EQUAL(INFORM_SUCCESS, err);
+    ASSERT_NOT_NULL(l);
+    for (size_t i = 0; i < l->size; ++i)
+    {
+        ASSERT_DBL_NEAR(imin[i], l->sources[i]->imin);
+        ASSERT_DBL_NEAR(pi[i], l->sources[i]->pi);
+    }
+
+    inform_pid_lattice_free(l);
+}
+
+UNIT(PIDWilliamsBeer4b)
+{
+    double const imin[4] = { 0.5, 0.5, 1.0, 1.5 };
+    double const pi[4]   = { 0.5, 0.0, 0.5, 0.5};
+
+    int const data[12] = {0,1,1,2, 0,0,1,1, 0,1,1,0};
+
+    inform_error err = INFORM_SUCCESS;
+    inform_pid_lattice *l = inform_pid(data, data+4, 2, 4, 3, (int[]){2,2}, &err);
+
+    ASSERT_EQUAL(INFORM_SUCCESS, err);
+    ASSERT_NOT_NULL(l);
+    for (size_t i = 0; i < l->size; ++i)
+    {
+        ASSERT_DBL_NEAR(imin[i], l->sources[i]->imin);
+        ASSERT_DBL_NEAR(pi[i], l->sources[i]->pi);
+    }
+
+    inform_pid_lattice_free(l);
+}
+
+UNIT(PID4Variables)
+{
+    int const data[100] = {0,1,1,2,2,1,2,3,3,2,1,2,3,1,1,2,2,1,2,1,
+                           1,1,0,1,1,0,1,0,1,1,1,0,0,1,0,1,0,1,1,0,
+                           1,0,0,0,1,1,1,0,0,1,0,1,1,0,1,1,0,0,0,1,
+                           0,0,1,1,1,1,0,0,1,0,1,1,0,1,1,1,0,0,0,0,
+                           0,0,0,1,1,1,1,0,1,1,1,0,1,1,1,0,0,1,1,0};
+
+    inform_error err = INFORM_SUCCESS;
+    inform_pid_lattice *l = inform_pid(data, data+20, 4, 20, 4, (int[]){2,2,2,2}, &err);
+
+    ASSERT_EQUAL(INFORM_SUCCESS, err);
+    ASSERT_NOT_NULL(l);
+    double total = 0.0;
+    for (size_t i = 0; i < l->size; ++i)
+    {
+        total += l->sources[i]->pi;
+        ASSERT_TRUE(l->sources[i]->pi <= l->sources[i]->imin);
+    }
+    ASSERT_DBL_NEAR(total, l->top->imin);
+
+    inform_pid_lattice_free(l);
+}
+
+UNIT(PIDRandom)
+{
+    int *data = inform_random_series(5000, 2);
+    ASSERT_NOT_NULL(data);
+
+    inform_error err = INFORM_SUCCESS;
+    inform_pid_lattice *l = inform_pid(data, data+1000, 4, 1000, 2, (int[]){2,2,2,2}, &err);
+
+    ASSERT_EQUAL(INFORM_SUCCESS, err);
+    ASSERT_NOT_NULL(l);
+    double total = 0.0;
+    for (size_t i = 0; i < l->size; ++i)
+    {
+        total += l->sources[i]->pi;
+        ASSERT_TRUE(l->sources[i]->pi <= l->sources[i]->imin);
+    }
+    ASSERT_DBL_NEAR(total, l->top->imin);
+
+    inform_pid_lattice_free(l);
+    free(data);
+}
+
 BEGIN_SUITE(PID)
-    ADD_UNIT(PIDSources)
-    ADD_UNIT(PIDToposort)
     ADD_UNIT(PIDHasseOrder)
+    ADD_UNIT(PIDXOR)
+    ADD_UNIT(PIDAND)
+    ADD_UNIT(PIDOR)
+    ADD_UNIT(PIDStochastic)
+    ADD_UNIT(PIDWilliamsBeer4a)
+    ADD_UNIT(PIDWilliamsBeer4b)
+    ADD_UNIT(PID4Variables)
+    ADD_UNIT(PIDRandom)
 END_SUITE

@@ -10,31 +10,29 @@ extern "C"
 {
 #endif
 
-typedef struct pid_source
+typedef struct inform_pid_source
 {
     size_t *name;
-    struct pid_source **above;
-    struct pid_source **below;
+    struct inform_pid_source **above;
+    struct inform_pid_source **below;
     size_t size, n_above, n_below;
-} pid_source;
+    double imin;
+    double pi;
+    double info;
+} inform_pid_source;
 
-void pid_source_free(pid_source *src);
-
-pid_source **pid_sources(size_t n);
-
-void pid_toposort(pid_source **srcs);
-
-typedef struct pid_lattice
+typedef struct inform_pid_lattice
 {
-    pid_source **sources;
-    pid_source *top;
-    pid_source *bottom;
+    inform_pid_source **sources;
+    inform_pid_source *top;
+    inform_pid_source *bottom;
     size_t size;
-} pid_lattice;
+} inform_pid_lattice;
 
-void pid_lattice_free(pid_lattice *l);
+void inform_pid_lattice_free(inform_pid_lattice *l);
 
-pid_lattice *pid_hasse(size_t n);
+inform_pid_lattice *inform_pid(int const *stimulus, int const *responses,
+        size_t l, size_t n, int bs, int const *br, inform_error *err);
 
 #ifdef __cplusplus
 }
