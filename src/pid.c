@@ -132,7 +132,7 @@ static bool below(inform_pid_source const *a, inform_pid_source const *b)
     return name_below(a->name, b->name);
 }
 
-static void pid_toposort(inform_pid_source **srcs)
+static void pid_toposort(inform_pid_source **srcs, inform_error *err)
 {
     size_t const n = gvector_len(srcs);
     size_t u = 0, v = 0;
@@ -241,7 +241,7 @@ static inform_pid_lattice *build_hasse(inform_pid_source **srcs)
 static inform_pid_lattice *hasse(size_t n, inform_error *err)
 {
     inform_pid_source **srcs = inform_pid_sources(n, err);
-    pid_toposort(srcs);
+    pid_toposort(srcs, err);
     return build_hasse(srcs);
 }
 
