@@ -21,7 +21,8 @@ static void inform_pid_source_free(inform_pid_source *src)
     }
 }
 
-static inform_pid_source *inform_pid_source_alloc(size_t *name)
+static inform_pid_source *inform_pid_source_alloc(size_t *name,
+        inform_error *err)
 {
     inform_pid_source *src = malloc(sizeof(inform_pid_source));
     if (src)
@@ -55,11 +56,11 @@ static inform_pid_source *inform_pid_source_alloc(size_t *name)
 }
 
 static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
-        inform_pid_source **srcs)
+        inform_pid_source **srcs, inform_error *err)
 {
     if (i < m)
     {
-        srcs = sources_rec(i + 1, m, gvector_dup(c), srcs);
+        srcs = sources_rec(i + 1, m, gvector_dup(c), srcs, err);
     }
 
     if (i <= m)
@@ -75,8 +76,8 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
             }
         }
         gvector_push(c, i);
-        gvector_push(srcs, inform_pid_source_alloc(c));
-        return sources_rec(i + 1, m, c, srcs);
+        gvector_push(srcs, inform_pid_source_alloc(c, err));
+        return sources_rec(i + 1, m, c, srcs, err);
     }
     else
     {
@@ -86,7 +87,7 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
     return srcs;
 }
 
-static inform_pid_source **inform_pid_sources(size_t n)
+static inform_pid_source **inform_pid_sources(size_t n, inform_error *err)
 {
     size_t const m = (1 << n) - 1;
     inform_pid_source **srcs = gvector_alloc(0, 0, sizeof(inform_pid_source*));
@@ -95,8 +96,8 @@ static inform_pid_source **inform_pid_sources(size_t n)
         size_t *c = gvector_alloc(1, 1, sizeof(size_t));
         c[0] = i;
 
-        gvector_push(srcs, inform_pid_source_alloc(c));
-        srcs = sources_rec(i + 1, m, c, srcs);
+        gvector_push(srcs, inform_pid_source_alloc(c, err));
+        srcs = sources_rec(i + 1, m, c, srcs, err);
     }
     srcs = gvector_shrink(srcs);
     return srcs;
@@ -237,9 +238,9 @@ static inform_pid_lattice *build_hasse(inform_pid_source **srcs)
     return l;
 }
 
-static inform_pid_lattice *hasse(size_t n)
+static inform_pid_lattice *hasse(size_t n, inform_error *err)
 {
-    inform_pid_source **srcs = inform_pid_sources(n);
+    inform_pid_source **srcs = inform_pid_sources(n, err);
     pid_toposort(srcs);
     return build_hasse(srcs);
 }
@@ -406,7 +407,7 @@ inform_pid_lattice *inform_pid(int const *stimulus, int const *responses, size_t
         }
     }
 
-    inform_pid_lattice *lattice = hasse(l);
+    inform_pid_lattice *lattice = hasse(l, err);
     if (lattice == NULL)
     {
         cleanup(ss, s_dist, si);
