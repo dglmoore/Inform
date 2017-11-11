@@ -161,7 +161,7 @@ static void pid_toposort(inform_pid_source **srcs, inform_error *err)
     }
 }
 
-static inform_pid_lattice *inform_pid_lattice_alloc()
+static inform_pid_lattice *inform_pid_lattice_alloc(inform_error *err)
 {
     inform_pid_lattice *l = malloc(sizeof(inform_pid_lattice));
     if (l)
@@ -189,7 +189,8 @@ void inform_pid_lattice_free(inform_pid_lattice *l)
     }
 }
 
-static inform_pid_lattice *build_hasse(inform_pid_source **srcs)
+static inform_pid_lattice *build_hasse(inform_pid_source **srcs,
+        inform_error *err)
 {
     size_t const n = gvector_len(srcs);
     if (n == 0)
@@ -197,7 +198,7 @@ static inform_pid_lattice *build_hasse(inform_pid_source **srcs)
         return NULL;
     }
 
-    inform_pid_lattice *l = inform_pid_lattice_alloc();
+    inform_pid_lattice *l = inform_pid_lattice_alloc(err);
     if (l)
     {
         for (size_t i = 0; i < n; ++i)
@@ -242,7 +243,7 @@ static inform_pid_lattice *hasse(size_t n, inform_error *err)
 {
     inform_pid_source **srcs = inform_pid_sources(n, err);
     pid_toposort(srcs, err);
-    return build_hasse(srcs);
+    return build_hasse(srcs, err);
 }
 
 static size_t **subsets(size_t n)
