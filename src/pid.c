@@ -246,7 +246,7 @@ static inform_pid_lattice *hasse(size_t n, inform_error *err)
     return build_hasse(srcs, err);
 }
 
-static size_t **subsets(size_t n)
+static size_t **subsets(size_t n, inform_error *err)
 {
     size_t m = 1 << n;
     size_t **ss = gvector_alloc(m - 1, m - 1, sizeof(size_t*));
@@ -381,7 +381,7 @@ static void cleanup(size_t **subsets, inform_dist *s_dist, double **info)
 inform_pid_lattice *inform_pid(int const *stimulus, int const *responses, size_t l,
         size_t n, int bs, int const *br, inform_error *err)
 {
-    size_t **ss = subsets(l);
+    size_t **ss = subsets(l, err);
     size_t const m = gvector_len(ss);
 
     inform_dist *s_dist = inform_dist_infer(stimulus, n);
