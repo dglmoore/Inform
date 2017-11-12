@@ -43,7 +43,7 @@ static TYPE* NAME(TYPE* xs, TYPE x) \
 MAKE_PUSH(push_size_t, size_t)
 MAKE_PUSH(push_source, inform_pid_source*)
 
-static void inform_pid_source_free(inform_pid_source *src)
+static void free_source(inform_pid_source *src)
 {
     if (src)
     {
@@ -54,7 +54,19 @@ static void inform_pid_source_free(inform_pid_source *src)
     }
 }
 
-static inform_pid_source *inform_pid_source_alloc(size_t *name,
+static void free_all_sources(inform_pid_source **srcs)
+{
+    if (srcs)
+    {
+        for (size_t i = 0; i < gvector_len(srcs); ++i)
+        {
+            free_source(srcs[i]);
+        }
+        gvector_free(srcs);
+    }
+}
+
+static inform_pid_source *alloc_source(size_t *name,
         inform_error *err)
 {
     if (!name)
@@ -74,7 +86,7 @@ static inform_pid_source *inform_pid_source_alloc(size_t *name,
     size_t *local_name = gvector_dup(name);
     if (!local_name)
     {
-        inform_pid_source_free(src);
+        free_source(src);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
     src->name = local_name;
@@ -82,7 +94,7 @@ static inform_pid_source *inform_pid_source_alloc(size_t *name,
     local_name = gvector_shrink(src->name);
     if (!local_name)
     {
-        inform_pid_source_free(src);
+        free_source(src);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
     src->name = local_name;
@@ -91,7 +103,7 @@ static inform_pid_source *inform_pid_source_alloc(size_t *name,
     src->above = gvector_alloc(0, 0, sizeof(inform_pid_source*));
     if (!src->above)
     {
-        inform_pid_source_free(src);
+        free_source(src);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
     src->n_above = 0;
@@ -99,7 +111,7 @@ static inform_pid_source *inform_pid_source_alloc(size_t *name,
     src->below = gvector_alloc(0, 0, sizeof(inform_pid_source*));
     if (!src->below)
     {
-        inform_pid_source_free(src);
+        free_source(src);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
     src->n_below = 0;
@@ -151,7 +163,7 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
         }
         c = d;
 
-        inform_pid_source *src = inform_pid_source_alloc(c, err);
+        inform_pid_source *src = alloc_source(c, err);
         if (FAILED(err))
         {
             return srcs;
@@ -195,7 +207,7 @@ static inform_pid_source **inform_pid_sources(size_t n, inform_error *err)
         }
         c[0] = i;
 
-        inform_pid_source *src = inform_pid_source_alloc(c, err);
+        inform_pid_source *src = alloc_source(c, err);
         if (FAILED(err))
         {
             return NULL;
@@ -304,11 +316,7 @@ void inform_pid_lattice_free(inform_pid_lattice *lattice)
 {
     if (lattice)
     {
-        for (size_t i = 0; i < gvector_len(lattice->sources); ++i)
-        {
-            inform_pid_source_free(lattice->sources[i]);
-        }
-        gvector_free(lattice->sources);
+        free_all_sources(lattice->sources);
 
         lattice->sources = NULL;
         lattice->top = NULL;
