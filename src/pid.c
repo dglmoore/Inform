@@ -321,51 +321,71 @@ void inform_pid_lattice_free(inform_pid_lattice *lattice)
 static inform_pid_lattice *build_hasse(inform_pid_source **srcs,
         inform_error *err)
 {
+    if (!srcs)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EARG, NULL);
+    }
+
     size_t const n = gvector_len(srcs);
     if (n == 0)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EARG, NULL);
+    }
+
+    inform_pid_lattice *lattice = inform_pid_lattice_alloc(err);
+    if (FAILED(err))
     {
         return NULL;
     }
 
-    inform_pid_lattice *l = inform_pid_lattice_alloc(err);
-    if (l)
+    for (size_t i = 0; i < n; ++i)
     {
-        for (size_t i = 0; i < n; ++i)
+        for (size_t j = i + 1; j < n; ++j)
         {
-            for (size_t j = i + 1; j < n; ++j)
+            if (below(srcs[i], srcs[j]))
             {
-                if (below(srcs[i], srcs[j]))
+                bool stop = false;
+                for (size_t k = 0; k < gvector_len(srcs[i]->above); ++k)
                 {
-                    bool stop = false;
-                    for (size_t k = 0; k < gvector_len(srcs[i]->above); ++k)
+                    inform_pid_source *x = srcs[i]->above[k];
+                    if (below(x, srcs[j]))
                     {
-                        inform_pid_source *x = srcs[i]->above[k];
-                        if (below(x, srcs[j]))
-                        {
-                            stop = true;
-                            break;
-                        }
-                    }
-                    if (stop)
-                    {
+                        stop = true;
                         break;
                     }
-                    else
+                }
+                if (stop)
+                {
+                    break;
+                }
+                else
+                {
+                    inform_pid_source **above = PUSH(srcs[i]->above, srcs[j]);
+                    if (!above)
                     {
-                        gvector_push(srcs[i]->above, srcs[j]);
-                        gvector_push(srcs[j]->below, srcs[i]);
-                        srcs[i]->n_above++;
-                        srcs[j]->n_below++;
+                        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
                     }
+                    srcs[i]->above = above;
+                    srcs[i]->n_above++;
+
+                    inform_pid_source **below = PUSH(srcs[j]->below, srcs[i]);
+                    if (!below)
+                    {
+                        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+                    }
+                    srcs[j]->below = below;
+                    srcs[j]->n_below++;
                 }
             }
         }
-        l->sources = srcs;
-        l->bottom = srcs[0];
-        l->top = srcs[n-1];
-        l->size = gvector_len(l->sources);
     }
-    return l;
+
+    lattice->sources = srcs;
+    lattice->bottom = srcs[0];
+    lattice->top = srcs[n-1];
+    lattice->size = gvector_len(lattice->sources);
+
+    return lattice;
 }
 
 static inform_pid_lattice *hasse(size_t n, inform_error *err)
