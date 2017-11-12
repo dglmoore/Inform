@@ -12,11 +12,6 @@
 
 #define FAILED(ERR) ((ERR) && *(ERR) != INFORM_SUCCESS)
 
-#define PUSH(V, X) _Generic((X), \
-    size_t : push_size_t, \
-    inform_pid_source* : push_source \
-)(V,X)
-
 #define MAKE_PUSH(NAME, TYPE) \
 static TYPE* NAME(TYPE* xs, TYPE x) \
 { \
@@ -40,7 +35,7 @@ static TYPE* NAME(TYPE* xs, TYPE x) \
     return xs; \
 }
 
-MAKE_PUSH(push_size_t, size_t)
+MAKE_PUSH(push_value, size_t)
 MAKE_PUSH(push_source, inform_pid_source*)
 
 static void free_source(inform_pid_source *src)
@@ -156,7 +151,7 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
             }
         }
 
-        size_t *d = PUSH(c, i);
+        size_t *d = push_value(c, i);
         if (!d)
         {
             INFORM_ERROR_RETURN(err, INFORM_ENOMEM, srcs);
@@ -169,7 +164,7 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
             return srcs;
         }
 
-        inform_pid_source **ts = PUSH(srcs, src);
+        inform_pid_source **ts = push_source(srcs, src);
         if (!ts)
         {
             INFORM_ERROR_RETURN(err, INFORM_ENOMEM, srcs);
@@ -213,7 +208,7 @@ static inform_pid_source **sources(size_t n, inform_error *err)
             return NULL;
         }
 
-        inform_pid_source **ts = PUSH(srcs, src);
+        inform_pid_source **ts = push_source(srcs, src);
         if (!ts)
         {
             INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
@@ -368,7 +363,9 @@ static inform_pid_lattice *build_hasse(inform_pid_source **srcs,
                 }
                 else
                 {
-                    inform_pid_source **above = PUSH(srcs[i]->above, srcs[j]);
+                    inform_pid_source **above, **below;
+
+                    above = push_source(srcs[i]->above, srcs[j]);
                     if (!above)
                     {
                         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
@@ -376,7 +373,7 @@ static inform_pid_lattice *build_hasse(inform_pid_source **srcs,
                     srcs[i]->above = above;
                     srcs[i]->n_above++;
 
-                    inform_pid_source **below = PUSH(srcs[j]->below, srcs[i]);
+                    below = push_source(srcs[j]->below, srcs[i]);
                     if (!below)
                     {
                         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
@@ -441,7 +438,7 @@ static size_t **subsets(size_t n, inform_error *err)
         {
             if ((i & (1 << j)) != 0)
             {
-                size_t *t = PUSH(s,j);
+                size_t *t = push_value(s,j);
                 if (!t)
                 {
                     INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
