@@ -564,10 +564,15 @@ static void cleanup(size_t **subsets, inform_dist *s_dist, double **info)
     }
 }
 
-inform_pid_lattice *inform_pid(int const *stimulus, int const *responses, size_t l,
-        size_t n, int bs, int const *br, inform_error *err)
+inform_pid_lattice *inform_pid(int const *stimulus, int const *responses,
+        size_t l, size_t n, int bs, int const *br, inform_error *err)
 {
     size_t **ss = subsets(l, err);
+    if (FAILED(err))
+    {
+        return NULL;
+    }
+
     size_t const m = gvector_len(ss);
 
     inform_dist *s_dist = inform_dist_infer(stimulus, n);
@@ -595,7 +600,7 @@ inform_pid_lattice *inform_pid(int const *stimulus, int const *responses, size_t
     }
 
     inform_pid_lattice *lattice = hasse(l, err);
-    if (lattice == NULL)
+    if (FAILED(err))
     {
         cleanup(ss, s_dist, si);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
