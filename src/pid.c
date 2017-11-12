@@ -24,34 +24,55 @@ static void inform_pid_source_free(inform_pid_source *src)
 static inform_pid_source *inform_pid_source_alloc(size_t *name,
         inform_error *err)
 {
-    inform_pid_source *src = malloc(sizeof(inform_pid_source));
-    if (src)
+    if (!name)
     {
-        src->name = gvector_dup(name);
-        src->name = gvector_shrink(src->name);
-        src->size = gvector_len(src->name);
-
-        src->below = NULL;
-
-        src->above = gvector_alloc(0, 0, sizeof(inform_pid_source*));
-        if (!src->above)
-        {
-            inform_pid_source_free(src);
-            return NULL;
-        }
-
-        src->below = gvector_alloc(0, 0, sizeof(inform_pid_source*));
-        if (!src->below)
-        {
-            inform_pid_source_free(src);
-            return NULL;
-        }
-
-        src->n_above = src->n_below = 0;
-        src->size = gvector_len(src->name);
-
-        src->imin = src->pi = src->info = 0.0;
+        INFORM_ERROR_RETURN(err, INFORM_EARG, NULL);
     }
+
+    inform_pid_source *src = malloc(sizeof(inform_pid_source));
+    if (!src)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+
+    src->name = NULL;
+    src->above = src->below = NULL;
+
+    size_t *local_name = gvector_dup(name);
+    if (!local_name)
+    {
+        inform_pid_source_free(src);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    src->name = local_name;
+
+    local_name = gvector_shrink(src->name);
+    if (!local_name)
+    {
+        inform_pid_source_free(src);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    src->name = local_name;
+    src->size = gvector_len(src->name);
+
+    src->above = gvector_alloc(0, 0, sizeof(inform_pid_source*));
+    if (!src->above)
+    {
+        inform_pid_source_free(src);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    src->n_above = 0;
+
+    src->below = gvector_alloc(0, 0, sizeof(inform_pid_source*));
+    if (!src->below)
+    {
+        inform_pid_source_free(src);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    src->n_below = 0;
+
+    src->imin = src->pi = src->info = 0.0;
+
     return src;
 }
 
