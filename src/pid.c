@@ -287,14 +287,17 @@ static void pid_toposort(inform_pid_source **srcs, inform_error *err)
 
 static inform_pid_lattice *inform_pid_lattice_alloc(inform_error *err)
 {
-    inform_pid_lattice *l = malloc(sizeof(inform_pid_lattice));
-    if (l)
+    inform_pid_lattice *lattice = malloc(sizeof(inform_pid_lattice));
+    if (!lattice)
     {
-        l->sources = NULL;
-        l->top = NULL;
-        l->bottom = NULL;
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
-    return l;
+
+    lattice->sources = NULL;
+    lattice->top = NULL;
+    lattice->bottom = NULL;
+
+    return lattice;
 }
 
 void inform_pid_lattice_free(inform_pid_lattice *l)
