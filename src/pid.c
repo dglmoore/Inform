@@ -254,6 +254,10 @@ static bool below(inform_pid_source const *a, inform_pid_source const *b)
 
 static void pid_toposort(inform_pid_source **srcs, inform_error *err)
 {
+    if (!srcs)
+    {
+        INFORM_ERROR_RETURN_VOID(err, INFORM_EARG);
+    }
     size_t const n = gvector_len(srcs);
     size_t u = 0, v = 0;
     while (v < n - 1)
