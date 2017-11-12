@@ -186,7 +186,7 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
     return srcs;
 }
 
-static inform_pid_source **inform_pid_sources(size_t n, inform_error *err)
+static inform_pid_source **sources(size_t n, inform_error *err)
 {
     if (n < 1)
     {
@@ -264,7 +264,7 @@ static bool below(inform_pid_source const *a, inform_pid_source const *b)
     return name_below(a->name, b->name);
 }
 
-static void pid_toposort(inform_pid_source **srcs, inform_error *err)
+static void toposort(inform_pid_source **srcs, inform_error *err)
 {
     if (!srcs)
     {
@@ -398,13 +398,13 @@ static inform_pid_lattice *build_hasse(inform_pid_source **srcs,
 
 static inform_pid_lattice *hasse(size_t n, inform_error *err)
 {
-    inform_pid_source **srcs = inform_pid_sources(n, err);
+    inform_pid_source **srcs = sources(n, err);
     if (FAILED(err))
     {
         return NULL;
     }
 
-    pid_toposort(srcs, err);
+    toposort(srcs, err);
     if (FAILED(err))
     {
         return NULL;
