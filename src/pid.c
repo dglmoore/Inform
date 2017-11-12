@@ -300,19 +300,21 @@ static inform_pid_lattice *inform_pid_lattice_alloc(inform_error *err)
     return lattice;
 }
 
-void inform_pid_lattice_free(inform_pid_lattice *l)
+void inform_pid_lattice_free(inform_pid_lattice *lattice)
 {
-    if (l)
+    if (lattice)
     {
-        for (size_t i = 0; i < gvector_len(l->sources); ++i)
+        for (size_t i = 0; i < gvector_len(lattice->sources); ++i)
         {
-            inform_pid_source_free(l->sources[i]);
+            inform_pid_source_free(lattice->sources[i]);
         }
-        gvector_free(l->sources);
-        l->sources = NULL;
-        l->top = NULL;
-        l->bottom = NULL;
-        free(l);
+        gvector_free(lattice->sources);
+
+        lattice->sources = NULL;
+        lattice->top = NULL;
+        lattice->bottom = NULL;
+
+        free(lattice);
     }
 }
 
