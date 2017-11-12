@@ -391,8 +391,23 @@ static inform_pid_lattice *build_hasse(inform_pid_source **srcs,
 static inform_pid_lattice *hasse(size_t n, inform_error *err)
 {
     inform_pid_source **srcs = inform_pid_sources(n, err);
+    if (FAILED(err))
+    {
+        return NULL;
+    }
+
     pid_toposort(srcs, err);
-    return build_hasse(srcs, err);
+    if (FAILED(err))
+    {
+        return NULL;
+    }
+
+    inform_pid_lattice *lattice = build_hasse(srcs, err);
+    if (FAILED(err))
+    {
+        return NULL;
+    }
+    return lattice;
 }
 
 static size_t **subsets(size_t n, inform_error *err)
