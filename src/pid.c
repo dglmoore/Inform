@@ -10,6 +10,39 @@
 #include <string.h>
 #include <math.h>
 
+#define FAILED(ERR) ((ERR) && *(ERR) != INFORM_SUCCESS)
+
+#define PUSH(V, X) _Generic((X), \
+    size_t : push_size_t, \
+    inform_pid_source* : push_source \
+)(V,X)
+
+#define MAKE_PUSH(NAME, TYPE) \
+static TYPE* NAME(TYPE* xs, TYPE x) \
+{ \
+    if (!xs) \
+    { \
+        return xs; \
+    } \
+     \
+    size_t cap = gvector_cap(xs); \
+    if (gvector_len(xs) >= cap) \
+    { \
+        cap = (cap) ? 2*cap : 1; \
+        TYPE* ys = gvector_reserve(xs, cap); \
+        if (!ys) \
+        { \
+            return NULL; \
+        } \
+        xs = ys; \
+    } \
+    xs[gvector_len(xs)++] = x; \
+    return xs; \
+}
+
+MAKE_PUSH(push_size_t, size_t)
+MAKE_PUSH(push_source, inform_pid_source*)
+
 static void inform_pid_source_free(inform_pid_source *src)
 {
     if (src)
@@ -79,9 +112,23 @@ static inform_pid_source *inform_pid_source_alloc(size_t *name,
 static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
         inform_pid_source **srcs, inform_error *err)
 {
+    if (!c || !srcs)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EARG, NULL);
+    }
+
     if (i < m)
     {
-        srcs = sources_rec(i + 1, m, gvector_dup(c), srcs, err);
+        size_t *d = gvector_dup(c);
+        if (!d)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, srcs);
+        }
+        srcs = sources_rec(i + 1, m, d, srcs, err);
+        if (FAILED(err))
+        {
+            return srcs;
+        }
     }
 
     if (i <= m)
@@ -96,8 +143,27 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
                 return srcs;
             }
         }
-        gvector_push(c, i);
-        gvector_push(srcs, inform_pid_source_alloc(c, err));
+
+        size_t *d = PUSH(c, i);
+        if (!d)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, srcs);
+        }
+        c = d;
+
+        inform_pid_source *src = inform_pid_source_alloc(c, err);
+        if (FAILED(err))
+        {
+            return srcs;
+        }
+
+        inform_pid_source **ts = PUSH(srcs, src);
+        if (!ts)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, srcs);
+        }
+        srcs = ts;
+
         return sources_rec(i + 1, m, c, srcs, err);
     }
     else
