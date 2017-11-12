@@ -176,18 +176,51 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
 
 static inform_pid_source **inform_pid_sources(size_t n, inform_error *err)
 {
+    if (n < 1)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOSOURCES, NULL);
+    }
     size_t const m = (1 << n) - 1;
     inform_pid_source **srcs = gvector_alloc(0, 0, sizeof(inform_pid_source*));
+    if (!srcs)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
     for (size_t i = 1; i <= m; ++i)
     {
         size_t *c = gvector_alloc(1, 1, sizeof(size_t));
+        if (!c)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
         c[0] = i;
 
-        gvector_push(srcs, inform_pid_source_alloc(c, err));
+        inform_pid_source *src = inform_pid_source_alloc(c, err);
+        if (FAILED(err))
+        {
+            return NULL;
+        }
+
+        inform_pid_source **ts = PUSH(srcs, src);
+        if (!ts)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
+        srcs = ts;
+
         srcs = sources_rec(i + 1, m, c, srcs, err);
+        if (FAILED(err))
+        {
+            return NULL;
+        }
     }
-    srcs = gvector_shrink(srcs);
-    return srcs;
+
+    inform_pid_source **ts = gvector_shrink(srcs);
+    if (!ts)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    return ts;
 }
 
 static bool name_below(size_t const *xs, size_t const *ys)
