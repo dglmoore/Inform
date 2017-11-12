@@ -412,19 +412,41 @@ static inform_pid_lattice *hasse(size_t n, inform_error *err)
 
 static size_t **subsets(size_t n, inform_error *err)
 {
+    if (n < 1)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EARG, NULL);
+    }
     size_t m = 1 << n;
     size_t **ss = gvector_alloc(m - 1, m - 1, sizeof(size_t*));
+    if (!ss)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
     for (size_t i = 1; i < m; ++i)
     {
         size_t *s = gvector_alloc(n, 0, sizeof(size_t));
+        if (!s)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
         for (size_t j = 0; j < n; ++j)
         {
             if ((i & (1 << j)) != 0)
             {
-                gvector_push(s, j);
+                size_t *t = PUSH(s,j);
+                if (!t)
+                {
+                    INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+                }
+                s = t;
             }
         }
-        s = gvector_shrink(s);
+        size_t *t = gvector_shrink(s);
+        if (!t)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
+        s = t;
         ss[i-1] = s;
     }
     return ss;
