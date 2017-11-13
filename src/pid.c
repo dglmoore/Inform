@@ -129,11 +129,13 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
         size_t *d = gvector_dup(c);
         if (!d)
         {
+            gvector_free(c);
             INFORM_ERROR_RETURN(err, INFORM_ENOMEM, srcs);
         }
         srcs = sources_rec(i + 1, m, d, srcs, err);
         if (FAILED(err))
         {
+            gvector_free(c);
             return srcs;
         }
     }
@@ -161,12 +163,15 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
         inform_pid_source *src = alloc_source(c, err);
         if (FAILED(err))
         {
+            gvector_free(c);
             return srcs;
         }
 
         inform_pid_source **ts = push_source(srcs, src);
         if (!ts)
         {
+            free_source(src);
+            gvector_free(c);
             INFORM_ERROR_RETURN(err, INFORM_ENOMEM, srcs);
         }
         srcs = ts;
@@ -205,12 +210,16 @@ static inform_pid_source **sources(size_t n, inform_error *err)
         inform_pid_source *src = alloc_source(c, err);
         if (FAILED(err))
         {
+            gvector_free(c);
             return NULL;
         }
 
         inform_pid_source **ts = push_source(srcs, src);
         if (!ts)
         {
+            free_source(src);
+            free_all_sources(srcs);
+            gvector_free(c);
             INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
         }
         srcs = ts;
@@ -218,6 +227,7 @@ static inform_pid_source **sources(size_t n, inform_error *err)
         srcs = sources_rec(i + 1, m, c, srcs, err);
         if (FAILED(err))
         {
+            free_all_sources(srcs);
             return NULL;
         }
     }
@@ -225,6 +235,7 @@ static inform_pid_source **sources(size_t n, inform_error *err)
     inform_pid_source **ts = gvector_shrink(srcs);
     if (!ts)
     {
+        free_all_sources(srcs);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
     return ts;
@@ -368,6 +379,7 @@ static inform_pid_lattice *build_hasse(inform_pid_source **srcs,
                     above = push_source(srcs[i]->above, srcs[j]);
                     if (!above)
                     {
+                        free_all_sources(srcs);
                         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
                     }
                     srcs[i]->above = above;
@@ -376,6 +388,7 @@ static inform_pid_lattice *build_hasse(inform_pid_source **srcs,
                     below = push_source(srcs[j]->below, srcs[i]);
                     if (!below)
                     {
+                        free_all_sources(srcs);
                         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
                     }
                     srcs[j]->below = below;
@@ -423,6 +436,7 @@ static size_t **subsets(size_t n, inform_error *err)
     }
     size_t m = 1 << n;
     size_t **ss = gvector_alloc(m - 1, m - 1, sizeof(size_t*));
+    memset(ss, 0, sizeof(size_t*)*gvector_len(ss));
     if (!ss)
     {
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
@@ -432,6 +446,11 @@ static size_t **subsets(size_t n, inform_error *err)
         size_t *s = gvector_alloc(n, 0, sizeof(size_t));
         if (!s)
         {
+            for (size_t j = 0; j < gvector_len(ss); ++j)
+            {
+                gvector_free(ss[j]);
+            }
+            gvector_free(ss);
             INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
         }
         for (size_t j = 0; j < n; ++j)
@@ -441,6 +460,12 @@ static size_t **subsets(size_t n, inform_error *err)
                 size_t *t = push_value(s,j);
                 if (!t)
                 {
+                    gvector_free(s);
+                    for (size_t k = 0; k < gvector_len(ss); ++k)
+                    {
+                        gvector_free(ss[k]);
+                    }
+                    gvector_free(ss);
                     INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
                 }
                 s = t;
@@ -449,6 +474,12 @@ static size_t **subsets(size_t n, inform_error *err)
         size_t *t = gvector_shrink(s);
         if (!t)
         {
+            gvector_free(s);
+            for (size_t j = 0; j < gvector_len(ss); ++j)
+            {
+                gvector_free(ss[j]);
+            }
+            gvector_free(ss);
             INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
         }
         s = t;
