@@ -66,7 +66,8 @@ static void accumulate_local_observations(int const* series, size_t n, size_t m,
     }
 }
 
-static bool check_arguments(int const *series, size_t n, size_t m, int b, size_t k, inform_error *err)
+static bool check_arguments(int const *series, size_t n, size_t m, int b,
+    size_t k, inform_error *err)
 {
     if (series == NULL)
     {
@@ -106,7 +107,8 @@ static bool check_arguments(int const *series, size_t n, size_t m, int b, size_t
     return false;
 }
 
-double inform_active_info(int const *series, size_t n, size_t m, int b, size_t k, inform_error *err)
+double inform_active_info(int const *series, size_t n, size_t m, int b,
+    size_t k, inform_error *err)
 {
     if (check_arguments(series, n, m, b, k, err)) return NAN;
 
@@ -214,108 +216,6 @@ double *inform_local_active_info(int const *series, size_t n, size_t m, int b,
         s = histories.histogram[history[i]];
         t = futures.histogram[future[i]];
         ai[i] = log2((r * N) / (s * t));
-    }
-
-    free(state_data);
-    free(histogram_data);
-
-    return ai;
-}
-
-static void accumulate_local_observations2(int const* series, size_t n,
-    size_t m, size_t t, int b, size_t k, inform_dist *states,
-    inform_dist *histories, inform_dist *futures, int *state, int *history,
-    int *future)
-{
-    // n, number of timeseries
-    // m, number of timesteps in a timeseries
-    // t, timestep of history (i)
-  
-    size_t history_idx = t;
-    size_t future_idx = t + k;
-    int q = 1;    
-    for (size_t i = 0; i <n; ++i)
-    {      
-        // Compute history
-        history[i] = 0;
-        q = 1;
-        for (size_t j = history_idx; j < history_idx + k; ++j)
-        {
-            q *= b;
-            history[i] *= b;
-            history[i] += series[j];
-        }
-        future[i] = series[future_idx];
-        state[i] = history[i] * b + future[i];
-
-        // Add observation
-        states->histogram[state[i]]++;
-        histories->histogram[history[i]]++;
-        futures->histogram[future[i]]++;
-
-        // Update indexes
-        history_idx += m;
-        future_idx  += m;	
-    }
-}
-
-double *inform_local_active_info2(int const *series, size_t n, size_t m,
-    int b, size_t k, double *ai, inform_error *err)
-{
-    
-    if (check_arguments(series, n, m, b, k, err)) return NULL;
-
-    size_t const N = n * (m - k);
-
-    bool allocate_ai = (ai == NULL);
-    if (allocate_ai)
-    {
-        ai = malloc(N * sizeof(double));
-        if (ai == NULL)
-        {
-            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
-        }
-    }
-
-    size_t const states_size = (size_t) (b*pow((double) b,(double) k));
-    size_t const histories_size = states_size / b;
-    size_t const futures_size = b;
-    size_t const total_size = states_size + histories_size + futures_size;
-
-    uint32_t *histogram_data = calloc(total_size, sizeof(uint32_t));
-    if (histogram_data == NULL)
-    {
-        if (allocate_ai) free(ai);
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
-    }
-
-    inform_dist states    = { histogram_data, states_size, n };
-    inform_dist histories = { histogram_data + states_size, histories_size, n };
-    inform_dist futures   = { histogram_data + states_size + histories_size, futures_size, n };
-
-    int *state_data = malloc(3 * n * sizeof(int));
-    if (state_data == NULL)
-    {
-        if (allocate_ai) free(ai);
-        free(histogram_data);
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
-    }
-    int *state   = state_data;
-    int *history = state + n;
-    int *future  = history + n;
-
-    for (size_t i = 0; i < m-k; ++i)
-    {
-        accumulate_local_observations2(series, n, m, i, b, k, &states, &histories,
-            &futures, state, history, future);
-
-        for (size_t h = 0; h < n; ++h)
-        {
-            ai[i+h*(m-k)] = inform_shannon_pmi(&states, &histories, &futures, state[h],
-                    history[h], future[h], 2.0);
-        }
-        
-        memset(histogram_data, 0, total_size * sizeof(uint32_t));
     }
 
     free(state_data);
