@@ -288,6 +288,23 @@ UNIT(PIDRandom)
     free(data);
 }
 
+// UNIT(PIDMemory)
+// {
+//     size_t const m = 7, n = 10000;
+//     int const b = 2;
+//     int const bases[7] = {b,b,b,b,b,b,b};
+//
+//     int *data = inform_random_series((m+1)*n, b);
+//     ASSERT_NOT_NULL(data);
+//
+//     inform_error err = INFORM_SUCCESS;
+//     inform_pid_lattice *l = inform_pid(data, data+n, m, n, b, bases, &err);
+//     ASSERT_NULL(l);
+//     ASSERT_EQUAL(INFORM_ENOMEM, err);
+//
+//     free(data);
+// }
+
 BEGIN_SUITE(PID)
     ADD_UNIT(PIDHasseOrder)
     ADD_UNIT(PIDXOR)
@@ -298,4 +315,5 @@ BEGIN_SUITE(PID)
     ADD_UNIT(PIDWilliamsBeer4b)
     ADD_UNIT(PID4Variables)
     ADD_UNIT(PIDRandom)
+    // ADD_UNIT(PIDMemory)
 END_SUITE

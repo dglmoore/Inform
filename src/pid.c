@@ -10,7 +10,35 @@
 #include <string.h>
 #include <math.h>
 
-static void inform_pid_source_free(inform_pid_source *src)
+#define FAILED(ERR) ((ERR) && *(ERR) != INFORM_SUCCESS)
+
+#define MAKE_PUSH(NAME, TYPE) \
+static TYPE* NAME(TYPE* xs, TYPE x) \
+{ \
+    if (!xs) \
+    { \
+        return xs; \
+    } \
+     \
+    size_t cap = gvector_cap(xs); \
+    if (gvector_len(xs) >= cap) \
+    { \
+        cap = (cap) ? 2*cap : 1; \
+        TYPE* ys = gvector_reserve(xs, cap); \
+        if (!ys) \
+        { \
+            return NULL; \
+        } \
+        xs = ys; \
+    } \
+    xs[gvector_len(xs)++] = x; \
+    return xs; \
+}
+
+MAKE_PUSH(push_value, size_t)
+MAKE_PUSH(push_source, inform_pid_source*)
+
+static void free_source(inform_pid_source *src)
 {
     if (src)
     {
@@ -21,45 +49,95 @@ static void inform_pid_source_free(inform_pid_source *src)
     }
 }
 
-static inform_pid_source *inform_pid_source_alloc(size_t *name)
+static void free_all_sources(inform_pid_source **srcs)
 {
-    inform_pid_source *src = malloc(sizeof(inform_pid_source));
-    if (src)
+    if (srcs)
     {
-        src->name = gvector_dup(name);
-        src->name = gvector_shrink(src->name);
-        src->size = gvector_len(src->name);
-
-        src->below = NULL;
-
-        src->above = gvector_alloc(0, 0, sizeof(inform_pid_source*));
-        if (!src->above)
+        for (size_t i = 0; i < gvector_len(srcs); ++i)
         {
-            inform_pid_source_free(src);
-            return NULL;
+            free_source(srcs[i]);
         }
-
-        src->below = gvector_alloc(0, 0, sizeof(inform_pid_source*));
-        if (!src->below)
-        {
-            inform_pid_source_free(src);
-            return NULL;
-        }
-
-        src->n_above = src->n_below = 0;
-        src->size = gvector_len(src->name);
-
-        src->imin = src->pi = src->info = 0.0;
+        gvector_free(srcs);
     }
+}
+
+static inform_pid_source *alloc_source(size_t *name,
+        inform_error *err)
+{
+    if (!name)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EARG, NULL);
+    }
+
+    inform_pid_source *src = malloc(sizeof(inform_pid_source));
+    if (!src)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+
+    src->name = NULL;
+    src->above = src->below = NULL;
+
+    size_t *local_name = gvector_dup(name);
+    if (!local_name)
+    {
+        free_source(src);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    src->name = local_name;
+
+    local_name = gvector_shrink(src->name);
+    if (!local_name)
+    {
+        free_source(src);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    src->name = local_name;
+    src->size = gvector_len(src->name);
+
+    src->above = gvector_alloc(0, 0, sizeof(inform_pid_source*));
+    if (!src->above)
+    {
+        free_source(src);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    src->n_above = 0;
+
+    src->below = gvector_alloc(0, 0, sizeof(inform_pid_source*));
+    if (!src->below)
+    {
+        free_source(src);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    src->n_below = 0;
+
+    src->imin = src->pi = src->info = 0.0;
+
     return src;
 }
 
 static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
-        inform_pid_source **srcs)
+        inform_pid_source **srcs, inform_error *err)
 {
+    if (!c || !srcs)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EARG, NULL);
+    }
+
     if (i < m)
     {
-        srcs = sources_rec(i + 1, m, gvector_dup(c), srcs);
+        size_t *d = gvector_dup(c);
+        if (!d)
+        {
+            gvector_free(c);
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, srcs);
+        }
+        srcs = sources_rec(i + 1, m, d, srcs, err);
+        if (FAILED(err))
+        {
+            gvector_free(c);
+            return srcs;
+        }
     }
 
     if (i <= m)
@@ -74,9 +152,31 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
                 return srcs;
             }
         }
-        gvector_push(c, i);
-        gvector_push(srcs, inform_pid_source_alloc(c));
-        return sources_rec(i + 1, m, c, srcs);
+
+        size_t *d = push_value(c, i);
+        if (!d)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, srcs);
+        }
+        c = d;
+
+        inform_pid_source *src = alloc_source(c, err);
+        if (FAILED(err))
+        {
+            gvector_free(c);
+            return srcs;
+        }
+
+        inform_pid_source **ts = push_source(srcs, src);
+        if (!ts)
+        {
+            free_source(src);
+            gvector_free(c);
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, srcs);
+        }
+        srcs = ts;
+
+        return sources_rec(i + 1, m, c, srcs, err);
     }
     else
     {
@@ -86,20 +186,59 @@ static inform_pid_source **sources_rec(size_t i, size_t m, size_t *c,
     return srcs;
 }
 
-static inform_pid_source **inform_pid_sources(size_t n)
+static inform_pid_source **sources(size_t n, inform_error *err)
 {
+    if (n < 1)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOSOURCES, NULL);
+    }
     size_t const m = (1 << n) - 1;
     inform_pid_source **srcs = gvector_alloc(0, 0, sizeof(inform_pid_source*));
+    if (!srcs)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
     for (size_t i = 1; i <= m; ++i)
     {
         size_t *c = gvector_alloc(1, 1, sizeof(size_t));
+        if (!c)
+        {
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
         c[0] = i;
 
-        gvector_push(srcs, inform_pid_source_alloc(c));
-        srcs = sources_rec(i + 1, m, c, srcs);
+        inform_pid_source *src = alloc_source(c, err);
+        if (FAILED(err))
+        {
+            gvector_free(c);
+            return NULL;
+        }
+
+        inform_pid_source **ts = push_source(srcs, src);
+        if (!ts)
+        {
+            free_source(src);
+            free_all_sources(srcs);
+            gvector_free(c);
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
+        srcs = ts;
+
+        srcs = sources_rec(i + 1, m, c, srcs, err);
+        if (FAILED(err))
+        {
+            free_all_sources(srcs);
+            return NULL;
+        }
     }
-    srcs = gvector_shrink(srcs);
-    return srcs;
+
+    inform_pid_source **ts = gvector_shrink(srcs);
+    if (!ts)
+    {
+        free_all_sources(srcs);
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
+    return ts;
 }
 
 static bool name_below(size_t const *xs, size_t const *ys)
@@ -131,8 +270,12 @@ static bool below(inform_pid_source const *a, inform_pid_source const *b)
     return name_below(a->name, b->name);
 }
 
-static void pid_toposort(inform_pid_source **srcs)
+static void toposort(inform_pid_source **srcs, inform_error *err)
 {
+    if (!srcs)
+    {
+        INFORM_ERROR_RETURN_VOID(err, INFORM_EARG);
+    }
     size_t const n = gvector_len(srcs);
     size_t u = 0, v = 0;
     while (v < n - 1)
@@ -160,105 +303,186 @@ static void pid_toposort(inform_pid_source **srcs)
     }
 }
 
-static inform_pid_lattice *inform_pid_lattice_alloc()
+static inform_pid_lattice *inform_pid_lattice_alloc(inform_error *err)
 {
-    inform_pid_lattice *l = malloc(sizeof(inform_pid_lattice));
-    if (l)
+    inform_pid_lattice *lattice = malloc(sizeof(inform_pid_lattice));
+    if (!lattice)
     {
-        l->sources = NULL;
-        l->top = NULL;
-        l->bottom = NULL;
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
-    return l;
+
+    lattice->sources = NULL;
+    lattice->top = NULL;
+    lattice->bottom = NULL;
+
+    return lattice;
 }
 
-void inform_pid_lattice_free(inform_pid_lattice *l)
+void inform_pid_lattice_free(inform_pid_lattice *lattice)
 {
-    if (l)
+    if (lattice)
     {
-        for (size_t i = 0; i < gvector_len(l->sources); ++i)
-        {
-            inform_pid_source_free(l->sources[i]);
-        }
-        gvector_free(l->sources);
-        l->sources = NULL;
-        l->top = NULL;
-        l->bottom = NULL;
-        free(l);
+        free_all_sources(lattice->sources);
+
+        lattice->sources = NULL;
+        lattice->top = NULL;
+        lattice->bottom = NULL;
+
+        free(lattice);
     }
 }
 
-static inform_pid_lattice *build_hasse(inform_pid_source **srcs)
+static inform_pid_lattice *build_hasse(inform_pid_source **srcs,
+        inform_error *err)
 {
+    if (!srcs)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EARG, NULL);
+    }
+
     size_t const n = gvector_len(srcs);
     if (n == 0)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EARG, NULL);
+    }
+
+    inform_pid_lattice *lattice = inform_pid_lattice_alloc(err);
+    if (FAILED(err))
     {
         return NULL;
     }
 
-    inform_pid_lattice *l = inform_pid_lattice_alloc();
-    if (l)
+    for (size_t i = 0; i < n; ++i)
     {
-        for (size_t i = 0; i < n; ++i)
+        for (size_t j = i + 1; j < n; ++j)
         {
-            for (size_t j = i + 1; j < n; ++j)
+            if (below(srcs[i], srcs[j]))
             {
-                if (below(srcs[i], srcs[j]))
+                bool stop = false;
+                for (size_t k = 0; k < gvector_len(srcs[i]->above); ++k)
                 {
-                    bool stop = false;
-                    for (size_t k = 0; k < gvector_len(srcs[i]->above); ++k)
+                    inform_pid_source *x = srcs[i]->above[k];
+                    if (below(x, srcs[j]))
                     {
-                        inform_pid_source *x = srcs[i]->above[k];
-                        if (below(x, srcs[j]))
-                        {
-                            stop = true;
-                            break;
-                        }
-                    }
-                    if (stop)
-                    {
+                        stop = true;
                         break;
                     }
-                    else
+                }
+                if (stop)
+                {
+                    break;
+                }
+                else
+                {
+                    inform_pid_source **above, **below;
+
+                    above = push_source(srcs[i]->above, srcs[j]);
+                    if (!above)
                     {
-                        gvector_push(srcs[i]->above, srcs[j]);
-                        gvector_push(srcs[j]->below, srcs[i]);
-                        srcs[i]->n_above++;
-                        srcs[j]->n_below++;
+                        free_all_sources(srcs);
+                        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
                     }
+                    srcs[i]->above = above;
+                    srcs[i]->n_above++;
+
+                    below = push_source(srcs[j]->below, srcs[i]);
+                    if (!below)
+                    {
+                        free_all_sources(srcs);
+                        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+                    }
+                    srcs[j]->below = below;
+                    srcs[j]->n_below++;
                 }
             }
         }
-        l->sources = srcs;
-        l->bottom = srcs[0];
-        l->top = srcs[n-1];
-        l->size = gvector_len(l->sources);
     }
-    return l;
+
+    lattice->sources = srcs;
+    lattice->bottom = srcs[0];
+    lattice->top = srcs[n-1];
+    lattice->size = gvector_len(lattice->sources);
+
+    return lattice;
 }
 
-static inform_pid_lattice *hasse(size_t n)
+static inform_pid_lattice *hasse(size_t n, inform_error *err)
 {
-    inform_pid_source **srcs = inform_pid_sources(n);
-    pid_toposort(srcs);
-    return build_hasse(srcs);
+    inform_pid_source **srcs = sources(n, err);
+    if (FAILED(err))
+    {
+        return NULL;
+    }
+
+    toposort(srcs, err);
+    if (FAILED(err))
+    {
+        return NULL;
+    }
+
+    inform_pid_lattice *lattice = build_hasse(srcs, err);
+    if (FAILED(err))
+    {
+        return NULL;
+    }
+    return lattice;
 }
 
-static size_t **subsets(size_t n)
+static size_t **subsets(size_t n, inform_error *err)
 {
+    if (n < 1)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EARG, NULL);
+    }
     size_t m = 1 << n;
     size_t **ss = gvector_alloc(m - 1, m - 1, sizeof(size_t*));
+    memset(ss, 0, sizeof(size_t*)*gvector_len(ss));
+    if (!ss)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+    }
     for (size_t i = 1; i < m; ++i)
     {
         size_t *s = gvector_alloc(n, 0, sizeof(size_t));
+        if (!s)
+        {
+            for (size_t j = 0; j < gvector_len(ss); ++j)
+            {
+                gvector_free(ss[j]);
+            }
+            gvector_free(ss);
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
         for (size_t j = 0; j < n; ++j)
         {
             if ((i & (1 << j)) != 0)
             {
-                gvector_push(s, j);
+                size_t *t = push_value(s,j);
+                if (!t)
+                {
+                    gvector_free(s);
+                    for (size_t k = 0; k < gvector_len(ss); ++k)
+                    {
+                        gvector_free(ss[k]);
+                    }
+                    gvector_free(ss);
+                    INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+                }
+                s = t;
             }
         }
-        s = gvector_shrink(s);
+        size_t *t = gvector_shrink(s);
+        if (!t)
+        {
+            gvector_free(s);
+            for (size_t j = 0; j < gvector_len(ss); ++j)
+            {
+                gvector_free(ss[j]);
+            }
+            gvector_free(ss);
+            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        }
+        s = t;
         ss[i-1] = s;
     }
     return ss;
@@ -376,10 +600,15 @@ static void cleanup(size_t **subsets, inform_dist *s_dist, double **info)
     }
 }
 
-inform_pid_lattice *inform_pid(int const *stimulus, int const *responses, size_t l,
-        size_t n, int bs, int const *br, inform_error *err)
+inform_pid_lattice *inform_pid(int const *stimulus, int const *responses,
+        size_t l, size_t n, int bs, int const *br, inform_error *err)
 {
-    size_t **ss = subsets(l);
+    size_t **ss = subsets(l, err);
+    if (FAILED(err))
+    {
+        return NULL;
+    }
+
     size_t const m = gvector_len(ss);
 
     inform_dist *s_dist = inform_dist_infer(stimulus, n);
@@ -406,8 +635,8 @@ inform_pid_lattice *inform_pid(int const *stimulus, int const *responses, size_t
         }
     }
 
-    inform_pid_lattice *lattice = hasse(l);
-    if (lattice == NULL)
+    inform_pid_lattice *lattice = hasse(l, err);
+    if (FAILED(err))
     {
         cleanup(ss, s_dist, si);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
