@@ -14,14 +14,14 @@ have yet been made.
 
 [source,c]
 ----
-include::../../examples/dist/alloc.c[]
+include::../examples/dist/alloc.c[]
 ----
 
 Alternatively, you can construct a distribution from an array of observations
 counts:
 [source,c]
 ----
-include::../../examples/dist/create.c[]
+include::../examples/dist/create.c[]
 ----
 
 === Example 2: Making Observations
@@ -30,13 +30,13 @@ There are two methods for doing so. The first allows the user to directly set
 the observation count for a particular event:
 [source,c]
 ----
-include::../../examples/dist/getset.c[]
+include::../examples/dist/getset.c[]
 ----
 The second method is to make _incremental_ changes to the distribution. This is
 useful when the observations are being made from a time series:
 [source,c]
 ----
-include::../../examples/dist/tick.c[]
+include::../examples/dist/tick.c[]
 ----
 
 === Example 3: Probabilities
@@ -45,14 +45,14 @@ in the previous examples, there are multiple ways of doing this. The first is to
 ask for the probability of a given event:
 [source,c]
 ----
-include::../../examples/dist/prob.c[]
+include::../examples/dist/prob.c[]
 ----
 
 Sometimes, though, it is nice to be able to just dump the probabilities out to
 an array:
 [source,c]
 ----
-include::../../examples/dist/dump.c[]
+include::../examples/dist/dump.c[]
 ----
 
 === Example 4: Shannon Entropy
@@ -61,14 +61,14 @@ example, we will compute the shannon entropy of a time series of observed
 events.
 [source,c]
 ----
-include::../../examples/dist/manual_entropy.c[]
+include::../examples/dist/manual_entropy.c[]
 ----
 
 Of course, *Inform* provides a function to compute the entropy so you don't
 have to!
 [source,c]
 ----
-include::../../examples/dist/shannon_entropy.c[]
+include::../examples/dist/shannon_entropy.c[]
 ----
 
 == API Documentation

@@ -24,12 +24,12 @@ provided.
 
 :leveloffset: 1
 
-include::getting-started.txt[]
+include::getting-started.adoc[]
 
-include::distributions.txt[]
+include::distributions.adoc[]
 
-include::shannon.txt[]
+include::shannon.adoc[]
 
-include::timeseries.txt[]
+include::timeseries.adoc[]
 
-include::utilities.txt[]
+include::utilities.adoc[]

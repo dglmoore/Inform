@@ -13,7 +13,7 @@ Shannon entropy of a distributions. Let’s try generating a random distribution
 and see what the entropy looks like?
 [source,c]
 ----
-include::../../examples/shannon/entropy.c[]
+include::../examples/shannon/entropy.c[]
 ----
 This is exactly what you should expect; the pseudo-random number generate does a
 decent job producing integers in a uniform fashion.
@@ -23,7 +23,7 @@ How correlated are consecutive integers? Let's give
 link:index.html#inform_shannon_mi[mutual information] a try.
 [source,c]
 ----
-include::../../examples/shannon/mutual_information.c[]
+include::../examples/shannon/mutual_information.c[]
 ----
 Due to the subtlties of floating-point computation we don’t get zero. Really,
 though the mutual information is zero.
@@ -33,7 +33,7 @@ Okay. Now let’s generate some binary sequences. The first will be roughly
 uniform, but the second will be biased toward `0`.
 [source,c]
 ----
-include::../../examples/shannon/relative_entropy.c[]
+include::../examples/shannon/relative_entropy.c[]
 ----
 
 == API Documentation
