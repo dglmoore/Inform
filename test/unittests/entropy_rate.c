@@ -4,12 +4,12 @@
 #include "util.h"
 #include <inform/entropy_rate.h>
 #include <math.h>
-#include <unit.h>
+#include <ginger/unit.h>
 
 UNIT(EntropyRateNULLSeries)
 {
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_entropy_rate(NULL, 1, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_entropy_rate(NULL, 1, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 }
@@ -18,7 +18,7 @@ UNIT(EntropyRateNoInits)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_entropy_rate(series, 0, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_entropy_rate(series, 0, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENOINITS, err);
 }
@@ -31,7 +31,7 @@ UNIT(EntropyRateSeriesTooShort)
     for (size_t i = 0; i < 2; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, i, 2, 2, &err)));
+        ASSERT_NAN(inform_entropy_rate(series, 1, i, 2, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
     }
@@ -44,7 +44,7 @@ UNIT(EntropyRateInvalidBase)
     
     for (int i = 0; i < 2; ++i)
     {
-        ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, i, 2, &err)));
+        ASSERT_NAN(inform_entropy_rate(series, 1, 2, i, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBASE, err);
     }
@@ -55,7 +55,7 @@ UNIT(EntropyRateZeroHistory)
     int const series[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
     
-    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, 2, 0, &err)));
+    ASSERT_NAN(inform_entropy_rate(series, 1, 2, 2, 0, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EKZERO, err);
 }
@@ -68,7 +68,7 @@ UNIT(EntropyRateHistoryTooLong)
     for (size_t i = 2; i < 4; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 2, 2, i, &err)));
+        ASSERT_NAN(inform_entropy_rate(series, 1, 2, 2, i, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EKLONG, err);
     }
@@ -78,7 +78,7 @@ UNIT(EntropyRateNegativeState)
 {
     int const series[] = {-1,1,0,0,1,0,0,1};
     inform_error err;
-    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 8, 3, 2, &err)));
+    ASSERT_NAN(inform_entropy_rate(series, 1, 8, 3, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENEGSTATE, err);
 }
@@ -87,7 +87,7 @@ UNIT(EntropyRateBadState)
 {
     int const series[] = {1,2,0,0,1,0,0,1};
     inform_error err;
-    ASSERT_TRUE(isnan(inform_entropy_rate(series, 1, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_entropy_rate(series, 1, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EBADSTATE, err);
 }
@@ -137,15 +137,15 @@ UNIT(EntropyRateSingleSeries_Base2)
 
 UNIT(EntropyRateSingleSeries_Base4)
 {
-    ASSERT_DBL_NEAR_TOL(0.285715,
+    ASSERT_DBL_NEAR_TOL(0.571428,
             inform_entropy_rate((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, NULL),
             1e-6);
 
-    ASSERT_DBL_NEAR_TOL(0.196778,
+    ASSERT_DBL_NEAR_TOL(0.393556,
             inform_entropy_rate((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, NULL),
             1e-6);
 
-    ASSERT_DBL_NEAR_TOL(0.257831,
+    ASSERT_DBL_NEAR_TOL(0.515662,
             inform_entropy_rate((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, NULL),
             1e-6);
 }
@@ -189,7 +189,7 @@ UNIT(EntropyRateEnsemble_Base4)
             0, 0, 0, 0, 1, 1, 0, 0, 0,
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
-        ASSERT_DBL_NEAR_TOL(0.272234,
+        ASSERT_DBL_NEAR_TOL(0.544468,
                 inform_entropy_rate(series, 4, 9, 4, 2, NULL),
                 1e-6);
     }
@@ -334,13 +334,13 @@ UNIT(LocalEntropyRateSingleSeries_Base4)
     double er[7];
 
     ASSERT_NOT_NULL(inform_local_entropy_rate((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, er, NULL));
-    ASSERT_DBL_NEAR_TOL(0.285715, AVERAGE(er), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.571428, AVERAGE(er), 1e-6);
 
     ASSERT_NOT_NULL(inform_local_entropy_rate((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, er, NULL));
-    ASSERT_DBL_NEAR_TOL(0.196778, AVERAGE(er), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.393556, AVERAGE(er), 1e-6);
 
     ASSERT_NOT_NULL(inform_local_entropy_rate((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, er, NULL));
-    ASSERT_DBL_NEAR_TOL(0.257831, AVERAGE(er), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.515662, AVERAGE(er), 1e-6);
 }
 
 UNIT(LocalEntropyRateEnsemble)
@@ -384,7 +384,7 @@ UNIT(LocalEntropyRateEnsemble_Base4)
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
         ASSERT_NOT_NULL(inform_local_entropy_rate(series, 4, 9, 4, 2, er, NULL));
-        ASSERT_DBL_NEAR_TOL(0.272234, AVERAGE(er), 1e-6);
+        ASSERT_DBL_NEAR_TOL(0.544468, AVERAGE(er), 1e-6);
     }
 }
 

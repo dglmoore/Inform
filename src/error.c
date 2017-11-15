@@ -27,6 +27,7 @@ char const *inform_strerror(inform_error const *err)
         case INFORM_EARG:         return "invalid argument provided";
         case INFORM_ENOMEM:       return "memory allocation failed";
         case INFORM_ETIMESERIES:  return "timeseries is NULL";
+        case INFORM_ENOSOURCES:   return "timeseries has no sources";
         case INFORM_ENOINITS:     return "timeseries has no initial conditions";
         case INFORM_ESHORTSERIES: return "timeseries is too short";
         case INFORM_EKZERO:       return "history length is zero";
@@ -37,6 +38,10 @@ char const *inform_strerror(inform_error const *err)
         case INFORM_EDIST:        return "invalid distribution encountered";
         case INFORM_EBIN:         return "invalid binning";
         case INFORM_EENCODE:      return "encoding/decoding failed";
+        case INFORM_ETPM:         return "invalid TPM";
+        case INFORM_ETPMROW:      return "all zero row in TPM";
+        case INFORM_ESIZE:        return "invalid size";
+        case INFORM_EPARTS:       return "invalid partitioning";
         default:                  return "unrecognized error";
     }
 }

@@ -13,7 +13,7 @@ double inform_shannon_si(inform_dist const *dist, size_t event, double base)
     return NAN;
 }
 
-double inform_shannon(inform_dist const *dist, double base)
+double inform_shannon_entropy(inform_dist const *dist, double base)
 {
     // ensure that the distribution is valid
     if (inform_dist_is_valid(dist))
@@ -44,20 +44,20 @@ double inform_shannon_pmi(inform_dist const *joint,
     inform_dist const * marginal_x, inform_dist const *marginal_y,
     size_t event_joint, size_t event_x, size_t event_y, double base)
 {
-    return inform_shannon_si(marginal_x, event_x, base) +
-        inform_shannon_si(marginal_y, event_y, base) -
-        inform_shannon_si(joint, event_joint, base);
+    return inform_shannon_multi_pmi(joint,
+        (inform_dist const*[2]){marginal_x, marginal_y}, 2, event_joint,
+        (size_t const[2]){event_x, event_y}, base);
 }
 
 double inform_shannon_mi(inform_dist const *joint,
     inform_dist const *marginal_x, inform_dist const *marginal_y, double base)
 {
-    return inform_shannon(marginal_x, base) + inform_shannon(marginal_y, base)
-        - inform_shannon(joint, base);
+    return inform_shannon_multi_mi(joint,
+        (inform_dist const*[2]){marginal_x, marginal_y}, 2, base);
 }
 
 double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
-    size_t event_joint,size_t event_marginal, double base)
+    size_t event_joint, size_t event_marginal, double base)
 {
     return inform_shannon_si(joint, event_joint, base) -
         inform_shannon_si(marginal, event_marginal, base);
@@ -66,7 +66,8 @@ double inform_shannon_pce(inform_dist const *joint, inform_dist const *marginal,
 double inform_shannon_ce(inform_dist const *joint, inform_dist const *marginal,
     double base)
 {
-    return inform_shannon(joint, base) - inform_shannon(marginal, base);
+    return inform_shannon_entropy(joint, base) -
+        inform_shannon_entropy(marginal, base);
 }
 
 double inform_shannon_pcmi(inform_dist const *joint,
@@ -85,10 +86,10 @@ double inform_shannon_cmi(inform_dist const *joint,
     inform_dist const *marginal_xz, inform_dist const *marginal_yz,
     inform_dist const *marginal_z, double base)
 {
-    return inform_shannon(marginal_xz, base) +
-        inform_shannon(marginal_yz, base) -
-        inform_shannon(joint, base) -
-        inform_shannon(marginal_z, base);
+    return inform_shannon_entropy(marginal_xz, base) +
+        inform_shannon_entropy(marginal_yz, base) -
+        inform_shannon_entropy(joint, base) -
+        inform_shannon_entropy(marginal_z, base);
 }
 
 double inform_shannon_pre(inform_dist const *p, inform_dist const *q,
@@ -125,4 +126,55 @@ double inform_shannon_re(inform_dist const *p, inform_dist const *q,
         return re / log2(base);
     }
     return NAN;
+}
+
+double inform_shannon_cross(inform_dist const *p, inform_dist const *q,
+    double base)
+{
+    if (inform_dist_is_valid(p) && inform_dist_is_valid(q) && p->size == q->size)
+    {
+        double ce = 0.;
+        for (size_t i = 0; i < p->size; ++i)
+        {
+            if (p->histogram[i] != 0 || q->histogram[i] != 0)
+            {
+                double u = (double) p->histogram[i] / p->counts;
+                double v = (double) q->histogram[i] / q->counts;
+                ce -= u * log2(v);
+            }
+        }
+        return ce / log2(base);
+    }
+    return NAN;
+}
+
+double inform_shannon_multi_pmi(inform_dist const *joint,
+    inform_dist const **marginals, size_t n, size_t joint_event,
+    size_t const *marginal_events, double base)
+{
+    if (n < 2)
+    {
+        return 0.0;
+    }
+    double pmi = -inform_shannon_si(joint, joint_event, base);
+    for (size_t i = 0; i < n; ++i)
+    {
+        pmi += inform_shannon_si(marginals[i], marginal_events[i], base);
+    }
+    return pmi;
+}
+
+double inform_shannon_multi_mi(inform_dist const *joint,
+    inform_dist const **marginals, size_t n, double base)
+{
+    if (n < 2)
+    {
+        return 0.0;
+    }
+    double pmi = -inform_shannon_entropy(joint, base);
+    for (size_t i = 0; i < n; ++i)
+    {
+        pmi += inform_shannon_entropy(marginals[i], base);
+    }
+    return pmi;
 }

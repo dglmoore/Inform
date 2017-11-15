@@ -11,16 +11,31 @@ extern "C"
 #endif
 
 /**
- * Compute the mutual information between two timeseries
+ * Compute the mutual information between time series
+ *
+ * @param[in] series the time series
+ * @param[in] l      the number of time series
+ * @param[in] n      the number of elements per time series
+ * @param[in] b      the base of each time series
+ * @param[in] err    an error code
+ * @return the mutual information between the time series
  */
-EXPORT double inform_mutual_info(int const *xs, int const *ys, size_t n,
-    int bx, int by, double b, inform_error *err);
+EXPORT double inform_mutual_info(int const *series, size_t l, size_t n,
+    int const *b, inform_error *err);
 
 /**
- * Compute the local mutual information between two timeseries
+ * Compute the pointwise mutual information between time series
+ *
+ * @param[in] series the time series
+ * @param[in] l      the number of time series
+ * @param[in] n      the number of elements per time series
+ * @param[in] b      the base of each time series
+ * @param[out] mi    the pointwise mutual information
+ * @param[in] err    an error code
+ * @return the pointwise mutual information between the time series
  */
-EXPORT double *inform_local_mutual_info(int const *xs, int const *ys, size_t n,
-    int bx, int by, double b, double *mi, inform_error *err);
+EXPORT double *inform_local_mutual_info(int const *series, size_t l, size_t n,
+    int const *b, double *mi, inform_error *err);
 
 #ifdef __cplusplus
 }

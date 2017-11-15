@@ -1,7 +1,7 @@
 // Copyright 2016-2017 ELIFE. All rights reserved.
 // Use of this source code is governed by a MIT
 // license that can be found in the LICENSE file.
-#include <unit.h>
+#include <ginger/unit.h>
 #include <inform/dist.h>
 
 UNIT(AllocZero)
@@ -268,6 +268,174 @@ UNIT(Dup)
     inform_dist_free(dist);
 }
 
+UNIT(Create)
+{
+    ASSERT_NULL(inform_dist_create(NULL, 0));
+    ASSERT_NULL(inform_dist_create(NULL, 1));
+    ASSERT_NULL(inform_dist_create((uint32_t[3]){3,4,5}, 0));
+
+    inform_dist *dist = inform_dist_create((uint32_t[3]){3,4,5}, 1);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(1, inform_dist_size(dist));
+    ASSERT_EQUAL(3, inform_dist_counts(dist));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 0));
+    inform_dist_free(dist);
+
+    dist = inform_dist_create((uint32_t[3]){3,4,5}, 2);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(2, inform_dist_size(dist));
+    ASSERT_EQUAL(7, inform_dist_counts(dist));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(4, inform_dist_get(dist, 1));
+    inform_dist_free(dist);
+
+    dist = inform_dist_create((uint32_t[3]){3,4,5}, 3);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(3, inform_dist_size(dist));
+    ASSERT_EQUAL(12, inform_dist_counts(dist));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(4, inform_dist_get(dist, 1));
+    ASSERT_EQUAL(5, inform_dist_get(dist, 2));
+    inform_dist_free(dist);
+}
+
+UNIT(Infer)
+{
+    ASSERT_NULL(inform_dist_infer(NULL, 0));
+    ASSERT_NULL(inform_dist_infer(NULL, 1));
+    ASSERT_NULL(inform_dist_infer((int[3]){0,0,1}, 0));
+    ASSERT_NULL(inform_dist_infer((int[3]){0,-1,2}, 3));
+
+    inform_dist *dist = inform_dist_infer((int[4]){0,1,1,1}, 4);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(2, inform_dist_size(dist));
+    ASSERT_EQUAL(4, inform_dist_counts(dist));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 1));
+    inform_dist_free(dist);
+
+    dist = inform_dist_infer((int[8]){1,1,0,2,2,1,2,0}, 8);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(3, inform_dist_size(dist));
+    ASSERT_EQUAL(8, inform_dist_counts(dist));
+    ASSERT_EQUAL(2, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 1));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 2));
+    inform_dist_free(dist);
+
+    dist = inform_dist_infer((int[5]){0,0,0,0,0}, 5);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(1, inform_dist_size(dist));
+    ASSERT_EQUAL(5, inform_dist_counts(dist));
+    ASSERT_EQUAL(5, inform_dist_get(dist, 0));
+    inform_dist_free(dist);
+}
+
+UNIT(Approximate)
+{
+    ASSERT_NULL(inform_dist_approximate(NULL, 0, 1e-6));
+    ASSERT_NULL(inform_dist_approximate(NULL, 1, 1e-6));
+    ASSERT_NULL(inform_dist_approximate((double[3]){0.5,0.2,0.3}, 0, 1e-6));
+    ASSERT_NULL(inform_dist_approximate((double[3]){0.5,0.2,0.3}, 1, 1e-6));
+    ASSERT_NULL(inform_dist_approximate((double[3]){0.5,0.2,0.3}, 2, 1e-6));
+
+    ASSERT_NULL(inform_dist_approximate((double[1]){0.5}, 1, 1e-6));
+    ASSERT_NULL(inform_dist_approximate((double[2]){0.5, 0.6}, 2, 1e-6));
+    ASSERT_NULL(inform_dist_approximate((double[2]){0.5, 0.5+3e-6}, 2, 1e-6));
+
+    inform_dist *dist = NULL;
+
+    dist = inform_dist_approximate((double[3]){0.5,0.2,0.3}, 3, 1e-3);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(3, inform_dist_size(dist));
+    ASSERT_EQUAL(10, inform_dist_counts(dist));
+    ASSERT_EQUAL(5, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(2, inform_dist_get(dist, 1));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 2));
+    inform_dist_free(dist);
+
+    dist = inform_dist_approximate((double[3]){0.25,0.25,0.5}, 3, 1e-3);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(3, inform_dist_size(dist));
+    ASSERT_EQUAL(4, inform_dist_counts(dist));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 1));
+    ASSERT_EQUAL(2, inform_dist_get(dist, 2));
+    inform_dist_free(dist);
+
+    dist = inform_dist_approximate((double[2]){1./3, 2./3}, 2, 1e-3);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(2, inform_dist_size(dist));
+    ASSERT_EQUAL(3, inform_dist_counts(dist));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(2, inform_dist_get(dist, 1));
+    inform_dist_free(dist);
+
+    {
+        double expected[4] = {1./3, 1./3, 1./6, 1./6};
+        double got[4];
+        dist = inform_dist_approximate(expected, 4, 1e-3);
+        ASSERT_TRUE(inform_dist_is_valid(dist));
+        ASSERT_EQUAL_U(4, inform_dist_size(dist));
+        ASSERT_EQUAL(998, inform_dist_counts(dist));
+        ASSERT_EQUAL(333, inform_dist_get(dist, 0));
+        ASSERT_EQUAL(333, inform_dist_get(dist, 1));
+        ASSERT_EQUAL(166, inform_dist_get(dist, 2));
+        ASSERT_EQUAL(166, inform_dist_get(dist, 3));
+        inform_dist_dump(dist, got, 4);
+        for (size_t i = 0; i < 4; ++i)
+            ASSERT_DBL_NEAR_TOL(expected[i], got[i], 1e-3);
+        inform_dist_free(dist);
+    }
+
+    {
+        double expected[4] = {1./7, 2./7, 1./3, 10./42};
+        double got[4];
+        dist = inform_dist_approximate(expected, 4, 1e-3);
+        ASSERT_TRUE(inform_dist_is_valid(dist));
+        ASSERT_EQUAL_U(4, inform_dist_size(dist));
+        ASSERT_EQUAL(998, inform_dist_counts(dist));
+        ASSERT_EQUAL(142, inform_dist_get(dist, 0));
+        ASSERT_EQUAL(285, inform_dist_get(dist, 1));
+        ASSERT_EQUAL(333, inform_dist_get(dist, 2));
+        ASSERT_EQUAL(238, inform_dist_get(dist, 3));
+        inform_dist_dump(dist, got, 4);
+        for (size_t i = 0; i < 4; ++i)
+            ASSERT_DBL_NEAR_TOL(expected[i], got[i], 1e-3);
+        inform_dist_free(dist);
+    }
+}
+
+UNIT(Uniform)
+{
+    inform_dist *dist;
+    ASSERT_NULL(inform_dist_uniform(0));
+
+    dist = inform_dist_uniform(1);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(1, inform_dist_size(dist));
+    ASSERT_EQUAL(1, inform_dist_counts(dist));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 0));
+    inform_dist_free(dist);
+
+    dist = inform_dist_uniform(2);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(2, inform_dist_size(dist));
+    ASSERT_EQUAL(2, inform_dist_counts(dist));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 1));
+    inform_dist_free(dist);
+
+    dist = inform_dist_uniform(3);
+    ASSERT_TRUE(inform_dist_is_valid(dist));
+    ASSERT_EQUAL_U(3, inform_dist_size(dist));
+    ASSERT_EQUAL(3, inform_dist_counts(dist));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 1));
+    ASSERT_EQUAL(1, inform_dist_get(dist, 2));
+    inform_dist_free(dist);
+}
+
 UNIT(Tick)
 {
     inform_dist *dist = inform_dist_alloc(3);
@@ -340,6 +508,37 @@ UNIT(Dump)
     inform_dist_free(dist);
 }
 
+UNIT(Accumulate)
+{
+    inform_dist *dist = NULL;
+    ASSERT_EQUAL(0, inform_dist_accumulate(dist, (int[4]){0, 0, 1, 0}, 4));
+
+    dist = inform_dist_alloc(2);
+    ASSERT_NOT_NULL(dist);
+
+    ASSERT_EQUAL_U(0, inform_dist_accumulate(dist, NULL, 0));
+    ASSERT_EQUAL_U(0, inform_dist_accumulate(dist, NULL, 1));
+
+    ASSERT_EQUAL_U(0, inform_dist_accumulate(dist, (int[5]){0,0,1,1,0}, 0));
+
+    ASSERT_EQUAL_U(5, inform_dist_accumulate(dist, (int[5]){0,0,1,1,0}, 5));
+    ASSERT_EQUAL(5, inform_dist_counts(dist));
+    
+    ASSERT_EQUAL_U(3, inform_dist_accumulate(dist, (int[3]){0,1,0}, 3));
+    ASSERT_EQUAL(8, inform_dist_counts(dist));
+    
+    ASSERT_EQUAL(5, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(3, inform_dist_get(dist, 1));
+
+    ASSERT_EQUAL(0, inform_dist_accumulate(dist, (int[2]){-1, 2}, 2));
+    ASSERT_EQUAL(1, inform_dist_accumulate(dist, (int[2]){1, 2}, 2));
+    ASSERT_EQUAL(5, inform_dist_get(dist, 0));
+    ASSERT_EQUAL(4, inform_dist_get(dist, 1));
+    ASSERT_EQUAL(9, inform_dist_counts(dist));
+
+    inform_dist_free(dist);
+}
+
 BEGIN_SUITE(Distribution)
     ADD_UNIT(AllocZero)
     ADD_UNIT(AllocOne)
@@ -358,7 +557,12 @@ BEGIN_SUITE(Distribution)
     ADD_UNIT(CopyResize)
     ADD_UNIT(DupNull)
     ADD_UNIT(Dup)
+    ADD_UNIT(Create)
+    ADD_UNIT(Infer)
+    ADD_UNIT(Approximate)
+    ADD_UNIT(Uniform)
     ADD_UNIT(Tick)
     ADD_UNIT(Prob)
     ADD_UNIT(Dump)
+    ADD_UNIT(Accumulate)
 END_SUITE

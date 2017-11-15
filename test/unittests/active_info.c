@@ -4,12 +4,12 @@
 #include "util.h"
 #include <inform/active_info.h>
 #include <math.h>
-#include <unit.h>
+#include <ginger/unit.h>
 
 UNIT(ActiveInfoSeriesNULLSeries)
 {
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_active_info(NULL, 1, 3, 2, 2, &err)));
+    ASSERT_NAN(inform_active_info(NULL, 1, 3, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
 }
@@ -18,7 +18,7 @@ UNIT(ActiveInfoSeriesNoInits)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_active_info(series, 0, 3, 2, 2, &err)));
+    ASSERT_NAN(inform_active_info(series, 0, 3, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENOINITS, err);
 }
@@ -31,7 +31,7 @@ UNIT(ActiveInfoSeriesTooShort)
     for (size_t i = 0; i < 2; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_active_info(series, 1, i, 2, 2, &err)));
+        ASSERT_NAN(inform_active_info(series, 1, i, 2, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
     }
@@ -44,7 +44,7 @@ UNIT(ActiveInfoHistoryTooLong)
     for (size_t i = 2; i < 4; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, 2, i, &err)));
+        ASSERT_NAN(inform_active_info(series, 1, 2, 2, i, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EKLONG, err);
     }
@@ -54,7 +54,7 @@ UNIT(ActiveInfoZeroHistory)
 {
     int const series[] = {1,1,0,0,1,0,0,1};
     inform_error err = INFORM_SUCCESS;
-    ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, 2, 0, &err)));
+    ASSERT_NAN(inform_active_info(series, 1, 2, 2, 0, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EKZERO, err);
 }
@@ -66,7 +66,7 @@ UNIT(ActiveInfoInvalidBase)
     for (int i = 0; i < 2; ++i)
     {
         err = INFORM_SUCCESS;
-        ASSERT_TRUE(isnan(inform_active_info(series, 1, 2, i, 2, &err)));
+        ASSERT_NAN(inform_active_info(series, 1, 2, i, 2, &err));
         ASSERT_TRUE(inform_failed(&err));
         ASSERT_EQUAL(INFORM_EBASE, err);
     }
@@ -76,7 +76,7 @@ UNIT(ActiveInfoNegativeState)
 {
     int const series[] = {-1,1,0,0,1,0,0,1};
     inform_error err;
-    ASSERT_TRUE(isnan(inform_active_info(series, 1, 8, 3, 2, &err)));
+    ASSERT_NAN(inform_active_info(series, 1, 8, 3, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_ENEGSTATE, err);
 }
@@ -85,7 +85,7 @@ UNIT(ActiveInfoBadState)
 {
     int const series[] = {1,2,0,0,1,0,0,1};
     inform_error err;
-    ASSERT_TRUE(isnan(inform_active_info(series, 1, 8, 2, 2, &err)));
+    ASSERT_NAN(inform_active_info(series, 1, 8, 2, 2, &err));
     ASSERT_TRUE(inform_failed(&err));
     ASSERT_EQUAL(INFORM_EBADSTATE, err);
 }
@@ -135,15 +135,15 @@ UNIT(ActiveInfoSingleSeries_Base2)
 
 UNIT(ActiveInfoSingleSeries_Base4)
 {
-    ASSERT_DBL_NEAR_TOL(0.635471,
+    ASSERT_DBL_NEAR_TOL(1.270942,
             inform_active_info((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, NULL),
             1e-6);
 
-    ASSERT_DBL_NEAR_TOL(0.635471,
+    ASSERT_DBL_NEAR_TOL(1.270942,
             inform_active_info((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, NULL),
             1e-6);
 
-    ASSERT_DBL_NEAR_TOL(0.234783,
+    ASSERT_DBL_NEAR_TOL(0.469566,
             inform_active_info((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, NULL),
             1e-6);
 }
@@ -187,7 +187,7 @@ UNIT(ActiveInfoEnsemble_Base4)
             0, 0, 0, 0, 1, 1, 0, 0, 0,
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
-        ASSERT_DBL_NEAR_TOL(0.662146,
+        ASSERT_DBL_NEAR_TOL(1.324292,
                 inform_active_info(series, 4, 9, 4, 2, NULL),
                 1e-6);
     }
@@ -331,13 +331,13 @@ UNIT(LocalActiveInfoSingleSeries_Base4)
 {
     double ai[7];
     ASSERT_NOT_NULL(inform_local_active_info((int[]){3,3,3,2,1,0,0,0,1}, 1, 9, 4, 2, ai, NULL));
-    ASSERT_DBL_NEAR_TOL(0.635471, AVERAGE(ai), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.270942, AVERAGE(ai), 1e-6);
 
     ASSERT_NOT_NULL(inform_local_active_info((int[]){2,2,3,3,3,3,2,1,0}, 1, 9, 4, 2, ai, NULL));
-    ASSERT_DBL_NEAR_TOL(0.635471, AVERAGE(ai), 1e-6);
+    ASSERT_DBL_NEAR_TOL(1.270942, AVERAGE(ai), 1e-6);
 
     ASSERT_NOT_NULL(inform_local_active_info((int[]){2,2,2,2,2,2,1,1,1}, 1, 9, 4, 2, ai, NULL));
-    ASSERT_DBL_NEAR_TOL(0.234783, AVERAGE(ai), 1e-6);
+    ASSERT_DBL_NEAR_TOL(0.469566, AVERAGE(ai), 1e-6);
 }
 
 UNIT(LocalActiveInfoEnsemble)
@@ -370,36 +370,6 @@ UNIT(LocalActiveInfoEnsemble)
     }
 }
 
-UNIT(LocalActiveInfoEnsemble2)
-{
-    {
-        double ai[12];
-        int series[16] = {
-            1,1,0,0,1,0,0,1,
-            0,0,0,1,0,0,0,1,
-        };
-        ASSERT_NOT_NULL(inform_local_active_info2(series, 2, 8, 2, 2, ai, NULL));
-        ASSERT_DBL_NEAR_TOL(0.3333333, AVERAGE(ai), 1e-6);
-    }
-
-    {
-        double ai[63];
-        int series[81] = {
-            1,0,0,0,0,0,0,0,0,
-            0,0,1,1,1,1,0,0,0,
-            1,0,0,0,0,0,0,1,1,
-            1,0,0,0,0,0,0,1,1,
-            0,0,0,0,0,1,1,0,0,
-            0,0,0,0,1,1,0,0,0,
-            1,1,1,0,0,0,0,1,1,
-            0,0,0,1,1,1,1,0,0,
-            0,0,0,0,0,0,1,1,0,
-        };
-        ASSERT_NOT_NULL(inform_local_active_info2(series, 9, 9, 2, 2, ai, NULL));
-        ASSERT_DBL_NEAR_TOL(0.495679, AVERAGE(ai), 1e-6);
-    }
-}
-
 UNIT(LocalActiveInfoEnsemble_Base4)
 {
     {
@@ -411,7 +381,7 @@ UNIT(LocalActiveInfoEnsemble_Base4)
             1, 1, 0, 0, 0, 1, 1, 2, 2,
         };
         ASSERT_NOT_NULL(inform_local_active_info(series, 4, 9, 4, 2, ai, NULL));
-        ASSERT_DBL_NEAR_TOL(0.662146, AVERAGE(ai), 1e-6);
+        ASSERT_DBL_NEAR_TOL(1.324292, AVERAGE(ai), 1e-6);
     }
 }
 
@@ -428,6 +398,7 @@ BEGIN_SUITE(ActiveInformation)
     ADD_UNIT(ActiveInfoSingleSeries_Base4)
     ADD_UNIT(ActiveInfoEnsemble)
     ADD_UNIT(ActiveInfoEnsemble_Base4)
+
     ADD_UNIT(LocalActiveInfoSeriesNULLSeries)
     ADD_UNIT(LocalActiveInfoSeriesNoInits)
     ADD_UNIT(LocalActiveInfoSeriesTooShort)
@@ -440,6 +411,5 @@ BEGIN_SUITE(ActiveInformation)
     ADD_UNIT(LocalActiveInfoSingleSeries_Base2)
     ADD_UNIT(LocalActiveInfoSingleSeries_Base4)
     ADD_UNIT(LocalActiveInfoEnsemble)
-    ADD_UNIT(LocalActiveInfoEnsemble2)
     ADD_UNIT(LocalActiveInfoEnsemble_Base4)
 END_SUITE

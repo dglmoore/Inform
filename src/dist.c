@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 #include <inform/dist.h>
 #include <string.h>
+#include <math.h>
 
 inform_dist* inform_dist_alloc(size_t n)
 {
@@ -151,7 +152,7 @@ inform_dist* inform_dist_dup(inform_dist const *dist)
 inform_dist* inform_dist_create(uint32_t const *data, size_t n)
 {
     // if the requested support size is zero, return NULL
-    if (n == 0)
+    if (data == NULL || n == 0)
     {
         return NULL;
     }
@@ -182,6 +183,113 @@ inform_dist* inform_dist_create(uint32_t const *data, size_t n)
         }
     }
     // return the (potentially NULL) distribution
+    return dist;
+}
+
+static inline int gcd(uint32_t const *data, size_t n)
+{
+    if (n == 0)
+    {
+        return 1;
+    }
+    uint32_t x, temp, gcd = data[0];
+    for (size_t i = 1; i < n; ++i)
+    {
+        x = data[i];
+        while (x != 0)
+        {
+            temp = x;
+            x = gcd % x;
+            gcd = temp;
+        }
+    }
+    return gcd;
+}
+
+inform_dist* inform_dist_approximate(double const *probs, size_t n, double tol)
+{
+    if (probs == NULL || n == 0)
+    {
+        return NULL;
+    }
+    tol = fabs(tol);
+    // check the validity of the probability distribution
+    double diff = 1.0;
+    for (size_t i = 0; i < n; ++i)
+    {
+        diff -= probs[i];
+        if (probs[i] < 0.0) return NULL;
+    }
+    if (fabs(diff) > (double)n * tol)
+    {
+        return NULL;
+    }
+    // determine the number of counts
+    uint32_t *counts = malloc(n * sizeof(int));
+    if (counts == NULL)
+    {
+        return NULL;
+    }
+    for (size_t i = 0; i < n; ++i)
+    {
+        counts[i] = (uint32_t)(probs[i] / tol);
+    }
+    int g = gcd(counts, n);
+    for (size_t i = 0; i < n; ++i)
+    {
+        counts[i] /= g;
+    }
+    // create the distribution
+    inform_dist *dist = inform_dist_create(counts, n);
+    free(counts);
+    return dist;
+}
+
+inform_dist* inform_dist_infer(int const *events, size_t n)
+{
+    // if no events are observed, return NULL
+    if (events == NULL || n == 0) return NULL;
+
+    // infer the support
+    int b = -1, event = 0;
+    for (size_t i = 0; i < n; ++i)
+    {
+        event = events[i];
+        if (event < 0)
+        {
+            b = -2;
+            break;
+        }
+        if (event > b) b = event;
+    }
+    if (b < 0) return NULL;
+    // the base is one greater than the largest observed event
+    b += 1;
+    // allocate the distribution
+    inform_dist *dist = inform_dist_alloc(b);
+    // accumulate the observations
+    if (dist != NULL)
+    {
+        if (inform_dist_accumulate(dist, events, n) != n)
+        {
+            inform_dist_free(dist);
+            dist = NULL;
+        }
+    }
+    return dist;
+}
+
+inform_dist* inform_dist_uniform(size_t n)
+{
+    // construct a distribution of the desired size
+    inform_dist *dist = inform_dist_alloc(n);
+    if (dist != NULL)
+    {
+        // set the counts to the number of states
+        dist->counts = n;
+        // set the count for each state to 1
+        for (size_t i = 0; i < n; ++i) dist->histogram[i] = 1;
+    }
     return dist;
 }
 
@@ -292,4 +400,25 @@ size_t inform_dist_dump(inform_dist const *dist, double *probs, size_t n)
         probs[i] = inform_dist_unsafe_prob(dist,i);
     }
     return (int) n;
+}
+
+size_t inform_dist_accumulate(inform_dist *dist, int const *events, size_t n)
+{
+    // if the distribution is invalid or no events were provided
+    if (dist == NULL || events == NULL || dist->size == 0)
+    {
+        return 0;
+    }
+    // loop over the events and add them to the distribution
+    int const size = (int)dist->size;
+    size_t i = 0;
+    while (i < n)
+    {
+        if (size <= *events || *events < 0) break;
+        dist->histogram[*events] += 1;
+        dist->counts += 1;
+        ++events;
+        ++i;
+    }
+    return i;
 }

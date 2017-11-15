@@ -4,46 +4,53 @@
 #include <inform/block_entropy.h>
 #include <inform/shannon.h>
 
-static void accumulate_observations(int const* series, size_t n, int b,
-    size_t k, inform_dist *states)
+static void accumulate_observations(int const* series, size_t n, size_t m,
+    int b, size_t k, inform_dist *states)
 {
     k -= 1;
-    int history = 0, q = 1, state;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i, series += m)
     {
-        q *= b;
-        history *= b;
-        history += series[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        state  = history * b + series[i];
-        states->histogram[state]++;
-        history = state - series[i - k]*q;
+        int history = 0, q = 1, state;
+        for (size_t j = 0; j < k; ++j)
+        {
+            q *= b;
+            history *= b;
+            history += series[j];
+        }
+        for (size_t j = k; j < m; ++j)
+        {
+            state  = history * b + series[j];
+            states->histogram[state]++;
+            history = state - series[j - k]*q;
+        }
     }
 }
 
-static void accumulate_local_observations(int const* series, size_t n, int b,
-    size_t k, inform_dist *states, int *state)
+static void accumulate_local_observations(int const* series, size_t n, size_t m,
+    int b, size_t k, inform_dist *states, int *state)
 {
     k -= 1;
-    int history = 0;
-    int q = 1;
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
-        q *= b;
-        history *= b;
-        history += series[i];
-    }
-    for (size_t i = k; i < n; ++i)
-    {
-        size_t l = i - k;
-        state[l] = history * b + series[i];
+        int history = 0, q = 1;
+        for (size_t j = 0; j < k; ++j)
+        {
+            q *= b;
+            history *= b;
+            history += series[j];
+        }
+        for (size_t j = k; j < m; ++j)
+        {
+            size_t l = j - k;
+            state[l] = history * b + series[j];
 
-        states->histogram[state[l]]++;
+            states->histogram[state[l]]++;
 
-        if (i + 1 != n)
-            history = state[l] - series[l]*q;
+            if (j + 1 != m)
+                history = state[l] - series[l]*q;
+        }
+        series += m;
+        state += (m - k);
     }
 }
 
@@ -105,12 +112,9 @@ double inform_block_entropy(int const *series, size_t n, size_t m, int b,
 
     inform_dist states = { data, states_size, N };
 
-    for (size_t i = 0; i < n; ++i, series += m)
-    {
-        accumulate_observations(series, m, b, k, &states);
-    }
+    accumulate_observations(series, n, m, b, k, &states);
 
-    double be = inform_shannon(&states, (double) b);
+    double be = inform_shannon_entropy(&states, 2.0);
 
     free(data);
 
@@ -124,7 +128,8 @@ double *inform_local_block_entropy(int const *series, size_t n, size_t m, int b,
 
     size_t const N = n * (m - k + 1);
 
-    if (be == NULL)
+    bool allocate_be = (be == NULL);
+    if (allocate_be)
     {
         be = malloc(N * sizeof(double));
         if (be == NULL)
@@ -138,6 +143,7 @@ double *inform_local_block_entropy(int const *series, size_t n, size_t m, int b,
     uint32_t *data = calloc(states_size, sizeof(uint32_t));
     if (data == NULL)
     {
+        if (allocate_be) free(be);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
@@ -146,21 +152,18 @@ double *inform_local_block_entropy(int const *series, size_t n, size_t m, int b,
     int *state = malloc(N * sizeof(int));
     if (state == NULL)
     {
+        if (allocate_be) free(be);
+        free(data);
         INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
     }
 
-    int const *series_ptr = series;
-    int *state_ptr = state;
-    for (size_t i = 0; i < n; ++i)
-    {
-        accumulate_local_observations(series_ptr, m, b, k, &states, state_ptr);
-        series_ptr += m;
-        state_ptr += (m - k + 1);
-    }
+    accumulate_local_observations(series, n, m, b, k, &states, state);
 
+    double s;
     for (size_t i = 0; i < N; ++i)
     {
-        be[i] = inform_shannon_si(&states, state[i], (double) b);
+        s = states.histogram[state[i]];
+        be[i] = -log2(s/N);
     }
 
     free(state);

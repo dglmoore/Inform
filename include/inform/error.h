@@ -23,16 +23,21 @@ typedef enum
     INFORM_EARG         =  2, /// invalid argument
     INFORM_ENOMEM       =  3, /// malloc/calloc/realloc failed
     INFORM_ETIMESERIES  =  4, /// time series is NULL
-    INFORM_ENOINITS     =  5, /// time series has no initial conditions
-    INFORM_ESHORTSERIES =  6, /// time series has less than two timesteps
-    INFORM_EKZERO       =  7, /// history length is zero
-    INFORM_EKLONG       =  8, /// history is too long for the time series
-    INFORM_EBASE        =  9, /// the provided base is invalid
-    INFORM_ENEGSTATE    = 10, /// time series has negative state
-    INFORM_EBADSTATE    = 11, /// time series has states inconsistent with expected base
-    INFORM_EDIST        = 12, /// invalid distribution
-    INFORM_EBIN         = 13, /// invalid binning
-    INFORM_EENCODE      = 14, /// cannot encode state
+    INFORM_ENOSOURCES   =  5, /// timeseries has no sources
+    INFORM_ENOINITS     =  6, /// time series has no initial conditions
+    INFORM_ESHORTSERIES =  7, /// time series has less than two timesteps
+    INFORM_EKZERO       =  8, /// history length is zero
+    INFORM_EKLONG       =  9, /// history is too long for the time series
+    INFORM_EBASE        = 10, /// the provided base is invalid
+    INFORM_ENEGSTATE    = 11, /// time series has negative state
+    INFORM_EBADSTATE    = 12, /// time series has states inconsistent with expected base
+    INFORM_EDIST        = 13, /// invalid distribution
+    INFORM_EBIN         = 14, /// invalid binning
+    INFORM_EENCODE      = 15, /// cannot encode state
+    INFORM_ETPM         = 16, /// invalid TPM
+    INFORM_ETPMROW      = 17, /// all zero row in transition probability matrix
+    INFORM_ESIZE        = 18, /// invalid size,
+    INFORM_EPARTS       = 19, /// invalid partitioning
 } inform_error;
 
 /// set an error as pointed to by ERR
