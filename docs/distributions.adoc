@@ -1,74 +1,14 @@
 = Empirical Distributions
 
-The link:index.html#inform_dist[`inform_dist`] struct provides an _empirical_
-distribution, i.e. histogram, representing the observed frequencies of some
-fixed-sized set of events. This class is the basis for all of the fundamental
-information measures provided on discrete probability distributions.
+The link:index.html#inform_dist[`inform_dist`] struct provides an _empirical_ distribution,
+i.e. a histogram, representing the observed frequencies of some fixed-sized set of events.
+This structure is the basis for all of the fundamental information measures provided on
+discrete probability distributions.
+
+The purpose of the link:index.html#inform_dist[`inform_dist`] is to make writing custom
+implementations of information-theoretic measures possible. Most of the measures implemented
+in *Inform* use this structure at their core.
 
 == Examples
-
-=== Example 1: Construction
-You can construct a distribution with a specified number of unique observations.
-This construction method results in an _invalid_ distribution as no observations
-have yet been made.
-
-[source,c]
-----
-include::../examples/dist/alloc.c[]
-----
-
-Alternatively, you can construct a distribution from an array of observations
-counts:
-[source,c]
-----
-include::../examples/dist/create.c[]
-----
-
-=== Example 2: Making Observations
-Once a distribution has been constructed, we can begin making observations.
-There are two methods for doing so. The first allows the user to directly set
-the observation count for a particular event:
-[source,c]
-----
-include::../examples/dist/getset.c[]
-----
-The second method is to make _incremental_ changes to the distribution. This is
-useful when the observations are being made from a time series:
-[source,c]
-----
-include::../examples/dist/tick.c[]
-----
-
-=== Example 3: Probabilities
-Once some observations have been made, we can start asking for probabilities. As
-in the previous examples, there are multiple ways of doing this. The first is to
-ask for the probability of a given event:
-[source,c]
-----
-include::../examples/dist/prob.c[]
-----
-
-Sometimes, though, it is nice to be able to just dump the probabilities out to
-an array:
-[source,c]
-----
-include::../examples/dist/dump.c[]
-----
-
-=== Example 4: Shannon Entropy
-Once you have a distribution, you can do lots of fun things with it. In this
-example, we will compute the Shannon entropy of a time series of observed
-events.
-[source,c]
-----
-include::../examples/dist/manual_entropy.c[]
-----
-
-Of course, *Inform* provides a function to compute the entropy so you don't
-have to!
-[source,c]
-----
-include::../examples/dist/shannon_entropy.c[]
-----
 
 == API Documentation
