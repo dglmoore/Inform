@@ -1,7 +1,9 @@
+SOURCES=$(wildcard *.adoc)
+
 all: index.html
 
-%.html: %.adoc
-	asciidoctor -b html5 $<
+index.html: $(SOURCES)
+	asciidoctor -b html5 index.adoc
 
 clean:
 	rm -rf *.html
