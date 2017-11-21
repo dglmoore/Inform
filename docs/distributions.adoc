@@ -1,6 +1,6 @@
 = Empirical Distributions
 
-The link:index.html#inform_dist[`inform_dist`] struct provides an _emperical_
+The link:index.html#inform_dist[`inform_dist`] struct provides an _empirical_
 distribution, i.e. histogram, representing the observed frequencies of some
 fixed-sized set of events. This class is the basis for all of the fundamental
 information measures provided on discrete probability distributions.
@@ -25,7 +25,7 @@ include::../examples/dist/create.c[]
 ----
 
 === Example 2: Making Observations
-Once a distribution has been constructed, we can begin making observatoins.
+Once a distribution has been constructed, we can begin making observations.
 There are two methods for doing so. The first allows the user to directly set
 the observation count for a particular event:
 [source,c]
@@ -57,7 +57,7 @@ include::../examples/dist/dump.c[]
 
 === Example 4: Shannon Entropy
 Once you have a distribution, you can do lots of fun things with it. In this
-example, we will compute the shannon entropy of a time series of observed
+example, we will compute the Shannon entropy of a time series of observed
 events.
 [source,c]
 ----
