@@ -1,0 +1,257 @@
+= Time Series Measures
+
+The original purpose of *Inform* was to analyze time series data. This explains why most of
+*Inform*'s functionality resides in functions specifically optimized for analyzing time
+series. The API was designed to be easy to use in C or {cpp}, or to be wrapped in a
+higher-level language, e.g. https://elife-asu.github.io/PyInform[Python].
+
+Many of these measures have "local" variants which compute a time series of
+point-wise values. The local variants have names similar to their averaged or global
+counterparts, e.g link:index.html#inform_active_info[`inform_active_info`] and
+link:index#inform_local_active_info[`inform_local_active_info`].
+
+[[active-info]]
+== Active Info
+
+****
+[[inform_active_info]]
+[source,c]
+----
+double inform_active_info(int const *series, size_t n, size_t m,
+        int b, size_t k, inform_error *err);
+----
+****
+
+****
+[[inform_local_active_info]]
+[source,c]
+----
+double *inform_local_active_info(int const *series, size_t n, size_t m,
+        int b, size_t k, double *ai, inform_error *err);
+----
+****
+
+[[block-entropy]]
+== Block Entropy
+
+****
+[[inform_block_entropy]]
+[source,c]
+----
+----
+****
+
+****
+[[inform_local_block_entropy]]
+[source,c]
+----
+----
+****
+
+[[conditional-entropy]]
+== Conditional Entropy
+
+****
+[[inform_conditional_entropy]]
+[source,c]
+----
+----
+****
+
+****
+[[inform_local_conditional_entropy]]
+[source,c]
+----
+----
+****
+
+[[cross-entropy]]
+== Cross Entropy
+
+****
+[[inform_cross_entropy]]
+[source,c]
+----
+----
+****
+
+[[effective-information]]
+== Effective Information
+
+****
+[[inform_effective_info]]
+[source,c]
+----
+----
+****
+
+[[entropy-rate]]
+== Entropy Rate
+
+****
+[[inform_entropy_rate]]
+[source,c]
+----
+----
+****
+
+****
+[[inform_local_entropy_rate]]
+[source,c]
+----
+----
+****
+
+[[excess-entropy]]
+== Excess Entropy
+
+****
+[[inform_excess_entropy]]
+[source,c]
+----
+----
+****
+
+****
+[[inform_local_excess_entropy]]
+[source,c]
+----
+----
+****
+
+[[information-flow]]
+== Information Flow
+
+****
+[[inform_information_flow]]
+[source,c]
+----
+----
+****
+
+[[evidence-of-integration]]
+== Evidence Of Integration
+
+****
+[[inform_integration_evidence]]
+[source,c]
+----
+----
+****
+
+[[mutual-information]]
+== Mutual Information
+
+****
+[[inform_mutual_info]]
+[source,c]
+----
+----
+****
+
+****
+[[inform_local_mutual_info]]
+[source,c]
+----
+----
+****
+
+[[partial-information-decomposition]]
+== Partial Information Decomposition
+
+****
+[[inform_pid_source]]
+[source,c]
+----
+----
+****
+
+****
+[[inform_pid_lattice]]
+[source,c]
+----
+----
+****
+
+****
+[[inform_pid_lattice_free]]
+[source,c]
+----
+----
+****
+
+****
+[[inform_pid]]
+[source,c]
+----
+----
+****
+
+[[predictive-information]]
+== Predictive Information
+
+****
+[[inform_predictive_info]]
+[source,c]
+----
+----
+****
+
+****
+[[inform_local_predictive_info]]
+[source,c]
+----
+----
+****
+
+[[relative-entropy]]
+== Relative Entropy
+
+****
+[[inform_relative_entropy]]
+[source,c]
+----
+----
+****
+
+****
+[[inform_local_relative_entropy]]
+[source,c]
+----
+----
+****
+
+[[separable-information]]
+== Separable Information
+
+****
+[[inform_separable_info]]
+[source,c]
+----
+----
+****
+
+****
+[[inform_local_separable_info]]
+[source,c]
+----
+----
+****
+
+[[transfer-entropy]]
+== Transfer Entropy
+
+****
+[[inform_transfer_entropy]]
+[source,c]
+----
+----
+****
+
+****
+[[inform_local_transfer_entropy]]
+[source,c]
+----
+----
+****
+
