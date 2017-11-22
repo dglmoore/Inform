@@ -2,7 +2,12 @@
 [bibliography]
 = References
 
-- [[[Shannon1948]]] Shannon, C. E. (July-October 1948)
-  "link:https://dx.doi.org/10.1002%2Fj.1538-7305.1948.tb01338.x[A Mathematical Theory of
-  Communication]". Bell System Technology Journal *27* (3): 379-423.
-  doi:10.1002/j.1538-7305.1948.tb01448.x.
+- [[[Lizier2012]]] Lizier, J.T., Prokopenko, M. and Zomaya, A.Y. (2012)
+    "link:http://dx.doi.org/10.1016/j.ins.2012.04.016[Local measures of information storage in
+    complex distributed computation]". _Information Sciences_. *208*: 39-54
+    doi:10.1016/j.ins.2012.04.016
+
+- [[[Shannon1948]]] Shannon, C.E. (July-October 1948)
+    "link:https://dx.doi.org/10.1002%2Fj.1538-7305.1948.tb01338.x[A Mathematical Theory of
+    Communication]". _Bell System Technology Journal_ *27* (3): 379-423.
+    doi:10.1002/j.1538-7305.1948.tb01448.x.
