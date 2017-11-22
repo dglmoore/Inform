@@ -41,6 +41,8 @@ This function will return `NaN` if the distribution is not valid, i.e.
 @param[in] dist the probability distribution
 @param[in] base the logarithmic base
 @return the shannon information
+
+See <<Shannon1948>> for more details.
 ****
 
 ****

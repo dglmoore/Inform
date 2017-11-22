@@ -39,3 +39,5 @@ include::utilities.adoc[]
 include::distributions.adoc[]
 
 include::shannon.adoc[]
+
+include::references.adoc[]

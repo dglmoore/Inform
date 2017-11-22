@@ -1,0 +1,8 @@
+[[references]]
+[bibliography]
+= References
+
+- [[[Shannon1948]]] Shannon, C. E. (July-October 1948)
+  "link:https://dx.doi.org/10.1002%2Fj.1538-7305.1948.tb01338.x[A Mathematical Theory of
+  Communication]". Bell System Technology Journal *27* (3): 379-423.
+  doi:10.1002/j.1538-7305.1948.tb01448.x.
