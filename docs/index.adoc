@@ -30,6 +30,8 @@ provided.
 
 include::getting-started.adoc[]
 
+include::error-handling.adoc[]
+
 include::timeseries.adoc[]
 
 include::utilities.adoc[]

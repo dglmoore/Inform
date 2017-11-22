@@ -1,0 +1,131 @@
+[[error-handling]]
+= Error Handling
+
+Much of the development time invested in *Inform* has been ensuring that errors are properly
+handled. Since *Inform* is designed to be used both natively and wrapped for use in another
+language, we needed a simple way to provide error information while still being complete.
+The result was the link:index#inform_error[`inform_error`] enumeration.
+
+****
+[[inform_error]]
+[source,c]
+----
+typedef enum { ... } inform_error;
+----
+
+.Table Description of Inform's Error Tags
+|===
+| Error Tag | Description
+
+| `INFORM_SUCCESS`
+| no error occurred
+
+| `INFORM_FAILURE`
+| an unspecified error occurred
+
+| `INFORM_EFAULT`
+| invalid pointer
+
+| `INFORM_EARG`
+| invalid argument
+
+| `INFORM_ENOMEM`
+| malloc/calloc/realloc failed
+
+| `INFORM_ETIMESERIES`
+| time series is NULL
+
+| `INFORM_ENOSOURCES`
+| timeseries has no sources
+
+| `INFORM_ENOINITS`
+| time series has no initial conditions
+
+| `INFORM_ESHORTSERIES`
+| time series has less than two timesteps
+
+| `INFORM_EKZERO`
+| history length is zero
+
+| `INFORM_EKLONG`
+| history is too long for the time series
+
+| `INFORM_EBASE`
+| the provided base is invalid
+
+| `INFORM_ENEGSTATE`
+| time series has negative state
+
+| `INFORM_EBADSTATE`
+| time series has states inconsistent with expected base
+
+| `INFORM_EDIST`
+| invalid distribution
+
+| `INFORM_EBIN`
+| invalid binning
+
+| `INFORM_EENCODE`
+| cannot encode state
+
+| `INFORM_ETPM`
+| invalid TPM
+
+| `INFORM_ETPMROW`
+| all zero row in transition probability matrix
+
+| `INFORM_ESIZE`
+| invalid size,
+
+| `INFORM_EPARTS`
+| invalid partitioning
+|===
+****
+
+****
+[[inform_error_macro]]
+[source,c]
+----
+#define INFORM_ERROR(ERR, TAG)
+----
+****
+
+****
+[[inform_error_return_macro]]
+[source,c]
+----
+#define INFORM_ERROR_RETURN(ERR, TAG, RET)
+----
+****
+
+****
+[[inform_error_return_void_macro]]
+[source,c]
+----
+#define INFORM_ERROR_RETURN_VOID(ERR, TAG)
+----
+****
+
+****
+[[inform_succeeded]]
+[source,c]
+----
+bool inform_succeeded(inform_error const *err);
+----
+****
+
+****
+[[inform_failed]]
+[source,c]
+----
+bool inform_failed(inform_error const *err);
+----
+****
+
+****
+[[inform_strerror]]
+[source,c]
+----
+char const *inform_strerror(inform_error const *err);
+----
+****
