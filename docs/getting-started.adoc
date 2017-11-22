@@ -53,7 +53,7 @@ While *Inform* is a great tool to use directly in C or C\+\+, significant effort
 into making it easy to wrap higher level languages. Here are a few of the wrappers that are
 under active developed:
 
-.Table Inform Wrappers
+.Inform Wrappers
 |===
 | Package Name | Language | Repository | Website
 
