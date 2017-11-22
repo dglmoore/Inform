@@ -1,0 +1,164 @@
+[[utilities]]
+= Utilities
+
+[[binning-time-series]]
+== Binning Time Series
+
+****
+[[inform_range]]
+[source,c]
+----
+double inform_range(double const *series, size_t n, double *min,
+        double *max, inform_error *err);
+----
+****
+
+****
+[[inform_bin]]
+[source,c]
+----
+double inform_bin(double const *series, size_t n, int b, int *binned,
+        inform_error *err);
+----
+****
+
+****
+[[inform_bin_step]]
+[source,c]
+----
+int inform_bin_step(double const *series, size_t n, double step,
+        int *binned, inform_error *err);
+----
+****
+
+****
+[[inform_bin_bounds]]
+[source,c]
+----
+int inform_bin_bounds(double const *series, size_t n,
+        double const *bounds, size_t m, int *binned,
+        inform_error *err);
+----
+****
+
+[[black-boxing-time-series]]
+== Black-Boxing Time Series
+
+****
+[[inform_black_box]]
+[source,c]
+----
+int *inform_black_box(int const *series, size_t l, size_t n, size_t m,
+        int const *b, size_t const *r, size_t const *s, int *box,
+        inform_error *err);
+----
+****
+
+****
+[[inform_black_box_parts]]
+[source,c]
+----
+int *inform_black_box_parts(int const *series, size_t l, size_t n,
+        int const *b, size_t const *parts, size_t nparts, int *box,
+        inform_error *err);
+----
+****
+
+[[coalescing-time-series]]
+== Coalescing Time Series
+
+****
+[[inform_coalesce]]
+[source,c]
+----
+int inform_coalesce(int const *series, size_t n, int *coal,
+        inform_error *err);
+----
+****
+
+[[encoding-states]]
+== Encoding/Decoding States
+
+****
+[[inform_encode]]
+[source,c]
+----
+int32_t inform_encode(int const *state, size_t n, int b,
+        inform_error *err);
+----
+****
+
+****
+[[inform_decode]]
+[source,c]
+----
+void inform_decode(int32_t encoding, int b, int *state, size_t n,
+        inform_error *err);
+----
+****
+
+[[partitioning-time-series]]
+== Partitioning Time Series
+
+****
+[[inform_first_partitioning]]
+[source,c]
+----
+size_t *inform_first_partitioning(size_t size);
+----
+****
+
+****
+[[inform_next_partitioning]]
+[source,c]
+----
+size_t inform_next_partitioning(size_t *xs, size_t size);
+----
+****
+
+[[random-time-series]]
+== Random Time Series
+
+****
+[[inform_random_seed]]
+[source,c]
+----
+void inform_random_seed();
+----
+****
+
+****
+[[inform_random_int]]
+[source,c]
+----
+int inform_random_int(int a, int b);
+----
+****
+
+****
+[[inform_random_ints]]
+[source,c]
+----
+int *inform_random_ints(int a, int b, size_t n);
+----
+****
+
+****
+[[inform_random_series]]
+[source,c]
+----
+int *inform_random_series(size_t n, int b);
+----
+****
+
+[[transition-probability-matrix]]
+== Time Series to TPM
+
+****
+[[inform_tpm]]
+[source,c]
+----
+double *inform_tpm(int const *series, size_t n, size_t m, int b,
+        double *tpm, inform_error *err);
+----
+****

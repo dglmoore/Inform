@@ -32,6 +32,8 @@ include::getting-started.adoc[]
 
 include::timeseries.adoc[]
 
+include::utilities.adoc[]
+
 include::distributions.adoc[]
 
 include::shannon.adoc[]
