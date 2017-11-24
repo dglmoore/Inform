@@ -65,6 +65,43 @@ accumulator implementations of all of these measures that will let the increment
 construct the distributions. This will lift some of the memory burden at the expense of
 runtime performance.
 
+=== Calling Conventions
+All of the of the time series functions described in this section use the same basic calling
+conventions and use the same (or similar) argument names were possible.
+
+|===
+| Argument Name | Description
+
+| `series`
+| A 2-D or 3-D, finite-state time series in contiguous, row-major form
+
+| `l`
+| The number of "sources" or variables in a 3-D time series
+
+| `n`
+| The number of initial conditions per "source"
+
+| `m`
+| The number of time steps per "source"
+
+| `b`
+| The base of the time series
+
+| `k`
+| The length history length
+
+| `err`
+| An error argument
+|===
+
+Average measures generally return a double-precision, floating-point value while local
+variants return a pointer to an appropriately shaped, contiguous array. Local measures
+accept an argument, often named after the function (e.g. local active information takes an
+`ai` argument), which is used to store the computed local values. If that argument is NULL,
+then the function allocates an array.
+
+We will try to note any deviations from these conventions.
+
 [[active-info]]
 == Active Information
 
@@ -105,6 +142,28 @@ but we do not provide limiting functionality in this library
 double inform_active_info(int const *series, size_t n, size_t m,
         int b, size_t k, inform_error *err);
 ----
+Compute the average active information with a history length `k`.
+
+*Examples:*
+
+One initial condition:
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const series[9] = {0,0,1,1,1,1,0,0,0};
+double ai = inform_active_info(series, 2, 9, 2, 2, &err);
+assert(inform_succeeded(&err));
+// ai ~ 0.305958
+----
+
+Two initial conditions:
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const series[18] = {0,0,1,1,1,1,0,0,0, 1,0,0,1,0,0,1,0,0};
+double ai = inform_active_info(series, 2, 9, 2, 2, &err);
+// ai ~ 0.359879
+----
 ****
 
 ****
@@ -113,6 +172,33 @@ double inform_active_info(int const *series, size_t n, size_t m,
 ----
 double *inform_local_active_info(int const *series, size_t n, size_t m,
         int b, size_t k, double *ai, inform_error *err);
+----
+Compute the local active information with a history length `k`.
+
+If `ai == NULL`, then an array is allocated and returned.
+
+*Examples:*
+
+One initial condition:
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const series[9] = {0,0,1,1,1,1,0,0,0};
+double *ai = inform_active_info(series, 1, 9, 2, 2, NULL, &err);
+assert(inform_succeeded(&err));
+// ai ~ {-0.193, 0.807, 0.222, 0.222, -0.363, 1.222, 0.222}
+----
+
+Two initial conditions:
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const series[18] = {0,0,1,1,1,1,0,0,0, 1,0,0,1,0,0,1,0,0};
+double ai[14];
+inform_local_active_info(series, 2, 9, 2, 2, ai, &err);
+assert(inform_succeeded(&err));
+// ai ~ { 0.807, -0.363, 0.637, 0.637, -0.778, 0.807, -1.193,
+//        0.807,  0.807, 0.222, 0.807,  0.807, 0.222,  0.807 }
 ----
 ****
 
