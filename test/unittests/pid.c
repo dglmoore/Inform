@@ -40,6 +40,153 @@ do { \
     inform_pid_lattice_free(l); \
 } while (0);
 
+UNIT(PIDNULLStimulus)
+{
+    int const responses[10] = {0,0,1,0,0, 0,1,1,0,0};
+
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(NULL, responses, 2, 5, 2, (int[2]){2,2}, &err));
+    ASSERT_EQUAL(INFORM_ETIMESERIES, err);
+}
+
+UNIT(PIDNULLResponses)
+{
+    int const stimulus[5] = {0,1,1,0,0};
+
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, NULL, 2, 5, 2, (int[2]){2,2}, &err));
+    ASSERT_EQUAL(INFORM_ETIMESERIES, err);
+}
+
+
+UNIT(PIDNoResponses)
+{
+    int const stimulus[5] = {0,1,1,0,0};
+    int const responses[10] = {0,0,1,0,0, 0,1,1,0,0};
+
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, responses, 0, 5, 2, (int[2]){2,2}, &err));
+    ASSERT_EQUAL(INFORM_ENOSOURCES, err);
+}
+
+
+UNIT(PIDShortSeries)
+{
+    int const stimulus[5] = {0,1,1,0,0};
+    int const responses[10] = {0,0,1,0,0, 0,1,1,0,0};
+
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, responses, 2, 0, 2, (int[2]){2,2}, &err));
+    ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
+}
+
+
+UNIT(PIDInvalidBase)
+{
+    int const stimulus[5] = {0,1,1,0,0};
+    int const responses[10] = {0,0,1,0,0, 0,1,1,0,0};
+
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, -1, (int[2]){2,2}, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 0, (int[2]){2,2}, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 1, (int[2]){2,2}, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, NULL, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, (int[2]){-1,2}, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, (int[2]){0,2}, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, (int[2]){1,2}, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, (int[2]){2,-1}, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, (int[2]){2,0}, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+
+    err = INFORM_SUCCESS;
+    ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, (int[2]){2,-1}, &err));
+    ASSERT_EQUAL(INFORM_EBASE, err);
+}
+
+
+UNIT(PIDNegativeState)
+{
+    inform_error err;
+    {
+        int const stimulus[5] = {0,-1,1,0,0};
+        int const responses[10] = {0,0,1,0,0, 0,1,1,0,0};
+
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, (int[2]){2,2}, &err));
+        ASSERT_EQUAL(INFORM_ENEGSTATE, err);
+    }
+    {
+        int const stimulus[5] = {0,1,1,0,0};
+        int const responses[10] = {0,-1,1,0,0, 0,1,1,0,0};
+
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, (int[2]){2,2}, &err));
+        ASSERT_EQUAL(INFORM_ENEGSTATE, err);
+    }
+    {
+        int const stimulus[5] = {0,1,1,0,0};
+        int const responses[10] = {0,1,1,0,0, 0,1,1,-1,0};
+
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, (int[2]){2,2}, &err));
+        ASSERT_EQUAL(INFORM_ENEGSTATE, err);
+    }
+}
+
+
+UNIT(PIDBadState)
+{
+    inform_error err;
+    {
+        int const stimulus[5] = {0,2,1,0,0};
+        int const responses[10] = {0,0,1,0,0, 0,1,1,0,0};
+
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, (int[2]){2,2}, &err));
+        ASSERT_EQUAL(INFORM_EBADSTATE, err);
+    }
+    {
+        int const stimulus[5] = {0,1,1,0,0};
+        int const responses[10] = {0,2,1,0,0, 0,1,1,0,0};
+
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, (int[2]){2,2}, &err));
+        ASSERT_EQUAL(INFORM_EBADSTATE, err);
+    }
+    {
+        int const stimulus[5] = {0,1,1,0,0};
+        int const responses[10] = {0,1,1,0,0, 0,1,1,2,0};
+
+        err = INFORM_SUCCESS;
+        ASSERT_NULL(inform_pid(stimulus, responses, 2, 5, 2, (int[2]){2,2}, &err));
+        ASSERT_EQUAL(INFORM_EBADSTATE, err);
+    }
+}
+
 UNIT(PIDHasseOrder)
 {
     {
@@ -306,6 +453,14 @@ UNIT(PIDRandom)
 // }
 
 BEGIN_SUITE(PID)
+    ADD_UNIT(PIDNULLStimulus)
+    ADD_UNIT(PIDNULLResponses)
+    ADD_UNIT(PIDNoResponses)
+    ADD_UNIT(PIDShortSeries)
+    ADD_UNIT(PIDInvalidBase)
+    ADD_UNIT(PIDNegativeState)
+    ADD_UNIT(PIDBadState)
+
     ADD_UNIT(PIDHasseOrder)
     ADD_UNIT(PIDXOR)
     ADD_UNIT(PIDAND)

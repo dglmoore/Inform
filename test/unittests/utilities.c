@@ -51,7 +51,7 @@ UNIT(BinEmpty)
     ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
 }
 
-UNIT(BinInvalidBining)
+UNIT(BinInvalidBinning)
 {
     inform_error err = INFORM_SUCCESS;
     ASSERT_DBL_NEAR(0.0, inform_bin((double[]){1,2,3,4,5,6}, 6, -1, NULL, &err));
@@ -71,6 +71,18 @@ UNIT(BinNullBinned)
     inform_error err = INFORM_SUCCESS;
     ASSERT_DBL_NEAR(0.0, inform_bin((double[]){1,2,3,4,5,6}, 6, 2, NULL, &err));
     ASSERT_EQUAL(INFORM_ETIMESERIES, err);
+}
+
+UNIT(BinNoRange)
+{
+    int binned[4] = {-1,-1,-1,-1};
+    inform_error err = INFORM_SUCCESS;
+    ASSERT_DBL_NEAR(0.0, inform_bin((double[]){1,1,1,1}, 4, 2, binned, &err));
+    ASSERT_EQUAL(INFORM_EBIN, err);
+    for (size_t i = 0; i < 4; ++i)
+    {
+        ASSERT_EQUAL(0, binned[i]);
+    }
 }
 
 UNIT(BinTwo)
@@ -126,7 +138,7 @@ UNIT(BinStepEmpty)
     ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
 }
 
-UNIT(BinStepInvalidBining)
+UNIT(BinStepInvalidBinning)
 {
     inform_error err = INFORM_SUCCESS;
     ASSERT_DBL_NEAR(0.0, inform_bin_step((double[]){1,2,3,4,5,6}, 6, -1., NULL, &err));
@@ -215,7 +227,7 @@ UNIT(BinBoundsEmpty)
     ASSERT_EQUAL(INFORM_ESHORTSERIES, err);
 }
 
-UNIT(BinBoundsInvalidBining)
+UNIT(BinBoundsInvalidBinning)
 {
     inform_error err = INFORM_SUCCESS;
     ASSERT_EQUAL(0, inform_bin_bounds((double[]){1,2,3,4,5,6}, 6,
@@ -1687,15 +1699,16 @@ BEGIN_SUITE(Utilities)
 
     ADD_UNIT(BinNullSeries)
     ADD_UNIT(BinEmpty)
-    ADD_UNIT(BinInvalidBining)
+    ADD_UNIT(BinInvalidBinning)
     ADD_UNIT(BinNullBinned)
+    ADD_UNIT(BinNoRange)
     ADD_UNIT(BinTwo)
     ADD_UNIT(BinThree)
     ADD_UNIT(BinSix)
 
     ADD_UNIT(BinStepNullSeries)
     ADD_UNIT(BinStepEmpty)
-    ADD_UNIT(BinStepInvalidBining)
+    ADD_UNIT(BinStepInvalidBinning)
     ADD_UNIT(BinStepNullBinned)
     ADD_UNIT(BinStepTwo)
     ADD_UNIT(BinStepFiveHalves)
@@ -1704,7 +1717,7 @@ BEGIN_SUITE(Utilities)
 
     ADD_UNIT(BinBoundsNullSeries)
     ADD_UNIT(BinBoundsEmpty)
-    ADD_UNIT(BinBoundsInvalidBining)
+    ADD_UNIT(BinBoundsInvalidBinning)
     ADD_UNIT(BinBoundsNullBinned)
     ADD_UNIT(BinBoundsOne)
     ADD_UNIT(BinBoundsTwo)

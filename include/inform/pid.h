@@ -18,7 +18,6 @@ typedef struct inform_pid_source
     size_t size, n_above, n_below;
     double imin;
     double pi;
-    double info;
 } inform_pid_source;
 
 typedef struct inform_pid_lattice
@@ -29,10 +28,10 @@ typedef struct inform_pid_lattice
     size_t size;
 } inform_pid_lattice;
 
-void inform_pid_lattice_free(inform_pid_lattice *l);
+EXPORT void inform_pid_lattice_free(inform_pid_lattice *l);
 
-inform_pid_lattice *inform_pid(int const *stimulus, int const *responses,
-        size_t l, size_t n, int bs, int const *br, inform_error *err);
+EXPORT inform_pid_lattice *inform_pid(int const *stimulus, int const *responses, size_t l,
+        size_t n, int bs, int const *br, inform_error *err);
 
 #ifdef __cplusplus
 }
