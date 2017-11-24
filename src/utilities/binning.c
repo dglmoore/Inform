@@ -5,6 +5,7 @@
 #include <float.h>
 #include <inform/utilities/binning.h>
 #include <math.h>
+#include <string.h>
 
 double inform_range(double const *series, size_t n, double *min, double *max,
     inform_error *err)
@@ -40,6 +41,12 @@ double inform_bin(double const *series, size_t n, int b, int *binned,
     double min, max;
     double range = inform_range(series, n, &min, &max, err);
     double step = range / b;
+
+    if (step <= 10.*DBL_EPSILON)
+    {
+        memset(binned, 0, n*sizeof(int));
+        INFORM_ERROR_RETURN(err, INFORM_EBIN, step);
+    }
 
     for (size_t i = 0; i < n; ++i)
     {
