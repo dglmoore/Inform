@@ -11,3 +11,6 @@
     "link:https://dx.doi.org/10.1002%2Fj.1538-7305.1948.tb01338.x[A Mathematical Theory of
     Communication]". _Bell System Technology Journal_ *27* (3): 379-423.
     doi:10.1002/j.1538-7305.1948.tb01448.x.
+
+- [[[Cover1991]]] Cover, T.M and Thomas, J.A. (1991) "Elements of information theory". New
+  York: Wiley. ISBN 0-471-06259-6.
