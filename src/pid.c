@@ -111,7 +111,7 @@ static inform_pid_source *alloc_source(size_t *name,
     }
     src->n_below = 0;
 
-    src->imin = src->pi = src->info = 0.0;
+    src->imin = src->pi = 0.0;
 
     return src;
 }

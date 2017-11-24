@@ -18,7 +18,6 @@ typedef struct inform_pid_source
     size_t size, n_above, n_below;
     double imin;
     double pi;
-    double info;
 } inform_pid_source;
 
 typedef struct inform_pid_lattice
