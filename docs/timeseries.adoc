@@ -568,6 +568,20 @@ double *inform_integration_evidence_part(int const *series, size_t l,
 
 [[mutual-information]]
 == Mutual Information
+https://en.wikipedia.org/wiki/Mutual_information[Mutual information] (MI) is a measure of
+the amount of mutual dependence between at least two random variables. Locally, MI is
+defined as
+[stem]
+++++
+i_i(X_1,\ldots,X_l) = \frac{p(x_{1,i},\ldots,x_{l,i})}{p(x_{1,i})\ldots p(x_{l,i})}.
+++++
+The mutual information is then just the time average of stem:[i_i(X_1,\ldots,X_l)]:
+[stem]
+++++
+I(X_1,\ldots,X_l) =
+    \sum_{x_{1,i},\ldots,x_{l,i}} p(x_{1,i},\ldots,x_{l,i}) \frac{p(x_{1,i},\ldots,x_{l,i})}{p(x_{1,i})\ldots p(x_{l,i})}.
+++++
+See <<Cover1991>> for more details.
 
 ****
 [[inform_mutual_info]]
@@ -575,6 +589,38 @@ double *inform_integration_evidence_part(int const *series, size_t l,
 ----
 double inform_mutual_info(int const *series, size_t l, size_t n,
         int const *b, inform_error *err);
+----
+Compute the mutual information between two or more time series.
+
+For this function, `l` is the number of random variables, and `n` is the length of each
+variable's time series. Each variable can have a different base, so `b` is an array of
+length `l`.
+
+*Examples:*
+
+Two variables:
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const xs[40] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1, // var 1
+                    0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1  // var 2};
+
+double mi = inform_mutual_info(xs, 2, 20, (int[2]){2,2}, &err);
+assert(inform_succeeded(&err));
+// mi == 0.214171
+----
+
+Three variables:
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const xs[60] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1, // var 1
+                    0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1, // var 2
+                    1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1, // var 3};
+
+double mi = inform_mutual_info(xs, 3, 20, (int[3]){2,2,2}, &err);
+assert(inform_succeeded(&err));
+// mi == 1.095462
 ----
 ****
 
@@ -584,6 +630,45 @@ double inform_mutual_info(int const *series, size_t l, size_t n,
 ----
 double *inform_local_mutual_info(int const *series, size_t l, size_t n,
         int const *b, double *mi, inform_error *err);
+----
+Compute the local mutual information between two or more time series.
+
+For this function, `l` is the number of random variables, and `n` is the length of each
+variable's time series. Each variable can have a different base, so `b` is an array of
+length `l`.
+
+*Examples:*
+
+Two variables:
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const xs[40] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1, // var 1
+                    0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1  // var 2};
+
+double *mi = inform_local_mutual_info(xs, 2, 20, (int[2]){2,2}, NULL, &err);
+assert(inform_succeeded(&err));
+// mi ~ { -1.000, -1.000, 0.222,  0.222, 0.222, 0.222, 0.222, 0.222,
+//         0.222,  0.222, 0.222,  0.222, 0.222, 0.222, 0.222, 0.222,
+//         1.585,  1.585, 1.585, -1.585 }
+free(mi);
+----
+
+Three variables:
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const xs[60] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1, // var 1
+                    0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1, // var 2
+                    1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1, // var 3};
+
+
+double *mi = inform_local_mutual_info(xs, 3, 20, (int[3]){2,2,2}, NULL, &err);
+assert(inform_succeeded(&err));
+// mi ~ { 0.737, 0.737, 0.737, 0.737, 0.737, 0.737, 0.737, 0.737,
+//        0.737, 0.737, 0.737, 0.737, 0.737, 0.737, 0.737, 0.737,
+//        3.322, 3.322, 0.322, 0.152 }
+free(mi);
 ----
 ****
 
