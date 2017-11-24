@@ -600,9 +600,47 @@ static void cleanup(size_t **subsets, inform_dist *s_dist, double **info)
     }
 }
 
+static bool check_arguments( int const *stimulus, int const *responses, size_t l, size_t n,
+        int bs, int const *br, inform_error *err)
+{
+    if (!stimulus || !responses)
+        INFORM_ERROR_RETURN(err, INFORM_ETIMESERIES, true);
+    else if (l < 1)
+        INFORM_ERROR_RETURN(err, INFORM_ENOSOURCES, true);
+    else if (n < 1)
+        INFORM_ERROR_RETURN(err, INFORM_ESHORTSERIES, true);
+    else if (bs < 2)
+        INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
+    else if (!br)
+        INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
+
+    for (size_t i = 0; i < l; ++i)
+        if (br[i] < 2)
+            INFORM_ERROR_RETURN(err, INFORM_EBASE, true);
+
+    for (size_t i = 0; i < n; ++i)
+        if (stimulus[i] < 0)
+            INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
+        else if (stimulus[i] >= bs)
+            INFORM_ERROR_RETURN(err, INFORM_EBADSTATE, true);
+
+    for (size_t i = 0; i < l; ++i)
+        for (size_t j = 0; j < n; ++j)
+            if (responses[j + i*n] < 0)
+                INFORM_ERROR_RETURN(err, INFORM_ENEGSTATE, true);
+            else if (responses[j + i*n] >= br[i])
+                INFORM_ERROR_RETURN(err, INFORM_EBADSTATE, true);
+
+    return false;
+}
+
 inform_pid_lattice *inform_pid(int const *stimulus, int const *responses,
         size_t l, size_t n, int bs, int const *br, inform_error *err)
 {
+    if (check_arguments(stimulus, responses, l, n, bs, br, err))
+    {
+        return NULL;
+    }
     size_t **ss = subsets(l, err);
     if (FAILED(err))
     {
@@ -628,10 +666,10 @@ inform_pid_lattice *inform_pid(int const *stimulus, int const *responses,
     for (size_t i = 0; i < m; ++i)
     {
         si[i] = specific_info(stimulus, responses, l, n, bs, br, ss[i], s_dist, err);
-        if (inform_failed(err))
+        if (FAILED(err))
         {
             cleanup(ss, s_dist, si);
-            INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+            return NULL;
         }
     }
 
@@ -639,7 +677,7 @@ inform_pid_lattice *inform_pid(int const *stimulus, int const *responses,
     if (FAILED(err))
     {
         cleanup(ss, s_dist, si);
-        INFORM_ERROR_RETURN(err, INFORM_ENOMEM, NULL);
+        return NULL;
     }
 
     for (size_t i = 0; i < lattice->size; ++i)
