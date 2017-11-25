@@ -5,5 +5,4 @@ compiler:
 os:
     - linux
     - osx
-script: cmake . && make && make test
-
+script: cmake . && make && make test && sh dist/package.sh

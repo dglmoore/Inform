@@ -18,3 +18,12 @@ Remove-Item -force $archive
 Add-Type -Assembly System.IO.Compression.FileSystem
 $compressionLevel = [System.IO.Compression.CompressionLevel]::Optimal
 [System.IO.Compression.ZipFile]::CreateFromDirectory($target, $archive, $compressionLevel, $true)
+
+$osname = (Get-WmiObject Win32_OperatingSystem).Name
+$osarch = (Get-WmiObject Win32_OperatingSystem).OSArchitecture
+$machname = (Get-WmiObject Win32_OperatingSystem).CSName
+
+Write-Host $osname
+Write-Host $osarch
+Write-Host $machname
+
