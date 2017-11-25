@@ -11,6 +11,41 @@
 double inform_range(double const *series, size_t n, double *min,
         double *max, inform_error *err);
 ----
+Compute the range, minimum and maximum values in a floating-point time series.
+
+*Examples:*
+[source,c]
+----
+inform_error = INFORM_SUCCESS;
+double min, max, rng;
+rng = inform_range(NULL, 6, &min, &max, &err);
+assert(inform_failed(&err));
+assert(rng == 0.0);
+----
+[source,c]
+----
+inform_error = INFORM_SUCCESS;
+double arr[6] = { 0.2, 0.5, -3.2, 1.8, 0.6, 2.3 };
+double min, max, rng;
+rng = inform_range(arr, 0, &min, &max, &err);
+assert(inform_failed(&err));
+assert(rng == 0.0);
+----
+[source,c]
+----
+inform_error = INFORM_SUCCESS;
+double arr[6] = { 0.2, 0.5, -3.2, 1.8, 0.6, 2.3 };
+double min, max, rng;
+rng = inform_range(arr, 6, &min, &max, &err);
+// { min, max, rng } ~ { -3.2, 1.8, 5.0 }
+----
+[source,c]
+----
+inform_error = INFORM_SUCCESS;
+double arr[6] = { 0.2, 0.5, -3.2, 1.8, 0.6, 2.3 };
+double rng = inform_range(arr, 6, NULL, NULL, &err);
+// rng ~ 5.0
+----
 ****
 
 ****
