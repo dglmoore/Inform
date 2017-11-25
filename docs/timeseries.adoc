@@ -386,13 +386,42 @@ free(ce);
 
 [[cross-entropy]]
 == Cross Entropy
+https://en.wikipedia.org/wiki/Cross_entropy[Cross entropy] between two distributions
+stem:[p_X] and stem:[q_X] measures the amount of information needed to identify events
+using a coding scheme optimized for stem:[q_X] when stem:[p_X] is the "real" distributions
+over stem:[X].
+[stem]
+++++
+H(p,q) = -\sum_{x} p(x) \log_2{q(x)}
+++++
+Cross entropy's local variant is equivalent to the self-information of stem:[q_X], and as
+such is implemented by <<inform_local_block_entropy,inform_local_block_entropy>>.
 
+See <<Cover1991>> for more details.
 ****
 [[inform_cross_entropy]]
 [source,c]
 ----
 double inform_cross_entropy(int const *ps, int const *qs, size_t n,
         int b, inform_error *err);
+----
+Compute the cross entropy between the "true" and "unnatural" distributions stem:[p_X] and
+stem:[q_X] from associated time series `ps` and `qs`, respectively.
+
+*Examples:*
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const ps[10] = {0,1,1,0,1,0,0,1,0,0};
+int const qs[10] = {0,0,0,0,0,1,1,0,0,1};
+
+double ce = inform_cross_entropy(ps, qs, 10, 2, &err);
+assert(inform_succeeded(&err));
+// ce == 1.003530
+
+ce = inform_cross_entropy(qs, ps, 10, 2, &err);
+assert(inform_succeeded(&err));
+// ce == 0.912454
 ----
 ****
 
