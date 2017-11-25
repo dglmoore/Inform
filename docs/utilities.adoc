@@ -95,6 +95,37 @@ assert(bin_size == 5.0/3.0);
 int inform_bin_step(double const *series, size_t n, double step,
         int *binned, inform_error *err);
 ----
+Bin a floating-point time series into a number bins of a specified size `step`, and return
+the number of bins.
+
+If the bin size is too small, less than `10*ε`, then an error is set. (`ε` is the
+double-precision machine epsilon.)
+
+*Examples:*
+[source,c]
+----
+int binned[6];
+double series[6] = {1,2,3,4,5,6};
+int n = inform_bin_step(series, 6, 2.0, binned, &err);
+assert(n == 3);
+// binned ~ {0,0,1,1,2,2}
+----
+[source,c]
+----
+int binned[6];
+double series[6] = {1,2,3,4,5,6};
+int n = inform_bin(series, 6, 2.5, binned, &err);
+assert(n == 3);
+// binned ~ {0,0,0,1,1,2}
+----
+[source,c]
+----
+int binned[6];
+double series[6] = {1,2,3,4,5,6};
+int n = inform_bin(series, 6, 1.0, binned, &err);
+assert(n == 6);
+// binned ~ {0,1,2,3,4,5}
+----
 ****
 
 ****
