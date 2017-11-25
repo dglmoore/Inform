@@ -69,6 +69,22 @@ The allocation will fail and return `NULL` if either `n == 0` or the memory allo
 for whatever reason.
 
 Immediately following allocation, the distribution is invalid.
+
+*Examples:*
+[source,c]
+----
+inform_dist *dist = inform_dist_alloc(0);
+assert(dist == NULL);
+----
+[source,c]
+----
+inform_dist *dist = inform_dist_alloc(2);
+assert(dist != NULL);
+assert(dist->size == 2);
+assert(dist->counts == 0);
+// dist->histogram ~ {0,0}
+inform_dist_free(dist);
+----
 ****
 
 ****
@@ -90,6 +106,24 @@ Note that the distribution cannot be reduced to size `0`. In that case the distr
 left unmodified.
 
 In the event that the reallocation fails, the original distribution is left untouched.
+
+*Examples:*
+[source,c]
+----
+inform_dist *dist = inform_dist_alloc(2);
+assert(dist);
+// dist->histogram ~ {0,0}
+
+inform_dist *bigger = inform_dist_realloc(dist, 5);
+assert(bigger);
+// bigger->histogram ~ {0,0,0,0,0}
+
+inform_dist *smaller = inform_dist_realloc(bigger, 3);
+assert(smaller != NULL);
+// smaller->histogram ~ {0,0,0}
+
+inform_dist_free(smaller);
+----
 ****
 
 ****
@@ -106,6 +140,25 @@ returned.
 
 In the event that the destination is `NULL` or has a different size from that of the source,
 the destination is reallocated, and the result is returned.
+
+*Examples:*
+[source,c]
+----
+inform_dist *source = inform_dist_alloc(5);
+assert(source);
+for (int i = 0; i < (int) source->size; ++i)
+    source->histogram[i] = i;
+// source->histogram ~ {0,1,2,3,4};
+
+inform_dist *target = inform_dist_alloc(5);
+assert(target);
+
+inform_dist_copy(source, target);
+// target->histogram ~ {0,1,2,3,4};
+
+inform_dist_free(target);
+inform_dist_free(source);
+----
 ****
 
 ****
@@ -121,6 +174,23 @@ and copying the contents of the source to the new distribution.
 
 If the allocation fails or the source distribution is `NULL`, then the return value is
 `NULL`.
+
+*Examples:*
+[source,c]
+----
+inform_dist *source = inform_dist_alloc(5);
+assert(source);
+for (int i = 0; i < (int) source->size; ++i)
+    source->histogram[i] = i;
+// source->histogram ~ {0,1,2,3,4};
+
+inform_dist *target = inform_dist_dup(source);
+assert(target);
+// target->histogram ~ {0,1,2,3,4};
+
+inform_dist_free(target);
+inform_dist_free(source);
+----
 ****
 
 ****
@@ -130,6 +200,15 @@ If the allocation fails or the source distribution is `NULL`, then the return va
 inform_dist* inform_dist_create(uint32_t const *data, size_t n);
 ----
 Create a distribution from an underlying histogram.
+
+*Examples:*
+[source,c]
+----
+inform_dist *dist = inform_dist_create((int[5]){0,1,2,3,4}, 5);
+assert(dist);
+// dist->histogram ~ {0,1,2,3,4}
+inform_dist_free(dist);
+----
 ****
 
 ****
@@ -139,6 +218,21 @@ Create a distribution from an underlying histogram.
 inform_dist* inform_dist_infer(int const *events, size_t n);
 ----
 Infer a distribution from a collection of observed events.
+
+*Examples:*
+[source,c]
+----
+inform_dist *dist = inform_dist_infer((int[]){0,0,1,0,1}, 5);
+assert(dist);
+// dist->histogram ~ {3,2}
+inform_dist_free(dist);
+----
+[source,c]
+----
+inform_dist *dist = inform_dist_infer((int[]){0,0,1,0,1,2,2,1}, 8);
+// dist->histogram ~ {3,3,2}
+inform_dist_free(dist);
+----
 ****
 
 ****
@@ -149,6 +243,40 @@ inform_dist* inform_dist_approximate(double const *probs, size_t n,
         double tol);
 ----
 Approximate a given probability distribution to a given tolerance.
+
+*Examples:*
+[source,c]
+----
+double probs[3] = {0.5, 0.2, 0.3};
+inform_dist *dist = inform_dist_approximate(probs, 3, 1e-3);
+assert(dist);
+// dist->histogram ~ {5, 2, 3}
+inform_dist_free(dist);
+----
+[source,c]
+----
+double probs[2] = {1./3, 2./3};
+inform_dist *dist = inform_dist_approximate(probs, 2, 1e-3);
+assert(dist);
+// dist->histogram ~ {1, 2}
+inform_dist_free(dist);
+----
+[source,c]
+----
+double probs[4] = {1./3, 1./3, 1./6, 1./6};
+inform_dist *dist = inform_dist_approximate(probs, 4, 1e-3);
+assert(dist);
+// dist->histogram ~ {333,333,166,166}
+inform_dist_free(dist);
+----
+[source,c]
+----
+double probs[4] = {1./7, 2./7, 1./3, 10./42};
+inform_dist *dist = inform_dist_approximate(probs, 4, 1e-3);
+assert(dist);
+// dist->histogram ~ {142,285,333,238}
+inform_dist_free(dist);
+----
 ****
 
 ****
@@ -158,6 +286,20 @@ Approximate a given probability distribution to a given tolerance.
 inform_dist* inform_dist_uniform(size_t n);
 ----
 Create a uniform distribution of a given size.
+
+*Examples:*
+[source,c]
+----
+inform_dist *dist = inform_dist_uniform(0);
+assert(dist == NULL);
+----
+[source,c]
+----
+inform_dist *dist = inform_dist_uniform(3);
+assert(dist);
+// dist->histogram ~ {1,1,1}
+inform_dist_free(dist);
+----
 ****
 
 ****
