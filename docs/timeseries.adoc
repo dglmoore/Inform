@@ -758,6 +758,23 @@ double *inform_local_predictive_info(int const *series, size_t n,
 
 [[relative-entropy]]
 == Relative Entropy
+https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence[Relative entropy], also
+known as the Kullback-Leibler divergence, measures the amount of information gained in
+switching from a prior distribution stem:[q_X] to a posterior distribution stem:[p_X] over
+_the same support_:
+[stem]
+++++
+D_{KL}(p||q) = \sum_{x_i} p(x_i) \log_2{\frac{p(x_i)}{q(x_i)}}.
+++++
+The local counterpart is
+[stem]
+++++
+d_{KL,i}(p||q) = log_2{\frac{p(x_i)}{q(x_i)}}.
+++++
+Note that the average in moving from the local to the non-local relative entropy is taken
+over the posterior distribution.
+
+See <<Kullback1951>> and <<Cover1991>> for more information.
 
 ****
 [[inform_relative_entropy]]
@@ -765,6 +782,24 @@ double *inform_local_predictive_info(int const *series, size_t n,
 ----
 double inform_relative_entropy(int const *xs, int const *ys, size_t n,
         int b, inform_error *err);
+----
+Compute the relative entropy between time series drawn from posterior and prior
+distributions, here `xs` and `ys` respectively.
+
+*Examples:*
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const xs[10] = {0,1,0,0,0,0,0,0,0,1};
+int const ys[10] = {0,1,1,1,1,0,0,1,0,0};
+
+double re = inform_relative_entropy(xs, ys, 10, 2, &err);
+assert(inform_succeeded(&err));
+// re == 0.278072
+
+re = inform_relative_entropy(ys, xs, 10, 2, &err);
+assert(inform_succeeded(&err));
+// re == 0.321928
 ----
 ****
 
@@ -774,6 +809,26 @@ double inform_relative_entropy(int const *xs, int const *ys, size_t n,
 ----
 double *inform_local_relative_entropy(int const *xs, int const *ys,
         size_t n, int b, double *re, inform_error *err);
+----
+
+*Examples:*
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const xs[10] = {0,1,0,0,0,0,0,0,0,1};
+int const ys[10] = {0,1,1,1,1,0,0,1,0,0};
+
+double *re = inform_local_relative_entropy(xs, ys, 10, 2, NULL, &err);
+assert(inform_succeeded(&err));
+// re ~ { 0.678, -1.322, 0.678, 0.678, 0.678, 0.678, 0.678,
+//        0.678, 0.678, -1.322 };
+
+inform_local_relative_entropy(ys, xs, 10, 2, re, &err);
+assert(inform_succeeded(&err));
+// re ~ { -0.678, 1.322, 1.322, 1.322, 1.322, -0.678, -0.678, 1.322,
+//        -0.678, -0.678 }
+
+free(re);
 ----
 ****
 
