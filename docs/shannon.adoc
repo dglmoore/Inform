@@ -6,9 +6,26 @@ discrete probability distributions (link:index.html#inform_dist[`inform_dist`]).
 functions provide the core of *Inform* as all of the time series analysis functions are
 build upon them.
 
-== Examples
-
-== API Documentation
+[horizontal]
+Entropy::
+    <<inform_shannon_si,inform_shannon_si>>,
+    <<inform_shannon_entropy,inform_shannon_entropy>>
+Mutual Information::
+    <<inform_shannon_pmi,inform_shannon_pmi>>,
+    <<inform_shannon_mi,inform_shannon_mi>>,
+    <<inform_shannon_multi_pmi,inform_shannon_multi_pmi>>,
+    <<inform_shannon_multi_mi,inform_shannon_multi_mi>>
+Conditional Entropy::
+    <<inform_shannon_pce,inform_shannon_pce>>,
+    <<inform_shannon_ce,inform_shannon_ce>>
+Conditional Mutual Information::
+    <<inform_shannon_pcmi,inform_shannon_pcmi>>,
+    <<inform_shannon_cmi,inform_shannon_cmi>>
+Relative Entropy::
+    <<inform_shannon_pre,inform_shannon_pre>>,
+    <<inform_shannon_re,inform_shannon_re>>
+Cross Entropy::
+    <<inform_shannon_cross,inform_shannon_cross>>
 
 ****
 [[inform_shannon_si]]
