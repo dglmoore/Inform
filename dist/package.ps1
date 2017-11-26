@@ -5,14 +5,13 @@ $prefix = "inform-$version"
 $target = "dist/$prefix"
 $archive = "$($target)_win-amd64.zip"
 
-cmake . -Bbuild/production -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$target" | Out-Null
-cd build/production
-nmake
-test/inform_unittest.exe
-nmake install
-cd ../..
 Copy-Item LICENSE $target
 Copy-Item README.md $target
+Copy-Item -Recurse include $target
+New-Item -Type Directory $target/lib
+Copy-Item inform.dll $target/lib
+Copy-Item inform.lib $target/lib
+Copy-Item inform_static.lib $target/lib
 
 Remove-Item -force $archive
 Add-Type -Assembly System.IO.Compression.FileSystem
