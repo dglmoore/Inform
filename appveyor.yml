@@ -15,3 +15,7 @@ test_script:
 - cmd: test\%CONFIGURATION%\inform_unittest.exe
 after_build:
 - ps: ./dist/package.ps1
+artifacts:
+- path: 'dist/inform-*/*.zip'
+  name: binaries
+
