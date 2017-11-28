@@ -46,6 +46,10 @@ double arr[6] = { 0.2, 0.5, -3.2, 1.8, 0.6, 2.3 };
 double rng = inform_range(arr, 6, NULL, NULL, &err);
 // rng ~ 5.0
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/binning.h`
 ****
 
 ****
@@ -86,6 +90,10 @@ double bin_size = inform_bin(series, 6, 6, binned, &err);
 assert(bin_size == 5.0/3.0);
 // binned ~ {0,1,2,3,4,5}
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/binning.h`
 ****
 
 ****
@@ -126,6 +134,10 @@ int n = inform_bin(series, 6, 1.0, binned, &err);
 assert(n == 6);
 // binned ~ {0,1,2,3,4,5}
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/binning.h`
 ****
 
 ****
@@ -136,6 +148,10 @@ int inform_bin_bounds(double const *series, size_t n,
         double const *bounds, size_t m, int *binned,
         inform_error *err);
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/binning.h`
 ****
 
 [[black-boxing-time-series]]
@@ -149,6 +165,10 @@ int *inform_black_box(int const *series, size_t l, size_t n, size_t m,
         int const *b, size_t const *r, size_t const *s, int *box,
         inform_error *err);
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/black_boxing.h`
 ****
 
 ****
@@ -159,6 +179,10 @@ int *inform_black_box_parts(int const *series, size_t l, size_t n,
         int const *b, size_t const *parts, size_t nparts, int *box,
         inform_error *err);
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/black_boxing.h`
 ****
 
 [[coalescing-time-series]]
@@ -171,6 +195,10 @@ int *inform_black_box_parts(int const *series, size_t l, size_t n,
 int inform_coalesce(int const *series, size_t n, int *coal,
         inform_error *err);
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/coalesce.h`
 ****
 
 [[encoding-states]]
@@ -183,6 +211,10 @@ int inform_coalesce(int const *series, size_t n, int *coal,
 int32_t inform_encode(int const *state, size_t n, int b,
         inform_error *err);
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/encode.h`
 ****
 
 ****
@@ -192,6 +224,10 @@ int32_t inform_encode(int const *state, size_t n, int b,
 void inform_decode(int32_t encoding, int b, int *state, size_t n,
         inform_error *err);
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/encode.h`
 ****
 
 [[partitioning-time-series]]
@@ -203,6 +239,10 @@ void inform_decode(int32_t encoding, int b, int *state, size_t n,
 ----
 size_t *inform_first_partitioning(size_t size);
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/partitions.h`
 ****
 
 ****
@@ -211,6 +251,10 @@ size_t *inform_first_partitioning(size_t size);
 ----
 size_t inform_next_partitioning(size_t *xs, size_t size);
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/partitions.h`
 ****
 
 [[random-time-series]]
@@ -222,6 +266,10 @@ size_t inform_next_partitioning(size_t *xs, size_t size);
 ----
 void inform_random_seed();
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/random.h`
 ****
 
 ****
@@ -230,6 +278,10 @@ void inform_random_seed();
 ----
 int inform_random_int(int a, int b);
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/random.h`
 ****
 
 ****
@@ -238,6 +290,10 @@ int inform_random_int(int a, int b);
 ----
 int *inform_random_ints(int a, int b, size_t n);
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/random.h`
 ****
 
 ****
@@ -246,6 +302,10 @@ int *inform_random_ints(int a, int b, size_t n);
 ----
 int *inform_random_series(size_t n, int b);
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/random.h`
 ****
 
 [[transition-probability-matrix]]
@@ -258,4 +318,8 @@ int *inform_random_series(size_t n, int b);
 double *inform_tpm(int const *series, size_t n, size_t m, int b,
         double *tpm, inform_error *err);
 ----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/tpm.h`
 ****
