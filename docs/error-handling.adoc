@@ -59,6 +59,10 @@ as <<time-series-measures, Time Series Measures>>.
 [[error-handling-api]]
 == API Documentation
 
+All of the error handling API is provided by the `inform/error.h` header. The user rarely
+has to explicitly include this header since most of the work-horse functions are bring this
+header along.
+
 [horizontal]
 Type Definitions::
     <<inform_error,inform_error>>
@@ -146,6 +150,9 @@ typedef enum { ... } inform_error;
 | `INFORM_EPARTS`
 | invalid partitioning
 |===
+
+[horizontal]
+Header:: `inform/error.h`
 ****
 
 ****
@@ -172,6 +179,8 @@ int *allocate_array(size_t n, inform_error *err)
 ----
 
 [horizontal]
+Header::
+    `inform/error.h`
 See also::
     <<inform_error_return_macro, INFORM_ERROR_RETURN>>,
     <<inform_error_return_void_macro, INFORM_ERROR_RETURN_VOID>>
@@ -204,6 +213,8 @@ int *double_values(int *array, size_t n, inform_error *err)
 ----
 
 [horizontal]
+Header::
+    `inform/error.h`
 See also::
     <<inform_error, INFORM_ERROR>>,
     <<inform_error_return_void_macro, INFORM_ERROR_RETURN_VOID>>
@@ -235,6 +246,8 @@ void double_values(int *array, size_t n, inform_error *err)
 ----
 
 [horizontal]
+Header::
+    `inform/error.h`
 See also::
     <<inform_error_macro, INFORM_ERROR>>,
     <<inform_error_return_macro, INFORM_ERROR_RETURN>>
@@ -267,6 +280,8 @@ assert(!inform_succeeded(&err));
 ----
 
 [horizontal]
+Header::
+    `inform/error.h`
 See also::
     <<inform_error, inform_error>>,
     <<inform_failed, inform_failed>>
@@ -299,6 +314,8 @@ assert(inform_succeeded(&err));
 ----
 
 [horizontal]
+Header::
+    `inform/error.h`
 See also::
     <<inform_error, inform_error>>,
     <<inform_succeeded, inform_succeeded>>
@@ -331,6 +348,8 @@ assert(strcmp(inform_strerror(&err),
 ----
 
 [horizontal]
+Header::
+    `inform/error.h`
 See also::
     <<inform_error, inform_error>>
 ****
