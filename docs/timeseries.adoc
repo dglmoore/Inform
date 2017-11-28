@@ -166,6 +166,8 @@ double ai = inform_active_info(series, 2, 9, 2, 2, &err);
 assert(inform_succeeded(&err));
 // ai ~ 0.359879
 ----
+[horizontal]
+Header:: `inform/active_info.h`
 ****
 
 ****
@@ -205,6 +207,8 @@ assert(inform_succeeded(&err));
 // no need to free since `ai` was statically allocated in this scope
 // free(ai);
 ----
+[horizontal]
+Header:: `inform/active_info.h`
 ****
 
 [[block-entropy]]
@@ -255,6 +259,8 @@ double h = inform_active_info(series, 2, 9, 2, 2, &err);
 assert(inform_succeeded(&err));
 // h ~ 1.936278
 ----
+[horizontal]
+Header:: `inform/block_entropy.h`
 ****
 
 ****
@@ -302,6 +308,8 @@ assert(inform_succeeded(&err));
 // no need to free since `h` was statically allocated in this scope
 // free(h);
 ----
+[horizontal]
+Header:: `inform/block_entropy.h`
 ****
 
 [[conditional-entropy]]
@@ -349,6 +357,8 @@ ce = inform_conditional_entropy(ys, xs, 20, 2, 2, &err);
 assert(inform_succeeded(&err));
 // ce == 0.507757
 ----
+[horizontal]
+Header:: `inform/conditional_entropy.h`
 ****
 
 ****
@@ -382,6 +392,8 @@ assert(inform_succeeded(&err));
 
 free(ce);
 ----
+[horizontal]
+Header:: `inform/conditional_entropy.h`
 ****
 
 [[cross-entropy]]
@@ -423,6 +435,8 @@ ce = inform_cross_entropy(qs, ps, 10, 2, &err);
 assert(inform_succeeded(&err));
 // ce == 0.912454
 ----
+[horizontal]
+Header:: `inform/cross_entropy.h`
 ****
 
 [[effective-information]]
@@ -435,6 +449,8 @@ assert(inform_succeeded(&err));
 double inform_effective_info(double const *tpm, double const *inter,
         size_t n, inform_error *err);
 ----
+[horizontal]
+Header:: `inform/effective_info.h`
 ****
 
 [[entropy-rate]]
@@ -498,6 +514,8 @@ double er = inform_entropy_rate(series, 2, 9, 2, 2, &err);
 assert(inform_succeeded(&err));
 // er ~ 0.625349
 ----
+[horizontal]
+Header:: `inform/entropy_rate.h`
 ****
 
 ****
@@ -537,6 +555,8 @@ assert(inform_succeeded(&err));
 // no need to free since `er` was statically allocated in this scope
 // free(er);
 ----
+[horizontal]
+Header:: `inform/entropy_rate.h`
 ****
 
 [[excess-entropy]]
@@ -549,6 +569,8 @@ assert(inform_succeeded(&err));
 double inform_excess_entropy(int const *series, size_t n, size_t m,
         int b, size_t k, inform_error *err);
 ----
+[horizontal]
+Header:: `inform/excess_entropy.h`
 ****
 
 ****
@@ -558,6 +580,8 @@ double inform_excess_entropy(int const *series, size_t n, size_t m,
 double *inform_local_excess_entropy(int const *series, size_t n,
         size_t m, int b, size_t k, double *ee, inform_error *err);
 ----
+[horizontal]
+Header:: `inform/excess_entropy.h`
 ****
 
 [[information-flow]]
@@ -571,6 +595,8 @@ double inform_information_flow(int const *src, int const *dst,
         int const *back, size_t l_src, size_t l_dst, size_t l_back,
         size_t n, size_t m, int b, inform_error *err);
 ----
+[horizontal]
+Header:: `inform/information_flow.h`
 ****
 
 [[evidence-of-integration]]
@@ -583,6 +609,8 @@ double inform_information_flow(int const *src, int const *dst,
 double *inform_integration_evidence(int const *series, size_t l,
         size_t n, int const *b, double *evidence, inform_error *err);
 ----
+[horizontal]
+Header:: `inform/information_flow.h`
 ****
 
 ****
@@ -593,6 +621,8 @@ double *inform_integration_evidence_part(int const *series, size_t l,
         size_t n, int const *b, size_t const *parts, size_t nparts,
         double *evidence, inform_error *err);
 ----
+[horizontal]
+Header:: `inform/information_flow.h`
 ****
 
 [[mutual-information]]
@@ -651,6 +681,8 @@ double mi = inform_mutual_info(xs, 3, 20, (int[3]){2,2,2}, &err);
 assert(inform_succeeded(&err));
 // mi == 1.095462
 ----
+[horizontal]
+Header:: `inform/mutual_info.h`
 ****
 
 ****
@@ -699,6 +731,8 @@ assert(inform_succeeded(&err));
 //        3.322, 3.322, 0.322, 0.152 }
 free(mi);
 ----
+[horizontal]
+Header:: `inform/mutual_info.h`
 ****
 
 [[partial-information-decomposition]]
@@ -718,6 +752,8 @@ typedef struct inform_pid_source
     double pi;
 } inform_pid_source;
 ----
+[horizontal]
+Header:: `inform/pid.h`
 ****
 
 ****
@@ -732,6 +768,8 @@ typedef struct inform_pid_lattice
     size_t size;
 } inform_pid_lattice;
 ----
+[horizontal]
+Header:: `inform/pid.h`
 ****
 
 ****
@@ -740,6 +778,8 @@ typedef struct inform_pid_lattice
 ----
 void inform_pid_lattice_free(inform_pid_lattice *l);
 ----
+[horizontal]
+Header:: `inform/pid.h`
 ****
 
 ****
@@ -750,6 +790,8 @@ inform_pid_lattice *inform_pid(int const *stimulus,
         int const *responses, size_t l, size_t n, int bs,
         int const *br, inform_error *err);
 ----
+[horizontal]
+Header:: `inform/pid.h`
 ****
 
 [[predictive-information]]
@@ -762,6 +804,8 @@ inform_pid_lattice *inform_pid(int const *stimulus,
 double inform_predictive_info(int const *series, size_t n, size_t m,
         int b, size_t kpast, size_t kfuture, inform_error *err);
 ----
+[horizontal]
+Header:: `inform/predictive_info.h`
 ****
 
 ****
@@ -772,6 +816,8 @@ double *inform_local_predictive_info(int const *series, size_t n,
         size_t m, int b, size_t kpast, size_t kfuture, double *pi,
         inform_error *err);
 ----
+[horizontal]
+Header:: `inform/predictive_info.h`
 ****
 
 [[relative-entropy]]
@@ -819,6 +865,8 @@ re = inform_relative_entropy(ys, xs, 10, 2, &err);
 assert(inform_succeeded(&err));
 // re == 0.321928
 ----
+[horizontal]
+Header:: `inform/relative_entropy.h`
 ****
 
 ****
@@ -848,6 +896,8 @@ assert(inform_succeeded(&err));
 
 free(re);
 ----
+[horizontal]
+Header:: `inform/relative_entropy.h`
 ****
 
 [[separable-information]]
@@ -861,6 +911,8 @@ double inform_separable_info(int const *srcs, int const *dest,
         size_t l, size_t n, size_t m, int b, size_t k,
         inform_error *err);
 ----
+[horizontal]
+Header:: `inform/separable_info.h`
 ****
 
 ****
@@ -871,6 +923,8 @@ double *inform_local_separable_info(int const *srcs, int const *dest,
         size_t l, size_t n, size_t m, int b, size_t k, double *si,
         inform_error *err);
 ----
+[horizontal]
+Header:: `inform/separable_info.h`
 ****
 
 [[transfer-entropy]]
@@ -884,6 +938,8 @@ double inform_transfer_entropy(int const *src, int const *dst,
         int const *back, size_t l, size_t n, size_t m, int b, size_t k,
         inform_error *err);
 ----
+[horizontal]
+Header:: `inform/transfer_entropy.h`
 ****
 
 ****
@@ -894,4 +950,6 @@ double *inform_local_transfer_entropy(int const *src, int const *dst,
         int const *back, size_t l, size_t n, size_t m, int b, size_t k,
         double *te, inform_error *err);
 ----
+[horizontal]
+Header:: `inform/transfer_entropy.h`
 ****
