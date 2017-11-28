@@ -21,8 +21,3 @@ $compressionLevel = [System.IO.Compression.CompressionLevel]::Optimal
 $osname = (Get-WmiObject Win32_OperatingSystem).Name
 $osarch = (Get-WmiObject Win32_OperatingSystem).OSArchitecture
 $machname = (Get-WmiObject Win32_OperatingSystem).CSName
-
-Write-Host $osname
-Write-Host $osarch
-Write-Host $machname
-

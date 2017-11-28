@@ -13,9 +13,10 @@ build:
   verbosity: normal
 test_script:
 - cmd: test\%CONFIGURATION%\inform_unittest.exe
-after_build:
-- ps: ./dist/package.ps1
 artifacts:
-- path: 'dist/inform-*/*.zip'
-  name: binaries
-
+- path: 'Release\inform.dll'
+  name: dll
+- path: 'Release\inform.lib'
+  name: lib
+- path: 'Release\inform_static.lib'
+  name: static
