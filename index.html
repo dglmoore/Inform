@@ -1,0 +1,4897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.6.1">
+<meta name="author" content="Douglas G. Moore">
+<title>Inform: A C library for information analysis of complex systems</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<style>
+/* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
+/* Remove comment around @import statement below when using as a custom stylesheet */
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";*/
+article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
+audio,canvas,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+[hidden],template{display:none}
+script{display:none!important}
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+a{background:transparent}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+abbr[title]{border-bottom:1px dotted}
+b,strong{font-weight:bold}
+dfn{font-style:italic}
+hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
+input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}
+input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+*,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+html,body{font-size:100%}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
+a:hover{cursor:pointer}
+img,object,embed{max-width:100%;height:auto}
+object,embed{height:100%}
+img{-ms-interpolation-mode:bicubic}
+.left{float:left!important}
+.right{float:right!important}
+.text-left{text-align:left!important}
+.text-right{text-align:right!important}
+.text-center{text-align:center!important}
+.text-justify{text-align:justify!important}
+.hide{display:none}
+img,object,svg{display:inline-block;vertical-align:middle}
+textarea{height:auto;min-height:50px}
+select{width:100%}
+.center{margin-left:auto;margin-right:auto}
+.spread{width:100%}
+p.lead,.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{font-size:1.21875em;line-height:1.6}
+.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
+a{color:#2156a5;text-decoration:underline;line-height:inherit}
+a:hover,a:focus{color:#1d4b8f}
+a img{border:none}
+p{font-family:inherit;font-weight:400;font-size:1em;line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
+p aside{font-size:.875em;line-height:1.35;font-style:italic}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
+h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
+h1{font-size:2.125em}
+h2{font-size:1.6875em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
+h4,h5{font-size:1.125em}
+h6{font-size:1em}
+hr{border:solid #ddddd8;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
+em,i{font-style:italic;line-height:inherit}
+strong,b{font-weight:bold;line-height:inherit}
+small{font-size:60%;line-height:inherit}
+code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
+ul,ol{margin-left:1.5em}
+ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
+ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
+ul.square{list-style-type:square}
+ul.circle{list-style-type:circle}
+ul.disc{list-style-type:disc}
+ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
+dl dt{margin-bottom:.3125em;font-weight:bold}
+dl dd{margin-bottom:1.25em}
+abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
+abbr{text-transform:none}
+blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
+blockquote cite:before{content:"\2014 \0020"}
+blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
+blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
+@media only screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
+h1{font-size:2.75em}
+h2{font-size:2.3125em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
+h4{font-size:1.4375em}}
+table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
+table thead,table tfoot{background:#f7f8f7;font-weight:bold}
+table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
+table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
+table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
+h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
+.clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
+.clearfix:after,.float-group:after{clear:both}
+*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed;word-wrap:break-word}
+*:not(pre)>code.nobreak{word-wrap:normal}
+*:not(pre)>code.nowrap{white-space:nowrap}
+pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
+em em{font-style:normal}
+strong strong{font-weight:400}
+.keyseq{color:rgba(51,51,51,.8)}
+kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
+.keyseq kbd:first-child{margin-left:0}
+.keyseq kbd:last-child{margin-right:0}
+.menuseq,.menuref{color:#000}
+.menuseq b:not(.caret),.menuref{font-weight:inherit}
+.menuseq{word-spacing:-.02em}
+.menuseq b.caret{font-size:1.25em;line-height:.8}
+.menuseq i.caret{font-weight:bold;text-align:center;width:.45em}
+b.button:before,b.button:after{position:relative;top:-1px;font-weight:400}
+b.button:before{content:"[";padding:0 3px 0 2px}
+b.button:after{content:"]";padding:0 2px 0 3px}
+p a>code:hover{color:rgba(0,0,0,.9)}
+#header,#content,#footnotes,#footer{width:100%;margin-left:auto;margin-right:auto;margin-top:0;margin-bottom:0;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
+#header:before,#header:after,#content:before,#content:after,#footnotes:before,#footnotes:after,#footer:before,#footer:after{content:" ";display:table}
+#header:after,#content:after,#footnotes:after,#footer:after{clear:both}
+#content{margin-top:1.25em}
+#content:before{content:none}
+#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
+#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #ddddd8}
+#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #ddddd8;padding-bottom:8px}
+#header .details{border-bottom:1px solid #ddddd8;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:-ms-flexbox;display:-webkit-flex;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap}
+#header .details span:first-child{margin-left:-.125em}
+#header .details span.email a{color:rgba(0,0,0,.85)}
+#header .details br{display:none}
+#header .details br+span:before{content:"\00a0\2013\00a0"}
+#header .details br+span.author:before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
+#header .details br+span#revremark:before{content:"\00a0|\00a0"}
+#header #revnumber{text-transform:capitalize}
+#header #revnumber:after{content:"\00a0"}
+#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #ddddd8;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
+#toc{border-bottom:1px solid #efefed;padding-bottom:.5em}
+#toc>ul{margin-left:.125em}
+#toc ul.sectlevel0>li>a{font-style:italic}
+#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
+#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc li{line-height:1.3334;margin-top:.3334em}
+#toc a{text-decoration:none}
+#toc a:active{text-decoration:underline}
+#toctitle{color:#7a2518;font-size:1.2em}
+@media only screen and (min-width:768px){#toctitle{font-size:1.375em}
+body.toc2{padding-left:15em;padding-right:0}
+#toc.toc2{margin-top:0!important;background-color:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #efefed;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
+#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
+#toc.toc2>ul{font-size:.9em;margin-bottom:0}
+#toc.toc2 ul ul{margin-left:0;padding-left:1em}
+#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
+body.toc2.toc-right{padding-left:0;padding-right:15em}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #efefed;left:auto;right:0}}
+@media only screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+#toc.toc2{width:20em}
+#toc.toc2 #toctitle{font-size:1.375em}
+#toc.toc2>ul{font-size:.95em}
+#toc.toc2 ul ul{padding-left:1.25em}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}
+#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+#content #toc>:first-child{margin-top:0}
+#content #toc>:last-child{margin-bottom:0}
+#footer{max-width:100%;background-color:rgba(0,0,0,.8);padding:1.25em}
+#footer-text{color:rgba(255,255,255,.8);line-height:1.44}
+.sect1{padding-bottom:.625em}
+@media only screen and (min-width:768px){.sect1{padding-bottom:1.25em}}
+.sect1+.sect1{border-top:1px solid #efefed}
+#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
+#content h1>a.anchor:before,h2>a.anchor:before,h3>a.anchor:before,#toctitle>a.anchor:before,.sidebarblock>.content>.title>a.anchor:before,h4>a.anchor:before,h5>a.anchor:before,h6>a.anchor:before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
+#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
+#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
+#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
+.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
+.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
+table.tableblock>caption.title{white-space:nowrap;overflow:visible;max-width:0}
+.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{color:rgba(0,0,0,.85)}
+table.tableblock #preamble>.sectionbody>.paragraph:first-of-type p{font-size:inherit}
+.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
+.admonitionblock>table td.icon{text-align:center;width:80px}
+.admonitionblock>table td.icon img{max-width:initial}
+.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #ddddd8;color:rgba(0,0,0,.6)}
+.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
+.exampleblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child{margin-bottom:0}
+.sidebarblock{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+.sidebarblock>:first-child{margin-top:0}
+.sidebarblock>:last-child{margin-bottom:0}
+.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
+.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.literalblock pre,.listingblock pre:not(.highlight),.listingblock pre[class="highlight"],.listingblock pre[class^="highlight "],.listingblock pre.CodeRay,.listingblock pre.prettyprint{background:#f7f7f8}
+.sidebarblock .literalblock pre,.sidebarblock .listingblock pre:not(.highlight),.sidebarblock .listingblock pre[class="highlight"],.sidebarblock .listingblock pre[class^="highlight "],.sidebarblock .listingblock pre.CodeRay,.sidebarblock .listingblock pre.prettyprint{background:#f2f1f1}
+.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;padding:1em;font-size:.8125em}
+.literalblock pre.nowrap,.literalblock pre[class].nowrap,.listingblock pre.nowrap,.listingblock pre[class].nowrap{overflow-x:auto;white-space:pre;word-wrap:normal}
+@media only screen and (min-width:768px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:.90625em}}
+@media only screen and (min-width:1280px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:1em}}
+.literalblock.output pre{color:#f7f7f8;background-color:rgba(0,0,0,.9)}
+.listingblock pre.highlightjs{padding:0}
+.listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
+.listingblock pre.prettyprint{border-width:0}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]:before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:#999}
+.listingblock:hover code[data-lang]:before{display:block}
+.listingblock.terminal pre .command:before{content:attr(data-prompt);padding-right:.5em;color:#999}
+.listingblock.terminal pre .command:not([data-prompt]):before{content:"$"}
+table.pyhltable{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.pyhltable td{vertical-align:top;padding-top:0;padding-bottom:0;line-height:1.45}
+table.pyhltable td.code{padding-left:.75em;padding-right:0}
+pre.pygments .lineno,table.pyhltable td:not(.code){color:#999;padding-left:0;padding-right:.5em;border-right:1px solid #ddddd8}
+pre.pygments .lineno{display:inline-block;margin-right:.25em}
+table.pyhltable .linenodiv{background:none!important;padding-right:0!important}
+.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
+.quoteblock>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock blockquote,.quoteblock blockquote p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
+.quoteblock blockquote{margin:0;padding:0;border:0}
+.quoteblock blockquote:before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
+.quoteblock .attribution{margin-top:.5em;margin-right:.5ex;text-align:right}
+.quoteblock .quoteblock{margin-left:0;margin-right:0;padding:.5em 0;border-left:3px solid rgba(0,0,0,.6)}
+.quoteblock .quoteblock blockquote{padding:0 0 0 .75em}
+.quoteblock .quoteblock blockquote:before{display:none}
+.verseblock{margin:0 1em 1.25em 1em}
+.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
+.verseblock pre strong{font-weight:400}
+.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
+.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
+.quoteblock .attribution br,.verseblock .attribution br{display:none}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
+.quoteblock.abstract{margin:0 0 1.25em 0;display:block}
+.quoteblock.abstract blockquote,.quoteblock.abstract blockquote p{text-align:left;word-spacing:0}
+.quoteblock.abstract blockquote:before,.quoteblock.abstract blockquote p:first-of-type:before{display:none}
+table.tableblock{max-width:100%;border-collapse:separate}
+table.tableblock td>.paragraph:last-child p>p:last-child,table.tableblock th>p:last-child,table.tableblock td>p:last-child{margin-bottom:0}
+table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
+table.grid-all>thead>tr>.tableblock,table.grid-all>tbody>tr>.tableblock{border-width:0 1px 1px 0}
+table.grid-all>tfoot>tr>.tableblock{border-width:1px 1px 0 0}
+table.grid-cols>*>tr>.tableblock{border-width:0 1px 0 0}
+table.grid-rows>thead>tr>.tableblock,table.grid-rows>tbody>tr>.tableblock{border-width:0 0 1px 0}
+table.grid-rows>tfoot>tr>.tableblock{border-width:1px 0 0 0}
+table.grid-all>*>tr>.tableblock:last-child,table.grid-cols>*>tr>.tableblock:last-child{border-right-width:0}
+table.grid-all>tbody>tr:last-child>.tableblock,table.grid-all>thead:last-child>tr>.tableblock,table.grid-rows>tbody>tr:last-child>.tableblock,table.grid-rows>thead:last-child>tr>.tableblock{border-bottom-width:0}
+table.frame-all{border-width:1px}
+table.frame-sides{border-width:0 1px}
+table.frame-topbot{border-width:1px 0}
+th.halign-left,td.halign-left{text-align:left}
+th.halign-right,td.halign-right{text-align:right}
+th.halign-center,td.halign-center{text-align:center}
+th.valign-top,td.valign-top{vertical-align:top}
+th.valign-bottom,td.valign-bottom{vertical-align:bottom}
+th.valign-middle,td.valign-middle{vertical-align:middle}
+table thead th,table tfoot th{font-weight:bold}
+tbody tr th{display:table-cell;line-height:1.6;background:#f7f8f7}
+tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
+p.tableblock>code:only-child{background:none;padding:0}
+p.tableblock{font-size:1em}
+td>div.verse{white-space:pre}
+ol{margin-left:1.75em}
+ul li ol{margin-left:1.5em}
+dl dd{margin-left:1.125em}
+dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
+ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
+ul.checklist,ul.none,ol.none,ul.no-bullet,ol.no-bullet,ol.unnumbered,ul.unstyled,ol.unstyled{list-style-type:none}
+ul.no-bullet,ol.no-bullet,ol.unnumbered{margin-left:.625em}
+ul.unstyled,ol.unstyled{margin-left:0}
+ul.checklist{margin-left:.625em}
+ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1.25em;font-size:.8em;position:relative;bottom:.125em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{margin-right:.25em}
+ul.inline{margin:0 auto .625em auto;margin-left:-1.375em;margin-right:0;padding:0;list-style:none;overflow:hidden}
+ul.inline>li{list-style:none;float:left;margin-left:1.375em;display:block}
+ul.inline>li>*{display:block}
+.unstyled dl dt{font-weight:400;font-style:normal}
+ol.arabic{list-style-type:decimal}
+ol.decimal{list-style-type:decimal-leading-zero}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
+ol.lowerroman{list-style-type:lower-roman}
+ol.upperroman{list-style-type:upper-roman}
+ol.lowergreek{list-style-type:lower-greek}
+.hdlist>table,.colist>table{border:0;background:none}
+.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
+td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
+td.hdlist1{font-weight:bold;padding-bottom:1.25em}
+.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
+.colist>table tr>td:first-of-type{padding:.4em .75em 0 .75em;line-height:1;vertical-align:top}
+.colist>table tr>td:first-of-type img{max-width:initial}
+.colist>table tr>td:last-of-type{padding:.25em 0}
+.thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
+.imageblock.left,.imageblock[style*="float: left"]{margin:.25em .625em 1.25em 0}
+.imageblock.right,.imageblock[style*="float: right"]{margin:.25em 0 1.25em .625em}
+.imageblock>.title{margin-bottom:0}
+.imageblock.thumb,.imageblock.th{border-width:6px}
+.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
+.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
+.image.left{margin-right:.625em}
+.image.right{margin-left:.625em}
+a.image{text-decoration:none;display:inline-block}
+a.image object{pointer-events:none}
+sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
+sup.footnote a,sup.footnoteref a{text-decoration:none}
+sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
+#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
+#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em 0;border-width:1px 0 0 0}
+#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;text-indent:-1.05em;margin-bottom:.2em}
+#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none}
+#footnotes .footnote:last-of-type{margin-bottom:0}
+#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
+.gist .file-data>table{border:0;background:#fff;width:100%;margin-bottom:0}
+.gist .file-data>table td.line-data{width:99%}
+div.unbreakable{page-break-inside:avoid}
+.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background-color:#00fafa}
+.black{color:#000}
+.black-background{background-color:#000}
+.blue{color:#0000bf}
+.blue-background{background-color:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background-color:#fa00fa}
+.gray{color:#606060}
+.gray-background{background-color:#7d7d7d}
+.green{color:#006000}
+.green-background{background-color:#007d00}
+.lime{color:#00bf00}
+.lime-background{background-color:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background-color:#7d0000}
+.navy{color:#000060}
+.navy-background{background-color:#00007d}
+.olive{color:#606000}
+.olive-background{background-color:#7d7d00}
+.purple{color:#600060}
+.purple-background{background-color:#7d007d}
+.red{color:#bf0000}
+.red-background{background-color:#fa0000}
+.silver{color:#909090}
+.silver-background{background-color:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background-color:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background-color:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background-color:#fafa00}
+span.icon>.fa{cursor:default}
+a span.icon>.fa{cursor:inherit}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note:before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip:before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning:before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution:before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important:before{content:"\f06a";color:#bf0000}
+.conum[data-value]{display:inline-block;color:#fff!important;background-color:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value] *{color:#fff!important}
+.conum[data-value]+b{display:none}
+.conum[data-value]:after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
+dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
+h1,h2,p,td.content,span.alt{letter-spacing:-.01em}
+p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content,span.alt{font-size:1.0625rem}
+p{margin-bottom:1.25rem}
+.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
+.exampleblock>.content{background-color:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
+.print-only{display:none!important}
+@media print{@page{margin:1.25cm .75cm}
+*{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
+a{color:inherit!important;text-decoration:underline!important}
+a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
+a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+abbr[title]:after{content:" (" attr(title) ")"}
+pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
+thead{display:table-header-group}
+svg{max-width:100%}
+p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
+h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
+#toc,.sidebarblock,.exampleblock>.content{background:none!important}
+#toc{border-bottom:1px solid #ddddd8!important;padding-bottom:0!important}
+.sect1{padding-bottom:0!important}
+.sect1+.sect1{border:0!important}
+#header>h1:first-child{margin-top:1.25rem}
+body.book #header{text-align:center}
+body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em 0}
+body.book #header .details{border:0!important;display:block;padding:0!important}
+body.book #header .details span:first-child{margin-left:0!important}
+body.book #header .details br{display:block}
+body.book #header .details br+span:before{content:none!important}
+body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
+body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
+.listingblock code[data-lang]:before{display:block}
+#footer{background:none!important;padding:0 .9375em}
+#footer-text{color:rgba(0,0,0,.6)!important;font-size:.9em}
+.hide-on-print{display:none!important}
+.print-only{display:block!important}
+.hide-for-print{display:none!important}
+.show-for-print{display:inherit!important}}
+</style>
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Inform: A C library for information analysis of complex systems</h1>
+<div class="details">
+<span id="author" class="author">Douglas G. Moore</span><br>
+<span id="email" class="email"><a href="mailto:douglas.g.moore@asu.edu">douglas.g.moore@asu.edu</a></span><br>
+<span id="revnumber">version 1.0.0,</span>
+<span id="revdate">November 2017</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_getting_started">Getting Started</a>
+<ul class="sectlevel2">
+<li><a href="#_installation_from_source">Installation from Source</a></li>
+<li><a href="#_binary_installation">Binary Installation</a></li>
+<li><a href="#_getting_help">Getting Help</a></li>
+<li><a href="#_related_projects">Related Projects</a></li>
+<li><a href="#_copyright_and_licensing">Copyright and Licensing</a></li>
+</ul>
+</li>
+<li><a href="#error-handling">Error Handling</a>
+<ul class="sectlevel2">
+<li><a href="#error-handling-intro">Introduction</a></li>
+<li><a href="#error-handling-api">API Documentation</a></li>
+</ul>
+</li>
+<li><a href="#time-series-measures">Time Series Measures</a>
+<ul class="sectlevel2">
+<li><a href="#time-series-notation">Notation</a></li>
+<li><a href="#time-series-detail">Implementation Details</a></li>
+<li><a href="#active-info">Active Information</a></li>
+<li><a href="#block-entropy">Block Entropy</a></li>
+<li><a href="#conditional-entropy">Conditional Entropy</a></li>
+<li><a href="#cross-entropy">Cross Entropy</a></li>
+<li><a href="#effective-information">Effective Information</a></li>
+<li><a href="#entropy-rate">Entropy Rate</a></li>
+<li><a href="#excess-entropy">Excess Entropy</a></li>
+<li><a href="#information-flow">Information Flow</a></li>
+<li><a href="#evidence-of-integration">Evidence Of Integration</a></li>
+<li><a href="#mutual-information">Mutual Information</a></li>
+<li><a href="#partial-information-decomposition">Partial Information Decomposition</a></li>
+<li><a href="#predictive-information">Predictive Information</a></li>
+<li><a href="#relative-entropy">Relative Entropy</a></li>
+<li><a href="#separable-information">Separable Information</a></li>
+<li><a href="#transfer-entropy">Transfer Entropy</a></li>
+</ul>
+</li>
+<li><a href="#utilities">Utilities</a>
+<ul class="sectlevel2">
+<li><a href="#binning-time-series">Binning Time Series</a></li>
+<li><a href="#black-boxing-time-series">Black-Boxing Time Series</a></li>
+<li><a href="#coalescing-time-series">Coalescing Time Series</a></li>
+<li><a href="#encoding-states">Encoding/Decoding States</a></li>
+<li><a href="#partitioning-time-series">Partitioning Time Series</a></li>
+<li><a href="#random-time-series">Random Time Series</a></li>
+<li><a href="#transition-probability-matrix">Time Series to TPM</a></li>
+</ul>
+</li>
+<li><a href="#empirical-distributions">Empirical Distributions</a>
+<ul class="sectlevel2">
+<li><a href="#dist-type">Distribution Type</a></li>
+<li><a href="#dist-allocation">Allocation</a></li>
+<li><a href="#dist-deallocation">Deallocation</a></li>
+<li><a href="#dist-access">Accessors/Mutators</a></li>
+<li><a href="#dist-probabilities">Probabilities</a></li>
+</ul>
+</li>
+<li><a href="#shannon-information-measures">Shannon Information Measures</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image"><a class="image" href="https://travis-ci.org/ELIFE-ASU/Inform"><img src="https://travis-ci.org/ELIFE-ASU/Inform.svg?branch=master" alt="Build Status (Travis CI)"></a></span>
+<span class="image"><a class="image" href="https://ci.appveyor.com/project/dglmoore/inform-vx977"><img src="https://ci.appveyor.com/api/projects/status/7y015h6p7n0q7097/branch/master?svg=true" alt="Build Status (Appveyor)"></a></span></p>
+</div>
+<div class="paragraph">
+<p>Inform is a cross-platform C library designed for performing information analysis of complex
+system.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The <code>inform_dist</code> struct provides discrete, emperical probability distributions. These
+form the basis for all of the information-theoretic measures.</p>
+</li>
+<li>
+<p>A collection of information measures built upon the distribution struct provide the core
+algorithms for the library, and are provided through the <code>shannon.h</code> header.</p>
+</li>
+<li>
+<p>A host of measures of the information dynamics on time series are built upon the core
+information measures. Each measure is housed in its own header, e.g.  <code>active_info.h</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>In addition to the core components, a small collection of utilities are also
+provided.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_getting_started">Getting Started</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_installation_from_source">Installation from Source</h3>
+<div class="paragraph">
+<p>To build <strong>Inform</strong>, you will need to have <a href="https://cmake.org/">CMake</a>. Most of you can use your
+package manager, e.g. <code>apt-get</code>, <code>pacman</code> or <code>yum</code> on Linux or <code>homebrew</code>, <code>macports</code> or
+<code>fink</code> on OS X.</p>
+</div>
+<div class="sect3">
+<h4 id="_linux_os_x_and_windows_bash_mingw_and_cygwin">Linux, OS X, and Windows (Bash, MinGW and Cygwin)</h4>
+<div class="paragraph">
+<p>Once CMake is installed, building, testing and installing the library is a snap</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code>$ cmake . -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes
+$ make all tests
+$ sudo make install</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_windows_with_msvc">Windows with MSVC</h4>
+<div class="paragraph">
+<p>Building with MSVC is a bit more involved. Open the Visual C++ MSBuild command prompt
+(should be in your start menu). You can then run cmake build and test from the prompt:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code>$ cmake -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes -G"Visual Studio 14 2015"
+$ msbuild /p:Configuration=Release ALL_BUILD.vcxproj
+$ test\Release\inform_unittest.exe</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Installation requires the user to manually copy the headers and libraries to wherever the
+user would like. This project-by-project approach is standard for Windows development, as
+you probably know.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_binary_installation">Binary Installation</h3>
+<div class="paragraph">
+<p>Precompiled binaries can be found at <a href="https://github.com/elife-asu/inform/releases" class="bare">https://github.com/elife-asu/inform/releases</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_getting_help">Getting Help</h3>
+<div class="paragraph">
+<p><strong>Inform</strong> is developed to help anyone interested in applying information-theoretic techniques
+get things done quickly and painlessly. We cannot do that without your feedback. We host the
+project&#8217;s source code and issue tracker on <a href="https://github.com/elife-asu/inform">Github</a>.
+Please create an issue if you find a bug, an error in this documentation, or have a feature
+you&#8217;d like to request. Your contribution will make <strong>Inform</strong> a better tool for everyone.</p>
+</div>
+<div class="paragraph">
+<p>If you are interested in contributing to <strong>Inform</strong>, please contact the developers, and we&#8217;ll
+get you up and running!</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Inform Source Repository</dt>
+<dd>
+<p><a href="https://github.com/elife-asu/inform" class="bare">https://github.com/elife-asu/inform</a></p>
+</dd>
+<dt class="hdlist1">Issue Tracker</dt>
+<dd>
+<p><a href="https://github.com/elife-asu/inform/issues" class="bare">https://github.com/elife-asu/inform/issues</a></p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_related_projects">Related Projects</h3>
+<div class="sect3">
+<h4 id="_inform_community">Inform Community</h4>
+<div class="paragraph">
+<p>While <strong>Inform</strong> is a great tool to use directly in C or C\\, significant effort has gone
+into making it easy to wrap higher level languages. Here are a few of the wrappers that are
+under active developed:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Inform Wrappers</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Package Name</th>
+<th class="tableblock halign-left valign-top">Language</th>
+<th class="tableblock halign-left valign-top">Repository</th>
+<th class="tableblock halign-left valign-top">Website</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PyInform</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Python</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/elife-asu/pyinform">elife-asu/pyinform</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://elife-asu.github.io/PyInform" class="bare">https://elife-asu.github.io/PyInform</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rinform</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">R</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/elife-asu/rinform">elife-asu/rinform</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>forthcoming</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform.jl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Julia</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/elife-asu/inform.jl">elife-asu/inform.jl</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>forthcoming</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">InformWolfram</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mathematica/Wolfram Language</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/elife-asu/informwolfram">elife-asu/informwolfram</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>forthcoming</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_intellectual_relatives">Intellectual Relatives</h4>
+<div class="paragraph">
+<p><strong>Inform</strong> was not created in an intellectual vacuum. Many similar projects have preceded it
+and are under active development. All of those projects have advantages and disadvantages
+compared to <strong>Inform</strong>. If <strong>Inform</strong> doesn&#8217;t meet your needs, I hope you will let us know, and
+try one of these:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://jlizier.github.il/jidt">JIDT</a>: Java Information Dynamics Toolkit (Java)</p>
+</li>
+<li>
+<p><a href="https://trentool.github.io/TRENTOOL3">TRENTOOL</a>: TRansfer ENtropy TOOLbox (Matlab)</p>
+</li>
+<li>
+<p><a href="https://docs.dit.io">dit</a>: discrete information theory (Python)</p>
+</li>
+<li>
+<p><a href="https://mutetoolbox.guru">MuTE</a>: MuTE Toolbox- The Dynamic DIrected Links Detector (Matlab)</p>
+</li>
+<li>
+<p><a href="https://users.sussex.ac.uk/~lionelb/MVGC">MVGC</a>: Multivariate Granger Causality Toolbox
+(Matlab)</p>
+</li>
+<li>
+<p><a href="https://cran.r-project.org/web/packages/acss">ACSS</a>: Algorithmic Complexity for Short
+Strings &#174;</p>
+</li>
+<li>
+<p><a href="https://complexitycalculator.com">OACC</a>: Online Algorithmic Complexity
+Calculator (web-based, R)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_copyright_and_licensing">Copyright and Licensing</h3>
+<div class="paragraph">
+<p>Copyright © 2016-2017 ELIFE, Arizona State University. Free use of this software is granted
+under the terms of the MIT License.</p>
+</div>
+<div class="paragraph">
+<p>See the <a href="https://github.com/elife-asu/inform/blob/master/LICENSE">LICENSE</a> file for details.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="error-handling">Error Handling</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="error-handling-intro">Introduction</h3>
+<div class="paragraph">
+<p>Much of the time invested in <strong>Inform</strong> has been ensuring that errors are properly handled.
+Since <strong>Inform</strong> is designed to be used both natively and wrapped for use in another language,
+we needed a simple way to provide error information while still being complete. The result
+was the <a href="#inform_error">inform_error</a> enumeration.</p>
+</div>
+<div class="paragraph">
+<p>Most of <strong>Inform</strong>'s functions take a pointer to an <a href="#inform_error">inform_error</a> as a last argument. This
+allows the function to pass error information up the call stack. Below is a standard example
+of how to handle errors which arise during standard usage:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t const n = 1, m = 7, k = 2;
+
+// expect only binary states
+int const base = 2;
+// state 5 is invalid
+int const series[] = {0,0,1,1,2,0,1};
+
+// Don't forget to initialize the error
+inform_error err = INFORM_SUCCESS;
+double ai = inform_active_info(series, n, m, k, base, &amp;err);
+if (inform_failed(&amp;err))
+{
+    // ERROR: time series has states inconsistent with expected base
+    fprintf(stderr, "ERROR: %s\n", inform_strerror(&amp;err));
+    return -1;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Most functions also return a value which signifies erroneous results. If the user is
+uninterested in the specific error message, then they can simply ignore it by passing a
+<code>NULL</code> pointer.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double ai = inform_active_info(series, n, m, k, base, NULL);
+if (isnan(ai))
+{
+    fprintf(stderr, "ERROR: an error occurred in computing AI\n");
+    return -1;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We <strong>strongly</strong> recommend that you handle errors. This is both good style and helps immensely
+when there&#8217;s actually a problem.</p>
+</div>
+<div class="paragraph">
+<p>This covers the most common use cases for non-developers. If you are a developer, we
+strongly suggest that you review the rest of the <a href="#error-handling-api">error handling API</a>.
+Otherwise, you&#8217;d probably be better served by moving on to the more interesting stuff such
+as <a href="#time-series-measures">Time Series Measures</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="error-handling-api">API Documentation</h3>
+<div class="paragraph">
+<p>All of the error handling API is provided by the <code>inform/error.h</code> header. The user rarely
+has to explicitly include this header since most of the work-horse functions are bring this
+header along.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Type Definitions
+</td>
+<td class="hdlist2">
+<p><a href="#inform_error">inform_error</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Macros
+</td>
+<td class="hdlist2">
+<p><a href="#inform_error_macro">INFORM_ERROR</a>,
+<a href="#inform_error_return_macro">INFORM_ERROR_RETURN</a>,
+<a href="#inform_error_return_void_macro">INFORM_ERROR_RETURN_VOID</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Error Tests
+</td>
+<td class="hdlist2">
+<p><a href="#inform_succeeded">inform_succeeded</a>,
+<a href="#inform_failed">inform_failed</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Error Messages
+</td>
+<td class="hdlist2">
+<p><a href="#inform_strerror">inform_strerror</a></p>
+</td>
+</tr>
+</table>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_error" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">typedef enum { ... } inform_error;</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 2. Descriptions of <strong>Inform</strong>'s Error Tags</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Error Tag</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_SUCCESS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no error occurred</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_FAILURE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">an unspecified error occurred</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_EFAULT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">invalid pointer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_EARG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">invalid argument</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_ENOMEM</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">malloc/calloc/realloc failed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_ETIMESERIES</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">time series is NULL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_ENOSOURCES</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">time series has no sources</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_ENOINITS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">time series has no initial conditions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_ESHORTSERIES</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">time series has less than two time steps</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_EKZERO</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">history length is zero</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_EKLONG</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">history is too long for the time series</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_EBASE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the provided base is invalid</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_ENEGSTATE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">time series has negative state</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_EBADSTATE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">time series has states inconsistent with expected base</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_EDIST</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">invalid distribution</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_EBIN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">invalid binning</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_EENCODE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cannot encode state</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_ETPM</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">invalid TPM</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_ETPMROW</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">all zero row in transition probability matrix</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_ESIZE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">invalid size</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFORM_EPARTS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">invalid partitioning</p></td>
+</tr>
+</tbody>
+</table>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/error.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_error_macro" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">#define INFORM_ERROR(ERR, TAG)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Set an error pointer <code>ERR</code> to a particular error <code>TAG</code>. If <code>ERR</code> is <code>NULL</code>, this is
+essentially a noop.</p>
+</div>
+<div class="paragraph">
+<p><strong>Example:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int *allocate_array(size_t n, inform_error *err)
+{
+    int *data = malloc(n * sizeof(int));
+    if (!data)
+    {
+        INFORM_ERROR(err, INFORM_ENOMEM);
+    }
+    return data;
+}</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/error.h</code></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+See also
+</td>
+<td class="hdlist2">
+<p><a href="#inform_error_return_macro">INFORM_ERROR_RETURN</a>,
+<a href="#inform_error_return_void_macro">INFORM_ERROR_RETURN_VOID</a></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_error_return_macro" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">#define INFORM_ERROR_RETURN(ERR, TAG, RET)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Set an error pointer <code>ERR</code> to a particular error <code>TAG</code>, and return a value <code>RET</code>. If <code>ERR</code>
+is <code>NULL</code>, this is essentially a just a return statement.</p>
+</div>
+<div class="paragraph">
+<p><strong>Example:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int *double_values(int *array, size_t n, inform_error *err)
+{
+    if (!array)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EFAULT, array);
+    }
+    for (size_t i = 0; i &lt; n; ++i)
+    {
+        array[i] *= 2;
+    }
+    return array;
+}</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/error.h</code></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+See also
+</td>
+<td class="hdlist2">
+<p><a href="#inform_error">INFORM_ERROR</a>,
+<a href="#inform_error_return_void_macro">INFORM_ERROR_RETURN_VOID</a></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_error_return_void_macro" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">#define INFORM_ERROR_RETURN_VOID(ERR, TAG)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Set an error pointer <code>ERR</code> to a particular error <code>TAG</code>, and return void. If <code>ERR</code> is <code>NULL</code>,
+this is essentially a just a return statement.</p>
+</div>
+<div class="paragraph">
+<p><strong>Example:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">void double_values(int *array, size_t n, inform_error *err)
+{
+    if (!array)
+    {
+        INFORM_ERROR_RETURN(err, INFORM_EFAULT);
+    }
+    for (size_t i = 0; i &lt; n; ++i)
+    {
+        array[i] *= 2;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/error.h</code></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+See also
+</td>
+<td class="hdlist2">
+<p><a href="#inform_error_macro">INFORM_ERROR</a>,
+<a href="#inform_error_return_macro">INFORM_ERROR_RETURN</a></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_succeeded" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">bool inform_succeeded(inform_error const *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Return <code>true</code> if the value of the error pointer signifies <strong>success</strong>.</p>
+</div>
+<div class="paragraph">
+<p>This function will only return <code>true</code> if either <code>err == NULL</code> or <code>*err == INFORM_SUCCESS</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+
+// Successes
+assert(inform_succeeded(NULL));
+assert(inform_succeeded(&amp;err));
+
+// Failures
+err = INFORM_FAILURE;
+assert(!inform_succeeded(&amp;err));
+err = INFORM_ENOMEM;
+assert(!inform_succeeded(&amp;err));</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/error.h</code></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+See also
+</td>
+<td class="hdlist2">
+<p><a href="#inform_error">inform_error</a>,
+<a href="#inform_failed">inform_failed</a></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_failed" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">bool inform_failed(inform_error const *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Return <code>true</code> if the value of the error pointer signifies <strong>failure</strong>.</p>
+</div>
+<div class="paragraph">
+<p>This function will only return <code>true</code> if both <code>err != NULL</code> and <code>*err != INFORM_SUCCESS</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+
+// Successes
+assert(!inform_succeeded(NULL));
+assert(!inform_succeeded(&amp;err));
+
+// Failures
+err = INFORM_FAILURE;
+assert(inform_succeeded(&amp;err));
+err = INFORM_ENOMEM;
+assert(inform_succeeded(&amp;err));</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/error.h</code></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+See also
+</td>
+<td class="hdlist2">
+<p><a href="#inform_error">inform_error</a>,
+<a href="#inform_succeeded">inform_succeeded</a></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_strerror" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">char const *inform_strerror(inform_error const *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Return a string describing an error.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+
+// Successes
+assert(strcmp(inform_strerror(NULL), "no error occurred") == 0);
+assert(strcmp(inform_strerror(&amp;err), "no error occurred") == 0);
+
+// Failures
+err = INFORM_FAILURE;
+assert(strcmp(inform_strerror(&amp;err),
+              "an unspecified error occurred") == 0);
+err = INFORM_ENOMEM;
+assert(strcmp(inform_strerror(&amp;err),
+              "malloc/calloc/realloc failed") == 0);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/error.h</code></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+See also
+</td>
+<td class="hdlist2">
+<p><a href="#inform_error">inform_error</a></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="time-series-measures">Time Series Measures</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The original purpose of <strong>Inform</strong> was to analyze time series data. This explains why most of
+<strong>Inform</strong>'s functionality resides in functions specifically optimized for analyzing time
+series. The API was designed to be easy to use in C or C++, or to be wrapped in a
+higher-level language, e.g. <a href="https://elife-asu.github.io/PyInform">Python</a>. This means that we
+avoided some of the "niceties" of C, such as extensive use of macros and other generic
+atrocities, in favor of wrappability. Keep this in mind as you learn the API.</p>
+</div>
+<div class="paragraph">
+<p>Many information measures have "local" variants which compute a time series of point-wise
+values. These local variants have names similar to their averaged or global counterparts,
+e.g <a href="#inform_active_info">inform_active_info</a> and
+<a href="#inform_local_active_info">inform_local_active_info</a>. We have been meticulous in ensuring
+that function and parameter names are consistent across measures. If you notice some
+inconsistency, please <a href="https://github.com/elife-asu/inform/issue">report it as an issue</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="time-series-notation">Notation</h3>
+<div class="paragraph">
+<p>Throughout the discussion of time series measures, we will try to use a consistent notation.
+We will denote random variables as \(X,Y,\ldots\), and let \(x_i,y_i,\ldots\)
+represent the \(i\)-th time step of a time series drawn from the associated random
+variable. Many of the measures consider \(k\)-histories (a.k.a \(k\)-blocks) of the
+time series, e.g. \(x_i^{(k)} = \left\{x_{i-k+1}, x_{i-k+2},\ldots,x_i\right\}\).</p>
+</div>
+<div class="paragraph">
+<p>When denoting probability distributions, we will only make the random variable explicit in
+situations where the notation is ambiguous. We will typically write \(p(x_i)\),
+\(p(x_i^{(k)})\), and \(p(x_i^{(k)}, x_{i+1})\) to denote the empirical probability
+of observing the \(x_i\) state, the \(x_i^{(k)}\) \(k\)-history, and the joint
+probability of observing \(\left(x_i^{(k)}, x_{i+1}\right)\).</p>
+</div>
+<div class="paragraph">
+<p><strong>Please report any notational ambiguities as an
+<a href="https://github.com/elife-asu/inform/issue">issue</a>.</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="time-series-detail">Implementation Details</h3>
+<div class="sect3">
+<h4 id="_the_base_states_and_logarithms">The Base: States and Logarithms</h4>
+<div class="paragraph">
+<p>The word "base" has two different meanings in the context of information measures on time
+series. It could refer to the base of the time series itself, that is the number of unique
+states in the time series. For example, the time series \(\{0,2,1,0,0\}\) is a base-3
+time series. On the other hand, it could refer to the base of the logarithm used in
+computing the information content of the inferred probability distributions. The problem is
+that these two meanings clash. The base of the time series affects the range of values the
+measure can produce, and the base of the logarithm represents a rescaling of those values.</p>
+</div>
+<div class="paragraph">
+<p>In this library we deal with this by <strong>always</strong> using base-2 logarithms, and having the user
+specify the base of the time series — don&#8217;t worry, we <a href="#error-handling">set an error</a> if
+the provided base doesn&#8217;t make sense. All of this ensures that the library is a simple as
+reasonably possible.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_multiple_initial_conditions">Multiple Initial Conditions</h4>
+<div class="paragraph">
+<p>You generally need <strong>a lot</strong> of data to infer a probability distribution.  An experimentalist
+or simulator might then collect data over multiple trials or initial conditions. Most of
+<strong>Inform</strong>'s time series measures allow the user to pass in a two-dimensional, rectangular
+array which each row representing a time series from a different initial condition. From
+this the probability distributions are inferred, and the desired value is calculated. This
+has the downside of requiring that the user store all of the data in memory, but it has the
+advantage of being fast and simple. Trade-offs, man&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>A subsequent release, <a href="https://github.com/elife-asu/inform/milestone/3">likely v1.1.0</a>, will
+allows the initial conditions to have time series of different lengths and will provide
+accumulator implementations of all of these measures that will let the incrementally
+construct the distributions. This will lift some of the memory burden at the expense of
+runtime performance.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_calling_conventions">Calling Conventions</h4>
+<div class="paragraph">
+<p>All of the of the time series functions described in this section use the same basic calling
+conventions and use the same (or similar) argument names were possible.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Argument Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>series</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A 2-D or 3-D, finite-state time series in contiguous, row-major form</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>l</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of "sources" or variables in a 3-D time series</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>n</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of initial conditions per "source"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>m</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of time steps per "source"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>b</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The base of the time series</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>k</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The length history length</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>err</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An error argument</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Average measures generally return a double-precision, floating-point value while local
+variants return a pointer to an appropriately shaped, contiguous array. Local measures
+accept an argument, often named after the function (e.g. local active information takes an
+<code>ai</code> argument), which is used to store the computed local values. If that argument is NULL,
+then the function allocates an array.</p>
+</div>
+<div class="paragraph">
+<p>We will try to note any deviations from these conventions.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="active-info">Active Information</h3>
+<div class="paragraph">
+<p>Active information (AI) was introduced in <a href="#Lizier2012">[Lizier2012]</a> to quantify information storage in
+distributed computations. Active information is defined in terms of a temporally local
+variant</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[a_{X,i}(k) = \log_2{\frac{p(x_i^{(k)}, x_{i+1})}{p(x_i^{(k)})p(x_{i+1})}}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>where the probabilities are constructed empirically from the <em>entire</em> time series. From the
+local variant, the temporally global active information is defined as</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[A_X(k) = \langle a_{X,i}(k) \rangle_i
+       = \sum_{x_i^{(k)},x_{i+1}} p(x_i^{(k)},x_{i+1}) \log_2{\frac{p(x_i^{(k)}, x_{i+1})}{p(x_i^{(k)})p(x_{i+1})}}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>Strictly speaking, the local and average active information are defined as</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[a_{X,i} = \lim_{k\rightarrow \infty}a_{X,i}(k)
+\qquad \textrm{and} \qquad
+A_X = \lim_{k\rightarrow \infty}A_X(k),\]
+</div>
+</div>
+<div class="paragraph">
+<p>but we do not provide limiting functionality in this library
+(<a href="https://github.com/elife-asu/issues/24">yet</a>!).</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_active_info" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_active_info(int const *series, size_t n, size_t m,
+        int b, size_t k, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the average active information with a history length <code>k</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>One initial condition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[9] = {0,0,1,1,1,1,0,0,0};
+double ai = inform_active_info(series, 1, 9, 2, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// ai ~ 0.305958</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Two initial conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[18] = {0,0,1,1,1,1,0,0,0,
+                        1,0,0,1,0,0,1,0,0};
+double ai = inform_active_info(series, 2, 9, 2, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// ai ~ 0.359879</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/active_info.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_local_active_info" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_local_active_info(int const *series, size_t n, size_t m,
+        int b, size_t k, double *ai, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the local active information with a history length <code>k</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>One initial condition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[9] = {0,0,1,1,1,1,0,0,0};
+double *ai = inform_local_active_info(series, 1, 9, 2, 2, NULL, &amp;err);
+assert(inform_succeeded(&amp;err));
+// ai ~ {-0.193, 0.807, 0.222, 0.222, -0.363, 1.222, 0.222}
+free(ai);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Two initial conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[18] = {0,0,1,1,1,1,0,0,0,
+                        1,0,0,1,0,0,1,0,0};
+double ai[14];
+inform_local_active_info(series, 2, 9, 2, 2, ai, &amp;err);
+assert(inform_succeeded(&amp;err));
+// ai ~ { 0.807, -0.363, 0.637, 0.637, -0.778, 0.807, -1.193,
+//        0.807,  0.807, 0.222, 0.807,  0.807, 0.222,  0.807 }
+
+// no need to free since `ai` was statically allocated in this scope
+// free(ai);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/active_info.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="block-entropy">Block Entropy</h3>
+<div class="paragraph">
+<p>Block entropy, also known as \(N\)-gram entropy <a href="#Shannon1948">[Shannon1948]</a>, is the standard Shannon
+entropy of the \(k\)-histories of a time series:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[H(X^{(k)}) = -\sum_{x_i^{(k)}} p(x_i^{(k)}) \log_2{p(x_i^{(k)})}\]
+</div>
+</div>
+<div class="paragraph">
+<p>which reduces to the traditional Shannon entropy for \(k=1\).</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_block_entropy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_block_entropy(int const *series, size_t n, size_t m,
+        int b, size_t k, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the average block entropy of a time series with block size <code>k</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>One initial condition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[9] = {0,0,1,1,1,1,0,0,0};
+
+// k = 1
+double h = inform_block_entropy(series, 1, 9, 2, 1, &amp;err);
+assert(inform_succeeded(&amp;err));
+// h ~ 0.991076
+
+// k = 2
+h = inform_block_entropy(series, 1, 9, 2, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// h ~ 1.811278</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Two initial conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[18] = {0,0,1,1,1,1,0,0,0,
+                        1,0,0,1,0,0,1,0,0};
+double h = inform_active_info(series, 2, 9, 2, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// h ~ 1.936278</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/block_entropy.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_local_block_entropy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_local_block_entropy(int const *series, size_t n,
+        size_t m, int b, size_t k, double *ent, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the local block entropy of a time series with block size <code>k</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>One initial condition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[9] = {0,0,1,1,1,1,0,0,0};
+
+// k == 1
+double *h = inform_local_block_entropy(series, 1, 9, 2, 1, NULL, &amp;err);
+assert(inform_succeeded(&amp;err));
+// h ~ { 0.848, 0.848, 1.170, 1.170, 1.170, 1.170, 0.848, 0.848, 0.848 }
+
+// k == 2
+double *h = inform_local_block_entropy(series, 1, 9, 2, 2, NULL, &amp;err);
+assert(inform_succeeded(&amp;err));
+// h ~ { 1.415, 3.000, 1.415, 1.415, 1.415, 3.000, 1.415, 1.415 }
+
+free(ai);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Two initial conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[18] = {0,0,1,1,1,1,0,0,0,
+                        1,0,0,1,0,0,1,0,0};
+double h[16];
+inform_local_block_entropy(series, 2, 9, 2, 2, h, &amp;err);
+assert(inform_succeeded(&amp;err));
+// h ~ { 1.415, 2.415, 2.415, 2.415, 2.415, 2.000, 1.415, 1.415,
+//       2.000, 1.415, 2.415, 2.000, 1.415, 2.415, 2.000, 1.415 }
+
+// no need to free since `h` was statically allocated in this scope
+// free(h);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/block_entropy.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="conditional-entropy">Conditional Entropy</h3>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Conditional_entropy">Conditional entropy</a> is a measure of the
+amount of information required to describe a random variable \(Y\) given knowledge of
+another random variable \(X\). When applied to time series, two time series are used to
+construct the empirical distributions, and <a href="#inform_shannon_ce">inform_shannon_ce</a> can be
+applied to yield</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[H(Y|X) = - \sum_{x_i,y_i} p(x_i,y_i) \log_2{p(y_i|x_i)}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>This can be viewed as the time-average of the local conditional entropy</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[h_i(Y|X) = -\log_2{p(y_i|x_i)}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>See <a href="#Cover1991">[Cover1991]</a> for more information.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_conditional_entropy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_conditional_entropy(int const *xs, int const *ys,
+        size_t n, int bx, int by, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the conditional entropy between two time series.</p>
+</div>
+<div class="paragraph">
+<p>This function expects the <strong>condition</strong> to be the first argument, <code>xs</code>. It is expected that
+each time series be the same length <code>n</code>, but may have different bases <code>bx</code> and <code>by</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[20] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1};
+int const ys[20] = {0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1};
+
+double ce = inform_conditional_entropy(xs, ys, 20, 2, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// ce == 0.597107
+
+ce = inform_conditional_entropy(ys, xs, 20, 2, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// ce == 0.507757</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/conditional_entropy.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_local_conditional_entropy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_local_conditional_entropy(int const *xs, int const *ys,
+        size_t n, int bx, int by, double *mi, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the local conditional entropy between two time series.</p>
+</div>
+<div class="paragraph">
+<p>This function expects the <strong>condition</strong> to be the first argument, <code>xs</code>. It is expected that
+each time series be the same length <code>n</code>, but may have different bases <code>bx</code> and <code>by</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[20] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1};
+int const ys[20] = {0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1};
+
+double *ce = inform_local_conditional_entropy(xs, ys, 20, 2, 2, NULL, &amp;err);
+assert(inform_succeeded(&amp;err));
+// ce == { 3.00, 3.00, 0.19, 0.19, 0.19, 0.19, 0.19, 0.19, 0.19, 0.19,
+//         0.19, 0.19, 0.19, 0.19, 0.19, 0.19, 0.42, 0.42, 0.42, 2.00 }
+
+inform_local_conditional_entropy(ys, xs, 20, 2, 2, ce, &amp;err);
+assert(inform_succeeded(&amp;err));
+// ce == { 1.32, 1.32, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10,
+//         0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.74, 0.74, 0.74, 3.91 }
+
+free(ce);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/conditional_entropy.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cross-entropy">Cross Entropy</h3>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Cross_entropy">Cross entropy</a> between two distributions
+\(p_X\) and \(q_X\) measures the amount of information needed to identify events
+using a coding scheme optimized for \(q_X\) when \(p_X\) is the "real" distributions
+over \(X\).</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[H(p,q) = -\sum_{x} p(x) \log_2{q(x)}\]
+</div>
+</div>
+<div class="paragraph">
+<p>Cross entropy&#8217;s local variant is equivalent to the self-information of \(q_X\), and as
+such is implemented by <a href="#inform_local_block_entropy">inform_local_block_entropy</a>.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#Cover1991">[Cover1991]</a> for more details.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_cross_entropy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_cross_entropy(int const *ps, int const *qs, size_t n,
+        int b, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the cross entropy between the "true" and "unnatural" distributions \(p_X\) and
+\(q_X\) from associated time series <code>ps</code> and <code>qs</code>, respectively.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const ps[10] = {0,1,1,0,1,0,0,1,0,0};
+int const qs[10] = {0,0,0,0,0,1,1,0,0,1};
+
+double ce = inform_cross_entropy(ps, qs, 10, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// ce == 1.003530
+
+ce = inform_cross_entropy(qs, ps, 10, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// ce == 0.912454</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/cross_entropy.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="effective-information">Effective Information</h3>
+<div class="paragraph">
+<p>Effective information is a <em>causal</em> measure aimed at teasing out the causal structure of a
+dynamical system. In essence, it is the mutual information between an "intervention"
+distribution — a probability distribution over initial states — and the distribution after
+one time step:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[EI(A,p) = I(p,p^TA)\]
+</div>
+</div>
+<div class="paragraph">
+<p>where \(A\) is the transition probability matrix.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#Tononi2003">[Tononi2003]</a>, <a href="#Hoel2013">[Hoel2013]</a> or <a href="#Hoel2017">[Hoel2017]</a> for more information.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_effective_info" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_effective_info(double const *tpm, double const *inter,
+        size_t n, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the effective information from an <code>n</code>\(\times\)<code>n</code> transition probability matrix
+<code>tpm</code> given an intervention distribution <code>inter</code>.</p>
+</div>
+<div class="paragraph">
+<p>If <code>inter</code> is <code>NULL</code>, then the uniform distribution over <code>n</code> is used.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/effective_info.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="entropy-rate">Entropy Rate</h3>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Entropy_rate">Entropy rate</a> quantifies the amount of
+information needed to describe the next state of \(X\) given observations of
+\(X^{(k)}\).  In other wrods, it is the entropy of the time series conditioned on the
+\(k\)-histories.  The local entropy rate</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[h_{X,i}(k) = \log_2{\frac{p(x_i^{(k)}, x_{i+1})}{p(x_i^{(k)})}}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>can be averaged to obtain the global entropy rate</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[H_X(k) = \langle h_{X,i}(k) \rangle_i
+       = \sum_{x_i^{(k)},x_{i+1}} p(x_i^{(k)},x_{i+1}) \log_2{\frac{p(x_i^{(k)}, x_{i+1})}{p(x_i^{(k)})}}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>Much as with <a href="#active-info">active information</a>, the local and average entropy rates are
+formally obtained in the limit</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[h_{X,i} = \lim_{k\rightarrow \infty}h_{X,i}(k)
+\qquad \textrm{and} \qquad
+H_X = \lim_{k\rightarrow \infty}H_X(k),\]
+</div>
+</div>
+<div class="paragraph">
+<p>but we do not provide limiting functionality in this library
+(<a href="https://github.com/elife-asu/issues/24">yet</a>!).</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#Cover1991">[Cover1991]</a> for more details.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_entropy_rate" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_entropy_rate(int const *series, size_t n, size_t m,
+        int b, size_t k, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the average entropy rate with a history length <code>k</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>One initial condition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[9] = {0,0,1,1,1,1,0,0,0};
+double er = inform_entropy_rate(series, 1, 9, 2, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// er ~ 0.679270</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Two initial conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[18] = {0,0,1,1,1,1,0,0,0,
+                        1,0,0,1,0,0,1,0,0};
+double er = inform_entropy_rate(series, 2, 9, 2, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// er ~ 0.625349</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/entropy_rate.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_local_entropy_rate" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_local_entropy_rate(int const *series, size_t n,
+        size_t m, int b, size_t k, double *er, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the local entropy rate with a history length <code>k</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>One initial condition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[9] = {0,0,1,1,1,1,0,0,0};
+double *er = inform_local_entropy_rate(series, 1, 9, 2, 2, NULL, &amp;err);
+assert(inform_succeeded(&amp;err));
+// er ~ { 1.000, 0.000, 0.585, 0.585, 1.585, 0.000, 1.000 }
+free(er);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Two initial conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[18] = {0,0,1,1,1,1,0,0,0,
+                        1,0,0,1,0,0,1,0,0};
+double er[14];
+inform_local_entropy_rate(series, 2, 9, 2, 2, er, &amp;err);
+assert(inform_succeeded(&amp;err));
+// er ~ { 0.415, 1.585, 0.585, 0.585, 1.585, 0.000, 2.000,
+//        0.000, 0.415, 0.585, 0.000, 0.415, 0.585, 0.000 }
+
+// no need to free since `er` was statically allocated in this scope
+// free(er);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/entropy_rate.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="excess-entropy">Excess Entropy</h3>
+<div class="paragraph">
+<p>Formally, the excess entropy is the mutual information between two adjacent, semi-infinite
+blocks of variables:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[E_X = \lim_{k \rightarrow \infty}I[(x_{-k},\ldots,x_{-1}),(x_0,\ldots,x_{k-1})].\]
+</div>
+</div>
+<div class="paragraph">
+<p>Of course, we cannot take the limit in practice, so we implement the finite form:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[E_X(k) = I[(x_{-k},\ldots,x_1),(x_0,\ldots,x_{k-1})].\]
+</div>
+</div>
+<div class="paragraph">
+<p>We can think of excess entropy as a slight generalization of <a href="#active-info">active
+information</a> or a special case of <a href="#predictive-info">predictive information</a>.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#Crutchfield2003">[Crutchfield2003]</a> and <a href="#Feldman2003">[Feldman2003]</a> for more details.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_excess_entropy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_excess_entropy(int const *series, size_t n, size_t m,
+        int b, size_t k, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the excess entropy from a time series with block size <code>k</code>.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/excess_entropy.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_local_excess_entropy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_local_excess_entropy(int const *series, size_t n,
+        size_t m, int b, size_t k, double *ee, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the local excess entropy from a time series with block size <code>k</code>.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/excess_entropy.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="information-flow">Information Flow</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_information_flow" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_information_flow(int const *src, int const *dst,
+        int const *back, size_t l_src, size_t l_dst, size_t l_back,
+        size_t n, size_t m, int b, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/information_flow.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="evidence-of-integration">Evidence Of Integration</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_integration_evidence" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_integration_evidence(int const *series, size_t l,
+        size_t n, int const *b, double *evidence, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/information_flow.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_integration_evidence_part" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_integration_evidence_part(int const *series, size_t l,
+        size_t n, int const *b, size_t const *parts, size_t nparts,
+        double *evidence, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/information_flow.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mutual-information">Mutual Information</h3>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Mutual_information">Mutual information</a> (MI) is a measure of
+the amount of mutual dependence between at least two random variables. Locally, MI is
+defined as</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[i_i(X_1,\ldots,X_l) = \frac{p(x_{1,i},\ldots,x_{l,i})}{p(x_{1,i})\ldots p(x_{l,i})}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>The mutual information is then just the time average of \(i_i(X_1,\ldots,X_l)\):</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[I(X_1,\ldots,X_l) =
+    \sum_{x_{1,i},\ldots,x_{l,i}} p(x_{1,i},\ldots,x_{l,i}) \frac{p(x_{1,i},\ldots,x_{l,i})}{p(x_{1,i})\ldots p(x_{l,i})}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>See <a href="#Cover1991">[Cover1991]</a> for more details.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_mutual_info" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_mutual_info(int const *series, size_t l, size_t n,
+        int const *b, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the mutual information between two or more time series.</p>
+</div>
+<div class="paragraph">
+<p>For this function, <code>l</code> is the number of random variables, and <code>n</code> is the length of each
+variable&#8217;s time series. Each variable can have a different base, so <code>b</code> is an array of
+length <code>l</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>Two variables:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[40] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1, // var 1
+                    0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1  // var 2};
+
+double mi = inform_mutual_info(xs, 2, 20, (int[2]){2,2}, &amp;err);
+assert(inform_succeeded(&amp;err));
+// mi == 0.214171</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Three variables:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[60] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1, // var 1
+                    0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1, // var 2
+                    1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1, // var 3};
+
+double mi = inform_mutual_info(xs, 3, 20, (int[3]){2,2,2}, &amp;err);
+assert(inform_succeeded(&amp;err));
+// mi == 1.095462</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/mutual_info.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_local_mutual_info" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_local_mutual_info(int const *series, size_t l, size_t n,
+        int const *b, double *mi, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the local mutual information between two or more time series.</p>
+</div>
+<div class="paragraph">
+<p>For this function, <code>l</code> is the number of random variables, and <code>n</code> is the length of each
+variable&#8217;s time series. Each variable can have a different base, so <code>b</code> is an array of
+length <code>l</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>Two variables:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[40] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1, // var 1
+                    0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1  // var 2};
+
+double *mi = inform_local_mutual_info(xs, 2, 20, (int[2]){2,2}, NULL, &amp;err);
+assert(inform_succeeded(&amp;err));
+// mi ~ { -1.000, -1.000, 0.222,  0.222, 0.222, 0.222, 0.222, 0.222,
+//         0.222,  0.222, 0.222,  0.222, 0.222, 0.222, 0.222, 0.222,
+//         1.585,  1.585, 1.585, -1.585 }
+free(mi);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Three variables:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[60] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1, // var 1
+                    0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1, // var 2
+                    1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1, // var 3};
+
+
+double *mi = inform_local_mutual_info(xs, 3, 20, (int[3]){2,2,2}, NULL, &amp;err);
+assert(inform_succeeded(&amp;err));
+// mi ~ { 0.737, 0.737, 0.737, 0.737, 0.737, 0.737, 0.737, 0.737,
+//        0.737, 0.737, 0.737, 0.737, 0.737, 0.737, 0.737, 0.737,
+//        3.322, 3.322, 0.322, 0.152 }
+free(mi);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/mutual_info.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="partial-information-decomposition">Partial Information Decomposition</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_pid_source" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">typedef struct inform_pid_source
+{
+    size_t *name;
+    struct inform_pid_source **above;
+    struct inform_pid_source **below;
+    size_t size, n_above, n_below;
+    double imin;
+    double pi;
+} inform_pid_source;</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/pid.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_pid_lattice" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">typedef struct inform_pid_lattice
+{
+    inform_pid_source **sources;
+    inform_pid_source *top;
+    inform_pid_source *bottom;
+    size_t size;
+} inform_pid_lattice;</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/pid.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_pid_lattice_free" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">void inform_pid_lattice_free(inform_pid_lattice *l);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/pid.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_pid" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_pid_lattice *inform_pid(int const *stimulus,
+        int const *responses, size_t l, size_t n, int bs,
+        int const *br, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/pid.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="predictive-information">Predictive Information</h3>
+<div class="paragraph">
+<p>Formally, the predictive information is the mutual information between a finite-history and
+a semi-infinite future:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[P_X(k) = \lim_{l \rightarrow \infty}I[(x_{-k},\ldots,x_{-1}),(x_0,\ldots,x_{l-1})].\]
+</div>
+</div>
+<div class="paragraph">
+<p>Of course, we cannot take the limit in practice, so we implement the finite form:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[P_X(k,l) = I[(x_{-k},\ldots,x_1),(x_0,\ldots,x_{k-1})].\]
+</div>
+</div>
+<div class="paragraph">
+<p>We can think of <a href="#active-info">active information</a> and <a href="#excess-entropy">excess entropy</a>as
+a special cases of predictive information.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#Bialek2001a">[Bialek2001a]</a> and <a href="#Bialek2001b">[Bialek2001b]</a> for more details.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_predictive_info" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_predictive_info(int const *series, size_t n, size_t m,
+        int b, size_t kpast, size_t kfuture, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the predictive information from a time series with history length <code>kpast</code> and
+"future length" <code>kfuture</code>.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/predictive_info.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_local_predictive_info" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_local_predictive_info(int const *series, size_t n,
+        size_t m, int b, size_t kpast, size_t kfuture, double *pi,
+        inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the local predictive information from a time series with history length <code>kpast</code> and
+"future length" <code>kfuture</code>.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/predictive_info.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="relative-entropy">Relative Entropy</h3>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Relative entropy</a>, also
+known as the Kullback-Leibler divergence, measures the amount of information gained in
+switching from a prior distribution \(q_X\) to a posterior distribution \(p_X\) over
+<em>the same support</em>:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[D_{KL}(p||q) = \sum_{x_i} p(x_i) \log_2{\frac{p(x_i)}{q(x_i)}}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>The local counterpart is</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[d_{KL,i}(p||q) = log_2{\frac{p(x_i)}{q(x_i)}}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the average in moving from the local to the non-local relative entropy is taken
+over the posterior distribution.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#Kullback1951">[Kullback1951]</a> and <a href="#Cover1991">[Cover1991]</a> for more information.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_relative_entropy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_relative_entropy(int const *xs, int const *ys, size_t n,
+        int b, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the relative entropy between time series drawn from posterior and prior
+distributions, here <code>xs</code> and <code>ys</code> respectively.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[10] = {0,1,0,0,0,0,0,0,0,1};
+int const ys[10] = {0,1,1,1,1,0,0,1,0,0};
+
+double re = inform_relative_entropy(xs, ys, 10, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// re == 0.278072
+
+re = inform_relative_entropy(ys, xs, 10, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// re == 0.321928</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/relative_entropy.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_local_relative_entropy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_local_relative_entropy(int const *xs, int const *ys,
+        size_t n, int b, double *re, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[10] = {0,1,0,0,0,0,0,0,0,1};
+int const ys[10] = {0,1,1,1,1,0,0,1,0,0};
+
+double *re = inform_local_relative_entropy(xs, ys, 10, 2, NULL, &amp;err);
+assert(inform_succeeded(&amp;err));
+// re ~ { 0.678, -1.322, 0.678, 0.678, 0.678, 0.678, 0.678,
+//        0.678, 0.678, -1.322 };
+
+inform_local_relative_entropy(ys, xs, 10, 2, re, &amp;err);
+assert(inform_succeeded(&amp;err));
+// re ~ { -0.678, 1.322, 1.322, 1.322, 1.322, -0.678, -0.678, 1.322,
+//        -0.678, -0.678 }
+
+free(re);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/relative_entropy.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="separable-information">Separable Information</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_separable_info" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_separable_info(int const *srcs, int const *dest,
+        size_t l, size_t n, size_t m, int b, size_t k,
+        inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/separable_info.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_local_separable_info" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_local_separable_info(int const *srcs, int const *dest,
+        size_t l, size_t n, size_t m, int b, size_t k, double *si,
+        inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/separable_info.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="transfer-entropy">Transfer Entropy</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_transfer_entropy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_transfer_entropy(int const *src, int const *dst,
+        int const *back, size_t l, size_t n, size_t m, int b, size_t k,
+        inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/transfer_entropy.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_local_transfer_entropy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_local_transfer_entropy(int const *src, int const *dst,
+        int const *back, size_t l, size_t n, size_t m, int b, size_t k,
+        double *te, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/transfer_entropy.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="utilities">Utilities</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="binning-time-series">Binning Time Series</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_range" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_range(double const *series, size_t n, double *min,
+        double *max, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the range, minimum and maximum values in a floating-point time series.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error = INFORM_SUCCESS;
+double min, max, rng;
+rng = inform_range(NULL, 6, &amp;min, &amp;max, &amp;err);
+assert(inform_failed(&amp;err));
+assert(rng == 0.0);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error = INFORM_SUCCESS;
+double arr[6] = { 0.2, 0.5, -3.2, 1.8, 0.6, 2.3 };
+double min, max, rng;
+rng = inform_range(arr, 0, &amp;min, &amp;max, &amp;err);
+assert(inform_failed(&amp;err));
+assert(rng == 0.0);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error = INFORM_SUCCESS;
+double arr[6] = { 0.2, 0.5, -3.2, 1.8, 0.6, 2.3 };
+double min, max, rng;
+rng = inform_range(arr, 6, &amp;min, &amp;max, &amp;err);
+// { min, max, rng } ~ { -3.2, 1.8, 5.0 }</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error = INFORM_SUCCESS;
+double arr[6] = { 0.2, 0.5, -3.2, 1.8, 0.6, 2.3 };
+double rng = inform_range(arr, 6, NULL, NULL, &amp;err);
+// rng ~ 5.0</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/binning.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_bin" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_bin(double const *series, size_t n, int b, int *binned,
+        inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Bin a floating-point time series into a finite-state time series with <code>b</code> uniform sized
+bins, and return the size of the bins.</p>
+</div>
+<div class="paragraph">
+<p>If the size of each bin is too small, less than <code>10*ε</code>, then all entries are placed in the
+same bin and an error is set. (<code>ε</code> is the double-precision machine epsilon.)</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int binned[6];
+double series[6] = {1,2,3,4,5,6};
+double bin_size = inform_bin(series, 6, 2, binned, &amp;err);
+assert(bin_size == 2.5);
+// binned ~ {0,0,0,1,1,1}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int binned[6];
+double series[6] = {1,2,3,4,5,6};
+double bin_size = inform_bin(series, 6, 3, binned, &amp;err);
+assert(bin_size == 5.0/3.0);
+// binned ~ {0,0,1,1,2,2}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int binned[6];
+double series[6] = {1,2,3,4,5,6};
+double bin_size = inform_bin(series, 6, 6, binned, &amp;err);
+assert(bin_size == 5.0/3.0);
+// binned ~ {0,1,2,3,4,5}</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/binning.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_bin_step" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int inform_bin_step(double const *series, size_t n, double step,
+        int *binned, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Bin a floating-point time series into a number bins of a specified size <code>step</code>, and return
+the number of bins.</p>
+</div>
+<div class="paragraph">
+<p>If the bin size is too small, less than <code>10*ε</code>, then an error is set. (<code>ε</code> is the
+double-precision machine epsilon.)</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int binned[6];
+double series[6] = {1,2,3,4,5,6};
+int n = inform_bin_step(series, 6, 2.0, binned, &amp;err);
+assert(n == 3);
+// binned ~ {0,0,1,1,2,2}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int binned[6];
+double series[6] = {1,2,3,4,5,6};
+int n = inform_bin(series, 6, 2.5, binned, &amp;err);
+assert(n == 3);
+// binned ~ {0,0,0,1,1,2}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int binned[6];
+double series[6] = {1,2,3,4,5,6};
+int n = inform_bin(series, 6, 1.0, binned, &amp;err);
+assert(n == 6);
+// binned ~ {0,1,2,3,4,5}</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/binning.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_bin_bounds" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int inform_bin_bounds(double const *series, size_t n,
+        double const *bounds, size_t m, int *binned,
+        inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/binning.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="black-boxing-time-series">Black-Boxing Time Series</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_black_box" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int *inform_black_box(int const *series, size_t l, size_t n, size_t m,
+        int const *b, size_t const *r, size_t const *s, int *box,
+        inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/black_boxing.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_black_box_parts" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int *inform_black_box_parts(int const *series, size_t l, size_t n,
+        int const *b, size_t const *parts, size_t nparts, int *box,
+        inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/black_boxing.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="coalescing-time-series">Coalescing Time Series</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_coalesce" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int inform_coalesce(int const *series, size_t n, int *coal,
+        inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/coalesce.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="encoding-states">Encoding/Decoding States</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_encode" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int32_t inform_encode(int const *state, size_t n, int b,
+        inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/encode.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_decode" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">void inform_decode(int32_t encoding, int b, int *state, size_t n,
+        inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/encode.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="partitioning-time-series">Partitioning Time Series</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_first_partitioning" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t *inform_first_partitioning(size_t size);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/partitions.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_next_partitioning" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t inform_next_partitioning(size_t *xs, size_t size);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/partitions.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="random-time-series">Random Time Series</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_random_seed" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">void inform_random_seed();</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/random.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_random_int" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int inform_random_int(int a, int b);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/random.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_random_ints" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int *inform_random_ints(int a, int b, size_t n);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/random.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_random_series" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int *inform_random_series(size_t n, int b);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/random.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="transition-probability-matrix">Time Series to TPM</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_tpm" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_tpm(int const *series, size_t n, size_t m, int b,
+        double *tpm, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Headers
+</td>
+<td class="hdlist2">
+<p><code>inform/utilities.h</code>,
+<code>inform/utilities/tpm.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="empirical-distributions">Empirical Distributions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="index.html#inform_dist"><code>inform_dist</code></a> struct provides an <em>empirical</em> distribution,
+i.e. a histogram, representing the observed frequencies of some fixed-sized set of events.
+This structure is the basis for all of the fundamental information measures provided on
+discrete probability distributions.</p>
+</div>
+<div class="paragraph">
+<p>The purpose of the <a href="index.html#inform_dist"><code>inform_dist</code></a> is to make writing custom
+implementations of information-theoretic measures possible. Most of the measures implemented
+in <strong>Inform</strong> use this structure at their core.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Type
+</td>
+<td class="hdlist2">
+<p><a href="#inform_dist">inform_dist</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Allocation
+</td>
+<td class="hdlist2">
+<p><a href="#inform_dist_alloc">inform_dist_alloc</a>,
+<a href="#inform_dist_realloc">inform_dist_realloc</a>,
+<a href="#inform_dist_copy">inform_dist_copy</a>,
+<a href="#inform_dist_dup">inform_dist_dup</a>,
+<a href="#inform_dist_create">inform_dist_create</a>,
+<a href="#inform_dist_infer">inform_dist_infer</a>,
+<a href="#inform_dist_approximate">inform_dist_approximate</a>,
+<a href="#inform_dist_uniform">inform_dist_uniform</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Deallocation
+</td>
+<td class="hdlist2">
+<p><a href="#inform_dist_free">inform_dist_free</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Accessors/Mutators
+</td>
+<td class="hdlist2">
+<p><a href="#inform_dist_size">inform_dist_size</a>,
+<a href="#inform_dist_counts">inform_dist_counts</a>,
+<a href="#inform_dist_is_valid">inform_dist_is_valid</a>,
+<a href="#inform_dist_get">inform_dist_get</a>,
+<a href="#inform_dist_set">inform_dist_set</a>,
+<a href="#inform_dist_tick">inform_dist_tick</a>,
+<a href="#inform_dist_accumulate">inform_dist_accumulate</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Probabilities
+</td>
+<td class="hdlist2">
+<p><a href="#inform_dist_prob">inform_dist_prob</a>,
+<a href="#inform_dist_dump">inform_dist_dump</a></p>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="dist-type">Distribution Type</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">typedef struct inform_distribution
+{
+    /// the histogram or array of observation frequencies
+    uint32_t *histogram;
+    /// the size of the support
+    size_t size;
+    /// the number of observations made so far
+    uint64_t counts;
+} inform_dist;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A distribution of observed event frequencies</p>
+</div>
+<div class="paragraph">
+<p>This structure is the basis for almost all of the calculations performed via the library. It
+provides a means of managing observations and converting the observed event frequencies to
+probabilities.</p>
+</div>
+<div class="paragraph">
+<p>A distribution can be allocated with a set number of observable events
+(<a href="#inform_dist_alloc">inform_dist_alloc</a>), resized
+(<a href="#inform_dist_realloc">inform_dist_realloc</a>), copied
+(<a href="#inform_dist_copy">inform_dist_copy</a>) or duplicated (<a href="#inform_dist_dup">inform_dist_dup</a>).
+Once the distribution has served its purpose, it can be free&#8217;d
+(<a href="#inform_dist_free">inform_dist_free</a>).</p>
+</div>
+<div class="paragraph">
+<p>The distribution is, roughly, a histogram with finite support. The events are assumed to be
+mapped to the dense set of integers \(\{0,1,\ldots,N-1\}\) where \(N\) is the number
+of observable events. The number of observable events can be extracted with
+<a href="#inform_dist_size">inform_dist_size</a>.</p>
+</div>
+<div class="paragraph">
+<p>Events can be observed one at a time (<a href="#inform_dist_tick">inform_dist_tick</a>) or in batches
+(<a href="#inform_dist_set">inform_dist_set</a>). The occurrence frequency of a given event can be
+obtained (<a href="#inform_dist_get">inform_dist_get</a>) as can the total number of observations
+(<a href="#inform_dist_counts">inform_dist_counts</a>).</p>
+</div>
+<div class="paragraph">
+<p>Once the distribution populated, the probabilities can be extracted in either
+element-by-element (<a href="#inform_dist_prob">inform_dist_prob</a>) or dumped to a dynamically
+allocated array (<a href="#inform_dist_dump">inform_dist_dump</a>).</p>
+</div>
+<div class="paragraph">
+<p>Whenever the size of the support or the number of observed events is zero, the distribution
+is considered invalid meaning that you can&#8217;t trust any probabilities extracted from it. One
+can use <a href="#inform_dist_is_valid">inform_dist_is_valid</a> to assess the validity of the
+distribution.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dist-allocation">Allocation</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_alloc" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist* inform_dist_alloc(size_t n);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Allocate a distribution with a specified support size.</p>
+</div>
+<div class="paragraph">
+<p>The allocation will fail and return <code>NULL</code> if either <code>n == 0</code> or the memory allocation fails
+for whatever reason.</p>
+</div>
+<div class="paragraph">
+<p>Immediately following allocation, the distribution is invalid.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_alloc(0);
+assert(dist == NULL);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_alloc(2);
+assert(dist != NULL);
+assert(dist-&gt;size == 2);
+assert(dist-&gt;counts == 0);
+// dist-&gt;histogram ~ {0,0}
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_realloc" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist* inform_dist_realloc(inform_dist *dist, size_t n);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resize the distribution to have new support.</p>
+</div>
+<div class="paragraph">
+<p>If the distribution is <code>NULL</code>, a new distribution of the requested size is allocated.</p>
+</div>
+<div class="paragraph">
+<p>If the distribution already has the requested size, then the original distribution is
+returned. If the requested size is greater than the current size, then the newly observable
+events are assigned zero frequency. If the requested size is less than the current size,
+then the discarded events are lost and the observation count is adjusted accordingly.</p>
+</div>
+<div class="paragraph">
+<p>Note that the distribution cannot be reduced to size <code>0</code>. In that case the distribution is
+left unmodified.</p>
+</div>
+<div class="paragraph">
+<p>In the event that the reallocation fails, the original distribution is left untouched.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_alloc(2);
+assert(dist);
+// dist-&gt;histogram ~ {0,0}
+
+inform_dist *bigger = inform_dist_realloc(dist, 5);
+assert(bigger);
+// bigger-&gt;histogram ~ {0,0,0,0,0}
+
+inform_dist *smaller = inform_dist_realloc(bigger, 3);
+assert(smaller != NULL);
+// smaller-&gt;histogram ~ {0,0,0}
+
+inform_dist_free(smaller);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_copy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist* inform_dist_copy(inform_dist const *src,
+        inform_dist *dest);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Copy a distribution to a destination.</p>
+</div>
+<div class="paragraph">
+<p>If the source distribution is <code>NULL</code>, then the destination is left untouched and <code>NULL</code> is
+returned.</p>
+</div>
+<div class="paragraph">
+<p>In the event that the destination is <code>NULL</code> or has a different size from that of the source,
+the destination is reallocated, and the result is returned.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *source = inform_dist_alloc(5);
+assert(source);
+for (int i = 0; i &lt; (int) source-&gt;size; ++i)
+    source-&gt;histogram[i] = i;
+// source-&gt;histogram ~ {0,1,2,3,4};
+
+inform_dist *target = inform_dist_alloc(5);
+assert(target);
+
+inform_dist_copy(source, target);
+// target-&gt;histogram ~ {0,1,2,3,4};
+
+inform_dist_free(target);
+inform_dist_free(source);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_dup" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist* inform_dist_dup(inform_dist const *dist);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Duplicate a distribution.</p>
+</div>
+<div class="paragraph">
+<p>This function simply duplicates a distribution, essentially allocating a new distribution
+and copying the contents of the source to the new distribution.</p>
+</div>
+<div class="paragraph">
+<p>If the allocation fails or the source distribution is <code>NULL</code>, then the return value is
+<code>NULL</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *source = inform_dist_alloc(5);
+assert(source);
+for (int i = 0; i &lt; (int) source-&gt;size; ++i)
+    source-&gt;histogram[i] = i;
+// source-&gt;histogram ~ {0,1,2,3,4};
+
+inform_dist *target = inform_dist_dup(source);
+assert(target);
+// target-&gt;histogram ~ {0,1,2,3,4};
+
+inform_dist_free(target);
+inform_dist_free(source);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_create" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist* inform_dist_create(uint32_t const *data, size_t n);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create a distribution from an underlying histogram.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_create((int[5]){0,1,2,3,4}, 5);
+assert(dist);
+// dist-&gt;histogram ~ {0,1,2,3,4}
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_infer" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist* inform_dist_infer(int const *events, size_t n);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Infer a distribution from a collection of observed events.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_infer((int[]){0,0,1,0,1}, 5);
+assert(dist);
+// dist-&gt;histogram ~ {3,2}
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_infer((int[]){0,0,1,0,1,2,2,1}, 8);
+// dist-&gt;histogram ~ {3,3,2}
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_approximate" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist* inform_dist_approximate(double const *probs, size_t n,
+        double tol);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Approximate a given probability distribution to a given tolerance.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double probs[3] = {0.5, 0.2, 0.3};
+inform_dist *dist = inform_dist_approximate(probs, 3, 1e-3);
+assert(dist);
+// dist-&gt;histogram ~ {5, 2, 3}
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double probs[2] = {1./3, 2./3};
+inform_dist *dist = inform_dist_approximate(probs, 2, 1e-3);
+assert(dist);
+// dist-&gt;histogram ~ {1, 2}
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double probs[4] = {1./3, 1./3, 1./6, 1./6};
+inform_dist *dist = inform_dist_approximate(probs, 4, 1e-3);
+assert(dist);
+// dist-&gt;histogram ~ {333,333,166,166}
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double probs[4] = {1./7, 2./7, 1./3, 10./42};
+inform_dist *dist = inform_dist_approximate(probs, 4, 1e-3);
+assert(dist);
+// dist-&gt;histogram ~ {142,285,333,238}
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_uniform" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist* inform_dist_uniform(size_t n);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create a uniform distribution of a given size.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_uniform(0);
+assert(dist == NULL);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_uniform(3);
+assert(dist);
+// dist-&gt;histogram ~ {1,1,1}
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dist-deallocation">Deallocation</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_free" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">void inform_dist_free(inform_dist *dist);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Free all dynamically allocated memory associated with a distribution.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = NULL;
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_alloc(3);
+assert(dist);
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dist-access">Accessors/Mutators</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_size" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t inform_dist_size(inform_dist const *dist);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Get the size of the distribution&#8217;s support.</p>
+</div>
+<div class="paragraph">
+<p>If the distribution is <code>NULL</code>, then a support of <code>0</code> is returned.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = NULL;
+assert(inform_dist_size(dist) == 0);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_uniform(5);
+assert(dist);
+assert(inform_dist_size(dist) == 5);
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_counts" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">uint64_t inform_dist_counts(inform_dist const *dist);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Get the total number of observations so far made.</p>
+</div>
+<div class="paragraph">
+<p>If the distribution is <code>NULL</code>, then return <code>0</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = NULL;
+assert(inform_dist_counts(dist) == 0);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_uniform(5);
+assert(dist);
+assert(inform_dist_counts(dist) == 5);
+inform_dist_set(dist,2) = 4;
+inform_dist_set(dist,3) = 3;
+assert(inform_dist_counts(dist) == 10);
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_is_valid" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">bool inform_dist_is_valid(inform_dist const *dist);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Determine whether or not the distribution is valid.</p>
+</div>
+<div class="paragraph">
+<p>In order to safely extract probabilities, the distribution must be non-<code>NULL</code>, the size of
+the support must be non-zero and the number of observations must be non-zero. In any other
+case, the distribution is invalid.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = NULL;
+assert(!inform_dist_is_valid(dist));</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_alloc(3);
+assert(dist);
+assert(!inform_dist_is_valid(dist));
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_uniform(5);
+assert(dist);
+assert(inform_dist_is_valid(dist));
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_get" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">uint32_t inform_dist_get(inform_dist const *dist, size_t event);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Get the number of occurrences of a given event.</p>
+</div>
+<div class="paragraph">
+<p>If the distribution is <code>NULL</code> or the <code>event</code> is not in the support, <code>0</code> is returned.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = NULL;
+assert(inform_dist_get(dist, 0) == 0);
+assert(inform_dist_get(dist, 1) == 0);
+assert(inform_dist_get(dist, 2) == 0);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_create((int[]){3,2,1,0}, 4);
+assert(dist);
+assert(inform_dist_get(dist, 0) == 3);
+assert(inform_dist_get(dist, 1) == 2);
+assert(inform_dist_get(dist, 2) == 1);
+assert(inform_dist_get(dist, 3) == 0);
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_set" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">uint32_t inform_dist_set(inform_dist *dist, size_t event, uint32_t x);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Set the number of occurrences of a given event.</p>
+</div>
+<div class="paragraph">
+<p>This function manually sets the number of occurrences of a given event.  Note that the only
+restriction is that the value be positive. This means that this function can be used to
+invalidate the distribution by changing all of the event frequencies to zero.</p>
+</div>
+<div class="paragraph">
+<p>If the event is not in the support or the distribution is <code>NULL</code>, then nothing happens and
+zero is returned.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = NULL;
+assert(inform_dist_set(dist, 0, 5) == 0);
+assert(inform_dist_get(dist, 0) == 0);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_alloc(2);
+
+assert(inform_dist_set(dist, 0, 3) == 3);
+assert(inform_dist_set(dist, 1, 7) == 7);
+
+assert(inform_dist_get(dist, 0) == 3);
+assert(inform_dist_get(dist, 1) == 7);
+
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_tick" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">uint32_t inform_dist_tick(inform_dist *dist, size_t event);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Increment the number of observations of a given event.</p>
+</div>
+<div class="paragraph">
+<p>As an alternative to inform_dist_set, this function simply increments the number of
+occurrences of a given event. This is useful for when iteratively observing events.</p>
+</div>
+<div class="paragraph">
+<p>If the event is not in the support or the distribution is <code>NULL</code>, then
+nothing happens and zero is returned.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = NULL;
+assert(inform_dist_tick(dist, 0) == 0);
+assert(inform_dist_tick(dist, 1) == 0);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_create((int[]){2,4}, 2);
+
+assert(inform_dist_tick(dist, 0) == 3);
+assert(inform_dist_tick(dist, 1) == 5);
+
+assert(inform_dist_get(dist, 0) == 3);
+assert(inform_dist_get(dist, 1) == 5);
+
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_accumulate" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t inform_dist_accumulate(inform_dist *dist, int const *events,
+        size_t n);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Accumulate observations from a series.</p>
+</div>
+<div class="paragraph">
+<p>If an invalid distribution is provided, no events will be observed (0 will be returned). If
+an invalid event is provided, then the number of valid events to that point will be
+returned.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int const events[5] = {0,0,1,0,1};
+assert(inform_dist_accumulate(NULL, events, 5) == 0);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_create((int[]){1,2,3}, 3);
+assert(dist);
+assert(inform_dist_accumulate(dist, NULL, 5) == 0);
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int const events[5] = {0,0,1,0,1};
+inform_dist *dist = inform_dist_create((int[]){1,2}, 2);
+assert(dist);
+assert(inform_dist_accumulate(dist, events, 5) == 5);
+// dist-&gt;histogram ~ { 4, 4 }
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int const events[5] = {0,1,1,3,1};
+inform_dist *dist = inform_dist_create((int[]){1,2}, 2);
+assert(dist);
+assert(inform_dist_accumulate(dist, events, 5) == 3);
+// dist-&gt;histogram ~ { 2, 4 }
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dist-probabilities">Probabilities</h3>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_prob" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_dist_prob(inform_dist const *dist, size_t event);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Extract the probability of an event.</p>
+</div>
+<div class="paragraph">
+<p>This function simply computes the probability of a given event and returns that value.</p>
+</div>
+<div class="paragraph">
+<p>If the event is not in the support, the distribution is <code>NULL</code>, or no observations have yet
+been made, then a zero probability is returned.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = NULL;
+assert(inform_dist_prob(dist, 0) == 0.0);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_create((int[]){2,2,4}, 3);
+assert(dist);
+assert(inform_dist_prob(dist, 0) == 0.25);
+assert(inform_dist_prob(dist, 1) == 0.25);
+assert(inform_dist_prob(dist, 2) == 0.50);
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_dist_dump" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t inform_dist_dump(inform_dist const *dist, double *probs,
+        size_t n);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dump the probabilities of all events to an array.</p>
+</div>
+<div class="paragraph">
+<p>This function computes the probabilities of all of the events in the support, stores them in
+the provided array, and the number of values written.</p>
+</div>
+<div class="paragraph">
+<p>If the distribution is <code>NULL</code>, -1 is returned. If the destination is NULL, -2 is returned.
+If <code>n</code> is not equal to the distribution&#8217;s support, -3 is returned.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double probs[3];
+assert(inform_dist_dump(NULL, probs, 3) == -1);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_dist *dist = inform_dist_create((int[]){2,2,4}, 3);
+assert(dist);
+assert(inform_dist_dump(dist, NULL, 3) == -2);
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double probs[3];
+inform_dist *dist = inform_dist_create((int[]){2,2,4}, 3);
+assert(dist);
+assert(inform_dist_dump(dist, NULL, 2) == -3);
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double probs[3];
+inform_dist *dist = inform_dist_create((int[]){2,2,4}, 3);
+assert(dist);
+assert(inform_dist_dump(dist, NULL, 3) == 0);
+// probs ~ { 0.25, 0.25, 0.50 };
+inform_dist_free(dist);</code></pre>
+</div>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/dist.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="shannon-information-measures">Shannon Information Measures</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>inform/shannon.h</code> header provides a collection of entropy and information measures on
+discrete probability distributions (<a href="index.html#inform_dist"><code>inform_dist</code></a>). These
+functions provide the core of <strong>Inform</strong> as all of the time series analysis functions are
+build upon them.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Entropy
+</td>
+<td class="hdlist2">
+<p><a href="#inform_shannon_si">inform_shannon_si</a>,
+<a href="#inform_shannon_entropy">inform_shannon_entropy</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Mutual Information
+</td>
+<td class="hdlist2">
+<p><a href="#inform_shannon_pmi">inform_shannon_pmi</a>,
+<a href="#inform_shannon_mi">inform_shannon_mi</a>,
+<a href="#inform_shannon_multi_pmi">inform_shannon_multi_pmi</a>,
+<a href="#inform_shannon_multi_mi">inform_shannon_multi_mi</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Conditional Entropy
+</td>
+<td class="hdlist2">
+<p><a href="#inform_shannon_pce">inform_shannon_pce</a>,
+<a href="#inform_shannon_ce">inform_shannon_ce</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Conditional Mutual Information
+</td>
+<td class="hdlist2">
+<p><a href="#inform_shannon_pcmi">inform_shannon_pcmi</a>,
+<a href="#inform_shannon_cmi">inform_shannon_cmi</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Relative Entropy
+</td>
+<td class="hdlist2">
+<p><a href="#inform_shannon_pre">inform_shannon_pre</a>,
+<a href="#inform_shannon_re">inform_shannon_re</a></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Cross Entropy
+</td>
+<td class="hdlist2">
+<p><a href="#inform_shannon_cross">inform_shannon_cross</a></p>
+</td>
+</tr>
+</table>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_shannon_si" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_si(inform_dist const *dist, size_t event,
+        double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the Shannon self-information of an event given some distribution</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#Shannon1948">[Shannon1948]</a> for more details.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_shannon_entropy" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_entropy(inform_dist const *dist, double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the Shannon information of a distribution.</p>
+</div>
+<div class="paragraph">
+<p>This function will return <code>NaN</code> if the distribution is not valid, i.e.
+<code>!inform_dist_is_valid(dist)</code>.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#Shannon1948">[Shannon1948]</a> for more details.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_shannon_pmi" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_pmi(inform_dist const *joint,
+        inform_dist const *marginal_x, inform_dist const *marginal_y,
+        size_t event_joint, size_t event_x, size_t event_y,
+        double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the point-wise mutual information of an combination of events</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_shannon_mi" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_mi(inform_dist const *joint,
+        inform_dist const *marginal_x, inform_dist const *marginal_y,
+        double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the Shannon-based mutual information of a distribution and two marginals.</p>
+</div>
+<div class="paragraph">
+<p>This function will return <code>NaN</code> if <code>inform_shannon</code> returns <code>NaN</code> when applied to any of the
+distribution arguments.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_shannon_pce" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_pce(inform_dist const *joint,
+        inform_dist const *marginal, size_t event_joint,
+        size_t event_marginal, double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the point-wise conditional entropy of a combination of events</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_shannon_ce" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_ce(inform_dist const* joint,
+        inform_dist const *marginal, double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the Shannon-based conditional entropy of a joint distribution and a marginal.</p>
+</div>
+<div class="paragraph">
+<p>This function will return <code>NaN</code> if <code>inform_shannon</code> returns <code>NaN</code> when applied to any of the
+distribution arguments.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_shannon_pcmi" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_pcmi(inform_dist const *joint,
+        inform_dist const *marginal_xz, inform_dist const *marginal_yz,
+        inform_dist const *marginal_z, size_t event_joint,
+        size_t event_marginal_xz, size_t event_marginal_yz,
+        size_t event_marginal_z, double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the point-wise conditional mutual information of a combination of events</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_shannon_cmi" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_cmi(inform_dist const *joint,
+        inform_dist const *marginal_xz, inform_dist const *marginal_yz,
+        inform_dist const *marginal_z, double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the conditional mutual entropy of a joint distribution, and the xz-, yz-, and
+z-marginals.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_shannon_pre" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_pre(inform_dist const *p, inform_dist const *q,
+        size_t event, double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the point-wise relative entropy between two distributions with equal support size at
+some event.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_shannon_re" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_re(inform_dist const *p, inform_dist const *q,
+        double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the relative entropy between two distributions with equal support size.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_shannon_cross" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_cross(inform_dist const *p, inform_dist const *q,
+        double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the cross entropy between two distributions with equal support size.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_shannon_multi_pmi" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_multi_pmi(inform_dist const *joint,
+        inform_dist const **marginals, size_t n, size_t joint_event,
+        size_t const *marginal_events, double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the multivariate point-wise mutual information between a collection of distributions.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div id="inform_" class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_shannon_multi_mi(inform_dist const *joint,
+        inform_dist const **marginals, size_t n, double base);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the multivariate mutual information between a collection of distributions.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Header
+</td>
+<td class="hdlist2">
+<p><code>inform/shannon.h</code></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="references">References</h2>
+<div class="sectionbody">
+<div class="ulist bibliography">
+<ul class="bibliography">
+<li>
+<p><a id="Bialek2001a"></a>[Bialek2001a] Bialek, W., Nemenman, I. and Naftali, T. (2001)
+"<a href="https://dx.doi.org/10.1162/089976601753195969">Predictability, complexity, and
+learning</a>". <em>Neural computation</em>. <strong>13</strong> (11): 2409-2463.  doi:10.1162/089976601753195969</p>
+</li>
+<li>
+<p><a id="Bialek2001b"></a>[Bialek2001b] Bialek, W., Nemenman, I. and Naftali, T. (2001)
+"<a href="https://dx.doi.org/10.1016/S0378-4371(01)00444-7">Complexity through nonextensivity</a>"
+<em>Physica A</em>. <strong>302</strong> (1): 89-99. doi:10.1016/S0378-4371(01)00444-7</p>
+</li>
+<li>
+<p><a id="Cover1991"></a>[Cover1991] Cover, T.M and Thomas, J.A. (1991) "Elements of information theory". New
+York: Wiley. ISBN 0-471-06259-6.</p>
+</li>
+<li>
+<p><a id="Crutchfield2003"></a>[Crutchfield2003] Crutchfield, J.P. and Feldman D.P. (2003)
+"<a href="https://dx.doi.org/doi/10.1063/1.1530990">Regularities unseen, randomness observed:
+Levels of entropy convergence</a>". <em>Chaos</em>. <strong>13</strong> (1): 25-54. doi:10.1063/1.1530990.</p>
+</li>
+<li>
+<p><a id="Feldman2003"></a>[Feldman2003] Feldman, D.P. and Crutchfield, J.P. (2003)
+"<a href="https://dx.doi.org/10.1103/PhysRevE.67.051104">Structural
+information in two-dimensional patterns: Entropy convergence and excess entropy</a>".
+<em>Physical Review E</em>. <strong>67</strong> (5): 051104. doi:10.1103/PhysRevE.67.051104.</p>
+</li>
+<li>
+<p><a id="Hoel2013"></a>[Hoel2013] Hoel, E.P., Albantakis, L. and Tononi, G. (2013)
+"<a href="https://dx.doi.org/10.1073/pnas.1314922110">Quantifying causal emergence shows that
+macro can beat micro</a>". <em>Proceedings of the National Academy of Sciences</em>. <strong>110</strong> (4):
+19790-19795. doi:10.1073/pnas.1314922110.</p>
+</li>
+<li>
+<p><a id="Hoel2017"></a>[Hoel2017] Hoel, E.P. (2017) "<a href="https://dx.doi.org/10.3390/e19050188">When the map
+is better than the territory</a>". <strong>19</strong> (5): 188. doi:10.3390/e19050188.</p>
+</li>
+<li>
+<p><a id="Kullback1951"></a>[Kullback1951] Kullback, S. and Leibler, R.A. (1951)
+"<a href="https://dx.doi.org/10.1214/aoms/1177729694">On information an sufficiency</a>". <em>Annals
+of Mathematical Statistics</em>. <strong>22</strong> (1): 79-86.  doi:10.1214/aoms/1177729694. MR 39968.</p>
+</li>
+<li>
+<p><a id="Lizier2012"></a>[Lizier2012] Lizier, J.T., Prokopenko, M. and Zomaya, A.Y. (2012)
+"<a href="https://dx.doi.org/10.1016/j.ins.2012.04.0.16">Local measures of information storage in
+complex distributed computation</a>". <em>Information Sciences</em>. <strong>208</strong>: 39-54.
+doi:10.1016/j.ins.2012.04.016.</p>
+</li>
+<li>
+<p><a id="Shannon1948"></a>[Shannon1948] Shannon, C.E. (July-October 1948)
+"<a href="https://dx.doi.org/10.1002%2Fj.1538-7305.1948.tb01338.x">A Mathematical Theory of
+Communication</a>". <em>Bell System Technology Journal</em>. <strong>27</strong> (3): 379-423.
+doi:10.1002/j.1538-7305.1948.tb01448.x.</p>
+</li>
+<li>
+<p><a id="Tononi2003"></a>[Tononi2003] Tononi, G. and Sporns, O. (2003)
+"<a href="https://dx.doi.org/101186/1471-2202-4-31">Measuring information integration</a>". <em>BMC
+neuroscience</em>. <strong>4</strong> (1): 31. doi:101186/1471-2202-4-31.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 1.0.0<br>
+Last updated 2017-11-29 20:51:45 UTC
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<script>prettyPrint()</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [["\\(", "\\)"]],
+    displayMath: [["\\[", "\\]"]],
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+  TeX: { equationNumbers: { autoNumber: "none" } }
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+</body>
+</html>

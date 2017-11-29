@@ -1,0 +1,325 @@
+[[utilities]]
+= Utilities
+
+[[binning-time-series]]
+== Binning Time Series
+
+****
+[[inform_range]]
+[source,c]
+----
+double inform_range(double const *series, size_t n, double *min,
+        double *max, inform_error *err);
+----
+Compute the range, minimum and maximum values in a floating-point time series.
+
+*Examples:*
+[source,c]
+----
+inform_error = INFORM_SUCCESS;
+double min, max, rng;
+rng = inform_range(NULL, 6, &min, &max, &err);
+assert(inform_failed(&err));
+assert(rng == 0.0);
+----
+[source,c]
+----
+inform_error = INFORM_SUCCESS;
+double arr[6] = { 0.2, 0.5, -3.2, 1.8, 0.6, 2.3 };
+double min, max, rng;
+rng = inform_range(arr, 0, &min, &max, &err);
+assert(inform_failed(&err));
+assert(rng == 0.0);
+----
+[source,c]
+----
+inform_error = INFORM_SUCCESS;
+double arr[6] = { 0.2, 0.5, -3.2, 1.8, 0.6, 2.3 };
+double min, max, rng;
+rng = inform_range(arr, 6, &min, &max, &err);
+// { min, max, rng } ~ { -3.2, 1.8, 5.0 }
+----
+[source,c]
+----
+inform_error = INFORM_SUCCESS;
+double arr[6] = { 0.2, 0.5, -3.2, 1.8, 0.6, 2.3 };
+double rng = inform_range(arr, 6, NULL, NULL, &err);
+// rng ~ 5.0
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/binning.h`
+****
+
+****
+[[inform_bin]]
+[source,c]
+----
+double inform_bin(double const *series, size_t n, int b, int *binned,
+        inform_error *err);
+----
+Bin a floating-point time series into a finite-state time series with `b` uniform sized
+bins, and return the size of the bins.
+
+If the size of each bin is too small, less than `10*ε`, then all entries are placed in the
+same bin and an error is set. (`ε` is the double-precision machine epsilon.)
+
+*Examples:*
+[source,c]
+----
+int binned[6];
+double series[6] = {1,2,3,4,5,6};
+double bin_size = inform_bin(series, 6, 2, binned, &err);
+assert(bin_size == 2.5);
+// binned ~ {0,0,0,1,1,1}
+----
+[source,c]
+----
+int binned[6];
+double series[6] = {1,2,3,4,5,6};
+double bin_size = inform_bin(series, 6, 3, binned, &err);
+assert(bin_size == 5.0/3.0);
+// binned ~ {0,0,1,1,2,2}
+----
+[source,c]
+----
+int binned[6];
+double series[6] = {1,2,3,4,5,6};
+double bin_size = inform_bin(series, 6, 6, binned, &err);
+assert(bin_size == 5.0/3.0);
+// binned ~ {0,1,2,3,4,5}
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/binning.h`
+****
+
+****
+[[inform_bin_step]]
+[source,c]
+----
+int inform_bin_step(double const *series, size_t n, double step,
+        int *binned, inform_error *err);
+----
+Bin a floating-point time series into a number bins of a specified size `step`, and return
+the number of bins.
+
+If the bin size is too small, less than `10*ε`, then an error is set. (`ε` is the
+double-precision machine epsilon.)
+
+*Examples:*
+[source,c]
+----
+int binned[6];
+double series[6] = {1,2,3,4,5,6};
+int n = inform_bin_step(series, 6, 2.0, binned, &err);
+assert(n == 3);
+// binned ~ {0,0,1,1,2,2}
+----
+[source,c]
+----
+int binned[6];
+double series[6] = {1,2,3,4,5,6};
+int n = inform_bin(series, 6, 2.5, binned, &err);
+assert(n == 3);
+// binned ~ {0,0,0,1,1,2}
+----
+[source,c]
+----
+int binned[6];
+double series[6] = {1,2,3,4,5,6};
+int n = inform_bin(series, 6, 1.0, binned, &err);
+assert(n == 6);
+// binned ~ {0,1,2,3,4,5}
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/binning.h`
+****
+
+****
+[[inform_bin_bounds]]
+[source,c]
+----
+int inform_bin_bounds(double const *series, size_t n,
+        double const *bounds, size_t m, int *binned,
+        inform_error *err);
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/binning.h`
+****
+
+[[black-boxing-time-series]]
+== Black-Boxing Time Series
+
+****
+[[inform_black_box]]
+[source,c]
+----
+int *inform_black_box(int const *series, size_t l, size_t n, size_t m,
+        int const *b, size_t const *r, size_t const *s, int *box,
+        inform_error *err);
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/black_boxing.h`
+****
+
+****
+[[inform_black_box_parts]]
+[source,c]
+----
+int *inform_black_box_parts(int const *series, size_t l, size_t n,
+        int const *b, size_t const *parts, size_t nparts, int *box,
+        inform_error *err);
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/black_boxing.h`
+****
+
+[[coalescing-time-series]]
+== Coalescing Time Series
+
+****
+[[inform_coalesce]]
+[source,c]
+----
+int inform_coalesce(int const *series, size_t n, int *coal,
+        inform_error *err);
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/coalesce.h`
+****
+
+[[encoding-states]]
+== Encoding/Decoding States
+
+****
+[[inform_encode]]
+[source,c]
+----
+int32_t inform_encode(int const *state, size_t n, int b,
+        inform_error *err);
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/encode.h`
+****
+
+****
+[[inform_decode]]
+[source,c]
+----
+void inform_decode(int32_t encoding, int b, int *state, size_t n,
+        inform_error *err);
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/encode.h`
+****
+
+[[partitioning-time-series]]
+== Partitioning Time Series
+
+****
+[[inform_first_partitioning]]
+[source,c]
+----
+size_t *inform_first_partitioning(size_t size);
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/partitions.h`
+****
+
+****
+[[inform_next_partitioning]]
+[source,c]
+----
+size_t inform_next_partitioning(size_t *xs, size_t size);
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/partitions.h`
+****
+
+[[random-time-series]]
+== Random Time Series
+
+****
+[[inform_random_seed]]
+[source,c]
+----
+void inform_random_seed();
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/random.h`
+****
+
+****
+[[inform_random_int]]
+[source,c]
+----
+int inform_random_int(int a, int b);
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/random.h`
+****
+
+****
+[[inform_random_ints]]
+[source,c]
+----
+int *inform_random_ints(int a, int b, size_t n);
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/random.h`
+****
+
+****
+[[inform_random_series]]
+[source,c]
+----
+int *inform_random_series(size_t n, int b);
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/random.h`
+****
+
+[[transition-probability-matrix]]
+== Time Series to TPM
+
+****
+[[inform_tpm]]
+[source,c]
+----
+double *inform_tpm(int const *series, size_t n, size_t m, int b,
+        double *tpm, inform_error *err);
+----
+[horizontal]
+Headers::
+    `inform/utilities.h`,
+    `inform/utilities/tpm.h`
+****
