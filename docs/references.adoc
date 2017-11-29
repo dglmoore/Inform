@@ -31,3 +31,20 @@
 
 - [[[Hoel2017]]] Hoel, E.P. (2017) "link:https://dx.doi.org/10.3390/e19050188[When the map
   is better than the territory]". *19* (5): 188. doi:10.3390/e19050188.
+
+- [[[Crutchfield2003]]] Crutchfield, J.P. and Feldman D.P. (2003)
+  "link:https://dx.doi.org/doi/10.1063/1.1530990[Regularities unseen, randomness observed:
+  Levels of entropy convergence]". _Chaos_. *13* (1): 25-54. doi:10.1063/1.1530990.
+
+- [[[Feldman2003]]] Feldman, D.P. and Crutchfield, J.P. (2003)
+  "link:https://dx.doi.org/10.1103/PhysRevE.67.051104[Structural
+  information in two-dimensional patterns: Entropy convergence and excess entropy]".
+  _Physical Review E_. *67* (5): 051104. doi:10.1103/PhysRevE.67.051104.
+
+- [[[Bialek2001a]]] Bialek, W., Nemenman, I. and Naftali, T. (2001)
+  "link:https://dx.doi.org/10.1162/089976601753195969[Predictability, complexity, and
+  learning]". _Neural computation_. *13* (11): 2409-2463.  doi:10.1162/089976601753195969
+
+- [[[Bialek2001b]]] Bialek, W., Nemenman, I. and Naftali, T. (2001)
+  "link:https://dx.doi.org/10.1016/S0378-4371(01)00444-7[Complexity through nonextensivity]"
+  _Physica A_. *302* (1): 89-99. doi:10.1016/S0378-4371(01)00444-7
