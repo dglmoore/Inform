@@ -5,3 +5,4 @@ endif()
 
 add_subdirectory(dist)
 add_subdirectory(shannon)
+add_subdirectory(timeseries)
