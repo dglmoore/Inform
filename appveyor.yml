@@ -13,3 +13,10 @@ build:
   verbosity: normal
 test_script:
 - cmd: test\%CONFIGURATION%\inform_unittest.exe
+artifacts:
+- path: 'Release\inform.dll'
+  name: dll
+- path: 'Release\inform.lib'
+  name: lib
+- path: 'Release\inform_static.lib'
+  name: static

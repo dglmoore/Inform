@@ -6,4 +6,3 @@ os:
     - linux
     - osx
 script: cmake . && make && make test
-
