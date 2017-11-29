@@ -5,4 +5,4 @@ compiler:
 os:
     - linux
     - osx
-script: cmake . && make && make test
+script: cmake . -DEXAMPLES=Yes && make && make test
