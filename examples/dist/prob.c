@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <inform/dist.h>
 #include <math.h>
+#include <stdio.h>
 
 int main()
 {
