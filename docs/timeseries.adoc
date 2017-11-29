@@ -442,6 +442,17 @@ Header:: `inform/cross_entropy.h`
 [[effective-information]]
 == Effective Information
 
+Effective information is a _causal_ measure aimed at teasing out the causal structure of a
+dynamical system. In essence, it is the mutual information between an "intervention"
+distribution — a probability distribution over initial states — and the distribution after
+one time step:
+[stem]
+++++
+EI(A,p) = I(p,p^TA)
+++++
+where stem:[A] is the transition probability matrix.
+
+See <<Tononi2003>>, <<Hoel2013>> or <<Hoel2017>> for more information.
 ****
 [[inform_effective_info]]
 [source,c]
@@ -449,6 +460,11 @@ Header:: `inform/cross_entropy.h`
 double inform_effective_info(double const *tpm, double const *inter,
         size_t n, inform_error *err);
 ----
+Compute the effective information from an `n`stem:[\times]`n` transition probability matrix
+`tpm` given an intervention distribution `inter`.
+
+If `inter` is `NULL`, then the uniform distribution over `n` is used.
+
 [horizontal]
 Header:: `inform/effective_info.h`
 ****
