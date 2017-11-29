@@ -28,7 +28,7 @@ int main()
 
     // Compute the entropy
     double base = 2.0;
-    double entropy = inform_shannon(dist, base);
+    double entropy = inform_shannon_entropy(dist, base);
     printf("%lf\n", entropy); // 1.685475
 
     // Clean up

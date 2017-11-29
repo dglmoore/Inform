@@ -18,8 +18,8 @@ int main()
         inform_dist_tick(d, rand() % B);
     }
 
-    printf("%lf\n", inform_shannon(d,  2.0)); // Base-2:  ~ 3.320903
-    printf("%lf\n", inform_shannon(d, 10.0)); // Base-10: ~ 0.999691
+    printf("%lf\n", inform_shannon_entropy(d,  2.0)); // Base-2:  ~ 3.320903
+    printf("%lf\n", inform_shannon_entropy(d, 10.0)); // Base-10: ~ 0.999691
 
     inform_dist_free(d);
 }
