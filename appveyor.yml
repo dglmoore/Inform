@@ -7,7 +7,7 @@ platform:
 - x86
 - Any CPU
 before_build:
-- ps: cmake .
+- ps: cmake . -DEXAMPLES=Yes
 build:
   project: ALL_BUILD.vcxproj
   verbosity: normal

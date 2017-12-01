@@ -442,6 +442,17 @@ Header:: `inform/cross_entropy.h`
 [[effective-information]]
 == Effective Information
 
+Effective information is a _causal_ measure aimed at teasing out the causal structure of a
+dynamical system. In essence, it is the mutual information between an "intervention"
+distribution — a probability distribution over initial states — and the distribution after
+one time step:
+[stem]
+++++
+EI(A,p) = I(p,p^TA)
+++++
+where stem:[A] is the transition probability matrix.
+
+See <<Tononi2003>>, <<Hoel2013>> or <<Hoel2017>> for more information.
 ****
 [[inform_effective_info]]
 [source,c]
@@ -449,6 +460,11 @@ Header:: `inform/cross_entropy.h`
 double inform_effective_info(double const *tpm, double const *inter,
         size_t n, inform_error *err);
 ----
+Compute the effective information from an `n`stem:[\times]`n` transition probability matrix
+`tpm` given an intervention distribution `inter`.
+
+If `inter` is `NULL`, then the uniform distribution over `n` is used.
+
 [horizontal]
 Header:: `inform/effective_info.h`
 ****
@@ -561,7 +577,22 @@ Header:: `inform/entropy_rate.h`
 
 [[excess-entropy]]
 == Excess Entropy
+Formally, the excess entropy is the mutual information between two adjacent, semi-infinite
+blocks of variables:
+[stem]
+++++
+E_X = \lim_{k \rightarrow \infty}I[(x_{-k},\ldots,x_{-1}),(x_0,\ldots,x_{k-1})].
+++++
+Of course, we cannot take the limit in practice, so we implement the finite form:
+[stem]
+++++
+E_X(k) = I[(x_{-k},\ldots,x_1),(x_0,\ldots,x_{k-1})].
+++++
 
+We can think of excess entropy as a slight generalization of <<active-info,active
+information>> or a special case of <<predictive-info,predictive information>>.
+
+See <<Crutchfield2003>> and <<Feldman2003>> for more details.
 ****
 [[inform_excess_entropy]]
 [source,c]
@@ -569,6 +600,8 @@ Header:: `inform/entropy_rate.h`
 double inform_excess_entropy(int const *series, size_t n, size_t m,
         int b, size_t k, inform_error *err);
 ----
+Compute the excess entropy from a time series with block size `k`.
+
 [horizontal]
 Header:: `inform/excess_entropy.h`
 ****
@@ -580,6 +613,8 @@ Header:: `inform/excess_entropy.h`
 double *inform_local_excess_entropy(int const *series, size_t n,
         size_t m, int b, size_t k, double *ee, inform_error *err);
 ----
+Compute the local excess entropy from a time series with block size `k`.
+
 [horizontal]
 Header:: `inform/excess_entropy.h`
 ****
@@ -796,6 +831,22 @@ Header:: `inform/pid.h`
 
 [[predictive-information]]
 == Predictive Information
+Formally, the predictive information is the mutual information between a finite-history and
+a semi-infinite future:
+[stem]
+++++
+P_X(k) = \lim_{l \rightarrow \infty}I[(x_{-k},\ldots,x_{-1}),(x_0,\ldots,x_{l-1})].
+++++
+Of course, we cannot take the limit in practice, so we implement the finite form:
+[stem]
+++++
+P_X(k,l) = I[(x_{-k},\ldots,x_1),(x_0,\ldots,x_{k-1})].
+++++
+
+We can think of <<active-info, active information>> and <<excess-entropy, excess entropy>>as
+a special cases of predictive information.
+
+See <<Bialek2001a>> and <<Bialek2001b>> for more details.
 
 ****
 [[inform_predictive_info]]
@@ -804,6 +855,8 @@ Header:: `inform/pid.h`
 double inform_predictive_info(int const *series, size_t n, size_t m,
         int b, size_t kpast, size_t kfuture, inform_error *err);
 ----
+Compute the predictive information from a time series with history length `kpast` and
+"future length" `kfuture`.
 [horizontal]
 Header:: `inform/predictive_info.h`
 ****
@@ -816,6 +869,8 @@ double *inform_local_predictive_info(int const *series, size_t n,
         size_t m, int b, size_t kpast, size_t kfuture, double *pi,
         inform_error *err);
 ----
+Compute the local predictive information from a time series with history length `kpast` and
+"future length" `kfuture`.
 [horizontal]
 Header:: `inform/predictive_info.h`
 ****

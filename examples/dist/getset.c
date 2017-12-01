@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdio.h>
 #include <inform/dist.h>
 
 int main()
@@ -9,6 +10,8 @@ int main()
         uint32_t x = inform_dist_set(dist, i, i*i);
         assert(x == i * i);
         assert(inform_dist_get(dist, i) == i * i);
+        printf("%d ", x);
     }
+    printf("\n");
     inform_dist_free(dist);
 }
