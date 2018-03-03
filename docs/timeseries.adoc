@@ -823,6 +823,34 @@ Header:: `inform/information_flow.h`
 
 [[evidence-of-integration]]
 == Evidence Of Integration
+Evidence of Integration (EoI) was introduced in <<Biehl2016>> as a means of identifying
+representations of agents in dynamical systems. Given a collection of random variable,
+stem:[\mathcal{X}=\{X_1,X_2,\ldots,X_l\}], we can form (non-trivial) partitionings of
+stem:[\mathcal{X}]:
+
+[stem]
+++++
+\{\mathcal{Z} \subset \mathcal{P}(\mathcal{X})\\\{\mathcal{X},\varnothing\}\ |\
+    \mathcal{Z} \not= \varnothing,
+    \bigcup_{Z \in \mathcal{Z}} Z = \mathcal{X} ~\textrm{and}~ Z_i \cap Z_j = \varnothing,
+    i \not = j
+\}
+++++
+Each partitioning stem:[\mathcal{Z} = \{Z_1, \ldots, Z_m\}] consists of a collection of
+joint random variables built from stem:[\mathcal{X}]. The configurations of
+stem:[\mathcal{Z}] are in one-to-one correspondence with the configurations of
+stem:[\mathcal{X}]. Given such a partitioning, we can ask what the pointwise mutual
+information is:
+[stem]
+++++
+mi_\mathcal{Z}(z_1, \ldots, z_m) = \log{\frac{p(z_1, \ldots, z_m)}{p(z_1) \ldots p(z_m)}}.
+++++
+If stem:[z=\{z_1,\ldots,z_m\}] corresponds to the configuration
+stem:[x=\{x_1,\ldots,x_l\}], we refer to the above mutual information as the "evidence of
+integration of stem:[x] with respect to the partitioning stem:[\mathcal{Z}]".
+
+We say that a configuration stem:[x] is _integrated_ if and only if the evidence of
+integration of stem:[x] is positive for all partitionings of the system.
 
 ****
 [[inform_integration_evidence]]
@@ -831,6 +859,27 @@ Header:: `inform/information_flow.h`
 double *inform_integration_evidence(int const *series, size_t l,
         size_t n, int const *b, double *evidence, inform_error *err);
 ----
+Given a sequence of `n` observed states of `l` random variables (`series`), compute the
+evidence of integration for each partitioning of the `l` variables, and return the minimum
+and maximum evidence for each observation.
+
+*Examples:*
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const series[30] = {
+    0, 1, 0, 1, 1, 1, 0, 0, 1, 0,
+    0, 1, 0, 1, 1, 1, 0, 0, 1, 0,
+    1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+};
+double *evidence = inform_integration_evidence(series, 3, 10, (int[3]){2,2,2}, NULL, &err);
+assert(!err);
+// evidence ~ { -0.322 0.263 -0.322 0.263 0.263 -0.322 0.263 0.263 -0.322 0.263   // MIN
+//               1.000 1.263  1.000 1.263 1.263  1.000 1.263 1.263  1.000 1.263 } // MAX
+// integrated?   NO    YES    NO    YES   YES    NO    YES   YES    NO    YES
+free(evidence);
+----
+
 [horizontal]
 Header:: `inform/integration.h`
 ****
@@ -842,6 +891,29 @@ Header:: `inform/integration.h`
 double *inform_integration_evidence_part(int const *series, size_t l,
         size_t n, int const *b, size_t const *parts, size_t nparts,
         double *evidence, inform_error *err);
+----
+Given a sequence of `n` observed states of `l` random variables (`series`), compute the
+evidence of integration each observation with respect to a partitioning `parts`.
+
+This function is useful when the number of variables `l` is large; the user can test a small
+subset of the partitionings to increase confidence that the system is integrated. Biehl et.
+al. suggest considering only the finest partitioning, stem:[\mathcal{Z} = \{\{X_1\}, \ldots
+\{X_l\}\}].
+
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const series[30] = {
+    0, 1, 0, 1, 1, 1, 0, 0, 1, 0, // X_1
+    0, 1, 0, 1, 1, 1, 0, 0, 1, 0, // X_2
+    1, 1, 1, 1, 1, 0, 0, 0, 0, 0, // X_3
+};
+size_t partitions[3] = {0,0,1}; // Partition as {{X_1, X_2}, {X_3}} (2 partitions)
+double *evidence = inform_integration_evidence_part(series, 3, 10,
+    (int[3]){2,2,2}, partitions, 2, NULL, &err);
+assert(!err);
+// evidence ~ { -0.322 0.263 -0.322 0.263 0.263 -0.322 0.263 0.263 -0.322 0.263 }
+free(evidence);
 ----
 [horizontal]
 Header:: `inform/integration.h`
@@ -860,7 +932,8 @@ The mutual information is then just the time average of stem:[i_i(X_1,\ldots,X_l
 [stem]
 ++++
 I(X_1,\ldots,X_l) =
-    \sum_{x_{1,i},\ldots,x_{l,i}} p(x_{1,i},\ldots,x_{l,i}) \frac{p(x_{1,i},\ldots,x_{l,i})}{p(x_{1,i})\ldots p(x_{l,i})}.
+    \sum_{x_{1,i},\ldots,x_{l,i}} p(x_{1,i},\ldots,x_{l,i})
+    \frac{p(x_{1,i},\ldots,x_{l,i})}{p(x_{1,i})\ldots p(x_{l,i})}.
 ++++
 See <<Cover1991>> for more details.
 
