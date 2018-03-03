@@ -700,6 +700,33 @@ Header:: `inform/excess_entropy.h`
 
 [[information-flow]]
 == Information Flow
+Information flow (IF) was introduced by Ay and Polani as a measure of the "strength of a
+causal effect" (<<Ay2008>>). Unlike many of the other measures in *Inform*, information flow
+was designed around interventions: rather than allowing dynamics to progress naturally, some
+subset of the random variables are forced into a particular state. If no interventions are
+performed, then IF reduces to
+https://en.wikipedia.org/wiki/Conditional_mutual_information[conditional mutual
+information].
+
+Practially, there is no way for *Inform* to know from time series whether or not any
+interventions have actually been performed upon the system. As such, the onous is on the
+user to determine whether this function is in-fact computing Ay and Polani's information
+flow.
+
+In accordance with <<Ay2008>>, information flow is defined as
+
+[stem]
+++++
+I_p(X \rightarrow Y | Z) = \sum_{x,y,z} p(z)p(x|\hat{z})p(y|\hat{x},\hat{z})
+    \log{
+        \frac{p(y|\hat{x},\hat{z})}
+        {\sum_{x^\prime} p(x^\prime|\hat{z})p(y|\hat{x}^\prime,\hat{z})}
+    }
+++++
+
+All probabilities are estimated from sequences of observations — the order of those
+sequences is irrelevant. A https://github.com/elife-asu/inform/issues/76[subsequent version]
+will allow the user to specify intervention distributions.
 
 ****
 [[inform_information_flow]]
@@ -709,6 +736,87 @@ double inform_information_flow(int const *src, int const *dst,
         int const *back, size_t l_src, size_t l_dst, size_t l_back,
         size_t n, size_t m, int b, inform_error *err);
 ----
+
+*Examples:*
+This example demonstrates how to user `inform_information_flow` to analyzed Ay and Polani's
+diamond structure example (<<Ay2008>> p.28-29). In this example, we have four interacting
+Boolean variables stem:[W], stem:[X], stem:[Y] and stem:[Z]. The variables stem:[X] and
+stem:[Y] are each dependent on stem:[W]: they simply copy it's state. The stem:[Z] variable
+is the XOR of the states of stem:[X] and stem:[Y]. The variable stem:[W] is uniformly
+distributed.
+
+_Example 1_: Natural dynamics
+
+Left to it's own devices, this system might produce a sequence of observations like:
+[source,c]
+----
+int const ws[8] = {0,0,1,0,1,1,0,1};
+int const xs[8] = {0,0,1,0,1,1,0,1};
+int const ys[8] = {0,0,1,0,1,1,0,1};
+int const zs[8] = {0,0,0,0,0,0,0,0};
+----
+From these we can compute the following information flows:
+[stem]
+++++
+I_p(X \rightarrow Y) = 1 \\
+I_p(X \rightarrow Y | W) = 0 \\
+I_p(W \rightarrow Z | Y) = 0.
+++++
+Our notation departs somewhat from that of <<Ay2008>> as we denote these as information
+flows despite the fact that we are not strictly intervening upon the system. If the user
+prefers, they can think of this as "intervening on the system that is indistiguishable from
+the natural dynamics". In any case, we can use `inform_information_flow` to compute the the
+above values
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+double flow = 0.0;
+flow = inform_information_flow(xs, ys, NULL, 1, 1, 0, 1, 8, 2, &err);
+assert(!err);
+// flow ~ 1.0
+flow = inform_information_flow(xs, ys, ws, 1, 1, 1, 1, 8, 2, &err);
+assert(!err);
+// flow ~ 0.0
+flow = inform_information_flow(ws, zs, ys, 1, 1, 1, 1, 8, 2, &err);
+assert(!err);
+// flow ~ 0.0
+----
+
+_Example 2_: Interventions
+
+Now, consider that we can intervene on stem:[Y] and force it to whichever state we so
+choose. Then we might end up with a sequence of observations as
+[source,c]
+----
+int const ws[8] = {0,0,1,0,1,1,0,1};
+int const xs[8] = {0,0,1,0,1,1,0,1};
+int const ys[8] = {1,0,1,0,0,1,1,0};
+int const zs[8] = {1,0,0,0,0,0,0,0};
+----
+From these we can compute the following information flows:
+[stem]
+++++
+I_p(X \rightarrow Y) = 0 \\
+I_p(X \rightarrow Y | W) = 0 \\
+I_p(W \rightarrow Z | Y) = 1.
+++++
+
+In *Inform* this looks like:
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+double flow = 0.0;
+flow = inform_information_flow(xs, ys, NULL, 1, 1, 0, 1, 8, 2, &err);
+assert(!err);
+// flow ~ 0.0
+flow = inform_information_flow(xs, ys, ws, 1, 1, 1, 1, 8, 2, &err);
+assert(!err);
+// flow ~ 0.0
+flow = inform_information_flow(ws, zs, ys, 1, 1, 1, 1, 8, 2, &err);
+assert(!err);
+// flow ~ 1.0
+----
+
 [horizontal]
 Header:: `inform/information_flow.h`
 ****
@@ -724,7 +832,7 @@ double *inform_integration_evidence(int const *series, size_t l,
         size_t n, int const *b, double *evidence, inform_error *err);
 ----
 [horizontal]
-Header:: `inform/information_flow.h`
+Header:: `inform/integration.h`
 ****
 
 ****
@@ -736,7 +844,7 @@ double *inform_integration_evidence_part(int const *series, size_t l,
         double *evidence, inform_error *err);
 ----
 [horizontal]
-Header:: `inform/information_flow.h`
+Header:: `inform/integration.h`
 ****
 
 [[mutual-information]]
