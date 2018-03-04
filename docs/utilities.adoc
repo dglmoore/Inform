@@ -589,6 +589,9 @@ Headers::
 
 [[transition-probability-matrix]]
 == Time Series to TPM
+Some information measures are defined on transition probability matrices (TPM), e.g.
+<<effective-information>>. For this reason, we provide a function <<inform_tpm>> which
+estimates the one-time-step TPM from time series data.
 
 ****
 [[inform_tpm]]
@@ -597,6 +600,46 @@ Headers::
 double *inform_tpm(int const *series, size_t n, size_t m, int b,
         double *tpm, inform_error *err);
 ----
+Estimate the one-time-step transition probability matrix stem:[A] from a time series. The
+element stem:[A_{ij}] is the probability of transitioning to state stem:[j] in the next time
+step given the system is in state stem:[i].
+
+*Examples:*
+
+One initial condition:
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const series[15] = {0,2,1,0,1,2,0,1,2,1,0,0,2,1,1};
+double *tpm = inform_tpm(series, 1, 15, 3, NULL, &err);
+assert(!err);
+// tpm ~ { 0.20 0.40 0.40
+//         0.40 0.20 0.40
+//         0.25 0.75 0.00 }
+free(tpm);
+----
+
+Multiple initial conditions:
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const series[14] = {
+    0,0,
+    0,1,
+    0,1,
+    0,1,
+    1,0,
+    1,1,
+    2,2,
+};
+double *tpm = inform_tpm(series, 7, 2, 3, NULL, &err);
+assert(!err);
+// tpm ~ { 0.25 0.75 0.00
+//         0.50 0.50 0.00
+//         0.00 0.00 1.00 }
+free(tpm);
+----
+
 [horizontal]
 Headers::
     `inform/utilities.h`,
