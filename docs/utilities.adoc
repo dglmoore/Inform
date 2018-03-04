@@ -187,7 +187,22 @@ Headers::
 
 [[coalescing-time-series]]
 == Coalescing Time Series
+Information measures over time series are invariant under any change of encoding that does
+not change the relative occurrance of each symbol. For example, the following time series
+have the same entropy:
+[stem]
+++++
+A = \{5,2,2,5,2,5,5,2\} \\
+B = \{1,0,0,1,0,1,1,0\}.
+++++
+Each of the time series has an effective base of 2, but their apparent bases are different:
+5 and 2, respectively. The result is that computations using stem:[A] require
+stem:[log_2{5}\times] more memory due to larger _potential_ state spaces. They also tend to
+run a bit slower since many information-theoretic algorithms have runtimes that trend with
+the volume of the state space.
 
+The `inform_coalesce` function maps a time series to a new time series whose effective base
+is the same as its apparent base: e.g. maps stem:[A \mapsto B].
 ****
 [[inform_coalesce]]
 [source,c]
@@ -195,6 +210,36 @@ Headers::
 int inform_coalesce(int const *series, size_t n, int *coal,
         inform_error *err);
 ----
+Reduce the apparent base of a time series to its effective base by removing "gaps" between
+observed states.
+
+*Examples:*
+
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const series[8] = {5,2,2,5,2,5,5,2}; // A
+int coal[8];
+int b = inform_coalesce(series, 8, coal, &err);
+assert(!err);
+assert(b == 2);
+// coal ~ { 1 0 0 1 0 1 1 0 } // B
+----
+
+Note that we ensure that if stem:[a_i <= a_j], then stem:[b_i <= b_j] for all stem:[i,j].
+This ensures that if the the apparent base of the time series is the effective base, then
+the time series is unchanged.
+[source,c]
+----
+inform_error err = INFORM_SUCCESS;
+int const series[8] = {2,1,0,0,1,2,1,3};
+int coal[8];
+int b = inform_coalesce(series, 8, coal, &err);
+assert(!err);
+assert(b == 4);
+// coal ~ { 2 1 0 0 1 2 1 3 } // the time series is unchanged
+----
+
 [horizontal]
 Headers::
     `inform/utilities.h`,
