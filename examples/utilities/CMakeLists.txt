@@ -1,3 +1,4 @@
+add_executable(black-boxing black-boxing.c)
 add_executable(coalesce coalesce.c)
 add_executable(encode encode.c)
 add_executable(decode decode.c)
