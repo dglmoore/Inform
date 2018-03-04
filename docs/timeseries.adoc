@@ -824,13 +824,13 @@ Header:: `inform/information_flow.h`
 [[evidence-of-integration]]
 == Evidence Of Integration
 Evidence of Integration (EoI) was introduced in <<Biehl2016>> as a means of identifying
-representations of agents in dynamical systems. Given a collection of random variable,
+representations of agents in dynamical systems. Given a collection of random variables,
 stem:[\mathcal{X}=\{X_1,X_2,\ldots,X_l\}], we can form (non-trivial) partitionings of
 stem:[\mathcal{X}]:
 
 [stem]
 ++++
-\{\mathcal{Z} \subset \mathcal{P}(\mathcal{X})\\\{\mathcal{X},\varnothing\}\ |\
+\{\mathcal{Z} \subset \mathcal{P}(\mathcal{X})\setminus\{\mathcal{X},\varnothing\}\ |\
     \mathcal{Z} \not= \varnothing,
     \bigcup_{Z \in \mathcal{Z}} Z = \mathcal{X} ~\textrm{and}~ Z_i \cap Z_j = \varnothing,
     i \not = j
