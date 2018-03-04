@@ -351,13 +351,46 @@ Headers::
 
 [[partitioning-time-series]]
 == Partitioning Time Series
+Many analyses of complex systems consider partitioning of the system into components or
+modules. One example of this is <<evidence-of-integration>>.
+
+For generality, we represent a partitioning of stem:[N] items into stem:[1 \leq M \leq N]
+partitions as a sequence of integers stem:[p_1, \ldots, p_N] where stem:[0 \leq p_i < M]
+is the partition to which the stem:[i]-th item belongs.
+
+As an example, suppose we partitioned stem:[\{X_1, X_2, X_3\}] as stem:[\{\{X_1\},
+\{X_2,X_3\}\}]. This would be represented as stem:[(0,1,1)] because stem:[X_1] belongs to
+the zeroth partition and stem:[X_2,X_3] belong to the first partition.
+
+We provide two functions to facilitate the generation of all unique partitionings of a
+system of `N` elements: <<inform_first_partitioning>> and <<inform_next_partitioning>>.
 
 ****
 [[inform_first_partitioning]]
 [source,c]
 ----
-size_t *inform_first_partitioning(size_t size);
+size_t *inform_first_partitioning(size_t n);
 ----
+Return the first partitioning of `n` items. This is *always* the coarsest partitioning — the
+partitioning with a single partition. The returned array must be freed by the user.
+
+*Examples:*
+[source,c]
+----
+size_t *part = inform_first_partitioning(2);
+assert(part);
+// part ~ { 0 0 }
+free(part);
+----
+
+[source,c]
+----
+size_t *part = inform_first_partitioning(5);
+assert(part);
+// part ~ { 0 0 0 0 0 }
+free(part);
+----
+
 [horizontal]
 Headers::
     `inform/utilities.h`,
@@ -368,8 +401,63 @@ Headers::
 [[inform_next_partitioning]]
 [source,c]
 ----
-size_t inform_next_partitioning(size_t *xs, size_t size);
+size_t inform_next_partitioning(size_t *xs, size_t n);
 ----
+Provided a partitioning `xs` of `n` items, find the next partitioning. The old partitioning
+is overwritten by the new partitioning, and the number of partitions is returned. Zero is
+returned if no more partitions remain.
+
+*Examples:*
+
+Say we wish to partition 3 items:
+[source,c]
+----
+void print_partitioning(size_t *part, size_t n)
+{
+    for (size_t i = 0; i < n; ++i) printf("%ld ", part[i]);
+    printf("\n");
+}
+
+int main()
+{
+    size_t const size = 3;
+
+    size_t *part = inform_first_partitioning(size);
+    size_t npart = 1;
+
+    print_partitioning(part, size);
+    while ((npart = inform_next_partitioning(part, size)))
+    {
+        print_partitioning(part, size);
+    }
+}
+----
+We'll get the following output
+
+[source,plain]
+----
+0 0 0 // {{X_1, X_2, X_3}}
+0 0 1 // {{X_1, X_2}, {X_3}}
+0 1 0 // {{X_1, X_3}, {X_2}}
+0 1 1 // {{X_1}, {X_2, X_3}}
+0 1 2 // {{X_1}, {X_2}, {X_3}}
+----
+You'll notice that this is equal too the third
+https://en.wikipedia.org/wiki/Bell_number[Bell number] stem:[B_3 = 5].
+
+We can compute the 9-th Bell number as follows:
+[source,c]
+----
+size_t const size = 9;
+size_t *part = inform_first_partitioning(size);
+size_t npart = 1, bell_number = 1;
+while ((npart = inform_next_partitioning(part,size)))
+{
+    bell_number += 1;
+}
+assert(bell_number == 21147);
+----
+
 [horizontal]
 Headers::
     `inform/utilities.h`,
@@ -378,6 +466,9 @@ Headers::
 
 [[random-time-series]]
 == Random Time Series
+It is sometimes useful to generate random time series, particularly when testing functions.
+Since we've implemented a few functions which take care of the memory allocation, etc..., we
+decided to expose them.
 
 ****
 [[inform_random_seed]]
@@ -385,6 +476,8 @@ Headers::
 ----
 void inform_random_seed();
 ----
+Seed the random number generated based on the current clock-time.
+
 [horizontal]
 Headers::
     `inform/utilities.h`,
@@ -397,6 +490,27 @@ Headers::
 ----
 int inform_random_int(int a, int b);
 ----
+Generate a random integer in the range stem:[[a,b)].
+
+*Example:*
+
+[source,c]
+----
+srand(2018);
+for (size_t i = 0; i < 10; ++i)
+{
+    printf("%d ", inform_random_int(0, 2));
+}
+printf("\n");
+----
+
+prints
+
+[source,plain]
+----
+1 1 1 0 1 0 0 0 1 1 
+----
+
 [horizontal]
 Headers::
     `inform/utilities.h`,
@@ -409,6 +523,29 @@ Headers::
 ----
 int *inform_random_ints(int a, int b, size_t n);
 ----
+Generate an array `n` random integers in the range stem:[[a,b)].
+
+*Example:*
+
+[source,c]
+----
+srand(2018);
+int *arr = inform_random_ints(0, 2, 10);
+assert(arr);
+for (size_t i = 0; i < 10; ++i)
+{
+    printf("%d ", arr[i]);
+}
+printf("\n");
+free(arr);
+----
+
+prints
+
+[source,plain]
+----
+1 1 1 0 1 0 0 0 1 1 
+----
 [horizontal]
 Headers::
     `inform/utilities.h`,
@@ -420,6 +557,29 @@ Headers::
 [source,c]
 ----
 int *inform_random_series(size_t n, int b);
+----
+Generate a base-`b` "time series" of `n` time steps.
+
+*Example:*
+
+[source,c]
+----
+srand(2018);
+int *series = inform_random_series(10, 2);
+assert(series);
+for (size_t i = 0; i < 10; ++i)
+{
+    printf("%d ", series[i]);
+}
+printf("\n");
+free(series);
+----
+
+prints
+
+[source,plain]
+----
+1 1 1 0 1 0 0 0 1 1 
 ----
 [horizontal]
 Headers::
