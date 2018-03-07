@@ -9,9 +9,9 @@ package manager, e.g. `apt-get`, `pacman` or `yum` on Linux or `homebrew`, `macp
 Once CMake is installed, building, testing and installing the library is a snap
 [source]
 ----
-$ cmake . -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes
-$ make all tests
-$ sudo make install
+λ cmake . -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes
+λ make all tests
+λ sudo make install
 ----
 
 === Windows with MSVC
@@ -19,9 +19,9 @@ Building with MSVC is a bit more involved. Open the Visual C++ MSBuild command p
 (should be in your start menu). You can then run cmake build and test from the prompt:
 [source]
 ----
-$ cmake -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes -G"Visual Studio 14 2015"
-$ msbuild /p:Configuration=Release ALL_BUILD.vcxproj
-$ test\Release\inform_unittest.exe
+λ cmake -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes -G"Visual Studio 14 2015"
+λ msbuild /p:Configuration=Release ALL_BUILD.vcxproj
+λ test\Release\inform_unittest.exe
 ----
 Installation requires the user to manually copy the headers and libraries to wherever the
 user would like. This project-by-project approach is standard for Windows development, as
