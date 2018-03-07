@@ -102,3 +102,8 @@ under the terms of the MIT License.
 
 See the https://github.com/elife-asu/inform/blob/master/LICENSE[LICENSE] file for details.
 
+== Support
+This project was supported in part by a grant provided by the Templeton World Charity
+Foundation as part of the
+link:http://www.templetonworldcharity.org/what-we-fund/themes-of-interest/power-of-information[Power
+of Information Inititive].
