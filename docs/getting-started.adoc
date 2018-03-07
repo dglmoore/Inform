@@ -102,6 +102,17 @@ under the terms of the MIT License.
 
 See the https://github.com/elife-asu/inform/blob/master/LICENSE[LICENSE] file for details.
 
+== Relevant Publications
+
+- Moore, D.G., Valentini, G., Walker, S.I. and Levin, M. (2018) "Inform: Efficient
+  Information-Theoretic Analysis of Collective Behaviors" _Frontiers in Robotics & AI_.
+  (under review).
+
+- Moore, D.G., Valentini, G., Walker, S.I. and Levin, M. (2018) "Inform: A Toolkit for
+  Information-Theoretic Analysis of Complex Systems". In: _Proceedings of the 2017 IEEE
+  Symposium on Computational Intelligence, Symposium on Artificial Life, IEEE Press_. (in
+  press).
+
 == Support
 This project was supported in part by a grant provided by the Templeton World Charity
 Foundation as part of the
