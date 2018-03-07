@@ -791,7 +791,7 @@ choose. Then we might end up with a sequence of observations as
 int const ws[8] = {0,0,1,0,1,1,0,1};
 int const xs[8] = {0,0,1,0,1,1,0,1};
 int const ys[8] = {1,0,1,0,0,1,1,0};
-int const zs[8] = {1,0,0,0,0,0,0,0};
+int const zs[8] = {1,0,0,0,1,0,1,1};
 ----
 From these we can compute the following information flows:
 [stem]
