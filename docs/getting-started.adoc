@@ -65,7 +65,7 @@ under active developed:
 | rinform
 | R
 | https://github.com/elife-asu/rinform[elife-asu/rinform]
-| _forthcoming_
+| https://elife-asu.github.io/rinform
 
 | Inform.jl
 | Julia
