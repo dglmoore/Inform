@@ -1,6 +1,6 @@
 = Inform: A cross-platform C library for information analysis of dynamical systems
 Douglas G. Moore <douglas.g.moore@asu.edu>
-v1.0.0, November 2017
+v1.0.0, March 2018
 :source-highlighter: pretty
 :stem: latexmath
 
@@ -82,7 +82,7 @@ under active developed:
 | rinform
 | R
 | https://github.com/elife-asu/rinform[elife-asu/rinform]
-| _forthcoming_
+| https://elife-asu.github.io/rinform
 
 | Inform.jl
 | Julia
@@ -114,11 +114,21 @@ try one of these:
     Calculator (web-based, R)
 
 == Copyright and Licensing
-Copyright © 2016-2017 ELIFE, Arizona State University. Free use of this software is granted
+Copyright © 2016-2018 ELIFE, Arizona State University. Free use of this software is granted
 under the terms of the MIT License.
 
 See the https://github.com/elife-asu/inform/blob/master/LICENSE[LICENSE] file for details.
 
+== Relevant Publications
+
+- Moore, D.G., Valentini, G., Walker, S.I. and Levin, M. (2018) "Inform: Efficient
+  Information-Theoretic Analysis of Collective Behaviors" _Frontiers in Robotics & AI_.
+  (under review).
+
+- Moore, D.G., Valentini, G., Walker, S.I. and Levin, M. (2018) "Inform: A Toolkit for
+  Information-Theoretic Analysis of Complex Systems". In: _Proceedings of the 2017 IEEE
+  Symposium on Computational Intelligence, Symposium on Artificial Life, IEEE Press_. (in
+  press).
 
 == Support
 This project was supported in part by a grant provided by the Templeton World Charity
