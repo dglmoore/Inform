@@ -433,7 +433,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <span id="author" class="author">Douglas G. Moore</span><br>
 <span id="email" class="email"><a href="mailto:douglas.g.moore@asu.edu">douglas.g.moore@asu.edu</a></span><br>
 <span id="revnumber">version 1.0.0,</span>
-<span id="revdate">November 2017</span>
+<span id="revdate">March 2018</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -445,6 +445,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_getting_help">Getting Help</a></li>
 <li><a href="#_related_projects">Related Projects</a></li>
 <li><a href="#_copyright_and_licensing">Copyright and Licensing</a></li>
+<li><a href="#_relevant_publications">Relevant Publications</a></li>
+<li><a href="#_support">Support</a></li>
 </ul>
 </li>
 <li><a href="#error-handling">Error Handling</a>
@@ -549,9 +551,9 @@ package manager, e.g. <code>apt-get</code>, <code>pacman</code> or <code>yum</co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code>$ cmake . -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes
-$ make all tests
-$ sudo make install</code></pre>
+<pre class="prettyprint highlight"><code>λ cmake . -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes
+λ make all tests
+λ sudo make install</code></pre>
 </div>
 </div>
 </div>
@@ -563,9 +565,9 @@ $ sudo make install</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code>$ cmake -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes -G"Visual Studio 14 2015"
-$ msbuild /p:Configuration=Release ALL_BUILD.vcxproj
-$ test\Release\inform_unittest.exe</code></pre>
+<pre class="prettyprint highlight"><code>λ cmake -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes -G"Visual Studio 14 2015"
+λ msbuild /p:Configuration=Release ALL_BUILD.vcxproj
+λ test\Release\inform_unittest.exe</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -643,7 +645,7 @@ under active developed:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rinform</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">R</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/elife-asu/rinform">elife-asu/rinform</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>forthcoming</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://elife-asu.github.io/rinform" class="bare">https://elife-asu.github.io/rinform</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inform.jl</p></td>
@@ -701,11 +703,38 @@ Calculator (web-based, R)</p>
 <div class="sect2">
 <h3 id="_copyright_and_licensing">Copyright and Licensing</h3>
 <div class="paragraph">
-<p>Copyright © 2016-2017 ELIFE, Arizona State University. Free use of this software is granted
+<p>Copyright © 2016-2018 ELIFE, Arizona State University. Free use of this software is granted
 under the terms of the MIT License.</p>
 </div>
 <div class="paragraph">
 <p>See the <a href="https://github.com/elife-asu/inform/blob/master/LICENSE">LICENSE</a> file for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_relevant_publications">Relevant Publications</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Moore, D.G., Valentini, G., Walker, S.I. and Levin, M. (2018) "Inform: Efficient
+Information-Theoretic Analysis of Collective Behaviors" <em>Frontiers in Robotics &amp; AI</em>.
+(under review).</p>
+</li>
+<li>
+<p>Moore, D.G., Valentini, G., Walker, S.I. and Levin, M. (2018) "Inform: A Toolkit for
+Information-Theoretic Analysis of Complex Systems". In: <em>Proceedings of the 2017 IEEE
+Symposium on Computational Intelligence, Symposium on Artificial Life, IEEE Press</em>. (in
+press).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_support">Support</h3>
+<div class="paragraph">
+<p>This project was supported in part by a grant provided by the Templeton World Charity
+Foundation as part of the
+<a href="http://www.templetonworldcharity.org/what-we-fund/themes-of-interest/power-of-information">Power
+of Information Inititive</a>.</p>
 </div>
 </div>
 </div>
@@ -1889,7 +1918,8 @@ one time step:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>where \(A\) is the transition probability matrix.</p>
+<p>where \(A\) is the transition probability matrix. Functionality to construct a transition
+probability matrix from time series is provided by the <a href="#inform_tpm">[inform_tpm]</a> function.</p>
 </div>
 <div class="paragraph">
 <p>See <a href="#Tononi2003">[Tononi2003]</a>, <a href="#Hoel2013">[Hoel2013]</a> or <a href="#Hoel2017">[Hoel2017]</a> for more information.</p>
@@ -1907,7 +1937,37 @@ one time step:</p>
 <code>tpm</code> given an intervention distribution <code>inter</code>.</p>
 </div>
 <div class="paragraph">
-<p>If <code>inter</code> is <code>NULL</code>, then the uniform distribution over <code>n</code> is used.</p>
+<p>If <code>inter</code> is <code>NULL</code>, then the uniform distribution over the <code>n</code> states is used.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>Uniform intervention distribution:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+double const tpm[4] = {0.50,0.50,
+                       0.25,0,75};
+double ei = inform_effective_info(tmp, NULL, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// ei == 0.048795</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Non-uniform intervention distribution:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+double const tpm[4] = {0.50,0.50,
+                       0.25,0,75};
+double const inter[2] = {0.488372, 0.511628};
+double ei = inform_effective_info(tmp, inter, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// ei == 0.048821</code></pre>
+</div>
 </div>
 <div class="hdlist">
 <table>
@@ -2114,6 +2174,36 @@ information</a> or a special case of <a href="#predictive-info">predictive infor
 <div class="paragraph">
 <p>Compute the excess entropy from a time series with block size <code>k</code>.</p>
 </div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>One initial condition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[9] = {0,0,1,1,0,0,1,1,0};
+double ee = inform_excess_entropy(series, 1, 9, 2, 2, &amp;err);
+assert(!err);
+// ee ~ 1.918296</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Two initial conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[18] = {
+    0,0,1,1,0,0,1,1,0,
+    0,1,0,1,0,1,0,1,0
+};
+double ee = inform_excess_entropy(series, 2, 9, 2, 2, &amp;err);
+assert(!err);
+// ee ~ 1.109170</code></pre>
+</div>
+</div>
 <div class="hdlist">
 <table>
 <tr>
@@ -2139,6 +2229,39 @@ Header
 <div class="paragraph">
 <p>Compute the local excess entropy from a time series with block size <code>k</code>.</p>
 </div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>One initial condition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[9] = {0,0,1,1,0,0,1,1,0};
+double *ee = inform_local_excess_entropy(series, 1, 9, 2, 2, NULL, &amp;err);
+assert(!err);
+// ee ~ { 1.585 1.585 2.585 2.585 1.585 1.585 }
+free(ee);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Two initial conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[18] = {
+    0,0,1,1,0,0,1,1,0,
+    0,1,0,1,0,1,0,1,0
+};
+double *ee = inform_local_excess_entropy(series, 2, 9, 2, 2, NULL, &amp;err);
+assert(!err);
+// ee ~ { 2.585 -0.059 3.585 -0.415 2.585 -0.059
+//        0.848  0.848 0.848  0.848 0.848  0.848 }
+free(ee);</code></pre>
+</div>
+</div>
 <div class="hdlist">
 <table>
 <tr>
@@ -2156,6 +2279,38 @@ Header
 </div>
 <div class="sect2">
 <h3 id="information-flow">Information Flow</h3>
+<div class="paragraph">
+<p>Information flow (IF) was introduced by Ay and Polani as a measure of the "strength of a
+causal effect" (<a href="#Ay2008">[Ay2008]</a>). Unlike many of the other measures in <strong>Inform</strong>, information flow
+was designed around interventions: rather than allowing dynamics to progress naturally, some
+subset of the random variables are forced into a particular state. If no interventions are
+performed, then IF reduces to
+<a href="https://en.wikipedia.org/wiki/Conditional_mutual_information">conditional mutual
+information</a>.</p>
+</div>
+<div class="paragraph">
+<p>Practially, there is no way for <strong>Inform</strong> to know from time series whether or not any
+interventions have actually been performed upon the system. As such, the onous is on the
+user to determine whether this function is in-fact computing Ay and Polani&#8217;s information
+flow.</p>
+</div>
+<div class="paragraph">
+<p>In accordance with <a href="#Ay2008">[Ay2008]</a>, information flow is defined as</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[I_p(X \rightarrow Y | Z) = \sum_{x,y,z} p(z)p(x|\hat{z})p(y|\hat{x},\hat{z})
+    \log{
+        \frac{p(y|\hat{x},\hat{z})}
+        {\sum_{x^\prime} p(x^\prime|\hat{z})p(y|\hat{x}^\prime,\hat{z})}
+    }\]
+</div>
+</div>
+<div class="paragraph">
+<p>All probabilities are estimated from sequences of observations — the order of those
+sequences is irrelevant. A <a href="https://github.com/elife-asu/inform/issues/76">subsequent version</a>
+will allow the user to specify intervention distributions.</p>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div id="inform_information_flow" class="listingblock">
@@ -2163,6 +2318,104 @@ Header
 <pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_information_flow(int const *src, int const *dst,
         int const *back, size_t l_src, size_t l_dst, size_t l_back,
         size_t n, size_t m, int b, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong>
+This example demonstrates how to user <code>inform_information_flow</code> to analyzed Ay and Polani&#8217;s
+diamond structure example (<a href="#Ay2008">[Ay2008]</a> p.28-29). In this example, we have four interacting
+Boolean variables \(W\), \(X\), \(Y\) and \(Z\). The variables \(X\) and
+\(Y\) are each dependent on \(W\): they simply copy it&#8217;s state. The \(Z\) variable
+is the XOR of the states of \(X\) and \(Y\). The variable \(W\) is uniformly
+distributed.</p>
+</div>
+<div class="paragraph">
+<p><em>Example 1</em>: Natural dynamics</p>
+</div>
+<div class="paragraph">
+<p>Left to it&#8217;s own devices, this system might produce a sequence of observations like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int const ws[8] = {0,0,1,0,1,1,0,1};
+int const xs[8] = {0,0,1,0,1,1,0,1};
+int const ys[8] = {0,0,1,0,1,1,0,1};
+int const zs[8] = {0,0,0,0,0,0,0,0};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>From these we can compute the following information flows:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[I_p(X \rightarrow Y) = 1 \\
+I_p(X \rightarrow Y | W) = 0 \\
+I_p(W \rightarrow Z | Y) = 0.\]
+</div>
+</div>
+<div class="paragraph">
+<p>Our notation departs somewhat from that of <a href="#Ay2008">[Ay2008]</a> as we denote these as information
+flows despite the fact that we are not strictly intervening upon the system. If the user
+prefers, they can think of this as "intervening on the system that is indistiguishable from
+the natural dynamics". In any case, we can use <code>inform_information_flow</code> to compute the the
+above values</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+double flow = 0.0;
+flow = inform_information_flow(xs, ys, NULL, 1, 1, 0, 1, 8, 2, &amp;err);
+assert(!err);
+// flow ~ 1.0
+flow = inform_information_flow(xs, ys, ws, 1, 1, 1, 1, 8, 2, &amp;err);
+assert(!err);
+// flow ~ 0.0
+flow = inform_information_flow(ws, zs, ys, 1, 1, 1, 1, 8, 2, &amp;err);
+assert(!err);
+// flow ~ 0.0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Example 2</em>: Interventions</p>
+</div>
+<div class="paragraph">
+<p>Now, consider that we can intervene on \(Y\) and force it to whichever state we so
+choose. Then we might end up with a sequence of observations as</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">int const ws[8] = {0,0,1,0,1,1,0,1};
+int const xs[8] = {0,0,1,0,1,1,0,1};
+int const ys[8] = {1,0,1,0,0,1,1,0};
+int const zs[8] = {1,0,0,0,1,0,1,1};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>From these we can compute the following information flows:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[I_p(X \rightarrow Y) = 0 \\
+I_p(X \rightarrow Y | W) = 0 \\
+I_p(W \rightarrow Z | Y) = 1.\]
+</div>
+</div>
+<div class="paragraph">
+<p>In <strong>Inform</strong> this looks like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+double flow = 0.0;
+flow = inform_information_flow(xs, ys, NULL, 1, 1, 0, 1, 8, 2, &amp;err);
+assert(!err);
+// flow ~ 0.0
+flow = inform_information_flow(xs, ys, ws, 1, 1, 1, 1, 8, 2, &amp;err);
+assert(!err);
+// flow ~ 0.0
+flow = inform_information_flow(ws, zs, ys, 1, 1, 1, 1, 8, 2, &amp;err);
+assert(!err);
+// flow ~ 1.0</code></pre>
 </div>
 </div>
 <div class="hdlist">
@@ -2182,12 +2435,72 @@ Header
 </div>
 <div class="sect2">
 <h3 id="evidence-of-integration">Evidence Of Integration</h3>
+<div class="paragraph">
+<p>Evidence of Integration (EoI) was introduced in <a href="#Biehl2016">[Biehl2016]</a> as a means of identifying
+representations of agents in dynamical systems. Given a collection of random variables,
+\(\mathcal{X}=\{X_1,X_2,\ldots,X_l\}\), we can form (non-trivial) partitionings of
+\(\mathcal{X}\):</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[\{\mathcal{Z} \subset \mathcal{P}(\mathcal{X})\setminus\{\mathcal{X},\varnothing\}\ |\
+    \mathcal{Z} \not= \varnothing,
+    \bigcup_{Z \in \mathcal{Z}} Z = \mathcal{X} ~\textrm{and}~ Z_i \cap Z_j = \varnothing,
+    i \not = j
+\}\]
+</div>
+</div>
+<div class="paragraph">
+<p>Each partitioning \(\mathcal{Z} = \{Z_1, \ldots, Z_m\}\) consists of a collection of
+joint random variables built from \(\mathcal{X}\). The configurations of
+\(\mathcal{Z}\) are in one-to-one correspondence with the configurations of
+\(\mathcal{X}\). Given such a partitioning, we can ask what the pointwise mutual
+information is:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[mi_\mathcal{Z}(z_1, \ldots, z_m) = \log{\frac{p(z_1, \ldots, z_m)}{p(z_1) \ldots p(z_m)}}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>If \(z=\{z_1,\ldots,z_m\}\) corresponds to the configuration
+\(x=\{x_1,\ldots,x_l\}\), we refer to the above mutual information as the "evidence of
+integration of \(x\) with respect to the partitioning \(\mathcal{Z}\)".</p>
+</div>
+<div class="paragraph">
+<p>We say that a configuration \(x\) is <em>integrated</em> if and only if the evidence of
+integration of \(x\) is positive for all partitionings of the system.</p>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div id="inform_integration_evidence" class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_integration_evidence(int const *series, size_t l,
         size_t n, int const *b, double *evidence, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Given a sequence of <code>n</code> observed states of <code>l</code> random variables (<code>series</code>), compute the
+evidence of integration for each partitioning of the <code>l</code> variables, and return the minimum
+and maximum evidence for each observation.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[30] = {
+    0, 1, 0, 1, 1, 1, 0, 0, 1, 0,
+    0, 1, 0, 1, 1, 1, 0, 0, 1, 0,
+    1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+};
+double *evidence = inform_integration_evidence(series, 3, 10, (int[3]){2,2,2}, NULL, &amp;err);
+assert(!err);
+// evidence ~ { -0.322 0.263 -0.322 0.263 0.263 -0.322 0.263 0.263 -0.322 0.263   // MIN
+//               1.000 1.263  1.000 1.263 1.263  1.000 1.263 1.263  1.000 1.263 } // MAX
+// integrated?   NO    YES    NO    YES   YES    NO    YES   YES    NO    YES
+free(evidence);</code></pre>
 </div>
 </div>
 <div class="hdlist">
@@ -2197,7 +2510,7 @@ Header
 Header
 </td>
 <td class="hdlist2">
-<p><code>inform/information_flow.h</code></p>
+<p><code>inform/integration.h</code></p>
 </td>
 </tr>
 </table>
@@ -2213,6 +2526,32 @@ Header
         double *evidence, inform_error *err);</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Given a sequence of <code>n</code> observed states of <code>l</code> random variables (<code>series</code>), compute the
+evidence of integration each observation with respect to a partitioning <code>parts</code>.</p>
+</div>
+<div class="paragraph">
+<p>This function is useful when the number of variables <code>l</code> is large; the user can test a small
+subset of the partitionings to increase confidence that the system is integrated. Biehl et.
+al. suggest considering only the finest partitioning, \(\mathcal{Z} = \{\{X_1\}, \ldots
+\{X_l\}\}\).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[30] = {
+    0, 1, 0, 1, 1, 1, 0, 0, 1, 0, // X_1
+    0, 1, 0, 1, 1, 1, 0, 0, 1, 0, // X_2
+    1, 1, 1, 1, 1, 0, 0, 0, 0, 0, // X_3
+};
+size_t partitions[3] = {0,0,1}; // Partition as {{X_1, X_2}, {X_3}} (2 partitions)
+double *evidence = inform_integration_evidence_part(series, 3, 10,
+    (int[3]){2,2,2}, partitions, 2, NULL, &amp;err);
+assert(!err);
+// evidence ~ { -0.322 0.263 -0.322 0.263 0.263 -0.322 0.263 0.263 -0.322 0.263 }
+free(evidence);</code></pre>
+</div>
+</div>
 <div class="hdlist">
 <table>
 <tr>
@@ -2220,7 +2559,7 @@ Header
 Header
 </td>
 <td class="hdlist2">
-<p><code>inform/information_flow.h</code></p>
+<p><code>inform/integration.h</code></p>
 </td>
 </tr>
 </table>
@@ -2246,7 +2585,8 @@ defined as</p>
 <div class="stemblock">
 <div class="content">
 \[I(X_1,\ldots,X_l) =
-    \sum_{x_{1,i},\ldots,x_{l,i}} p(x_{1,i},\ldots,x_{l,i}) \frac{p(x_{1,i},\ldots,x_{l,i})}{p(x_{1,i})\ldots p(x_{l,i})}.\]
+    \sum_{x_{1,i},\ldots,x_{l,i}} p(x_{1,i},\ldots,x_{l,i})
+    \frac{p(x_{1,i},\ldots,x_{l,i})}{p(x_{1,i})\ldots p(x_{l,i})}.\]
 </div>
 </div>
 <div class="paragraph">
@@ -2507,8 +2847,8 @@ a semi-infinite future:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>We can think of <a href="#active-info">active information</a> and <a href="#excess-entropy">excess entropy</a>as
-a special cases of predictive information.</p>
+<p>We can think of <a href="#active-info">active information</a> and <a href="#excess-entropy">excess entropy</a>
+as a special cases of predictive information.</p>
 </div>
 <div class="paragraph">
 <p>See <a href="#Bialek2001a">[Bialek2001a]</a> and <a href="#Bialek2001b">[Bialek2001b]</a> for more details.</p>
@@ -2524,6 +2864,38 @@ a special cases of predictive information.</p>
 <div class="paragraph">
 <p>Compute the predictive information from a time series with history length <code>kpast</code> and
 "future length" <code>kfuture</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong>
+Our examples will compute the predictive information between a the current time step and
+then next two time steps, \(P_X(1,2)\).</p>
+</div>
+<div class="paragraph">
+<p>One initial condition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[9] = {0,0,1,1,0,0,1,1,0};
+double pi = inform_predictive_info(series, 1, 9, 2, 1, 2, &amp;err);
+assert(!err);
+// pi ~ 0.985228</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Two initial conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[18] = {
+    0,0,1,1,0,0,1,1,0,
+    0,1,0,1,0,1,0,1,0
+};
+double pi = inform_predictive_info(series, 2, 9, 2, 1, 2, &amp;err);
+assert(!err);
+// pi ~ 0.244905</code></pre>
+</div>
 </div>
 <div class="hdlist">
 <table>
@@ -2551,6 +2923,41 @@ Header
 <div class="paragraph">
 <p>Compute the local predictive information from a time series with history length <code>kpast</code> and
 "future length" <code>kfuture</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong>
+Our examples will compute the local predictive information between a the current time step
+and then next two time steps.</p>
+</div>
+<div class="paragraph">
+<p>One inital condition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[9] = {0,0,1,1,0,0,1,1,0};
+double *pi = inform_local_predictive_info(series, 1, 9, 2, 1, 2, NULL, &amp;err);
+assert(!err);
+// pi ~ { 0.807 0.807 1.222 1.222 0.807 0.807 1.222 }
+free(pi);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Two inital conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[18] = {
+    0,0,1,1,0,0,1,1,0,
+    0,1,0,1,0,1,0,1,0
+};
+double *pi = inform_local_predictive_info(series, 2, 9, 2, 1, 2, NULL, &amp;err);
+assert(!err);
+// pi ~ { -0.515 0.807 -0.363 1.222 -0.515 0.807 -0.363
+//         0.222 0.485  0.222 0.485  0.222 0.485  0.222 }
+free(pi);</code></pre>
+</div>
 </div>
 <div class="hdlist">
 <table>
@@ -2686,6 +3093,21 @@ Header
 </div>
 <div class="sect2">
 <h3 id="separable-information">Separable Information</h3>
+<div class="paragraph">
+<p>Separable information (SI) was introduced in <a href="#Lizier2010">[Lizier2010]</a> as a method for detecting
+information modification in distributed computations. Given a random variable \(Y\)
+and a collection of potentially informative sources \(V_Y\) (wherein \(Y \not\in
+V_Y\)), separable information quantifies the total information gained about \(Y\) from
+seperate observations of histories of \(Y\) and "transfer contributions" from each of the
+sources \(X \in V_Y\). In other words, it is the sum of the <a href="#active-info">Active Information</a> of
+\(Y\) and the (apparent) <a href="#transfer-entropy">Transfer Entropy</a> from each source to \(Y\):</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[s_{Y,i}(k) = a_{Y,i}(k) + \sum_{X \in V_Y} t_{X \rightarrow Y, i}(k),\\
+S_Y(k) = \langle s_{Y,i}(k) \rangle_i = A_Y(k) + \sum_{X \in V_Y} T_{X \rightarrow Y}(k).\]
+</div>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div id="inform_separable_info" class="listingblock">
@@ -2693,6 +3115,58 @@ Header
 <pre class="prettyprint highlight"><code class="language-c" data-lang="c">double inform_separable_info(int const *srcs, int const *dest,
         size_t l, size_t n, size_t m, int b, size_t k,
         inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong>
+One initial condition, one source:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const dest[9] = {0,1,1,1,1,0,0,0,0};
+int const srcs[9] = {0,0,1,1,1,1,0,0,0};
+
+double si = inform_separable_info(srcs, dest, 1, 1, 9, 2, 2, &amp;err);
+assert(!err);
+// si ~ 0.591673</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>One initial condition, multiple sources:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const dest[9] = {0,1,1,1,1,0,0,0,0};
+int const srcs[18] = {
+    0,0,1,1,1,1,0,0,0,
+    1,1,1,1,0,0,0,0,0,
+};
+
+double si = inform_separable_info(srcs, dest, 2, 1, 9, 2, 2, &amp;err);
+assert(!err);
+// si ~ 0.985228</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Multiple initial conditions, multiple sources:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const dest[18] = {
+    0,1,1,1,1,0,0,0,0,
+    1,1,0,1,1,0,1,1,0
+};
+int const srcs[36] = {
+    0,0,1,1,1,1,0,0,0, 1,1,1,1,1,0,1,1,0,
+    1,1,1,1,0,0,0,0,0, 0,0,0,0,1,1,1,1,0,
+};
+
+double si = inform_separable_info(srcs, dest, 2, 2, 9, 2, 2, &amp;err);
+assert(!err);
+// si ~ 0.625349</code></pre>
 </div>
 </div>
 <div class="hdlist">
@@ -2718,6 +3192,62 @@ Header
         inform_error *err);</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p><strong>Examples:</strong>
+One initial condition, one source:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const dest[9] = {0,1,1,1,1,0,0,0,0};
+int const srcs[9] = {0,0,1,1,1,1,0,0,0};
+
+double *si = inform_local_separable_info(srcs, dest, 1, 1, 9, 2, 2, NULL, &amp;err);
+assert(!err);
+// si ~ { 1.222 0.637 0.637 -0.778 0.807 0.807 0.807 }
+free(si);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>One initial condition, multiple sources:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const dest[9] = {0,1,1,1,1,0,0,0,0};
+int const srcs[18] = {
+    0,0,1,1,1,1,0,0,0,
+    1,1,1,1,0,0,0,0,0,
+};
+
+double *si = inform_local_separable_info(srcs, dest, 2, 1, 9, 2, 2, NULL, &amp;err);
+assert(!err);
+// si ~ { 1.222 1.222 1.222 0.807 0.807 0.807 0.807 }
+free(si);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Multiple initial conditions, multiple sources:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const dest[18] = {
+    0,1,1,1,1,0,0,0,0,
+    1,1,0,1,1,0,1,1,0
+};
+int const srcs[36] = {
+    0,0,1,1,1,1,0,0,0, 1,1,1,1,1,0,1,1,0,
+    1,1,1,1,0,0,0,0,0, 0,0,0,0,1,1,1,1,0,
+};
+
+double *si = inform_local_separable_info(srcs, dest, 2, 2, 9, 2, 2, NULL, &amp;err);
+assert(!err);
+// si ~ { 1.000 -0.000 -0.000  1.000 0.585 1.000  1.000
+//        1.000 -0.415  1.000 -0.000 1.585 1.000 -0.000 }
+free(si);</code></pre>
+</div>
+</div>
 <div class="hdlist">
 <table>
 <tr>
@@ -2735,6 +3265,61 @@ Header
 </div>
 <div class="sect2">
 <h3 id="transfer-entropy">Transfer Entropy</h3>
+<div class="paragraph">
+<p>Transer entropy (TE) was introduced in <a href="#Schreiber2000">[Schreiber2000]</a> to quantify information transfer
+between an information source and destination, conditioning out shared history effects. TE
+was originally formulated considering only the source and destination; however many systems
+of interest have more just those two components. As such, it may be further necessary to
+condition the probabilities on the states of all "background" components in the system.
+These two forms are sometimes referred to as <em>apparent</em> and <em>complete</em> transfer entropy,
+respectively (<a href="#Lizier2008">[Lizier2008]</a>).</p>
+</div>
+<div class="paragraph">
+<p>Our implementation of TE allows the user to condition the probabilities on any number of
+background processes, within hardware limits. For the subsequent description, take \(X\)
+to be the source, \(Y\) the target, and \(\mathcal{W} = \left\{W_1, \ldots,
+W_l\right\}\) be the background processes against which we&#8217;d like to condition. For example,
+we might take the state of two nodes in a dynamical network as the source and target, while
+all other nodes in the network are treated as the background. Transfer entropy is then
+defined in terms of a time-local variant</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[t_{X \rightarrow Y, \mathcal{W}, i}(k) =
+    \log_2{\frac{p(y_{i+1},x_i|y^{(k)}_i,W_i)}
+    {p(y_{i+1}|y^{(k)}_i,W_i)p(x_{i+1}|y^{(k)}_i,W_i)}}\]
+</div>
+</div>
+<div class="paragraph">
+<p>where \(W_i = w_{1,i},\ldots,w_{l,i}\) are the states of each of the background nodes at
+time step \(i\), and the probabilities are constructed empirically from the <em>entire</em> time
+series. From the local variant, the temporally global transfer entropy is defined as</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[T_{X \rightarrow Y, \mathcal{W}}(k)
+    = \langle t_{X \rightarrow Y, \mathcal{W}, i}(k) \rangle_i
+    = \sum_{y_{i+1},y^{(k)},x_i,W_i} p(y_{i+1},y^{(k)}_i,x_i,W_i)
+    \log_2{\frac{p(y_{i+1},x_i|y^{(k)}_i,W_i)}
+    {p(y_{i+1}|y^{(k)}_i,W_i)p(x_{i+1}|y^{(k)}_i,W_i)}}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>Strictly speaking, the local and average transfer entropy are defined as</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[t_{X \rightarrow Y, \mathcal{W}, i}
+    = \lim_{k\rightarrow \infty} t_{X \rightarrow Y, \mathcal{W}, i}(k)
+\qquad \textrm{and} \qquad
+T_{X \rightarrow Y, \mathcal{W}}
+    = \lim_{k\rightarrow \infty} t_{X \rightarrow Y, \mathcal{W}}(k),\]
+</div>
+</div>
+<div class="paragraph">
+<p>but we do not provide limiting functionality in this library
+(<a href="https://github.com/elife-asu/issues/24">yet</a>!).</p>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div id="inform_transfer_entropy" class="listingblock">
@@ -2743,6 +3328,73 @@ Header
         int const *back, size_t l, size_t n, size_t m, int b, size_t k,
         inform_error *err);</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Compute the average transfer entropy with a history length <code>k</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>One initial condition, no background:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[9] = {0,1,1,1,1,0,0,0,0};
+int const ys[9] = {0,0,1,1,1,1,0,0,0};
+double te = inform_transfer_entropy(xs, ys, NULL, 0, 1, 9, 2, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// te ~ 0.679270</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Two initial conditions, no background:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[18] = {1,0,0,0,0,1,1,1,1,
+                    1,1,1,1,0,0,0,1,1};
+int const ys[18] = {0,0,1,1,1,1,0,0,0,
+                    1,0,0,0,0,1,1,1,0};
+double te = inform_transfer_entropy(xs, ys, NULL, 0, 2, 9, 2, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// te ~ 0.693536</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>One initial condition, one background process:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[9] = {0,1,1,1,1,0,0,0,0};
+int const ys[9] = {0,0,1,1,1,1,0,0,0};
+int const ws[9] = {0,1,1,1,1,0,1,1,1};
+double te = inform_transfer_entropy(xs, ys, ws, 1, 1, 9, 2, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// te ~ 0.285714</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>One initial condition, two background processes:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[9]  = {0,1,1,1,1,0,0,0,0};
+int const ys[9]  = {0,0,1,1,1,1,0,0,0};
+int const ws[18] = {1,0,1,0,1,1,1,1,1,
+                    1,1,0,1,0,1,1,1,1};
+double te = inform_transfer_entropy(xs, ys, ws, 2, 1, 9, 2, 2, &amp;err);
+assert(inform_succeeded(&amp;err));
+// te ~ 0.0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This example is interesting in that the two background process provide the same information
+about the target as the source process does, but they don&#8217;t separately.</p>
 </div>
 <div class="hdlist">
 <table>
@@ -2765,6 +3417,74 @@ Header
 <pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_local_transfer_entropy(int const *src, int const *dst,
         int const *back, size_t l, size_t n, size_t m, int b, size_t k,
         double *te, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compute the local transfer entropy with a history length <code>k</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>One initial condition, no background:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[9] = {0,1,1,1,1,0,0,0,0};
+int const ys[9] = {0,0,1,1,1,1,0,0,0};
+double *lte = inform_local_transfer_entropy(xs, ys, NULL, 0, 1, 9, 2, 2, NULL, &amp;err);
+assert(inform_succeeded(&amp;err));
+// lte ~ {  1.000  0.000  0.585  0.585  1.585  0.000  1.000 }
+free(lte);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Two initial conditions, no background:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[18] = {1,0,0,0,0,1,1,1,1,
+                    1,1,1,1,0,0,0,1,1};
+int const ys[18] = {0,0,1,1,1,1,0,0,0,
+                    1,0,0,0,0,1,1,1,0};
+double *lte = inform_local_transfer_entropy(xs, ys, NULL, 0, 2, 9, 2, 2, NULL, &amp;err);
+assert(inform_succeeded(&amp;err));
+// lte ~ {  1.322  0.000  0.737  0.737  1.322  0.000  0.737
+//          0.000  0.737  0.737  1.322  0.000  0.737  1.322 }
+free(lte);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>One initial condition, one background process:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[9] = {0,1,1,1,1,0,0,0,0};
+int const ys[9] = {0,0,1,1,1,1,0,0,0};
+int const ws[9] = {0,1,1,1,1,0,1,1,1};
+double *lte = inform_local_transfer_entropy(xs, ys, ws, 1, 1, 9, 2, 2, NULL, &amp;err);
+assert(inform_succeeded(&amp;err));
+// lte ~ {  1.000  0.000  0.000  0.000  0.000  0.000  1.000 }
+free(lte);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>One initial condition, two background processes:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const xs[9]  = {0,1,1,1,1,0,0,0,0};
+int const ys[9]  = {0,0,1,1,1,1,0,0,0};
+int const ws[18] = {1,0,1,0,1,1,1,1,1,
+                    1,1,0,1,0,1,1,1,1};
+double *lte = inform_local_transfer_entropy(xs, ys, ws, 2, 1, 9, 2, 2, NULL, &amp;err);
+assert(inform_succeeded(&amp;err));
+// lte ~ {  0.000  0.000  0.000  0.000  0.000  0.000  0.000 }
+free(lte);</code></pre>
 </div>
 </div>
 <div class="hdlist">
@@ -3003,6 +3723,64 @@ Headers
 </div>
 <div class="sect2">
 <h3 id="black-boxing-time-series">Black-Boxing Time Series</h3>
+<div class="paragraph">
+<p>It is often useful when analyzing complex systems to black-box components of the system.
+This process amounts to grouping components of the system and treating them as a single
+entity, without regard for its small-scale structure. As an example, consider you have two
+Boolean random variables \(X\) and \(Y\), and you observe time series of each
+simultaneously:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[X:\ \{0,1,1,0,1,0,0,1\}\\
+Y:\ \{1,0,0,1,1,0,1,0\}\]
+</div>
+</div>
+<div class="paragraph">
+<p>It may be worthwhile to consider these observations as observations of the joint
+variable \((X,Y)\):</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[(X,Y):\ \{(0,1),(1,0),(1,0),(0,1),(1,1),(0,0),(0,1),(1,0)\}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>The joint observations can then be naturally encoded, for example, as base-4 states</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[(X,Y):\ \{1,2,2,1,3,0,1,2\}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>We refer this process of mapping the observations of \(X\) and \(Y\) to the encoded
+observations of \((X,Y)\) as black boxing. In this case, the black boxing procedure is
+performed in "space" (you might think of \(X\) and \(Y\) having locations in space).
+We may also black box in time. The canonical example of this is considering the
+\(k\)-history of a random variable:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[X:\       \{0,1,1,0,1,0,0,1\}\\
+X^{(2)}:\ \{((0,1),(1,1),(1,0),(0,1),(1,0),(0,0),(0,1)\},\]
+</div>
+</div>
+<div class="paragraph">
+<p>and the observations of \(X^{(2)}\) can be encoded as base-4 states:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[X^{(2)}:\ \{(1,3,2,1,2,0,1\}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>We provide a basic black-boxing function that allows the user to black-box in both space and
+into the future and past of a collection of random variable <a href="#inform_black_box">[inform_black_box]</a>. The
+<a href="#inform_black_box_parts">[inform_black_box_parts]</a> allows the user to black-box time series based on a
+<a href="#partitioning-time-series">partitioning scheme</a> (useful in the implementation of
+integration measures such as <a href="#evidence-of-integration">Evidence Of Integration</a>).</p>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div id="inform_black_box" class="listingblock">
@@ -3010,6 +3788,99 @@ Headers
 <pre class="prettyprint highlight"><code class="language-c" data-lang="c">int *inform_black_box(int const *series, size_t l, size_t n, size_t m,
         int const *b, size_t const *r, size_t const *s, int *box,
         inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Black-box a collection of <code>l</code> time series (each with shape <code>(n,m)</code>) with bases <code>b</code> into a
+single time series with base <code>b[0]*&#8230;&#8203;*b[l-1]</code>. History lengths for each time series may be
+provided through <code>r</code> and future lengths through <code>l</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p><em>Example 1</em>: Black-box two time series with no history or futures:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[16] = {
+    0,1,1,0,1,0,0,1,
+    1,0,0,1,1,0,1,0,
+};
+int b[2] = {2,2};
+
+int box[8];
+inform_black_box(series, 2, 1, 8, b, NULL, NULL, box, &amp;err);
+assert(!err);
+// box ~ { 1 2 2 1 3 0 1 2 }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is the first example described in <a href="#black-boxing-time-series">Black-Boxing Time Series</a>.</p>
+</div>
+<div class="paragraph">
+<p><em>Example 2</em>: Black-box a single time series in time with history length 2:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[8] = {
+    0,1,1,0,1,0,0,1,
+};
+int b = 2;
+
+size_t r = 2;
+int box[7];
+inform_black_box(series, 1, 1, 8, &amp;b, &amp;r, NULL, box, &amp;err);
+assert(!err);
+// box ~ { 1 3 2 1 2 0 1 }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is the second example described in <a href="#black-boxing-time-series">Black-Boxing Time Series</a>.</p>
+</div>
+<div class="paragraph">
+<p><em>Example 3</em>: Black-box two time series with histories and futures:
+In this example we consider two time series:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[X:\ \{0,1,1,0,1,0,0,1\}\\
+Y:\ \{1,0,0,1,1,0,1,0\}\]
+</div>
+</div>
+<div class="paragraph">
+<p>and produce observations of \((X^{(2,0)},Y^{(1,1)})\)</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[(X^{(2,0)},Y^{(1,1)}):\ \{(0,1,0,0),(1,1,0,1),(1,0,1,1),(0,1,1,0),(1,0,0,1),(0,0,1,0)\}\]
+</div>
+</div>
+<div class="paragraph">
+<p>encoded as</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[(X^{(2,0)},Y^{(1,1)}):\ \{4,13,11,6,9,2\}.\]
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[16] = {
+    0,1,1,0,1,0,0,1,
+    1,0,0,1,1,0,1,0,
+};
+int b[2] = {2,2};
+
+size_t r[2] = {2,1};
+size_t s[2] = {0,1};
+int box[6];
+inform_black_box(series, 2, 1, 8, b, r, s, box, &amp;err);
+assert(!err);
+// box ~ { 4 13 11 6 9 2 }</code></pre>
 </div>
 </div>
 <div class="hdlist">
@@ -3036,6 +3907,134 @@ Headers
         inform_error *err);</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Black-box <code>l</code> time series (each of length <code>n</code>) with bases <code>b</code> into <code>nparts</code> time series
+according to the partitioning scheme <code>parts</code>. The resulting time series and their bases are
+stored in <code>box</code> and returned. The <code>box</code> must have enough space to store the black-boxed time
+series AND the base of each of the resulting time series. That is <code>length(box) &gt;= nparts * n
++ nparts</code>. If <code>box == NULL</code>, then exactly enough space is allocated for result.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#partitioning-time-series">Partitioning Time Series</a> for more information about partitioning schemes.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p><em>Example 1</em>: Black-box 4 time series (each of length 8) into a single time series</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[32] = {
+    0,1,1,0,1,0,0,1,
+    1,0,0,1,1,0,1,0,
+    0,0,0,1,1,1,0,0,
+    1,0,1,0,1,1,1,0,
+};
+int b[4] = {2,2,2,2};
+
+size_t parts[4] = {0,0,0,0};
+size_t nparts = 1; // max(parts) + 1
+int *box = inform_black_box_parts(series, 4, 8, b, parts, nparts, NULL, &amp;err);
+assert(!err);
+// box ~ {
+//   5 8 9 6 15 3 5 8   # the time series for the 0st (and only) partition
+//   16                 # the base of the time series
+// }
+free(box);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This could have been more simply using <a href="#inform_black_box">[inform_black_box]</a>, but it is illustrative.</p>
+</div>
+<div class="paragraph">
+<p><em>Example 2</em>: Black-box 4 time series (of length 8) into two time series using the
+partitioning scheme <code>(0,1,1,0)</code>. That is, combine the 0th and 4th, and the 1st and 2nd.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[32] = {
+    0,1,1,0,1,0,0,1,
+    1,0,0,1,1,0,1,0,
+    0,0,0,1,1,1,0,0,
+    1,0,1,0,1,1,1,0,
+};
+int b[4] = {2,2,2,2};
+
+size_t parts[4] = {0,1,1,0};
+size_t nparts = 2; // max(parts) + 1
+int *box = inform_black_box_parts(series, 4, 8, b, parts, nparts, NULL, &amp;err);
+assert(!err);
+// box ~ {
+//   1 2 3 0 3 1 1 2    # the time series for the 0th partition
+//   2 0 0 3 3 1 2 0    # the time series for the 1st partition
+//   4 4                # the bases for the time series (in order)
+// }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the two time series each have a base of 4, and the bases are returned as the last
+two elements of <code>box</code>.</p>
+</div>
+<div class="paragraph">
+<p><em>Example 3</em>: Multivariate Mutual Information of Partitions
+In this example, we compute the multivariate mutual information between 4 time series (each
+of length 8) for all partitionings of the system (except the very first since that only
+yields a single time series). That is, each partition is treated as a seperate variable and
+the mutual information is computed between the partitioned variables.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">#include &lt;assert.h&gt;
+#include &lt;inform/utilities.h&gt;
+#include &lt;inform/mutual_info.h&gt;
+#include &lt;stdio.h&gt;
+
+int main()
+{
+        #define L 4
+        #define N 8
+
+        inform_error err = INFORM_SUCCESS;
+        int const series[L*N] = {
+            0,1,1,0,1,0,0,1,
+            1,0,0,1,1,0,1,0,
+            0,0,0,1,1,1,0,0,
+            1,0,1,0,1,1,1,0,
+        };
+        int b[L] = {2,2,2,2};
+
+        int box[L + L*N]; // make sure there's enough space for the finest partitioning
+
+        size_t *parts = inform_first_partitioning(L);
+        size_t nparts = 1;
+        while((nparts = inform_next_partitioning(parts, L)))
+        {
+            inform_black_box_parts(series, L, N, b, parts, nparts, box, &amp;err);
+            assert(!err);
+
+            int *bases = box + N*nparts;
+            double mi = inform_mutual_info(box, nparts, N, bases, &amp;err);
+            assert(!err);
+            printf("%0.3lf ", mi);
+        }
+        printf("\n");
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>prints</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-plain" data-lang="plain">0.610 0.954 1.217 1.220 1.000 1.311 1.360 1.311 1.000 1.360 1.360 1.360 1.406 1.409</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This example is tantalizingly close to an implementation of <a href="#evidence-of-integration">Evidence Of Integration</a>.</p>
+</div>
 <div class="hdlist">
 <table>
 <tr>
@@ -3054,12 +4053,68 @@ Headers
 </div>
 <div class="sect2">
 <h3 id="coalescing-time-series">Coalescing Time Series</h3>
+<div class="paragraph">
+<p>Information measures over time series are invariant under any change of encoding that does
+not change the relative occurrance of each symbol. For example, the following time series
+have the same entropy:</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[A = \{5,2,2,5,2,5,5,2\} \\
+B = \{1,0,0,1,0,1,1,0\}.\]
+</div>
+</div>
+<div class="paragraph">
+<p>Each of the time series has an effective base of 2, but their apparent bases are different:
+5 and 2, respectively. The result is that computations using \(A\) require
+\(log_2{5}\times\) more memory due to larger <em>potential</em> state spaces. They also tend to
+run a bit slower since many information-theoretic algorithms have runtimes that trend with
+the volume of the state space.</p>
+</div>
+<div class="paragraph">
+<p>The <code>inform_coalesce</code> function maps a time series to a new time series whose effective base
+is the same as its apparent base: e.g. maps \(A \mapsto B\).</p>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div id="inform_coalesce" class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-c" data-lang="c">int inform_coalesce(int const *series, size_t n, int *coal,
         inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Reduce the apparent base of a time series to its effective base by removing "gaps" between
+observed states.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[8] = {5,2,2,5,2,5,5,2}; // A
+int coal[8];
+int b = inform_coalesce(series, 8, coal, &amp;err);
+assert(!err);
+assert(b == 2);
+// coal ~ { 1 0 0 1 0 1 1 0 } // B</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that we ensure that if \(a_i &lt;= a_j\), then \(b_i &lt;= b_j\) for all \(i,j\).
+This ensures that if the the apparent base of the time series is the effective base, then
+the time series is unchanged.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[8] = {2,1,0,0,1,2,1,3};
+int coal[8];
+int b = inform_coalesce(series, 8, coal, &amp;err);
+assert(!err);
+assert(b == 4);
+// coal ~ { 2 1 0 0 1 2 1 3 } // the time series is unchanged</code></pre>
 </div>
 </div>
 <div class="hdlist">
@@ -3080,12 +4135,59 @@ Headers
 </div>
 <div class="sect2">
 <h3 id="encoding-states">Encoding/Decoding States</h3>
+<div class="paragraph">
+<p>Many of <strong>Inform</strong>'s implementations require that states be encoded as integers. Two
+functions, <a href="#inform_encode">[inform_encode]</a> and <a href="#inform_decode">[inform_decode]</a> handle encoding and decoding states
+to and from integers, respectively.</p>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div id="inform_encode" class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-c" data-lang="c">int32_t inform_encode(int const *state, size_t n, int b,
         inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Encode a base-<code>b</code> state with <code>n</code>-digits as a 32-bit integer.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>Binary States:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int32_t code;
+
+code = inform_encode((int[]){1,0,0}, 3, 2, &amp;err);
+assert(!err &amp;&amp; code == 4);
+
+code = inform_encode((int[]){0,1,0}, 3, 2, &amp;err);
+assert(!err &amp;&amp; code == 2);
+
+code = inform_encode((int[]){1,0,1}, 3, 2, &amp;err);
+assert(!err &amp;&amp; code == 5);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Base-4 States:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int32_t code;
+
+code = inform_encode((int[]){3,0,0}, 3, 4, &amp;err);
+assert(!err &amp;&amp; code == 48);
+
+code = inform_encode((int[]){0,3,0}, 3, 4, &amp;err);
+assert(!err &amp;&amp; code == 12);
+
+code = inform_encode((int[]){2,2,1}, 3, 4, &amp;err);
+assert(!err &amp;&amp; code == 41);</code></pre>
 </div>
 </div>
 <div class="hdlist">
@@ -3111,6 +4213,48 @@ Headers
         inform_error *err);</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Decode a 32-bit integer as a base-<code>b</code> state with <code>n</code>-digits.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>Binary States:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int state[3];
+
+inform_decode(4, 2, state, 3, &amp;err);
+// state ~ { 1 0 0 }
+
+inform_decode(2, 2, state, 3, &amp;err);
+// state ~ { 0 1 0 }
+
+inform_decode(5, 2, state, 3, &amp;err);
+// state ~ { 1 0 1 }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Base-4 States:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int state[3];
+
+inform_decode(48, 4, state, 3, &amp;err);
+// state ~ { 3 0 0 }
+
+inform_decode(12, 4, state, 3, &amp;err);
+// state ~ { 0 3 0 }
+
+inform_decode(41, 4, state, 3, &amp;err);
+// state ~ { 2 2 1 }</code></pre>
+</div>
+</div>
 <div class="hdlist">
 <table>
 <tr>
@@ -3129,11 +4273,52 @@ Headers
 </div>
 <div class="sect2">
 <h3 id="partitioning-time-series">Partitioning Time Series</h3>
+<div class="paragraph">
+<p>Many analyses of complex systems consider partitioning of the system into components or
+modules. One example of this is <a href="#evidence-of-integration">Evidence Of Integration</a>.</p>
+</div>
+<div class="paragraph">
+<p>For generality, we represent a partitioning of \(N\) items into \(1 \leq M \leq N\)
+partitions as a sequence of integers \(p_1, \ldots, p_N\) where \(0 \leq p_i &lt; M\)
+is the partition to which the \(i\)-th item belongs.</p>
+</div>
+<div class="paragraph">
+<p>As an example, suppose we partitioned \(\{X_1, X_2, X_3\}\) as \(\{\{X_1\},
+\{X_2,X_3\}\}\). This would be represented as \((0,1,1)\) because \(X_1\) belongs to
+the zeroth partition and \(X_2,X_3\) belong to the first partition.</p>
+</div>
+<div class="paragraph">
+<p>We provide two functions to facilitate the generation of all unique partitionings of a
+system of <code>N</code> elements: <a href="#inform_first_partitioning">[inform_first_partitioning]</a> and <a href="#inform_next_partitioning">[inform_next_partitioning]</a>.</p>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div id="inform_first_partitioning" class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t *inform_first_partitioning(size_t size);</code></pre>
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t *inform_first_partitioning(size_t n);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Return the first partitioning of <code>n</code> items. This is <strong>always</strong> the coarsest partitioning — the
+partitioning with a single partition. The returned array must be freed by the user.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t *part = inform_first_partitioning(2);
+assert(part);
+// part ~ { 0 0 }
+free(part);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t *part = inform_first_partitioning(5);
+assert(part);
+// part ~ { 0 0 0 0 0 }
+free(part);</code></pre>
 </div>
 </div>
 <div class="hdlist">
@@ -3155,7 +4340,72 @@ Headers
 <div class="content">
 <div id="inform_next_partitioning" class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t inform_next_partitioning(size_t *xs, size_t size);</code></pre>
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t inform_next_partitioning(size_t *xs, size_t n);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Provided a partitioning <code>xs</code> of <code>n</code> items, find the next partitioning. The old partitioning
+is overwritten by the new partitioning, and the number of partitions is returned. Zero is
+returned if no more partitions remain.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>Say we wish to partition 3 items:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">void print_partitioning(size_t *part, size_t n)
+{
+    for (size_t i = 0; i &lt; n; ++i) printf("%ld ", part[i]);
+    printf("\n");
+}
+
+int main()
+{
+    size_t const size = 3;
+
+    size_t *part = inform_first_partitioning(size);
+    size_t npart = 1;
+
+    print_partitioning(part, size);
+    while ((npart = inform_next_partitioning(part, size)))
+    {
+        print_partitioning(part, size);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We&#8217;ll get the following output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-plain" data-lang="plain">0 0 0 // {{X_1, X_2, X_3}}
+0 0 1 // {{X_1, X_2}, {X_3}}
+0 1 0 // {{X_1, X_3}, {X_2}}
+0 1 1 // {{X_1}, {X_2, X_3}}
+0 1 2 // {{X_1}, {X_2}, {X_3}}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll notice that this is equal too the third
+<a href="https://en.wikipedia.org/wiki/Bell_number">Bell number</a> \(B_3 = 5\).</p>
+</div>
+<div class="paragraph">
+<p>We can compute the 9-th Bell number as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">size_t const size = 9;
+size_t *part = inform_first_partitioning(size);
+size_t npart = 1, bell_number = 1;
+while ((npart = inform_next_partitioning(part,size)))
+{
+    bell_number += 1;
+}
+assert(bell_number == 21147);</code></pre>
 </div>
 </div>
 <div class="hdlist">
@@ -3176,12 +4426,20 @@ Headers
 </div>
 <div class="sect2">
 <h3 id="random-time-series">Random Time Series</h3>
+<div class="paragraph">
+<p>It is sometimes useful to generate random time series, particularly when testing functions.
+Since we&#8217;ve implemented a few functions which take care of the memory allocation, etc&#8230;&#8203;, we
+decided to expose them.</p>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div id="inform_random_seed" class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-c" data-lang="c">void inform_random_seed();</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Seed the random number generated based on the current clock-time.</p>
 </div>
 <div class="hdlist">
 <table>
@@ -3203,6 +4461,30 @@ Headers
 <div id="inform_random_int" class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-c" data-lang="c">int inform_random_int(int a, int b);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Generate a random integer in the range \([a,b)\).</p>
+</div>
+<div class="paragraph">
+<p><strong>Example:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">srand(2018);
+for (size_t i = 0; i &lt; 10; ++i)
+{
+    printf("%d ", inform_random_int(0, 2));
+}
+printf("\n");</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>prints</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-plain" data-lang="plain">1 1 1 0 1 0 0 0 1 1</code></pre>
 </div>
 </div>
 <div class="hdlist">
@@ -3227,6 +4509,33 @@ Headers
 <pre class="prettyprint highlight"><code class="language-c" data-lang="c">int *inform_random_ints(int a, int b, size_t n);</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Generate an array <code>n</code> random integers in the range \([a,b)\).</p>
+</div>
+<div class="paragraph">
+<p><strong>Example:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">srand(2018);
+int *arr = inform_random_ints(0, 2, 10);
+assert(arr);
+for (size_t i = 0; i &lt; 10; ++i)
+{
+    printf("%d ", arr[i]);
+}
+printf("\n");
+free(arr);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>prints</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-plain" data-lang="plain">1 1 1 0 1 0 0 0 1 1</code></pre>
+</div>
+</div>
 <div class="hdlist">
 <table>
 <tr>
@@ -3249,6 +4558,33 @@ Headers
 <pre class="prettyprint highlight"><code class="language-c" data-lang="c">int *inform_random_series(size_t n, int b);</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Generate a base-<code>b</code> "time series" of <code>n</code> time steps.</p>
+</div>
+<div class="paragraph">
+<p><strong>Example:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">srand(2018);
+int *series = inform_random_series(10, 2);
+assert(series);
+for (size_t i = 0; i &lt; 10; ++i)
+{
+    printf("%d ", series[i]);
+}
+printf("\n");
+free(series);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>prints</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-plain" data-lang="plain">1 1 1 0 1 0 0 0 1 1</code></pre>
+</div>
+</div>
 <div class="hdlist">
 <table>
 <tr>
@@ -3267,12 +4603,63 @@ Headers
 </div>
 <div class="sect2">
 <h3 id="transition-probability-matrix">Time Series to TPM</h3>
+<div class="paragraph">
+<p>Some information measures are defined on transition probability matrices (TPM), e.g.
+<a href="#effective-information">Effective Information</a>. For this reason, we provide a function <a href="#inform_tpm">[inform_tpm]</a> which
+estimates the one-time-step TPM from time series data.</p>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div id="inform_tpm" class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-c" data-lang="c">double *inform_tpm(int const *series, size_t n, size_t m, int b,
         double *tpm, inform_error *err);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Estimate the one-time-step transition probability matrix \(A\) from a time series. The
+element \(A_{ij}\) is the probability of transitioning to state \(j\) in the next time
+step given the system is in state \(i\).</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples:</strong></p>
+</div>
+<div class="paragraph">
+<p>One initial condition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[15] = {0,2,1,0,1,2,0,1,2,1,0,0,2,1,1};
+double *tpm = inform_tpm(series, 1, 15, 3, NULL, &amp;err);
+assert(!err);
+// tpm ~ { 0.20 0.40 0.40
+//         0.40 0.20 0.40
+//         0.25 0.75 0.00 }
+free(tpm);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Multiple initial conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-c" data-lang="c">inform_error err = INFORM_SUCCESS;
+int const series[14] = {
+    0,0,
+    0,1,
+    0,1,
+    0,1,
+    1,0,
+    1,1,
+    2,2,
+};
+double *tpm = inform_tpm(series, 7, 2, 3, NULL, &amp;err);
+assert(!err);
+// tpm ~ { 0.25 0.75 0.00
+//         0.50 0.50 0.00
+//         0.00 0.00 1.00 }
+free(tpm);</code></pre>
 </div>
 </div>
 <div class="hdlist">
@@ -4817,6 +6204,13 @@ learning</a>". <em>Neural computation</em>. <strong>13</strong> (11): 2409-2463.
 <em>Physica A</em>. <strong>302</strong> (1): 89-99. doi:10.1016/S0378-4371(01)00444-7</p>
 </li>
 <li>
+<p><a id="Biehl2016"></a>[Biehl2016] Biehl, M., Ikegami, T. and Polani, D. (2016)
+"<a href="https://dx.doi.org/10.7551/978-0-262-33936-0-ch115">Towards information based
+spatiotemporal patterns as a foundation for agent representation in dynamical systems</a>".
+<em>Proceedings of the Artificial Life Conference 2016</em>. 722-9.
+doi:10.7551/978-0-262-33936-0-ch115</p>
+</li>
+<li>
 <p><a id="Cover1991"></a>[Cover1991] Cover, T.M and Thomas, J.A. (1991) "Elements of information theory". New
 York: Wiley. ISBN 0-471-06259-6.</p>
 </li>
@@ -4847,10 +6241,27 @@ is better than the territory</a>". <strong>19</strong> (5): 188. doi:10.3390/e19
 of Mathematical Statistics</em>. <strong>22</strong> (1): 79-86.  doi:10.1214/aoms/1177729694. MR 39968.</p>
 </li>
 <li>
+<p><a id="Lizier2008"></a>[Lizier2008] Lizier, J.T., Prokopenko, M. and Zomaya, A.Y. (2008)
+"<a href="https://dx.doi.org/10.1103/PhysRevE.77.026110">Local information transfer as a
+spatiotemporal filter for complex systems</a>". <em>Physical Review E</em>. <strong>77</strong> (2): 026110.
+doi:10.1103/PhysRevE.77.026110.</p>
+</li>
+<li>
+<p><a id="Lizier2010"></a>[Lizier2010] Lizier, J.T., Prokopenko, M. and Zomaya, A.Y. (2010)
+"<a href="https://dx.doi.org/10.1063/1.3486801">Information modification and particle
+collisions in distributed computation</a>". <em>Chaos</em>. <strong>20</strong> (3): 037109.
+doi:10.1063/1.3486801.</p>
+</li>
+<li>
 <p><a id="Lizier2012"></a>[Lizier2012] Lizier, J.T., Prokopenko, M. and Zomaya, A.Y. (2012)
-"<a href="https://dx.doi.org/10.1016/j.ins.2012.04.0.16">Local measures of information storage in
+"<a href="https://dx.doi.org/10.1016/j.ins.2012.04.016">Local measures of information storage in
 complex distributed computation</a>". <em>Information Sciences</em>. <strong>208</strong>: 39-54.
 doi:10.1016/j.ins.2012.04.016.</p>
+</li>
+<li>
+<p><a id="Schreiber2000"></a>[Schreiber2000] Schreiber, T. (2000)
+"<a href="https://dx.doi.org/10.1103/PhysRevLett.85.461">Measuring information transfer</a>".
+<em>Physical Review Letters</em>. <strong>85</strong> (2): 461-464. doi:10.1103/PhysRevLett.85.461.</p>
 </li>
 <li>
 <p><a id="Shannon1948"></a>[Shannon1948] Shannon, C.E. (July-October 1948)
@@ -4871,7 +6282,7 @@ neuroscience</em>. <strong>4</strong> (1): 31. doi:101186/1471-2202-4-31.</p>
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2017-11-29 20:51:45 UTC
+Last updated 2018-03-08 03:03:07 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">

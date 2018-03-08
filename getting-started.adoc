@@ -9,9 +9,9 @@ package manager, e.g. `apt-get`, `pacman` or `yum` on Linux or `homebrew`, `macp
 Once CMake is installed, building, testing and installing the library is a snap
 [source]
 ----
-$ cmake . -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes
-$ make all tests
-$ sudo make install
+λ cmake . -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes
+λ make all tests
+λ sudo make install
 ----
 
 === Windows with MSVC
@@ -19,9 +19,9 @@ Building with MSVC is a bit more involved. Open the Visual C++ MSBuild command p
 (should be in your start menu). You can then run cmake build and test from the prompt:
 [source]
 ----
-$ cmake -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes -G"Visual Studio 14 2015"
-$ msbuild /p:Configuration=Release ALL_BUILD.vcxproj
-$ test\Release\inform_unittest.exe
+λ cmake -DCMAKE_BUILD_TYPE=Release -DEXAMPLES=Yes -G"Visual Studio 14 2015"
+λ msbuild /p:Configuration=Release ALL_BUILD.vcxproj
+λ test\Release\inform_unittest.exe
 ----
 Installation requires the user to manually copy the headers and libraries to wherever the
 user would like. This project-by-project approach is standard for Windows development, as
@@ -65,7 +65,7 @@ under active developed:
 | rinform
 | R
 | https://github.com/elife-asu/rinform[elife-asu/rinform]
-| _forthcoming_
+| https://elife-asu.github.io/rinform
 
 | Inform.jl
 | Julia
@@ -97,8 +97,24 @@ try one of these:
     Calculator (web-based, R)
 
 == Copyright and Licensing
-Copyright © 2016-2017 ELIFE, Arizona State University. Free use of this software is granted
+Copyright © 2016-2018 ELIFE, Arizona State University. Free use of this software is granted
 under the terms of the MIT License.
 
 See the https://github.com/elife-asu/inform/blob/master/LICENSE[LICENSE] file for details.
 
+== Relevant Publications
+
+- Moore, D.G., Valentini, G., Walker, S.I. and Levin, M. (2018) "Inform: Efficient
+  Information-Theoretic Analysis of Collective Behaviors" _Frontiers in Robotics & AI_.
+  (under review).
+
+- Moore, D.G., Valentini, G., Walker, S.I. and Levin, M. (2018) "Inform: A Toolkit for
+  Information-Theoretic Analysis of Complex Systems". In: _Proceedings of the 2017 IEEE
+  Symposium on Computational Intelligence, Symposium on Artificial Life, IEEE Press_. (in
+  press).
+
+== Support
+This project was supported in part by a grant provided by the Templeton World Charity
+Foundation as part of the
+link:http://www.templetonworldcharity.org/what-we-fund/themes-of-interest/power-of-information[Power
+of Information Inititive].
