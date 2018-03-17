@@ -34,8 +34,11 @@ static void accumulate_observations(int const* series, size_t n, size_t m,
             histories->histogram[history]++;
             futures->histogram[future]++;
 
-            history = history * b - series[j - kpast - kfuture]*q + series[j - kfuture];
-            future = future * b - series[j - kfuture]*r + series[j];
+            if (j != m)
+            {
+                history = history * b - series[j - kpast - kfuture]*q + series[j - kfuture];
+                future = future * b - series[j - kfuture]*r + series[j];
+            }
         } while (++j <= m);
     }
 }
